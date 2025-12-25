@@ -15,10 +15,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -50,7 +50,7 @@ jobs:
         7z a EVE-Overview-Pro-${{ steps.version.outputs.version }}-Windows.zip EVE-Overview-Pro.exe
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: EVE-Overview-Pro-Windows
         path: windows/dist/EVE-Overview-Pro-*.zip

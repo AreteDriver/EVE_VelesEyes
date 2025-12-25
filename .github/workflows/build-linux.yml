@@ -15,10 +15,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -53,7 +53,7 @@ jobs:
         tar -czf EVE-Overview-Pro-${{ steps.version.outputs.version }}-Linux.tar.gz eve-overview-pro-linux
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: EVE-Overview-Pro-Linux
         path: EVE-Overview-Pro-*.tar.gz
