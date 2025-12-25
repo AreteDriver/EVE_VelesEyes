@@ -1,0 +1,68 @@
+name: Build Linux Package
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xdotool wmctrl imagemagick
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Get version
+      id: version
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        else
+          echo "version=dev-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create package
+      run: |
+        mkdir -p eve-overview-pro-linux
+        cp -r src eve-overview-pro-linux/
+        cp requirements.txt eve-overview-pro-linux/
+        cp install.sh eve-overview-pro-linux/
+        cp uninstall.sh eve-overview-pro-linux/
+        cp README.md eve-overview-pro-linux/
+        cp -r assets eve-overview-pro-linux/ || mkdir eve-overview-pro-linux/assets
+        tar -czf EVE-Overview-Pro-${{ steps.version.outputs.version }}-Linux.tar.gz eve-overview-pro-linux
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: EVE-Overview-Pro-Linux
+        path: EVE-Overview-Pro-*.tar.gz
+        retention-days: 30
+
+    - name: Upload to release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: EVE-Overview-Pro-*.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

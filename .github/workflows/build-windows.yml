@@ -1,0 +1,65 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      working-directory: ./windows
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build executable
+      working-directory: ./windows
+      run: |
+        pyinstaller build.spec
+
+    - name: Get version
+      id: version
+      shell: bash
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        else
+          echo "version=dev-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create artifact
+      run: |
+        cd windows/dist
+        7z a EVE-Overview-Pro-${{ steps.version.outputs.version }}-Windows.zip EVE-Overview-Pro.exe
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: EVE-Overview-Pro-Windows
+        path: windows/dist/EVE-Overview-Pro-*.zip
+        retention-days: 30
+
+    - name: Upload to release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: windows/dist/EVE-Overview-Pro-*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
