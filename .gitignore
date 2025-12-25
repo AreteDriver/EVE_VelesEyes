@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project specific
+*.log
+.DS_Store
+
+# Config and data (user-specific)
+*.db
+*.sqlite
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
