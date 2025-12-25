@@ -1,10 +1,24 @@
 # EVE Overview Pro v2.1 Ultimate Edition
 
-**The Complete Professional Multi-Boxing Solution for EVE Online on Linux**
+**The Complete Professional Multi-Boxing Solution for EVE Online**
 
 ![Version](https://img.shields.io/badge/version-2.1.0-blue)
 ![Python](https://img.shields.io/badge/python-3.8+-green)
 ![License](https://img.shields.io/badge/license-MIT-orange)
+![Platform](https://img.shields.io/badge/platform-Linux%20|%20Windows-lightgrey)
+
+## 💻 Platform Support
+
+- **🐧 Linux Version**: Full-featured native Linux application (this README)
+- **🪟 Windows Version**: See [windows/README_WINDOWS.md](windows/README_WINDOWS.md) for Windows .exe
+
+## ☕ Support Development
+
+If you find EVE Overview Pro useful, consider supporting development:
+
+**[Buy Me a Coffee ☕](https://buymeacoffee.com/aretedriver)**
+
+Your support helps keep this project maintained and improving!
 
 ---
 

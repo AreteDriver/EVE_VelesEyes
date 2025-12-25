@@ -39,9 +39,6 @@ class MainWindowV21(QMainWindow):
         self.settings_manager.validate()
         self._apply_initial_settings()
 
-        # Create menu bar
-        self._create_menu_bar()
-
         # Create central widget with tab system
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -69,51 +66,6 @@ class MainWindowV21(QMainWindow):
         self.hotkey_manager.start()
 
         self.logger.info("Main window v2.1 initialized successfully")
-
-    def _create_menu_bar(self):
-        """Create menu bar with Help menu"""
-        menubar = self.menuBar()
-
-        # Help menu
-        help_menu = menubar.addMenu("&Help")
-
-        # About action
-        about_action = help_menu.addAction("&About EVE Overview Pro")
-        about_action.triggered.connect(self._show_about_dialog)
-
-        help_menu.addSeparator()
-
-        # Donate action
-        donate_action = help_menu.addAction("☕ &Support Development (Buy Me a Coffee)")
-        donate_action.triggered.connect(self._open_donation_link)
-
-        help_menu.addSeparator()
-
-        # Documentation
-        docs_action = help_menu.addAction("&Documentation")
-        docs_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/eve-overview-pro#readme"))
-
-        # Report Issue
-        issue_action = help_menu.addAction("&Report Issue")
-        issue_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/eve-overview-pro/issues"))
-
-    def _show_about_dialog(self):
-        """Show About dialog"""
-        from eve_overview_pro.ui.about_dialog import AboutDialog
-        dialog = AboutDialog(self)
-        dialog.exec()
-
-    def _open_donation_link(self):
-        """Open Buy Me a Coffee link"""
-        from PySide6.QtGui import QDesktopServices
-        from PySide6.QtCore import QUrl
-        QDesktopServices.openUrl(QUrl("https://buymeacoffee.com/aretedriver"))
-
-    def _open_url(self, url: str):
-        """Open URL in browser"""
-        from PySide6.QtGui import QDesktopServices
-        from PySide6.QtCore import QUrl
-        QDesktopServices.openUrl(QUrl(url))
 
     def _apply_initial_settings(self):
         """Apply settings loaded from config"""
