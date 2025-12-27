@@ -110,9 +110,10 @@ class MainWindowV21(QMainWindow):
         self.system_tray.reload_config_requested.connect(self._reload_config)
         self.system_tray.quit_requested.connect(self._quit_application)
 
-        # Load saved profiles
+        # Load saved profiles (get_all_presets returns List[LayoutPreset])
         profiles = self.layout_manager.get_all_presets()
-        self.system_tray.set_profiles(list(profiles.keys()))
+        profile_names = [p.name for p in profiles]
+        self.system_tray.set_profiles(profile_names)
 
         # Show tray icon
         self.system_tray.show()
@@ -171,7 +172,7 @@ class MainWindowV21(QMainWindow):
     def _on_profile_selected(self, profile_name: str):
         """Handle profile selection from tray"""
         self.logger.info(f"Profile selected from tray: {profile_name}")
-        preset = self.layout_manager.load_preset(profile_name)
+        preset = self.layout_manager.get_preset(profile_name)
         if preset:
             self.system_tray.set_current_profile(profile_name)
             self.system_tray.show_notification("Profile Loaded", f"Loaded: {profile_name}")
