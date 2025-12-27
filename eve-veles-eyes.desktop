@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=EVE Veles Eyes
+Comment=Professional Multi-Boxing Tool for EVE Online
+Exec=/home/arete/EVE_VelesEyes/run.sh
+Icon=/home/arete/EVE_VelesEyes/assets/icon_256.png
+Terminal=false
+Type=Application
+Categories=Game;Utility;
+Keywords=EVE;Online;Multi-boxing;Preview;Window;
+StartupNotify=true
+StartupWMClass=eve-veles-eyes
