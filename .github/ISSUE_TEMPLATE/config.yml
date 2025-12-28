@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: EVE Forums
+    url: https://forums.eveonline.com/
+    about: Discuss on the official EVE Online forums
+  - name: Reddit r/Eve
+    url: https://reddit.com/r/Eve
+    about: Post questions or suggestions on the EVE subreddit

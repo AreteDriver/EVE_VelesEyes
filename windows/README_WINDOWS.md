@@ -59,7 +59,7 @@ pip install pyinstaller
 # Build .exe
 pyinstaller build.spec
 
-# Executable will be in dist/EVE-Overview-Pro.exe
+# Executable will be in dist/EVE-Veles-Eyes.exe
 ```
 
 ## 📖 Usage Guide
@@ -114,7 +114,7 @@ pyinstaller build.spec
 
 Settings are stored in:
 ```
-%LOCALAPPDATA%\eve-overview-pro\
+%LOCALAPPDATA%\eve-veles-eyes\
 ├── settings.json          # Application settings
 ├── characters.json        # Character database
 ├── teams.json            # Team definitions
@@ -127,11 +127,11 @@ Settings are stored in:
 If Windows Defender blocks the .exe, you may need to add an exception:
 1. Open Windows Security
 2. Virus & threat protection > Manage settings
-3. Add exclusion > Add folder > Select EVE-Overview-Pro folder
+3. Add exclusion > Add folder > Select EVE-Veles-Eyes folder
 
 ### No Windows Detected
 - Make sure EVE Online clients are running
-- Run EVE-Overview-Pro as Administrator if needed
+- Run EVE-Veles-Eyes as Administrator if needed
 - Check that windows are not minimized
 
 ### Hotkeys Not Working
@@ -183,7 +183,7 @@ Contributions welcome! Please:
 
 ## ☕ Support Development
 
-If you find EVE Overview Pro useful, consider supporting development:
+If you find EVE Veles Eyes useful, consider supporting development:
 
 **[Buy Me a Coffee ☕](https://buymeacoffee.com/aretedriver)**
 
@@ -195,9 +195,9 @@ MIT License - See LICENSE file for details
 
 ## 🔗 Links
 
-- **GitHub**: https://github.com/AreteDriver/eve-overview-pro
+- **GitHub**: https://github.com/AreteDriver/EVE_VelesEyes
 - **Linux Version**: See main README.md in root directory
-- **Issues**: https://github.com/AreteDriver/eve-overview-pro/issues
+- **Issues**: https://github.com/AreteDriver/EVE_VelesEyes/issues
 - **Donate**: https://buymeacoffee.com/aretedriver
 
 ## 📝 Version History

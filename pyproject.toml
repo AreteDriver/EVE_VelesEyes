@@ -1,0 +1,74 @@
+[project]
+name = "eve-veles-eyes"
+version = "2.2.0"
+description = "Multi-window preview and management tool for EVE Online on Linux"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "AreteDriver"}
+]
+keywords = ["eve-online", "multiboxing", "linux", "gaming", "preview", "pyside6"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "PySide6>=6.6.0",
+    "python-xlib>=0.33",
+    "Pillow>=10.0.0",
+    "pynput>=1.7.0",
+    "numpy>=1.24.0",
+    "watchdog>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "black",
+    "isort",
+    "pytest",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/AreteDriver/EVE_VelesEyes"
+Repository = "https://github.com/AreteDriver/EVE_VelesEyes.git"
+Issues = "https://github.com/AreteDriver/EVE_VelesEyes/issues"
+Changelog = "https://github.com/AreteDriver/EVE_VelesEyes/blob/main/CHANGELOG.md"
+
+[project.scripts]
+veles-eyes = "main:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310", "py311", "py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
