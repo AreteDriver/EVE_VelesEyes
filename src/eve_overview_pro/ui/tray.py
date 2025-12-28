@@ -1,6 +1,7 @@
 """
 System Tray - Provides system tray icon with quick actions menu
 v2.2 Feature: Minimize to tray, quick profile switching, toggle visibility
+v2.3: Refactored to use ActionRegistry for menu construction
 """
 import logging
 from typing import List, Optional
@@ -8,6 +9,9 @@ from typing import List, Optional
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtGui import QAction, QColor, QFont, QIcon, QPainter, QPixmap
 from PySide6.QtWidgets import QMenu, QSystemTrayIcon
+
+from eve_overview_pro.ui.action_registry import ActionRegistry, PrimaryHome
+from eve_overview_pro.ui.menu_builder import MenuBuilder
 
 
 class SystemTray(QObject):
@@ -17,14 +21,19 @@ class SystemTray(QObject):
     Features:
     - Show/Hide main window
     - Toggle thumbnails visibility
+    - Minimize/Restore all windows
     - Quick profile switching
-    - Settings access
+    - Reload config
     - Quit application
+
+    All actions are sourced from ActionRegistry (primary_home=TRAY_MENU).
     """
 
-    # Signals
+    # Signals - emitted when tray menu actions are triggered
     show_hide_requested = Signal()
     toggle_thumbnails_requested = Signal()
+    minimize_all_requested = Signal()
+    restore_all_requested = Signal()
     profile_selected = Signal(str)  # profile_name
     settings_requested = Signal()
     reload_config_requested = Signal()
@@ -39,12 +48,16 @@ class SystemTray(QObject):
         self._profiles: List[str] = []
         self._current_profile: Optional[str] = None
 
+        # Action registry and menu builder
+        self.registry = ActionRegistry.get_instance()
+        self.menu_builder = MenuBuilder(self.registry)
+
         # Create tray icon
         self.tray_icon = QSystemTrayIcon(parent)
         self.tray_icon.setIcon(self._create_icon())
-        self.tray_icon.setToolTip("EVE Veles Eyes v2.2")
+        self.tray_icon.setToolTip("EVE Veles Eyes v2.3")
 
-        # Create context menu
+        # Create context menu from registry
         self.menu = QMenu()
         self._setup_menu()
         self.tray_icon.setContextMenu(self.menu)
@@ -52,7 +65,7 @@ class SystemTray(QObject):
         # Connect signals
         self.tray_icon.activated.connect(self._on_tray_activated)
 
-        self.logger.info("System tray initialized")
+        self.logger.info("System tray initialized (using ActionRegistry)")
 
     def _create_icon(self) -> QIcon:
         """
@@ -83,41 +96,56 @@ class SystemTray(QObject):
         return QIcon(pixmap)
 
     def _setup_menu(self):
-        """Setup the context menu"""
-        # Show/Hide action
-        self.show_hide_action = QAction("Show/Hide Veles Eyes", self.menu)
-        self.show_hide_action.triggered.connect(self.show_hide_requested.emit)
-        self.menu.addAction(self.show_hide_action)
+        """
+        Setup the context menu using ActionRegistry.
 
-        # Toggle Thumbnails
-        self.toggle_thumbnails_action = QAction("Toggle Thumbnails", self.menu)
-        self.toggle_thumbnails_action.triggered.connect(self.toggle_thumbnails_requested.emit)
-        self.menu.addAction(self.toggle_thumbnails_action)
+        Menu structure:
+        - Show/Hide Veles Eyes
+        - Toggle Thumbnails
+        - [separator]
+        - Minimize All
+        - Restore All
+        - [separator]
+        - Profiles (submenu)
+        - [separator]
+        - Reload Config
+        - [separator]
+        - Quit
+        """
+        self.menu.clear()
 
-        self.menu.addSeparator()
+        # Build handlers map - connects action IDs to signal emitters
+        handlers = {
+            "show_hide": self.show_hide_requested.emit,
+            "toggle_thumbnails": self.toggle_thumbnails_requested.emit,
+            "minimize_all": self.minimize_all_requested.emit,
+            "restore_all": self.restore_all_requested.emit,
+            "settings": self.settings_requested.emit,
+            "reload_config": self.reload_config_requested.emit,
+            "quit": self.quit_requested.emit,
+        }
 
-        # Profiles submenu
-        self.profiles_menu = self.menu.addMenu("Profiles")
-        self._update_profiles_menu()
+        # Build menu using MenuBuilder
+        self.menu = self.menu_builder.build_tray_menu(
+            parent=None,
+            handlers=handlers,
+            profile_handler=self._on_profile_selected,
+            profiles=self._profiles,
+            current_profile=self._current_profile,
+        )
 
-        self.menu.addSeparator()
+        # Store reference to profiles submenu for updates
+        for action in self.menu.actions():
+            if action.menu() and action.text() == "Profiles":
+                self.profiles_menu = action.menu()
+                break
 
-        # Settings
-        settings_action = QAction("Settings", self.menu)
-        settings_action.triggered.connect(self.settings_requested.emit)
-        self.menu.addAction(settings_action)
+        # Update the tray icon's context menu
+        self.tray_icon.setContextMenu(self.menu)
 
-        # Reload Config
-        reload_action = QAction("Reload Config", self.menu)
-        reload_action.triggered.connect(self.reload_config_requested.emit)
-        self.menu.addAction(reload_action)
-
-        self.menu.addSeparator()
-
-        # Quit
-        quit_action = QAction("Quit", self.menu)
-        quit_action.triggered.connect(self.quit_requested.emit)
-        self.menu.addAction(quit_action)
+    def _on_profile_selected(self, profile_name: str):
+        """Handle profile selection from menu"""
+        self.profile_selected.emit(profile_name)
 
     def _update_profiles_menu(self):
         """Update the profiles submenu"""

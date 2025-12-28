@@ -18,6 +18,8 @@ from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
 from eve_overview_pro.core.hotkey_manager import HotkeyManager
 from eve_overview_pro.core.layout_manager import LayoutManager
 from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+from eve_overview_pro.ui.action_registry import ActionRegistry
+from eve_overview_pro.ui.menu_builder import MenuBuilder
 from eve_overview_pro.ui.settings_manager import SettingsManager
 from eve_overview_pro.ui.themes import get_theme_manager
 from eve_overview_pro.ui.tray import SystemTray
@@ -105,12 +107,14 @@ class MainWindowV21(QMainWindow):
         self.logger.info("Main window v2.2 initialized successfully")
 
     def _create_system_tray(self):
-        """Create system tray icon (v2.2)"""
+        """Create system tray icon (v2.3 - uses ActionRegistry)"""
         self.system_tray = SystemTray(self)
 
-        # Connect tray signals
+        # Connect tray signals (all actions sourced from ActionRegistry)
         self.system_tray.show_hide_requested.connect(self._toggle_visibility)
         self.system_tray.toggle_thumbnails_requested.connect(self._toggle_thumbnails)
+        self.system_tray.minimize_all_requested.connect(self._minimize_all_windows)
+        self.system_tray.restore_all_requested.connect(self._restore_all_windows)
         self.system_tray.profile_selected.connect(self._on_profile_selected)
         self.system_tray.settings_requested.connect(self._show_settings)
         self.system_tray.reload_config_requested.connect(self._reload_config)
@@ -123,7 +127,7 @@ class MainWindowV21(QMainWindow):
 
         # Show tray icon
         self.system_tray.show()
-        self.logger.info("System tray initialized")
+        self.logger.info("System tray initialized (ActionRegistry)")
 
     def _register_hotkeys(self):
         """Register global hotkeys (v2.2)"""
@@ -281,7 +285,7 @@ class MainWindowV21(QMainWindow):
         """Show settings tab"""
         self.show()
         self.raise_()
-        self.tabs.setCurrentIndex(4)  # Settings tab (Main=0, Characters=1, Hotkeys=2, SettingsSync=3, Settings=4)
+        self.tabs.setCurrentIndex(4)  # Settings tab (Overview=0, Roster=1, Automation=2, Sync=3, Settings=4)
 
     @Slot()
     def _reload_config(self):
@@ -368,31 +372,23 @@ class MainWindowV21(QMainWindow):
                         )
 
     def _create_menu_bar(self):
-        """Create menu bar with Help menu"""
+        """Create menu bar with Help menu (v2.3 - uses ActionRegistry)"""
         menubar = self.menuBar()
 
-        # Help menu
-        help_menu = menubar.addMenu("&Help")
+        # Build Help menu using MenuBuilder (actions from ActionRegistry)
+        registry = ActionRegistry.get_instance()
+        menu_builder = MenuBuilder(registry)
 
-        # About action
-        about_action = help_menu.addAction("&About EVE Veles Eyes")
-        about_action.triggered.connect(self._show_about_dialog)
+        # Handler map for Help menu actions
+        handlers = {
+            "about": self._show_about_dialog,
+            "donate": self._open_donation_link,
+            "documentation": lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes#readme"),
+            "report_issue": lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes/issues"),
+        }
 
-        help_menu.addSeparator()
-
-        # Donate action
-        donate_action = help_menu.addAction("☕ &Support Development (Buy Me a Coffee)")
-        donate_action.triggered.connect(self._open_donation_link)
-
-        help_menu.addSeparator()
-
-        # Documentation
-        docs_action = help_menu.addAction("&Documentation")
-        docs_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes#readme"))
-
-        # Report Issue
-        issue_action = help_menu.addAction("&Report Issue")
-        issue_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes/issues"))
+        help_menu = menu_builder.build_help_menu(parent=self, handlers=handlers)
+        menubar.addMenu(help_menu)
 
     def _show_about_dialog(self):
         """Show About dialog"""
@@ -433,7 +429,7 @@ class MainWindowV21(QMainWindow):
         self.logger.info("Initial settings applied")
 
     def _create_main_tab(self):
-        """Create main preview management tab"""
+        """Create Overview tab (window preview management) - formerly 'Main'"""
         from eve_overview_pro.ui.main_tab import MainTab
 
         self.main_tab = MainTab(
@@ -442,14 +438,14 @@ class MainWindowV21(QMainWindow):
             self.alert_detector,
             settings_manager=self.settings_manager
         )
-        self.tabs.addTab(self.main_tab, "Main")
+        self.tabs.addTab(self.main_tab, "Overview")
 
         # Connect signals
         self.main_tab.character_detected.connect(self._on_character_detected)
         self.main_tab.layout_applied.connect(self._on_layout_applied)
 
     def _create_characters_tab(self):
-        """Create character & team management tab"""
+        """Create Roster tab (character & team management) - formerly 'Characters & Teams'"""
         from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
 
         self.characters_tab = CharactersTeamsTab(
@@ -457,13 +453,13 @@ class MainWindowV21(QMainWindow):
             self.layout_manager,
             settings_sync=self.settings_sync  # v2.2: Enable EVE folder scanning
         )
-        self.tabs.addTab(self.characters_tab, "Characters & Teams")
+        self.tabs.addTab(self.characters_tab, "Roster")
 
         # Connect signals
         self.characters_tab.team_selected.connect(self._on_team_selected)
 
     def _create_hotkeys_tab(self):
-        """Create hotkeys & cycling tab"""
+        """Create Automation tab (hotkeys & cycling) - formerly 'Hotkeys & Cycling'"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
         self.hotkeys_tab = HotkeysTab(
@@ -471,25 +467,25 @@ class MainWindowV21(QMainWindow):
             self.settings_manager,
             main_tab=self.main_tab
         )
-        self.tabs.addTab(self.hotkeys_tab, "Hotkeys & Cycling")
+        self.tabs.addTab(self.hotkeys_tab, "Automation")
 
-        # Connect group changes to refresh layout sources in main tab
+        # Connect group changes to refresh layout sources in overview tab
         self.hotkeys_tab.group_changed.connect(
             lambda: self.main_tab.refresh_layout_groups()
         )
 
     def _create_settings_sync_tab(self):
-        """Create EVE settings sync tab"""
+        """Create Sync tab (EVE settings sync) - formerly 'Settings Sync'"""
         from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
 
         self.settings_sync_tab = SettingsSyncTab(
             self.settings_sync,
             self.character_manager
         )
-        self.tabs.addTab(self.settings_sync_tab, "Settings Sync")
+        self.tabs.addTab(self.settings_sync_tab, "Sync")
 
     def _create_settings_tab(self):
-        """Create application settings tab"""
+        """Create Settings tab (application settings)"""
         from eve_overview_pro.ui.settings_tab import SettingsTab
 
         self.settings_tab = SettingsTab(
