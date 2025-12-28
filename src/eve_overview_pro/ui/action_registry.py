@@ -273,6 +273,15 @@ class ActionRegistry:
         ))
 
         self.register(ActionSpec(
+            id="refresh_capture",
+            label="Refresh",
+            scope=ActionScope.TAB,
+            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+            tooltip="Restart capture for all windows",
+            handler_name="_refresh_all",
+        ))
+
+        self.register(ActionSpec(
             id="minimize_all",
             label="Minimize All",
             scope=ActionScope.GLOBAL,

@@ -28,6 +28,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from eve_overview_pro.ui.action_registry import ActionRegistry, PrimaryHome
+from eve_overview_pro.ui.menu_builder import ToolbarBuilder
+
 
 class ScanWorker(QThread):
     """Background worker for scanning EVE settings"""
@@ -263,18 +266,20 @@ class SettingsSyncTab(QWidget):
         self.setLayout(layout)
 
     def _create_toolbar(self) -> QWidget:
-        """Create top toolbar"""
+        """Create top toolbar (v2.3 - uses ActionRegistry)"""
         toolbar = QWidget()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
 
-        # Scan button
-        self.scan_btn = QPushButton("Scan for EVE Settings")
-        self.scan_btn.setToolTip("Scan EVE Online directory for character settings")
-        self.scan_btn.clicked.connect(self._scan_settings)
-        layout.addWidget(self.scan_btn)
+        # Build toolbar buttons from ActionRegistry
+        toolbar_builder = ToolbarBuilder()
 
-        # Add custom path button
+        # Scan button (from registry)
+        self.scan_btn = toolbar_builder.create_button("scan_eve_settings", self._scan_settings)
+        if self.scan_btn:
+            layout.addWidget(self.scan_btn)
+
+        # Add custom path button (not in registry - feature coming soon)
         self.add_path_btn = QPushButton("Add Custom Path")
         self.add_path_btn.setToolTip("Add custom EVE settings directory")
         self.add_path_btn.clicked.connect(self._add_custom_path)
@@ -351,20 +356,19 @@ class SettingsSyncTab(QWidget):
         self.backup_checkbox.setChecked(True)
         options_layout.addWidget(self.backup_checkbox)
 
-        # Action buttons
+        # Action buttons (from ActionRegistry)
+        toolbar_builder = ToolbarBuilder()
         action_layout = QVBoxLayout()
 
-        self.preview_btn = QPushButton("Preview Sync")
-        self.preview_btn.setToolTip("Preview what will be synced")
-        self.preview_btn.clicked.connect(self._preview_sync)
-        self.preview_btn.setEnabled(False)
-        action_layout.addWidget(self.preview_btn)
+        self.preview_btn = toolbar_builder.create_button("preview_sync", self._preview_sync)
+        if self.preview_btn:
+            self.preview_btn.setEnabled(False)
+            action_layout.addWidget(self.preview_btn)
 
-        self.sync_btn = QPushButton("Sync Settings")
-        self.sync_btn.setToolTip("Sync settings from source to targets")
-        self.sync_btn.clicked.connect(self._sync_settings)
-        self.sync_btn.setEnabled(False)
-        action_layout.addWidget(self.sync_btn)
+        self.sync_btn = toolbar_builder.create_button("sync_settings", self._sync_settings)
+        if self.sync_btn:
+            self.sync_btn.setEnabled(False)
+            action_layout.addWidget(self.sync_btn)
 
         action_layout.addStretch()
         options_layout.addLayout(action_layout)

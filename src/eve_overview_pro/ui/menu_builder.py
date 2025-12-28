@@ -275,3 +275,153 @@ def build_toolbar_actions(
         builder._create_action(spec, None, handlers.get(spec.id))
         for spec in actions
     ]
+
+
+class ToolbarBuilder:
+    """
+    Builds Qt toolbar widgets from the ActionRegistry.
+
+    This creates QPushButton widgets rather than QActions, allowing for
+    more control over styling and layout.
+    """
+
+    # Styling for specific action types
+    PRIMARY_STYLE = """
+        QPushButton {
+            background-color: #ff8c00;
+            color: black;
+            font-weight: bold;
+            padding: 5px 10px;
+        }
+        QPushButton:hover { background-color: #ffa500; }
+    """
+
+    SUCCESS_STYLE = """
+        QPushButton {
+            background-color: #2d5a27;
+            color: white;
+            padding: 5px 10px;
+        }
+        QPushButton:hover { background-color: #3d7a37; }
+    """
+
+    DANGER_STYLE = """
+        QPushButton {
+            background-color: #8b0000;
+            color: white;
+        }
+        QPushButton:hover { background-color: #a50000; }
+    """
+
+    # Actions that get special styling
+    PRIMARY_ACTIONS = {"import_windows", "apply_layout", "sync_settings", "save_hotkeys"}
+    SUCCESS_ACTIONS = {"scan_eve_folder", "new_group", "load_active_windows", "new_team"}
+    DANGER_ACTIONS = {"delete_group", "delete_character", "remove_all_windows"}
+
+    def __init__(self, registry: Optional[ActionRegistry] = None):
+        self.logger = logging.getLogger(__name__)
+        self.registry = registry or ActionRegistry.get_instance()
+
+    def build_toolbar_buttons(
+        self,
+        home: PrimaryHome,
+        handlers: Dict[str, Callable],
+        action_order: Optional[List[str]] = None,
+        parent=None,
+    ) -> Dict[str, "QPushButton"]:
+        """
+        Build toolbar buttons from the registry.
+
+        Args:
+            home: PrimaryHome location
+            handlers: Dict mapping action_id -> handler callable
+            action_order: Optional list of action IDs to specify order
+            parent: Parent widget
+
+        Returns:
+            Dict mapping action_id -> QPushButton
+        """
+        from PySide6.QtWidgets import QPushButton
+
+        actions = self.registry.get_by_home(home)
+        buttons = {}
+
+        # Use specified order or registry order
+        if action_order:
+            action_map = {a.id: a for a in actions}
+            ordered_actions = [action_map[aid] for aid in action_order if aid in action_map]
+        else:
+            ordered_actions = actions
+
+        for spec in ordered_actions:
+            btn = QPushButton(spec.label, parent)
+
+            if spec.tooltip:
+                btn.setToolTip(spec.tooltip)
+
+            if spec.checkable:
+                btn.setCheckable(True)
+
+            # Apply styling based on action type
+            if spec.id in self.PRIMARY_ACTIONS:
+                btn.setStyleSheet(self.PRIMARY_STYLE)
+            elif spec.id in self.SUCCESS_ACTIONS:
+                btn.setStyleSheet(self.SUCCESS_STYLE)
+            elif spec.id in self.DANGER_ACTIONS:
+                btn.setStyleSheet(self.DANGER_STYLE)
+
+            # Connect handler
+            handler = handlers.get(spec.id)
+            if handler:
+                btn.clicked.connect(handler)
+            else:
+                self.logger.debug(f"No handler for toolbar action: {spec.id}")
+
+            buttons[spec.id] = btn
+
+        return buttons
+
+    def create_button(
+        self,
+        action_id: str,
+        handler: Optional[Callable] = None,
+        parent=None,
+    ) -> Optional["QPushButton"]:
+        """
+        Create a single button from a registry action.
+
+        Args:
+            action_id: Action ID from registry
+            handler: Handler callable
+            parent: Parent widget
+
+        Returns:
+            QPushButton or None if action not found
+        """
+        from PySide6.QtWidgets import QPushButton
+
+        spec = self.registry.get(action_id)
+        if not spec:
+            self.logger.warning(f"Action not found: {action_id}")
+            return None
+
+        btn = QPushButton(spec.label, parent)
+
+        if spec.tooltip:
+            btn.setToolTip(spec.tooltip)
+
+        if spec.checkable:
+            btn.setCheckable(True)
+
+        # Apply styling
+        if spec.id in self.PRIMARY_ACTIONS:
+            btn.setStyleSheet(self.PRIMARY_STYLE)
+        elif spec.id in self.SUCCESS_ACTIONS:
+            btn.setStyleSheet(self.SUCCESS_STYLE)
+        elif spec.id in self.DANGER_ACTIONS:
+            btn.setStyleSheet(self.DANGER_STYLE)
+
+        if handler:
+            btn.clicked.connect(handler)
+
+        return btn

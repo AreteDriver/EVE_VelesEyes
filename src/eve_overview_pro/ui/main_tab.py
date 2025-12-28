@@ -45,6 +45,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from eve_overview_pro.ui.action_registry import ActionRegistry, PrimaryHome
+from eve_overview_pro.ui.menu_builder import ToolbarBuilder
+
 
 @dataclass
 class ScreenGeometry:
@@ -1142,55 +1145,56 @@ class MainTab(QWidget):
         layout.addWidget(status_bar)
 
     def _create_toolbar(self) -> QWidget:
-        """Create toolbar with v2.2 One-Click Import"""
+        """Create toolbar using ActionRegistry (v2.3)"""
         toolbar = QWidget()
         toolbar_layout = QHBoxLayout()
         toolbar_layout.setContentsMargins(0, 0, 0, 5)
         toolbar.setLayout(toolbar_layout)
 
-        # One-Click Import button (v2.2 - prominent)
-        import_btn = QPushButton("Import All EVE Windows")
-        import_btn.setToolTip("Scan and import all EVE windows with one click")
-        import_btn.setStyleSheet("QPushButton { background-color: #ff8c00; color: black; font-weight: bold; padding: 5px 10px; }")
-        import_btn.clicked.connect(self.one_click_import)
-        toolbar_layout.addWidget(import_btn)
+        # Build toolbar buttons from ActionRegistry
+        toolbar_builder = ToolbarBuilder()
+        handlers = {
+            "import_windows": self.one_click_import,
+            "add_window": self.show_add_window_dialog,
+            "remove_all_windows": self._remove_all_windows,
+            "lock_positions": self._toggle_lock,
+            "minimize_inactive": self.minimize_inactive_windows,
+            "refresh_capture": self._refresh_all,
+        }
 
-        # Add Window button (manual)
-        add_btn = QPushButton("Add Window")
-        add_btn.setToolTip("Manually select EVE windows to add")
-        add_btn.clicked.connect(self.show_add_window_dialog)
-        toolbar_layout.addWidget(add_btn)
+        # Create buttons in specific order with layout control
+        action_order = [
+            "import_windows",
+            "add_window",
+            "remove_all_windows",
+        ]
 
-        # Remove All button
-        remove_btn = QPushButton("Remove All")
-        remove_btn.setToolTip("Remove all windows from preview")
-        remove_btn.clicked.connect(self._remove_all_windows)
-        toolbar_layout.addWidget(remove_btn)
+        buttons = toolbar_builder.build_toolbar_buttons(
+            PrimaryHome.OVERVIEW_TOOLBAR,
+            handlers,
+            action_order,
+        )
+
+        # Add first group of buttons
+        for action_id in action_order:
+            if action_id in buttons:
+                toolbar_layout.addWidget(buttons[action_id])
 
         toolbar_layout.addStretch()
 
-        # Lock Positions toggle (v2.2)
-        self.lock_btn = QPushButton("Lock")
-        self.lock_btn.setCheckable(True)
-        self.lock_btn.setToolTip("Lock thumbnail positions (Ctrl+Shift+L)")
-        self.lock_btn.clicked.connect(self._toggle_lock)
+        # Add lock button (store reference for state updates)
+        self.lock_btn = toolbar_builder.create_button("lock_positions", self._toggle_lock)
         toolbar_layout.addWidget(self.lock_btn)
 
-        # Minimize Inactive button
-        minimize_btn = QPushButton("Minimize Inactive")
-        minimize_btn.setToolTip("Minimize all windows except the currently focused one")
-        minimize_btn.clicked.connect(self.minimize_inactive_windows)
-        toolbar_layout.addWidget(minimize_btn)
-
-        # Refresh All button
-        refresh_btn = QPushButton("Refresh")
-        refresh_btn.setToolTip("Restart capture for all windows")
-        refresh_btn.clicked.connect(self._refresh_all)
-        toolbar_layout.addWidget(refresh_btn)
+        # Add remaining buttons
+        for action_id in ["minimize_inactive", "refresh_capture"]:
+            btn = toolbar_builder.create_button(action_id, handlers.get(action_id))
+            if btn:
+                toolbar_layout.addWidget(btn)
 
         toolbar_layout.addStretch()
 
-        # Refresh Rate
+        # Refresh Rate (not from registry - it's a widget, not an action)
         toolbar_layout.addWidget(QLabel("FPS:"))
         self.refresh_rate_spin = QSpinBox()
         self.refresh_rate_spin.setRange(1, 60)
