@@ -1,3 +1,22 @@
+# EVE Veles Eyes Flatpak Manifest
+#
+# NOTE: This application requires deep X11 integration (wmctrl, xdotool)
+# which is challenging to package in Flatpak's sandbox.
+#
+# RECOMMENDED: Use native installation instead:
+#   ./install.sh
+#   ~/eve-veles-eyes/run.sh
+#
+# This manifest is provided as a starting point for future Flatpak support.
+# Full Flatpak packaging would require:
+# 1. Building libXmu from source (for wmctrl)
+# 2. Building wmctrl from source
+# 3. Building xdotool from source
+# 4. Bundling PySide6 (~500MB)
+# 5. Configuring X11 socket access properly
+#
+# For now, native installation is the supported method.
+
 app-id: io.github.aretedriver.VelesEyes
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
@@ -9,9 +28,9 @@ finish-args:
   - --socket=x11
   - --socket=wayland
   - --device=dri
+  - --share=network
   - --talk-name=org.freedesktop.Notifications
-  - --filesystem=home:ro
-  - --filesystem=~/.eve:rw
+  - --filesystem=home
   - --filesystem=~/.config/eve-veles-eyes:create
   - --filesystem=~/.local/share/eve-veles-eyes:create
 
@@ -24,13 +43,28 @@ modules:
       - cp -r src/* /app/share/eve-veles-eyes/
       - mkdir -p /app/share/eve-veles-eyes/assets
       - cp -r assets/* /app/share/eve-veles-eyes/assets/ || true
-      - echo '#!/bin/bash' > /app/bin/veles-eyes
-      - echo 'echo "EVE Veles Eyes - Flatpak placeholder"' >> /app/bin/veles-eyes
-      - echo 'echo "This app requires X11 tools (wmctrl, xdotool) not available in Flatpak."' >> /app/bin/veles-eyes
-      - echo 'echo "Please use the native install: ./install.sh"' >> /app/bin/veles-eyes
+      - |
+        cat > /app/bin/veles-eyes << 'EOF'
+        #!/bin/bash
+        echo "==========================================="
+        echo "EVE Veles Eyes - Flatpak Notice"
+        echo "==========================================="
+        echo ""
+        echo "This application requires X11 tools (wmctrl, xdotool)"
+        echo "that are not fully supported in Flatpak's sandbox."
+        echo ""
+        echo "Please use native installation instead:"
+        echo ""
+        echo "  git clone https://github.com/AreteDriver/EVE_VelesEyes"
+        echo "  cd EVE_VelesEyes"
+        echo "  ./install.sh"
+        echo "  ~/eve-veles-eyes/run.sh"
+        echo ""
+        echo "==========================================="
+        EOF
       - chmod +x /app/bin/veles-eyes
       - install -Dm644 flatpak/io.github.aretedriver.VelesEyes.desktop /app/share/applications/io.github.aretedriver.VelesEyes.desktop
-      - install -Dm644 assets/icon_256.png /app/share/icons/hicolor/256x256/apps/io.github.aretedriver.VelesEyes.png || true
+      - install -Dm644 assets/icon_256.png /app/share/icons/hicolor/256x256/apps/io.github.aretedriver.VelesEyes.png || install -Dm644 assets/icon.png /app/share/icons/hicolor/256x256/apps/io.github.aretedriver.VelesEyes.png || true
       - install -Dm644 flatpak/io.github.aretedriver.VelesEyes.metainfo.xml /app/share/metainfo/io.github.aretedriver.VelesEyes.metainfo.xml
     sources:
       - type: dir
