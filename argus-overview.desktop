@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Argus Overview
+Comment=EVE Online Multi-Boxing Overview Tool
+GenericName=EVE Overview Manager
+Exec=/home/arete/Argus_Overview/run.sh
+Icon=argus-overview
+Terminal=false
+Type=Application
+Categories=Game;Utility;
+Keywords=EVE;Online;Multi-boxing;Overview;Window;Argus;
+StartupNotify=true
+StartupWMClass=argus-overview

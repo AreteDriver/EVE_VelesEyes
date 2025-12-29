@@ -324,6 +324,7 @@ class SettingsSyncTab(QWidget):
         # Target list
         self.target_list = QListWidget()
         self.target_list.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
+        self.target_list.itemSelectionChanged.connect(self._update_button_states)
         target_layout.addWidget(self.target_list)
 
         # Quick select buttons
@@ -464,10 +465,8 @@ class SettingsSyncTab(QWidget):
                 f"Last modified: {self._get_last_modified(path)}"
             )
 
-            # Enable preview/sync buttons if we have targets
-            targets_selected = len(self.target_list.selectedItems()) > 0
-            self.preview_btn.setEnabled(targets_selected)
-            self.sync_btn.setEnabled(targets_selected)
+        # Update button states
+        self._update_button_states()
 
     def _get_last_modified(self, path: Path) -> str:
         """Get last modified date of directory contents"""
@@ -516,10 +515,23 @@ class SettingsSyncTab(QWidget):
         """Select all target characters"""
         for i in range(self.target_list.count()):
             self.target_list.item(i).setSelected(True)
+        self._update_button_states()
 
     def _clear_targets(self):
         """Clear target selection"""
         self.target_list.clearSelection()
+        self._update_button_states()
+
+    def _update_button_states(self):
+        """Update button states based on current selections"""
+        has_source = self.source_combo.currentData() is not None
+        has_targets = len(self.target_list.selectedItems()) > 0
+        enabled = has_source and has_targets
+
+        if self.preview_btn:
+            self.preview_btn.setEnabled(enabled)
+        if self.sync_btn:
+            self.sync_btn.setEnabled(enabled)
 
     def _preview_sync(self):
         """Preview sync before executing"""

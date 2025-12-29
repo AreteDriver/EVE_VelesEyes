@@ -319,24 +319,30 @@ class EVESettingsSync:
         return results
 
     def _backup_settings(self, char_settings: EVECharacterSettings):
-        """Create backup of character settings
+        """Create backup of character's settings file
 
         Args:
             char_settings: Character settings to backup
         """
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        backup_dir = char_settings.settings_dir.parent / f"backup_{char_settings.character_name}_{timestamp}"
+
+        # Backup the specific character's .dat file, not the whole directory
+        source_file = char_settings.core_char_file
+        backup_file = source_file.parent / f"{source_file.stem}_backup_{timestamp}.dat"
 
         try:
-            shutil.copytree(char_settings.settings_dir, backup_dir)
-            self.logger.info(f"Created backup: {backup_dir}")
+            shutil.copy2(source_file, backup_file)
+            self.logger.info(f"Created backup: {backup_file}")
         except Exception as e:
             self.logger.error(f"Backup failed: {e}")
             raise
 
     def _copy_settings(self, source: EVECharacterSettings,
                       target: EVECharacterSettings) -> bool:
-        """Copy settings files from source to target
+        """Copy settings from source character to target character
+
+        Since all characters share the same settings directory, this copies
+        the CONTENT of source's core_char_<id>.dat to target's core_char_<id>.dat
 
         Args:
             source: Source character settings
@@ -346,34 +352,21 @@ class EVESettingsSync:
             True if successful
         """
         try:
-            source_dir = source.settings_dir
-            target_dir = target.settings_dir
+            # Copy content of source's .dat file to target's .dat file
+            # This preserves window layouts, keybinds, overview settings, etc.
+            source_file = source.core_char_file
+            target_file = target.core_char_file
 
-            # Files to copy
-            files_to_copy = [
-                'core_char_*.dat',
-                'core_user_*.dat',
-                'prefs.ini',
-                'overview.yaml',
-                'shortcuts.yaml',
-                'wnd_*.dat',  # Window layouts
-                'chat_*.txt',  # Chat settings
-            ]
+            if not source_file.exists():
+                self.logger.error(f"Source file not found: {source_file}")
+                return False
 
-            copied_count = 0
+            # Read source content and write to target
+            # This copies all settings (overview, keybinds, window layouts)
+            shutil.copy2(source_file, target_file)
+            self.logger.info(f"Copied {source_file.name} -> {target_file.name}")
 
-            for pattern in files_to_copy:
-                for source_file in source_dir.glob(pattern):
-                    target_file = target_dir / source_file.name
-
-                    try:
-                        shutil.copy2(source_file, target_file)
-                        copied_count += 1
-                    except Exception as e:
-                        self.logger.warning(f"Failed to copy {source_file.name}: {e}")
-
-            self.logger.info(f"Copied {copied_count} settings files")
-            return copied_count > 0
+            return True
 
         except Exception as e:
             self.logger.error(f"Settings copy error: {e}")
