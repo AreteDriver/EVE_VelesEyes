@@ -1,10 +1,10 @@
 [Desktop Entry]
-Name=EVE Veles Eyes
+Name=Argus Overview
 Comment=Multi-window preview and management tool for EVE Online
-Exec=veles-eyes
-Icon=io.github.aretedriver.VelesEyes
+Exec=argus-overview
+Icon=io.github.aretedriver.ArgusOverview
 Terminal=false
 Type=Application
 Categories=Game;Utility;
-Keywords=EVE;Online;Multibox;Preview;Veles;
+Keywords=EVE;Online;Multibox;Preview;Argus;
 StartupNotify=true

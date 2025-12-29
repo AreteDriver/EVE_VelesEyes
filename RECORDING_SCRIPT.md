@@ -1,4 +1,4 @@
-# EVE Veles Eyes - 90 Second Demo Recording Script
+# Argus Overview - 90 Second Demo Recording Script
 
 ## Recording Setup
 - **Tool:** `peek` (install: `sudo apt install peek`)
@@ -9,7 +9,7 @@
 
 ## Pre-Recording Checklist
 - [ ] 4+ EVE Online clients running and logged in
-- [ ] EVE Veles Eyes closed (will launch during recording)
+- [ ] Argus Overview closed (will launch during recording)
 - [ ] Desktop clear of clutter
 - [ ] Recording area selected in peek
 
@@ -19,7 +19,7 @@
 
 ### 0:00-0:15 | Launch & Initial View (15s)
 **Action:**
-1. Launch EVE Veles Eyes from terminal or desktop
+1. Launch Argus Overview from terminal or desktop
 2. Main window appears with empty preview grid
 3. Show clean, professional dark-themed interface
 4. Hover over toolbar buttons briefly
@@ -55,7 +55,7 @@
 
 ### 0:45-0:60 | Alert Detection Demo (15s)
 **Action:**
-1. **Camera back to EVE Veles Eyes main window**
+1. **Camera back to Argus Overview main window**
 2. Show all 4 preview frames updating at 30 FPS
 3. **In one EVE client:** Trigger damage/combat (warp to belt, shoot rock, take damage)
 4. **Watch preview frame:** Red border flashes around the window
@@ -109,7 +109,7 @@ ls -lh demo.gif
 ### Add to Repository
 ```bash
 # Copy to repo root
-cp demo.gif /home/arete/EVE_VelesEyes/demo.gif
+cp demo.gif /home/arete/Argus_Overview/demo.gif
 
 # Update README.md (add at top after title)
 # ![Demo](demo.gif)

@@ -29,7 +29,7 @@ class MainWindowV21(QMainWindow):
     def __init__(self):
         super().__init__()
         self.logger = logging.getLogger(__name__)
-        self.setWindowTitle("EVE Veles Eyes v2.2 Ultimate Edition")
+        self.setWindowTitle("Argus Overview v2.4")
         self.setMinimumSize(1000, 700)
 
         # Initialize core modules (singleton instances)
@@ -375,7 +375,7 @@ class MainWindowV21(QMainWindow):
         help_menu = menubar.addMenu("&Help")
 
         # About action
-        about_action = help_menu.addAction("&About EVE Veles Eyes")
+        about_action = help_menu.addAction("&About Argus Overview")
         about_action.triggered.connect(self._show_about_dialog)
 
         help_menu.addSeparator()
@@ -388,11 +388,11 @@ class MainWindowV21(QMainWindow):
 
         # Documentation
         docs_action = help_menu.addAction("&Documentation")
-        docs_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes#readme"))
+        docs_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/Argus_Overview#readme"))
 
         # Report Issue
         issue_action = help_menu.addAction("&Report Issue")
-        issue_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes/issues"))
+        issue_action.triggered.connect(lambda: self._open_url("https://github.com/AreteDriver/Argus_Overview/issues"))
 
     def _show_about_dialog(self):
         """Show About dialog"""
@@ -600,13 +600,13 @@ class MainWindowV21(QMainWindow):
                 self.hide()
                 self.system_tray.show_notification(
                     "Still Running",
-                    "EVE Veles Eyes is still running in the system tray"
+                    "Argus Overview is still running in the system tray"
                 )
                 event.ignore()
                 return
 
         # Actually closing the application
-        self.logger.info("Shutting down EVE Veles Eyes v2.2...")
+        self.logger.info("Shutting down Argus Overview v2.4...")
 
         # Stop systems
         if hasattr(self, 'auto_discovery'):

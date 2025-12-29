@@ -1,4 +1,4 @@
-# [Tool] EVE Veles Eyes - Professional Multi-Boxing for Linux (and Windows!)
+# [Tool] Argus Overview - Professional Multi-Boxing for Linux (and Windows!)
 
 **TL;DR**: I built EVE-O Preview for Linux, but better. Free, open source, MIT licensed.
 
@@ -6,7 +6,7 @@
 
 ## What is it?
 
-EVE Veles Eyes is a multi-window preview and management tool for EVE Online, designed specifically for Linux (with Windows support included).
+Argus Overview is a multi-window preview and management tool for EVE Online, designed specifically for Linux (with Windows support included).
 
 Think EVE-O Preview, but native Linux with even more features.
 
@@ -23,7 +23,7 @@ Think EVE-O Preview, but native Linux with even more features.
 - Settings Sync - Copy keybinds/overview from main to all alts in seconds
 - Layout Presets - Save and restore window arrangements
 
-**v2.2 New Features:**
+**v2.4 Features:**
 - System Tray - Minimize to tray, quick access menu
 - One-Click Import - Scan and add all EVE windows instantly
 - Auto-Discovery - Automatically detects new EVE clients when they launch
@@ -49,14 +49,14 @@ Think EVE-O Preview, but native Linux with even more features.
 
 ```bash
 # One-liner install
-curl -sSL https://raw.githubusercontent.com/AreteDriver/EVE_VelesEyes/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/AreteDriver/Argus_Overview/main/install.sh | bash
 
 # Or manual
-git clone https://github.com/AreteDriver/EVE_VelesEyes
-cd EVE_VelesEyes && ./install.sh
+git clone https://github.com/AreteDriver/Argus_Overview
+cd Argus_Overview && ./install.sh
 
 # Run
-~/eve-veles-eyes/run.sh
+~/argus-overview/run.sh
 ```
 
 **Requirements:**
@@ -98,7 +98,7 @@ If you run EVE through Lutris, Steam Proton, or native Wine, this tool works gre
 
 ## Comparison to EVE-O Preview
 
-| Feature | EVE-O Preview | EVE Veles Eyes |
+| Feature | EVE-O Preview | Argus Overview |
 |---------|---------------|----------------|
 | Platform | Windows only | Linux + Windows |
 | System Tray | Yes | Yes |
@@ -119,9 +119,9 @@ If you run EVE through Lutris, Steam Proton, or native Wine, this tool works gre
 
 ## Links
 
-- **GitHub**: https://github.com/AreteDriver/EVE_VelesEyes
-- **Releases**: https://github.com/AreteDriver/EVE_VelesEyes/releases
-- **Issues**: https://github.com/AreteDriver/EVE_VelesEyes/issues
+- **GitHub**: https://github.com/AreteDriver/Argus_Overview
+- **Releases**: https://github.com/AreteDriver/Argus_Overview/releases
+- **Issues**: https://github.com/AreteDriver/Argus_Overview/issues
 
 ---
 

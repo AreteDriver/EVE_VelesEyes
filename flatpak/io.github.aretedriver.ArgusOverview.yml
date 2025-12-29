@@ -1,11 +1,11 @@
-# EVE Veles Eyes Flatpak Manifest
+# Argus Overview Flatpak Manifest
 #
 # NOTE: This application requires deep X11 integration (wmctrl, xdotool)
 # which is challenging to package in Flatpak's sandbox.
 #
 # RECOMMENDED: Use native installation instead:
 #   ./install.sh
-#   ~/eve-veles-eyes/run.sh
+#   ~/argus-overview/run.sh
 #
 # This manifest is provided as a starting point for future Flatpak support.
 # Full Flatpak packaging would require:
@@ -17,11 +17,11 @@
 #
 # For now, native installation is the supported method.
 
-app-id: io.github.aretedriver.VelesEyes
+app-id: io.github.aretedriver.ArgusOverview
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
-command: veles-eyes
+command: argus-overview
 
 finish-args:
   - --share=ipc
@@ -31,23 +31,23 @@ finish-args:
   - --share=network
   - --talk-name=org.freedesktop.Notifications
   - --filesystem=home
-  - --filesystem=~/.config/eve-veles-eyes:create
-  - --filesystem=~/.local/share/eve-veles-eyes:create
+  - --filesystem=~/.config/argus-overview:create
+  - --filesystem=~/.local/share/argus-overview:create
 
 modules:
-  - name: eve-veles-eyes
+  - name: argus-overview
     buildsystem: simple
     build-commands:
       - mkdir -p /app/bin
-      - mkdir -p /app/share/eve-veles-eyes
-      - cp -r src/* /app/share/eve-veles-eyes/
-      - mkdir -p /app/share/eve-veles-eyes/assets
-      - cp -r assets/* /app/share/eve-veles-eyes/assets/ || true
+      - mkdir -p /app/share/argus-overview
+      - cp -r src/* /app/share/argus-overview/
+      - mkdir -p /app/share/argus-overview/assets
+      - cp -r assets/* /app/share/argus-overview/assets/ || true
       - |
-        cat > /app/bin/veles-eyes << 'EOF'
+        cat > /app/bin/argus-overview << 'EOF'
         #!/bin/bash
         echo "==========================================="
-        echo "EVE Veles Eyes - Flatpak Notice"
+        echo "Argus Overview - Flatpak Notice"
         echo "==========================================="
         echo ""
         echo "This application requires X11 tools (wmctrl, xdotool)"
@@ -55,17 +55,17 @@ modules:
         echo ""
         echo "Please use native installation instead:"
         echo ""
-        echo "  git clone https://github.com/AreteDriver/EVE_VelesEyes"
-        echo "  cd EVE_VelesEyes"
+        echo "  git clone https://github.com/AreteDriver/Argus_Overview"
+        echo "  cd Argus_Overview"
         echo "  ./install.sh"
-        echo "  ~/eve-veles-eyes/run.sh"
+        echo "  ~/argus-overview/run.sh"
         echo ""
         echo "==========================================="
         EOF
-      - chmod +x /app/bin/veles-eyes
-      - install -Dm644 flatpak/io.github.aretedriver.VelesEyes.desktop /app/share/applications/io.github.aretedriver.VelesEyes.desktop
-      - install -Dm644 assets/icon_256.png /app/share/icons/hicolor/256x256/apps/io.github.aretedriver.VelesEyes.png || install -Dm644 assets/icon.png /app/share/icons/hicolor/256x256/apps/io.github.aretedriver.VelesEyes.png || true
-      - install -Dm644 flatpak/io.github.aretedriver.VelesEyes.metainfo.xml /app/share/metainfo/io.github.aretedriver.VelesEyes.metainfo.xml
+      - chmod +x /app/bin/argus-overview
+      - install -Dm644 flatpak/io.github.aretedriver.ArgusOverview.desktop /app/share/applications/io.github.aretedriver.ArgusOverview.desktop
+      - install -Dm644 assets/icon_256.png /app/share/icons/hicolor/256x256/apps/io.github.aretedriver.ArgusOverview.png || install -Dm644 assets/icon.png /app/share/icons/hicolor/256x256/apps/io.github.aretedriver.ArgusOverview.png || true
+      - install -Dm644 flatpak/io.github.aretedriver.ArgusOverview.metainfo.xml /app/share/metainfo/io.github.aretedriver.ArgusOverview.metainfo.xml
     sources:
       - type: dir
         path: ..

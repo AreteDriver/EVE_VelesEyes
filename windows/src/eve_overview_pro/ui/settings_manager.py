@@ -89,7 +89,7 @@ class SettingsManager:
         },
         "advanced": {
             "log_level": "INFO",
-            "config_directory": "~/.config/eve-veles-eyes",
+            "config_directory": "~/.config/argus-overview",
             "enable_debug": False
         }
     }
@@ -99,12 +99,12 @@ class SettingsManager:
         Initialize SettingsManager
 
         Args:
-            config_dir: Configuration directory path (default: ~/.config/eve-veles-eyes)
+            config_dir: Configuration directory path (default: ~/.config/argus-overview)
         """
         self.logger = logging.getLogger(__name__)
 
         if config_dir is None:
-            config_dir = Path.home() / '.config' / 'eve-veles-eyes'
+            config_dir = Path.home() / '.config' / 'argus-overview'
 
         self.config_dir = Path(config_dir)
         self.config_dir.mkdir(parents=True, exist_ok=True)

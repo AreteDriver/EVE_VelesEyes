@@ -1,4 +1,4 @@
-# EVE Veles Eyes - What's New
+# Argus Overview - What's New
 
 ## v2.2 Ultimate Edition - Major UX Overhaul!
 
@@ -6,7 +6,7 @@ This release focuses on **usability, automation, and polish** with 14 new featur
 
 ### 1. System Tray Integration
 
-**Never lose track of Veles Eyes!**
+**Never lose track of Argus Overview!**
 
 - Orange "V" icon in system tray
 - Minimize to tray instead of closing
@@ -219,7 +219,7 @@ This release focuses on **usability, automation, and polish** with 14 new featur
 **Time Savings:**
 ```
 Manual Method: 6 HOURS for 12 characters
-EVE Veles Eyes: 30 minutes 16 seconds!
+Argus Overview: 30 minutes 16 seconds!
 ```
 
 ---
@@ -264,6 +264,6 @@ EVE Veles Eyes: 30 minutes 16 seconds!
 
 ---
 
-**Enjoy EVE Veles Eyes!**
+**Enjoy Argus Overview!**
 
 **Fly safe, capsuleers! o7**

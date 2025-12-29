@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-EVE Veles Eyes v2.2 Ultimate Edition - Windows
+Argus Overview v2.4 - Windows
 Main entry point with professional UI and all features
 
-v2.2 Features:
+v2.4 Features:
 - System tray with minimize-to-tray
 - One-click EVE window import
 - Auto-discovery of new EVE clients
@@ -38,7 +38,7 @@ class SingleInstance:
     Uses Windows mutex for reliable single-instance detection.
     """
 
-    def __init__(self, app_name: str = "EVE-Veles-Eyes"):
+    def __init__(self, app_name: str = "Argus-Overview"):
         self.app_name = app_name
         self.mutex = None
         self.mutex_name = f"Global\\{app_name}-Mutex"
@@ -75,7 +75,7 @@ class SingleInstance:
         """Fallback file-based locking if win32 not available"""
         try:
             import msvcrt
-            lock_path = Path(os.environ.get('LOCALAPPDATA', '.')) / 'eve-veles-eyes' / 'app.lock'
+            lock_path = Path(os.environ.get('LOCALAPPDATA', '.')) / 'argus-overview' / 'app.lock'
             lock_path.parent.mkdir(parents=True, exist_ok=True)
 
             self.lock_file = open(lock_path, 'w')
@@ -104,7 +104,7 @@ class SingleInstance:
 def setup_logging():
     """Setup logging configuration"""
     # Use LOCALAPPDATA on Windows
-    log_dir = Path(os.environ.get('LOCALAPPDATA', Path.home())) / 'eve-veles-eyes'
+    log_dir = Path(os.environ.get('LOCALAPPDATA', Path.home())) / 'argus-overview'
     log_dir.mkdir(parents=True, exist_ok=True)
 
     logging.basicConfig(
@@ -112,7 +112,7 @@ def setup_logging():
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.StreamHandler(),
-            logging.FileHandler(log_dir / 'eve-veles-eyes.log')
+            logging.FileHandler(log_dir / 'argus-overview.log')
         ]
     )
 
@@ -144,7 +144,7 @@ def main():
     setup_logging()
 
     logger = logging.getLogger(__name__)
-    logger.info("Starting EVE Veles Eyes v2.2 Ultimate Edition")
+    logger.info("Starting Argus Overview v2.4")
 
     # Single instance check
     single_instance = SingleInstance()
@@ -155,15 +155,15 @@ def main():
         QMessageBox.warning(
             None,
             "Already Running",
-            "EVE Veles Eyes is already running.\n\n"
+            "Argus Overview is already running.\n\n"
             "Check your system tray for the existing instance."
         )
         sys.exit(1)
 
     # Create application
     app = QApplication(sys.argv)
-    app.setApplicationName("EVE Veles Eyes")
-    app.setOrganizationName("EVE Veles Eyes")
+    app.setApplicationName("Argus Overview")
+    app.setOrganizationName("Argus Overview")
 
     # Setup theme
     setup_dark_theme(app)

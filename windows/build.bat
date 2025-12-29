@@ -1,9 +1,9 @@
 @echo off
-REM EVE Veles Eyes - Windows Build Script
+REM Argus Overview - Windows Build Script
 REM Creates standalone .exe using PyInstaller
 
 echo ==========================================
-echo EVE Veles Eyes v2.2 - Windows Build
+echo Argus Overview v2.4 - Windows Build
 echo ==========================================
 echo.
 
@@ -39,16 +39,16 @@ echo This may take a few minutes...
 pyinstaller build.spec
 echo.
 
-if exist "dist\EVE-Veles-Eyes.exe" (
+if exist "dist\Argus-Overview.exe" (
     echo ==========================================
     echo Build Complete!
     echo ==========================================
     echo.
-    echo Executable created: dist\EVE-Veles-Eyes.exe
+    echo Executable created: dist\Argus-Overview.exe
     echo Size:
-    dir dist\EVE-Veles-Eyes.exe | find "EVE-Veles-Eyes.exe"
+    dir dist\Argus-Overview.exe | find "Argus-Overview.exe"
     echo.
-    echo You can now distribute dist\EVE-Veles-Eyes.exe
+    echo You can now distribute dist\Argus-Overview.exe
     echo.
 ) else (
     echo ==========================================

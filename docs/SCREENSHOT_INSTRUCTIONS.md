@@ -4,7 +4,7 @@
 
 Capture a screenshot showing:
 
-1. **Main Window** - The EVE Veles Eyes application with multiple tabs visible
+1. **Main Window** - The Argus Overview application with multiple tabs visible
 2. **2x2 Grid Layout** - 4 EVE client previews arranged in a grid
 3. **Characters & Teams Tab** - Show a fleet composition with roles assigned
 4. **Alert Border** - One preview with a red border (simulating damage alert)

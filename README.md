@@ -179,7 +179,7 @@ curl -sSL https://raw.githubusercontent.com/AreteDriver/Argus_Overview/main/inst
 
 # Or manual installation
 git clone https://github.com/AreteDriver/Argus_Overview
-cd EVE_VelesEyes
+cd Argus_Overview
 ./install.sh
 
 # Run

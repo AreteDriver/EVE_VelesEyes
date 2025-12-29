@@ -42,7 +42,7 @@ class SystemTray(QObject):
         # Create tray icon
         self.tray_icon = QSystemTrayIcon(parent)
         self.tray_icon.setIcon(self._create_icon())
-        self.tray_icon.setToolTip("EVE Veles Eyes v2.2")
+        self.tray_icon.setToolTip("Argus Overview v2.4")
 
         # Create context menu
         self.menu = QMenu()
@@ -85,7 +85,7 @@ class SystemTray(QObject):
     def _setup_menu(self):
         """Setup the context menu"""
         # Show/Hide action
-        self.show_hide_action = QAction("Show/Hide Veles Eyes", self.menu)
+        self.show_hide_action = QAction("Show/Hide Argus Overview", self.menu)
         self.show_hide_action.triggered.connect(self.show_hide_requested.emit)
         self.menu.addAction(self.show_hide_action)
 

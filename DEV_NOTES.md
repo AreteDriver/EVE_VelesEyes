@@ -1,4 +1,4 @@
-# EVE Veles Eyes - Developer Notes
+# Argus Overview - Developer Notes
 
 ## UI Action Registry System (v2.3)
 
@@ -108,14 +108,14 @@ The audit exits with code 0 if passed, 1 if failed.
 
 | Action ID | Label | Home | Shortcut |
 |-----------|-------|------|----------|
-| `show_hide` | Show/Hide Veles Eyes | Tray | - |
+| `show_hide` | Show/Hide Argus Overview | Tray | - |
 | `toggle_thumbnails` | Toggle Thumbnails | Tray | Ctrl+Shift+T |
 | `minimize_all` | Minimize All | Tray | Ctrl+Shift+M |
 | `restore_all` | Restore All | Tray | Ctrl+Shift+R |
 | `settings` | Settings | Tray | - |
 | `reload_config` | Reload Config | Tray | - |
 | `quit` | Quit | Tray | - |
-| `about` | About EVE Veles Eyes | Help Menu | - |
+| `about` | About Argus Overview | Help Menu | - |
 | `donate` | Support Development | Help Menu | - |
 | `documentation` | Documentation | Help Menu | - |
 | `report_issue` | Report Issue | Help Menu | - |

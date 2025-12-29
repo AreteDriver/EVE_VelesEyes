@@ -1,2 +1,2 @@
-"""EVE Veles Eyes v2.2 Ultimate Edition"""
-__version__ = "2.2.0"
+"""Argus Overview v2.4"""
+__version__ = "2.4.1"

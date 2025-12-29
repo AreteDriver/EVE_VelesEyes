@@ -389,8 +389,8 @@ class MainWindowV21(QMainWindow):
         handlers = {
             "about": self._show_about_dialog,
             "donate": self._open_donation_link,
-            "documentation": lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes#readme"),
-            "report_issue": lambda: self._open_url("https://github.com/AreteDriver/EVE_VelesEyes/issues"),
+            "documentation": lambda: self._open_url("https://github.com/AreteDriver/Argus_Overview#readme"),
+            "report_issue": lambda: self._open_url("https://github.com/AreteDriver/Argus_Overview/issues"),
         }
 
         help_menu = menu_builder.build_help_menu(parent=self, handlers=handlers)
