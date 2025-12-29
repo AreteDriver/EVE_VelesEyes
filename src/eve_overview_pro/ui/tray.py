@@ -69,28 +69,35 @@ class SystemTray(QObject):
 
     def _create_icon(self) -> QIcon:
         """
-        Create the tray icon - Orange 'V' on dark blue background
+        Create the tray icon from the app icon file.
 
         Returns:
             QIcon: The tray icon
         """
-        # Create 32x32 pixmap
-        pixmap = QPixmap(32, 32)
-        pixmap.fill(QColor(26, 26, 46))  # Dark blue background
+        from pathlib import Path
 
-        # Draw orange 'V'
+        # Try to load icon from assets (4 levels up from ui/tray.py to project root)
+        icon_paths = [
+            Path(__file__).parent.parent.parent.parent / "assets" / "icon_48.png",  # src/../assets
+            Path(__file__).parent.parent.parent.parent / "assets" / "icon.png",
+            Path.home() / ".local" / "share" / "icons" / "hicolor" / "48x48" / "apps" / "eve-veles-eyes.png",
+            Path.home() / ".local" / "share" / "eve-veles-eyes" / "icon.png",
+        ]
+
+        for icon_path in icon_paths:
+            if icon_path.exists():
+                return QIcon(str(icon_path))
+
+        # Fallback: Create programmatic icon
+        pixmap = QPixmap(32, 32)
+        pixmap.fill(QColor(26, 10, 10))  # Dark red background
+
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-
-        # Set font
         font = QFont("Arial", 20, QFont.Weight.Bold)
         painter.setFont(font)
-
-        # Orange color
-        painter.setPen(QColor(255, 140, 0))  # Orange
-
-        # Draw centered 'V'
-        painter.drawText(pixmap.rect(), 0x0084, "V")  # AlignCenter
+        painter.setPen(QColor(255, 68, 68))  # Veles red
+        painter.drawText(pixmap.rect(), 0x0084, "V")
         painter.end()
 
         return QIcon(pixmap)

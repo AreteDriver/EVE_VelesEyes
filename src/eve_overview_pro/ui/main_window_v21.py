@@ -5,8 +5,10 @@ v2.2: Added system tray, auto-discovery, themes, hotkey enhancements
 """
 import logging
 
+from pathlib import Path
+
 from PySide6.QtCore import Slot
-from PySide6.QtGui import QCloseEvent
+from PySide6.QtGui import QCloseEvent, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
 from eve_overview_pro.core.alert_detector import AlertDetector
@@ -34,6 +36,9 @@ class MainWindowV21(QMainWindow):
         self.logger = logging.getLogger(__name__)
         self.setWindowTitle("EVE Veles Eyes v2.3")
         self.setMinimumSize(1000, 700)
+
+        # Set window icon
+        self._set_window_icon()
 
         # Initialize core modules (singleton instances)
         self.logger.info("Initializing core modules...")
@@ -409,6 +414,21 @@ class MainWindowV21(QMainWindow):
         from PySide6.QtCore import QUrl
         from PySide6.QtGui import QDesktopServices
         QDesktopServices.openUrl(QUrl(url))
+
+    def _set_window_icon(self):
+        """Set the application window icon"""
+        icon_paths = [
+            Path(__file__).parent.parent.parent.parent / "assets" / "icon.png",  # src/../assets
+            Path.home() / ".local" / "share" / "icons" / "hicolor" / "256x256" / "apps" / "eve-veles-eyes.png",
+            Path.home() / ".local" / "share" / "eve-veles-eyes" / "icon.png",
+        ]
+
+        for icon_path in icon_paths:
+            if icon_path.exists():
+                self.setWindowIcon(QIcon(str(icon_path)))
+                self.logger.debug(f"Window icon set from: {icon_path}")
+                return
+        self.logger.warning("No window icon found")
 
     def _apply_initial_settings(self):
         """Apply settings loaded from config"""
