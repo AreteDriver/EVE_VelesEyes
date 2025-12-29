@@ -654,3 +654,93 @@ class TestToolbarBuilderCreateButton:
         builder.create_button("import_windows", handler=handler)
 
         mock_button_instance.clicked.connect.assert_called_with(handler)
+
+    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    def test_create_button_checkable(self, mock_button):
+        """create_button sets checkable when spec has checkable=True"""
+        mock_button_instance = MagicMock()
+        mock_button.return_value = mock_button_instance
+
+        # Register a checkable action
+        registry = ActionRegistry.get_instance()
+        registry.register(ActionSpec(
+            id="test_checkable",
+            label="Test Checkable",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+            checkable=True
+        ))
+
+        builder = ToolbarBuilder()
+        builder.create_button("test_checkable")
+
+        mock_button_instance.setCheckable.assert_called_with(True)
+
+
+class TestToolbarBuilderBuildButtonsSuccessStyle:
+    """Tests for ToolbarBuilder SUCCESS_STYLE in build_toolbar_buttons"""
+
+    @pytest.fixture(autouse=True)
+    def reset_registry(self):
+        ActionRegistry.reset_instance()
+        yield
+        ActionRegistry.reset_instance()
+
+    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    def test_build_toolbar_buttons_success_style(self, mock_button):
+        """build_toolbar_buttons applies SUCCESS_STYLE for success actions"""
+        mock_button_instance = MagicMock()
+        mock_button.return_value = mock_button_instance
+
+        # Register a success action (scan_eve_folder is in SUCCESS_ACTIONS)
+        registry = ActionRegistry.get_instance()
+        registry.register(ActionSpec(
+            id="scan_eve_folder",
+            label="Scan",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.SYNC_TOOLBAR
+        ))
+
+        builder = ToolbarBuilder()
+        # Call build_toolbar_buttons which uses SUCCESS_STYLE for scan_eve_folder
+        result = builder.build_toolbar_buttons(
+            PrimaryHome.SYNC_TOOLBAR,
+            {"scan_eve_folder": MagicMock()},
+            action_order=["scan_eve_folder"]
+        )
+
+        assert "scan_eve_folder" in result
+        # Verify setStyleSheet was called
+        assert mock_button_instance.setStyleSheet.called
+
+
+class TestContextMenuBuilderZoomHandler:
+    """Tests for ContextMenuBuilder zoom_handler callback"""
+
+    @pytest.fixture(autouse=True)
+    def reset_registry(self):
+        ActionRegistry.reset_instance()
+        yield
+        ActionRegistry.reset_instance()
+
+    @patch('eve_overview_pro.ui.menu_builder.QMenu')
+    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    def test_build_window_context_menu_with_zoom_handler(self, mock_action, mock_menu):
+        """build_window_context_menu connects zoom_handler callback"""
+        mock_menu_instance = MagicMock()
+        mock_submenu = MagicMock()
+        mock_menu.return_value = mock_menu_instance
+        mock_menu_instance.addMenu.return_value = mock_submenu
+
+        mock_action_instance = MagicMock()
+        mock_action.return_value = mock_action_instance
+
+        zoom_handler = MagicMock()
+        builder = ContextMenuBuilder()
+        handlers = {"focus_window": MagicMock()}
+
+        # Pass zoom_handler as a separate parameter (not in handlers dict)
+        builder.build_window_context_menu(handlers, zoom_handler=zoom_handler, current_zoom=0.5)
+
+        # Verify triggered.connect was called for zoom actions
+        assert mock_action_instance.triggered.connect.called
