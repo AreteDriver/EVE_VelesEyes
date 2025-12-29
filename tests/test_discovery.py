@@ -551,6 +551,23 @@ class TestGetEVEWindows:
 
             assert result == []
 
+    def test_get_eve_windows_skips_empty_lines(self):
+        """Skips empty lines in wmctrl output"""
+        discovery = AutoDiscovery()
+
+        with patch('subprocess.run') as mock_run:
+            # Output with empty lines interspersed
+            mock_run.return_value = MagicMock(
+                returncode=0,
+                stdout="0x123  0 host EVE - Pilot1\n\n0x456  0 host EVE - Pilot2\n\n"
+            )
+
+            result = discovery._get_eve_windows()
+
+            assert len(result) == 2
+            assert result[0] == ("0x123", "EVE - Pilot1")
+            assert result[1] == ("0x456", "EVE - Pilot2")
+
 
 class TestForceScan:
     """Tests for force_scan method"""
