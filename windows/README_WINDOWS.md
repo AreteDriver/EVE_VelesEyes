@@ -1,8 +1,8 @@
-# EVE Veles Eyes v2.2 - Windows Edition
+# Argus Overview v2.4 - Windows Edition
 
 Professional multi-boxing tool for EVE Online on Windows.
 
-## ✨ Features
+## Features
 
 - **Real-time Window Preview**: 30 FPS capture of all EVE windows with async processing
 - **Character Management**: Organize characters, create teams, track accounts
@@ -16,26 +16,26 @@ Professional multi-boxing tool for EVE Online on Windows.
 - **Themes**: Dark, Light, and EVE themes
 - **Multi-Monitor Support**: Works across multiple displays
 
-## 📋 Requirements
+## Requirements
 
 - **Windows 10/11** (64-bit)
 - **Python 3.10+** (for development) or use pre-built .exe
 - **EVE Online** installed
 
-## 🚀 Quick Start (Pre-built .exe)
+## Quick Start (Pre-built .exe)
 
 ### Option 1: Download Release
 
-1. Download `EVE-Veles-Eyes-v2.2-Windows.exe` from [Releases](https://github.com/AreteDriver/EVE_VelesEyes/releases)
-2. Run the executable
+1. Download `Argus-Overview-v2.4-Windows.zip` from [Releases](https://github.com/AreteDriver/Argus_Overview/releases)
+2. Extract and run the executable
 3. That's it! No installation needed.
 
 ### Option 2: Build from Source
 
 ```cmd
 # Clone repository
-git clone https://github.com/AreteDriver/EVE_VelesEyes.git
-cd EVE_VelesEyes/windows
+git clone https://github.com/AreteDriver/Argus_Overview.git
+cd Argus_Overview/windows
 
 # Create virtual environment
 python -m venv venv
@@ -48,7 +48,7 @@ pip install -r requirements.txt
 python src/main.py
 ```
 
-## 🔨 Building .exe
+## Building .exe
 
 To create your own standalone executable:
 
@@ -59,10 +59,10 @@ pip install pyinstaller
 # Build .exe
 pyinstaller build.spec
 
-# Executable will be in dist/EVE-Veles-Eyes.exe
+# Executable will be in dist/Argus-Overview.exe
 ```
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### 1. Main Tab - Window Preview
 - Click **"Add Window"** to add EVE client windows
@@ -97,7 +97,7 @@ pyinstaller build.spec
 - **Appearance**: Theme, font size, colors
 - **Advanced**: Logging, export/import settings
 
-## ⌨️ Default Hotkeys
+## Default Hotkeys
 
 - `Ctrl+Alt+1-9`: Activate window 1-9
 - `Ctrl+Alt+M`: Minimize all windows
@@ -110,28 +110,28 @@ pyinstaller build.spec
 
 *All hotkeys are customizable in Settings > Hotkeys*
 
-## 📁 Configuration
+## Configuration
 
 Settings are stored in:
 ```
-%LOCALAPPDATA%\eve-veles-eyes\
+%LOCALAPPDATA%\argus-overview\
 ├── settings.json          # Application settings
 ├── characters.json        # Character database
 ├── teams.json            # Team definitions
 └── layout_presets.json   # Saved layouts
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Windows Defender Warning
 If Windows Defender blocks the .exe, you may need to add an exception:
 1. Open Windows Security
 2. Virus & threat protection > Manage settings
-3. Add exclusion > Add folder > Select EVE-Veles-Eyes folder
+3. Add exclusion > Add folder > Select Argus-Overview folder
 
 ### No Windows Detected
 - Make sure EVE Online clients are running
-- Run EVE-Veles-Eyes as Administrator if needed
+- Run Argus Overview as Administrator if needed
 - Check that windows are not minimized
 
 ### Hotkeys Not Working
@@ -145,7 +145,7 @@ If Windows Defender blocks the .exe, you may need to add an exception:
 - Reduce number of preview windows
 - Close unused EVE clients
 
-## 🔧 Development
+## Development
 
 ### Project Structure
 ```
@@ -173,7 +173,7 @@ windows/
 - **SetWindowPos**: Window positioning
 - **EnumWindows**: Window enumeration
 
-## 🤝 Contributing
+## Contributing
 
 Contributions welcome! Please:
 1. Fork the repository
@@ -181,42 +181,42 @@ Contributions welcome! Please:
 3. Test on Windows 10 and 11
 4. Submit pull request
 
-## ☕ Support Development
+## Support Development
 
-If you find EVE Veles Eyes useful, consider supporting development:
+If you find Argus Overview useful, consider supporting development:
 
-**[Buy Me a Coffee ☕](https://buymeacoffee.com/aretedriver)**
+**[Buy Me a Coffee](https://buymeacoffee.com/aretedriver)**
 
 Your support helps keep this project maintained and improving!
 
-## 📜 License
+## License
 
 MIT License - See LICENSE file for details
 
-## 🔗 Links
+## Links
 
-- **GitHub**: https://github.com/AreteDriver/EVE_VelesEyes
+- **GitHub**: https://github.com/AreteDriver/Argus_Overview
 - **Linux Version**: See main README.md in root directory
-- **Issues**: https://github.com/AreteDriver/EVE_VelesEyes/issues
+- **Issues**: https://github.com/AreteDriver/Argus_Overview/issues
 - **Donate**: https://buymeacoffee.com/aretedriver
 
-## 📝 Version History
+## Version History
 
-### v2.1 (2025)
-- ✅ Complete Windows implementation
-- ✅ All 5 tabs fully functional
-- ✅ Win32 API integration
-- ✅ Global hotkeys support
-- ✅ Multi-monitor support
-- ✅ Standalone .exe builds
+### v2.4 (2025)
+- Complete Windows implementation
+- All 5 tabs fully functional
+- Win32 API integration
+- Global hotkeys support
+- Multi-monitor support
+- Standalone .exe builds
 
-## 🙏 Credits
+## Credits
 
 - **EVE Online** by CCP Games
 - Built with **PySide6** (Qt for Python)
 - Uses **pywin32** for Windows API access
-- Developed with ❤️ for the EVE community
+- Developed for the EVE community
 
 ---
 
-**Made with ❤️ by AreteDriver** | [Support on Buy Me a Coffee](https://buymeacoffee.com/aretedriver)
+**Made by AreteDriver** | [Support on Buy Me a Coffee](https://buymeacoffee.com/aretedriver)

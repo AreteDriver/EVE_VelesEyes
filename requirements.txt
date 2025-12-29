@@ -1,4 +1,4 @@
-# EVE Veles Eyes v2.2 - Pinned versions for reproducible builds
+# Argus Overview v2.4 - Pinned versions for reproducible builds
 PySide6==6.10.1
 python-xlib==0.33
 Pillow==11.3.0
