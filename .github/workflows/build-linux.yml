@@ -14,26 +14,27 @@ permissions:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y xdotool wmctrl imagemagick
+        sudo apt-get install -y xdotool wmctrl imagemagick x11-apps fuse libfuse2
 
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install pyinstaller
 
     - name: Get version
       id: version
@@ -44,31 +45,107 @@ jobs:
           echo "version=dev-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
         fi
 
-    - name: Create package
+    - name: Build with PyInstaller
       run: |
-        mkdir -p eve-veles-eyes-linux
-        cp -r src eve-veles-eyes-linux/
-        cp requirements.txt eve-veles-eyes-linux/
-        cp install.sh eve-veles-eyes-linux/
-        cp uninstall.sh eve-veles-eyes-linux/
-        cp README.md eve-veles-eyes-linux/
-        cp QUICKSTART.md eve-veles-eyes-linux/
-        cp WHATS_NEW.md eve-veles-eyes-linux/
-        cp LICENSE eve-veles-eyes-linux/
-        cp -r assets eve-veles-eyes-linux/ || mkdir eve-veles-eyes-linux/assets
-        tar -czf EVE-Veles-Eyes-${{ steps.version.outputs.version }}-Linux.tar.gz eve-veles-eyes-linux
+        pyinstaller --name="Argus-Overview" \
+          --onedir \
+          --windowed \
+          --add-data="assets:assets" \
+          --hidden-import=PySide6.QtCore \
+          --hidden-import=PySide6.QtGui \
+          --hidden-import=PySide6.QtWidgets \
+          --hidden-import=PIL \
+          --hidden-import=PIL.Image \
+          --hidden-import=pynput \
+          --hidden-import=pynput.keyboard \
+          --hidden-import=watchdog \
+          --hidden-import=watchdog.observers \
+          --hidden-import=watchdog.events \
+          --collect-all=PySide6 \
+          src/main.py
 
-    - name: Upload artifact
+    - name: Download AppImage tools
+      run: |
+        wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod +x appimagetool-x86_64.AppImage
+
+    - name: Create AppDir structure
+      run: |
+        mkdir -p AppDir/usr/bin
+        mkdir -p AppDir/usr/share/applications
+        mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+
+        # Copy built application
+        cp -r dist/Argus-Overview/* AppDir/usr/bin/
+
+        # Copy icon
+        cp assets/icon.png AppDir/usr/share/icons/hicolor/256x256/apps/argus-overview.png
+        cp assets/icon.png AppDir/argus-overview.png
+
+        # Create desktop file
+        cat > AppDir/argus-overview.desktop << 'EOF'
+        [Desktop Entry]
+        Type=Application
+        Name=Argus Overview
+        Comment=Professional Multi-Boxing Tool for EVE Online
+        Exec=Argus-Overview
+        Icon=argus-overview
+        Categories=Utility;Game;
+        Keywords=eve;online;multibox;preview;
+        Terminal=false
+        EOF
+
+        cp AppDir/argus-overview.desktop AppDir/usr/share/applications/
+
+        # Create AppRun
+        cat > AppDir/AppRun << 'EOF'
+        #!/bin/bash
+        SELF=$(readlink -f "$0")
+        HERE=${SELF%/*}
+        export PATH="${HERE}/usr/bin:${PATH}"
+        export LD_LIBRARY_PATH="${HERE}/usr/bin:${LD_LIBRARY_PATH}"
+        exec "${HERE}/usr/bin/Argus-Overview" "$@"
+        EOF
+        chmod +x AppDir/AppRun
+
+    - name: Build AppImage
+      run: |
+        ARCH=x86_64 ./appimagetool-x86_64.AppImage AppDir Argus-Overview-${{ steps.version.outputs.version }}-x86_64.AppImage
+
+    - name: Create tarball (alternative)
+      run: |
+        mkdir -p argus-overview-linux
+        cp -r src argus-overview-linux/
+        cp -r assets argus-overview-linux/
+        cp requirements.txt argus-overview-linux/
+        cp install.sh argus-overview-linux/
+        cp uninstall.sh argus-overview-linux/
+        cp README.md argus-overview-linux/
+        cp QUICKSTART.md argus-overview-linux/
+        cp WHATS_NEW.md argus-overview-linux/
+        cp LICENSE argus-overview-linux/
+        tar -czf Argus-Overview-${{ steps.version.outputs.version }}-Linux.tar.gz argus-overview-linux
+
+    - name: Upload AppImage artifact
       uses: actions/upload-artifact@v4
       with:
-        name: EVE-Veles-Eyes-Linux
-        path: EVE-Veles-Eyes-*.tar.gz
+        name: Argus-Overview-AppImage
+        path: Argus-Overview-*.AppImage
+        retention-days: 30
+
+    - name: Upload tarball artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Argus-Overview-Linux-tarball
+        path: Argus-Overview-*-Linux.tar.gz
         retention-days: 30
 
     - name: Upload to release
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v2
       with:
-        files: EVE-Veles-Eyes-*.tar.gz
+        files: |
+          Argus-Overview-*.AppImage
+          Argus-Overview-*-Linux.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -18,10 +18,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -30,7 +30,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pyinstaller
+        pip install pyinstaller pywin32
 
     - name: Build executable
       working-directory: ./windows
@@ -50,19 +50,19 @@ jobs:
     - name: Create artifact
       run: |
         cd windows/dist
-        7z a EVE-Veles-Eyes-${{ steps.version.outputs.version }}-Windows.zip EVE-Veles-Eyes.exe
+        7z a Argus-Overview-${{ steps.version.outputs.version }}-Windows.zip Argus-Overview.exe
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: EVE-Veles-Eyes-Windows
-        path: windows/dist/EVE-Veles-Eyes-*.zip
+        name: Argus-Overview-Windows
+        path: windows/dist/Argus-Overview-*.zip
         retention-days: 30
 
     - name: Upload to release
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v2
       with:
-        files: windows/dist/EVE-Veles-Eyes-*.zip
+        files: windows/dist/Argus-Overview-*.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

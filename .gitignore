@@ -30,3 +30,12 @@ env/
 build/
 dist/
 *.egg-info/
+*.AppImage
+appimagetool-*.AppImage
+AppDir/
+build_venv/
+*.spec.bak
+
+# Coverage
+.coverage
+htmlcov/
