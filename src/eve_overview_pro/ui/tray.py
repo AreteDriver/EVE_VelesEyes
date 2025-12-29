@@ -55,7 +55,7 @@ class SystemTray(QObject):
         # Create tray icon
         self.tray_icon = QSystemTrayIcon(parent)
         self.tray_icon.setIcon(self._create_icon())
-        self.tray_icon.setToolTip("EVE Veles Eyes v2.3")
+        self.tray_icon.setToolTip("Argus Overview v2.3")
 
         # Create context menu from registry
         self.menu = QMenu()
@@ -80,8 +80,8 @@ class SystemTray(QObject):
         icon_paths = [
             Path(__file__).parent.parent.parent.parent / "assets" / "icon_48.png",  # src/../assets
             Path(__file__).parent.parent.parent.parent / "assets" / "icon.png",
-            Path.home() / ".local" / "share" / "icons" / "hicolor" / "48x48" / "apps" / "eve-veles-eyes.png",
-            Path.home() / ".local" / "share" / "eve-veles-eyes" / "icon.png",
+            Path.home() / ".local" / "share" / "icons" / "hicolor" / "48x48" / "apps" / "argus-overview.png",
+            Path.home() / ".local" / "share" / "argus-overview" / "icon.png",
         ]
 
         for icon_path in icon_paths:
@@ -107,7 +107,7 @@ class SystemTray(QObject):
         Setup the context menu using ActionRegistry.
 
         Menu structure:
-        - Show/Hide Veles Eyes
+        - Show/Hide Argus Overview
         - Toggle Thumbnails
         - [separator]
         - Minimize All

@@ -1,4 +1,4 @@
-# EVE Veles Eyes v2.3 ActionRegistry Edition
+# Argus Overview v2.3 ActionRegistry Edition
 
 **The Complete Professional Multi-Boxing Solution for EVE Online**
 
@@ -42,7 +42,7 @@
 
 ## ☕ Support Development
 
-If you find EVE Veles Eyes useful, consider supporting development:
+If you find Argus Overview useful, consider supporting development:
 
 - **In-Game**: Send ISK donations to **AreteDriver** in EVE Online
 - **Buy Me a Coffee**: [buymeacoffee.com/aretedriver](https://buymeacoffee.com/aretedriver)
@@ -183,7 +183,7 @@ cd EVE_VelesEyes
 ./install.sh
 
 # Run
-~/eve-veles-eyes/run.sh
+~/argus-overview/run.sh
 ```
 
 ### First-Time Setup
@@ -332,12 +332,12 @@ MIT License - See LICENSE file
 
 - Check documentation
 - Review troubleshooting section
-- Check logs: `~/.config/eve-veles-eyes/eve-veles-eyes.log`
+- Check logs: `~/.config/argus-overview/argus-overview.log`
 - Report issues with full details
 
 ---
 
 **Fly safe, capsuleers! o7**
 
-*EVE Veles Eyes v2.3 ActionRegistry Edition*
+*Argus Overview v2.3 ActionRegistry Edition*
 *The Complete Professional Solution for Linux Multi-Boxing*

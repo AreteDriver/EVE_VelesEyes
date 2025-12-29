@@ -1,5 +1,5 @@
 """
-UI modules for EVE Veles Eyes
+UI modules for Argus Overview
 
 v2.3: Added ActionRegistry for UI action management
 """

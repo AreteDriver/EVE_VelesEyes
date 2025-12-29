@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-EVE Veles Eyes v2.3 - ActionRegistry Edition
+Argus Overview v2.3 - ActionRegistry Edition
 Main entry point with professional UI and all features
 
 v2.3 Features:
@@ -46,10 +46,10 @@ class SingleInstance:
     Uses a lock file with fcntl for reliable locking on Linux.
     """
 
-    def __init__(self, app_name: str = "eve-veles-eyes"):
+    def __init__(self, app_name: str = "argus-overview"):
         self.app_name = app_name
         self.lock_file = None
-        self.lock_path = Path.home() / '.config' / 'eve-veles-eyes' / f'{app_name}.lock'
+        self.lock_path = Path.home() / '.config' / 'argus-overview' / f'{app_name}.lock'
 
         # Ensure directory exists
         self.lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -92,7 +92,7 @@ class SingleInstance:
 
 def setup_logging():
     """Setup logging configuration"""
-    log_dir = Path.home() / '.config' / 'eve-veles-eyes'
+    log_dir = Path.home() / '.config' / 'argus-overview'
     log_dir.mkdir(parents=True, exist_ok=True)
 
     logging.basicConfig(
@@ -100,7 +100,7 @@ def setup_logging():
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.StreamHandler(),
-            logging.FileHandler(log_dir / 'eve-veles-eyes.log')
+            logging.FileHandler(log_dir / 'argus-overview.log')
         ]
     )
 
@@ -132,7 +132,7 @@ def main():
     setup_logging()
 
     logger = logging.getLogger(__name__)
-    logger.info("Starting EVE Veles Eyes v2.3")
+    logger.info("Starting Argus Overview v2.3")
 
     # Single instance check
     single_instance = SingleInstance()
@@ -143,15 +143,16 @@ def main():
         QMessageBox.warning(
             None,
             "Already Running",
-            "EVE Veles Eyes is already running.\n\n"
+            "Argus Overview is already running.\n\n"
             "Check your system tray for the existing instance."
         )
         sys.exit(1)
 
     # Create application
     app = QApplication(sys.argv)
-    app.setApplicationName("EVE Veles Eyes")
-    app.setOrganizationName("EVE Veles Eyes")
+    app.setApplicationName("Argus Overview")
+    app.setOrganizationName("Argus Overview")
+    app.setDesktopFileName("argus-overview")  # Matches .desktop file name
 
     # Setup theme
     setup_dark_theme(app)

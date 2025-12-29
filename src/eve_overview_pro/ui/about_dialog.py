@@ -13,7 +13,7 @@ class AboutDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("About EVE Veles Eyes")
+        self.setWindowTitle("About Argus Overview")
         self.setMinimumWidth(500)
         self.setMinimumHeight(400)
         self._setup_ui()
@@ -23,7 +23,7 @@ class AboutDialog(QDialog):
         layout.setSpacing(15)
 
         # Title
-        title = QLabel("EVE Veles Eyes")
+        title = QLabel("Argus Overview")
         title_font = QFont()
         title_font.setPointSize(20)
         title_font.setBold(True)
@@ -84,7 +84,7 @@ class AboutDialog(QDialog):
         layout.addWidget(donation_label)
 
         donation_text = QLabel(
-            "If you find EVE Veles Eyes useful,\n"
+            "If you find Argus Overview useful,\n"
             "consider supporting its development:"
         )
         donation_text.setAlignment(Qt.AlignmentFlag.AlignCenter)

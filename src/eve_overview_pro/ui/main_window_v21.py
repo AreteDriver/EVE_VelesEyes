@@ -34,7 +34,7 @@ class MainWindowV21(QMainWindow):
     def __init__(self):
         super().__init__()
         self.logger = logging.getLogger(__name__)
-        self.setWindowTitle("EVE Veles Eyes v2.3")
+        self.setWindowTitle("Argus Overview v2.3")
         self.setMinimumSize(1000, 700)
 
         # Set window icon
@@ -419,8 +419,8 @@ class MainWindowV21(QMainWindow):
         """Set the application window icon"""
         icon_paths = [
             Path(__file__).parent.parent.parent.parent / "assets" / "icon.png",  # src/../assets
-            Path.home() / ".local" / "share" / "icons" / "hicolor" / "256x256" / "apps" / "eve-veles-eyes.png",
-            Path.home() / ".local" / "share" / "eve-veles-eyes" / "icon.png",
+            Path.home() / ".local" / "share" / "icons" / "hicolor" / "256x256" / "apps" / "argus-overview.png",
+            Path.home() / ".local" / "share" / "argus-overview" / "icon.png",
         ]
 
         for icon_path in icon_paths:
@@ -631,13 +631,13 @@ class MainWindowV21(QMainWindow):
                 self.hide()
                 self.system_tray.show_notification(
                     "Still Running",
-                    "EVE Veles Eyes is still running in the system tray"
+                    "Argus Overview is still running in the system tray"
                 )
                 event.ignore()
                 return
 
         # Actually closing the application
-        self.logger.info("Shutting down EVE Veles Eyes v2.3...")
+        self.logger.info("Shutting down Argus Overview v2.3...")
 
         # Stop systems
         if hasattr(self, 'auto_discovery'):

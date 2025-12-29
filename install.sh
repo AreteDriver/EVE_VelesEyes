@@ -1,10 +1,10 @@
 #!/bin/bash
-# EVE Veles Eyes v2.3 ActionRegistry Edition - Installation Script
+# Argus Overview v2.3 ActionRegistry Edition - Installation Script
 
 set -e
 
 echo "================================================================"
-echo "EVE Veles Eyes v2.3 ActionRegistry Edition"
+echo "Argus Overview v2.3 ActionRegistry Edition"
 echo "Installation Script"
 echo "================================================================"
 echo ""
@@ -67,7 +67,7 @@ if [ ${#MISSING_DEPS[@]} -gt 0 ]; then
 fi
 
 # Create installation directory
-INSTALL_DIR="$HOME/eve-veles-eyes"
+INSTALL_DIR="$HOME/argus-overview"
 echo ""
 echo "Creating installation directory: $INSTALL_DIR"
 
@@ -116,46 +116,71 @@ cat > "$INSTALL_DIR/run.sh" << 'RUNNER'
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 source venv/bin/activate
-python src/main.py "$@"
+PYTHONPATH=src python src/main.py "$@"
 RUNNER
 
 chmod +x "$INSTALL_DIR/run.sh"
 echo "✓ Launcher script created"
 
-# Copy and set up icon
-echo "Setting up application icon..."
-mkdir -p ~/.local/share/eve-veles-eyes/
+# Install icons to hicolor theme
+echo "Installing application icons..."
+mkdir -p ~/.local/share/argus-overview/
+mkdir -p ~/.local/share/icons/hicolor/32x32/apps
+mkdir -p ~/.local/share/icons/hicolor/48x48/apps
+mkdir -p ~/.local/share/icons/hicolor/64x64/apps
+mkdir -p ~/.local/share/icons/hicolor/128x128/apps
+mkdir -p ~/.local/share/icons/hicolor/256x256/apps
+mkdir -p ~/.local/share/icons/hicolor/512x512/apps
+
 if [ -f "$INSTALL_DIR/assets/icon.png" ]; then
-    cp "$INSTALL_DIR/assets/icon.png" ~/.local/share/eve-veles-eyes/icon.png
-    ICON_PATH="$HOME/.local/share/eve-veles-eyes/icon.png"
+    cp "$INSTALL_DIR/assets/icon.png" ~/.local/share/argus-overview/icon.png
+
+    # Install sized icons if available
+    for size in 32 48 64 128 256 512; do
+        if [ -f "$INSTALL_DIR/assets/icon_${size}.png" ]; then
+            cp "$INSTALL_DIR/assets/icon_${size}.png" ~/.local/share/icons/hicolor/${size}x${size}/apps/argus-overview.png
+        fi
+    done
+
+    # Also copy main icon to 512x512
+    cp "$INSTALL_DIR/assets/icon.png" ~/.local/share/icons/hicolor/512x512/apps/argus-overview.png
+
+    ICON_NAME="argus-overview"
 else
-    ICON_PATH="utilities-system-monitor"
+    ICON_NAME="utilities-system-monitor"
 fi
-echo "✓ Icon set up"
+echo "✓ Icons installed"
+
+# Update icon cache
+if command -v gtk-update-icon-cache &> /dev/null; then
+    gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor/ 2>/dev/null || true
+fi
 
 # Create desktop entry
 echo "Creating desktop entry..."
 mkdir -p ~/.local/share/applications
 
-cat > ~/.local/share/applications/eve-veles-eyes.desktop << DESKTOP
+cat > ~/.local/share/applications/argus-overview.desktop << DESKTOP
 [Desktop Entry]
 Version=2.3
 Type=Application
-Name=EVE Veles Eyes
-Comment=Multi-window preview and management tool for EVE Online
+Name=Argus Overview
+Comment=Professional Multi-Boxing Tool for EVE Online v2.3
 Exec=$INSTALL_DIR/run.sh
-Icon=$ICON_PATH
+Icon=$ICON_NAME
 Terminal=false
 Categories=Utility;Game;
-Keywords=eve;online;multibox;preview;veles;
+Keywords=eve;online;multibox;preview;argus;overview;
+StartupNotify=true
+StartupWMClass=Argus Overview
 DESKTOP
 
 echo "✓ Desktop entry created"
 
 # Create config directory
 echo "Creating configuration directory..."
-mkdir -p ~/.config/eve-veles-eyes/profiles
-mkdir -p ~/.config/eve-veles-eyes/layouts
+mkdir -p ~/.config/argus-overview/profiles
+mkdir -p ~/.config/argus-overview/layouts
 echo "✓ Configuration directory created"
 
 # Update desktop database
@@ -168,17 +193,17 @@ echo "================================================================"
 echo "Installation Complete!"
 echo "================================================================"
 echo ""
-echo "EVE Veles Eyes v2.3 has been installed to:"
+echo "Argus Overview v2.3 has been installed to:"
 echo "  $INSTALL_DIR"
 echo ""
-echo "To run EVE Veles Eyes:"
+echo "To run Argus Overview:"
 echo "  $INSTALL_DIR/run.sh"
 echo ""
 echo "Or find it in your applications menu!"
 echo ""
 echo "Quick Start:"
 echo "  1. Launch EVE clients"
-echo "  2. Run EVE Veles Eyes"
+echo "  2. Run Argus Overview"
 echo "  3. Go to Characters & Teams tab"
 echo "  4. Add your characters and create teams"
 echo "  5. Use Layouts tab to save window arrangements"

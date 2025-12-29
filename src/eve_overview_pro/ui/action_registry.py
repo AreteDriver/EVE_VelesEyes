@@ -138,7 +138,7 @@ class ActionRegistry:
         # Tray Menu Actions
         self.register(ActionSpec(
             id="show_hide",
-            label="Show/Hide Veles Eyes",
+            label="Show/Hide Argus Overview",
             scope=ActionScope.GLOBAL,
             primary_home=PrimaryHome.TRAY_MENU,
             tooltip="Toggle main window visibility",
@@ -185,7 +185,7 @@ class ActionRegistry:
         # App Menu / Help Menu Actions
         self.register(ActionSpec(
             id="about",
-            label="About EVE Veles Eyes",
+            label="About Argus Overview",
             scope=ActionScope.GLOBAL,
             primary_home=PrimaryHome.HELP_MENU,
             tooltip="Show about dialog",
