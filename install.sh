@@ -1,10 +1,10 @@
 #!/bin/bash
-# Argus Overview v2.3 ActionRegistry Edition - Installation Script
+# Argus Overview v2.4 ActionRegistry Edition - Installation Script
 
 set -e
 
 echo "================================================================"
-echo "Argus Overview v2.3 ActionRegistry Edition"
+echo "Argus Overview v2.4 ActionRegistry Edition"
 echo "Installation Script"
 echo "================================================================"
 echo ""
@@ -162,10 +162,10 @@ mkdir -p ~/.local/share/applications
 
 cat > ~/.local/share/applications/argus-overview.desktop << DESKTOP
 [Desktop Entry]
-Version=2.3
+Version=2.4
 Type=Application
 Name=Argus Overview
-Comment=Professional Multi-Boxing Tool for EVE Online v2.3
+Comment=Professional Multi-Boxing Tool for EVE Online v2.4
 Exec=$INSTALL_DIR/run.sh
 Icon=$ICON_NAME
 Terminal=false
@@ -193,7 +193,7 @@ echo "================================================================"
 echo "Installation Complete!"
 echo "================================================================"
 echo ""
-echo "Argus Overview v2.3 has been installed to:"
+echo "Argus Overview v2.4 has been installed to:"
 echo "  $INSTALL_DIR"
 echo ""
 echo "To run Argus Overview:"

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Argus Overview v2.3 - ActionRegistry Edition
+Argus Overview v2.4 - ActionRegistry Edition
 Main entry point with professional UI and all features
 
-v2.3 Features:
+v2.4 Features:
 - ActionRegistry: Single source of truth for all UI actions
 - Centralized menu/toolbar building from registry
 - Tab renames: Overview, Roster, Automation, Sync
@@ -132,7 +132,7 @@ def main():
     setup_logging()
 
     logger = logging.getLogger(__name__)
-    logger.info("Starting Argus Overview v2.3")
+    logger.info("Starting Argus Overview v2.4")
 
     # Single instance check
     single_instance = SingleInstance()

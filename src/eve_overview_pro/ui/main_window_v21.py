@@ -34,7 +34,7 @@ class MainWindowV21(QMainWindow):
     def __init__(self):
         super().__init__()
         self.logger = logging.getLogger(__name__)
-        self.setWindowTitle("Argus Overview v2.3")
+        self.setWindowTitle("Argus Overview v2.4")
         self.setMinimumSize(1000, 700)
 
         # Set window icon
@@ -114,7 +114,7 @@ class MainWindowV21(QMainWindow):
         self.logger.info("Main window v2.2 initialized successfully")
 
     def _create_system_tray(self):
-        """Create system tray icon (v2.3 - uses ActionRegistry)"""
+        """Create system tray icon (v2.4 - uses ActionRegistry)"""
         self.system_tray = SystemTray(self)
 
         # Connect tray signals (all actions sourced from ActionRegistry)
@@ -379,7 +379,7 @@ class MainWindowV21(QMainWindow):
                         )
 
     def _create_menu_bar(self):
-        """Create menu bar with Help menu (v2.3 - uses ActionRegistry)"""
+        """Create menu bar with Help menu (v2.4 - uses ActionRegistry)"""
         menubar = self.menuBar()
 
         # Build Help menu using MenuBuilder (actions from ActionRegistry)
@@ -637,7 +637,7 @@ class MainWindowV21(QMainWindow):
                 return
 
         # Actually closing the application
-        self.logger.info("Shutting down Argus Overview v2.3...")
+        self.logger.info("Shutting down Argus Overview v2.4...")
 
         # Stop systems
         if hasattr(self, 'auto_discovery'):

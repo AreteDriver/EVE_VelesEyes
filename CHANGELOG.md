@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-12-28
+
+### Added
+- **New Triglavian Icon** - Hexagonal geometric design with red color scheme
+- **Layouts Tab Integration** - Full layouts tab now integrated into main window
+- **Unit Test Suite** - 68 tests for ActionRegistry and MenuBuilder modules
+- **Window Icon Support** - App icon now displays in window titlebar and system tray
+
+### Changed
+- **Rebrand to Argus Overview** - Complete rebrand from "EVE Veles Eyes"
+  - New app name, window title, desktop entry
+  - Config directory: `~/.config/argus-overview/`
+  - Log file: `argus-overview.log`
+- **GitHub Repository** - Renamed to `AreteDriver/Argus_Overview`
+
+### Fixed
+- **xdotool Timeout Errors** - Fixed layout arrangement failures with Wine/Proton windows
+  - EVE windows now resize correctly without 2-second timeouts
+  - Automatic fallback for non-sync mode with brief delay
+- **Icon Loading** - Fixed icon path resolution (4 levels up from ui/ to project root)
+- **Desktop Entry** - Fixed StartupWMClass to match actual window class
+
+### Technical
+- pytest configuration added to pyproject.toml
+- All GitHub URLs updated to new repository name
+- Install/uninstall scripts updated with new branding
+
 ## [2.3.0] - 2025-12-28
 
 ### Added
@@ -93,7 +120,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simple hotkey support
 - Single window capture
 
-[Unreleased]: https://github.com/AreteDriver/Argus_Overview/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/AreteDriver/Argus_Overview/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/AreteDriver/Argus_Overview/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/AreteDriver/Argus_Overview/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/AreteDriver/Argus_Overview/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/AreteDriver/Argus_Overview/compare/v2.0.0...v2.1.0

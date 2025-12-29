@@ -1,7 +1,7 @@
 """
 System Tray - Provides system tray icon with quick actions menu
 v2.2 Feature: Minimize to tray, quick profile switching, toggle visibility
-v2.3: Refactored to use ActionRegistry for menu construction
+v2.4: Refactored to use ActionRegistry for menu construction
 """
 import logging
 from typing import List, Optional
@@ -55,7 +55,7 @@ class SystemTray(QObject):
         # Create tray icon
         self.tray_icon = QSystemTrayIcon(parent)
         self.tray_icon.setIcon(self._create_icon())
-        self.tray_icon.setToolTip("Argus Overview v2.3")
+        self.tray_icon.setToolTip("Argus Overview v2.4")
 
         # Create context menu from registry
         self.menu = QMenu()

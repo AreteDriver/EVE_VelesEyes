@@ -1,10 +1,10 @@
 #!/bin/bash
-# Argus Overview v2.3 - Uninstallation Script
+# Argus Overview v2.4 - Uninstallation Script
 
 set -e
 
 echo "=========================================="
-echo "Argus Overview v2.3 - Uninstallation"
+echo "Argus Overview v2.4 - Uninstallation"
 echo "=========================================="
 echo ""
 
@@ -95,7 +95,7 @@ echo "=========================================="
 echo "Uninstallation Complete!"
 echo "=========================================="
 echo ""
-echo "Argus Overview v2.3 has been uninstalled."
+echo "Argus Overview v2.4 has been uninstalled."
 echo ""
 echo "Note: Virtual environment (venv) and source code remain."
 echo "To completely remove, delete the project directory."

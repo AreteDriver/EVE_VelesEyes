@@ -1,2 +1,2 @@
-"""Argus Overview v2.3 - ActionRegistry Edition"""
-__version__ = "2.3.0"
+"""Argus Overview v2.4 - ActionRegistry Edition"""
+__version__ = "2.4.0"

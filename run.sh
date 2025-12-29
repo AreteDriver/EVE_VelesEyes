@@ -1,5 +1,5 @@
 #!/bin/bash
-# Argus Overview v2.3 Launcher
+# Argus Overview v2.4 Launcher
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
