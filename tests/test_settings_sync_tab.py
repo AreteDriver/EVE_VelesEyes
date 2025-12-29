@@ -298,3 +298,56 @@ class TestSettingsSyncTab:
             tab.sync_btn.setEnabled.assert_called_with(True)
             tab.preview_btn.setEnabled.assert_called_with(True)
             mock_msgbox.information.assert_called_once()
+
+    @patch('eve_overview_pro.ui.settings_sync_tab.QWidget.__init__')
+    @patch('eve_overview_pro.ui.settings_sync_tab.QFileDialog')
+    @patch('eve_overview_pro.ui.settings_sync_tab.QMessageBox')
+    def test_add_custom_path_adds_to_settings_sync(self, mock_msgbox, mock_dialog, mock_widget):
+        """Test _add_custom_path adds path to settings_sync"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from PySide6.QtWidgets import QMessageBox
+
+        mock_settings_sync = MagicMock()
+        mock_char_manager = MagicMock()
+
+        # Simulate user selecting a directory
+        mock_dialog.getExistingDirectory.return_value = "/home/user/EVE/settings"
+
+        # Simulate user clicking "No" to rescan prompt
+        mock_msgbox.StandardButton = QMessageBox.StandardButton
+        mock_msgbox.question.return_value = QMessageBox.StandardButton.No
+
+        with patch.object(SettingsSyncTab, '_setup_ui'):
+            tab = SettingsSyncTab(mock_settings_sync, mock_char_manager)
+            tab.log_text = MagicMock()
+
+            tab._add_custom_path()
+
+            # Verify path was added
+            mock_settings_sync.add_custom_path.assert_called_once()
+            # Verify dialog was shown
+            mock_msgbox.question.assert_called_once()
+
+    @patch('eve_overview_pro.ui.settings_sync_tab.QWidget.__init__')
+    @patch('eve_overview_pro.ui.settings_sync_tab.QFileDialog')
+    def test_add_custom_path_cancelled(self, mock_dialog, mock_widget):
+        """Test _add_custom_path handles cancelled dialog"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+
+        mock_settings_sync = MagicMock()
+        mock_char_manager = MagicMock()
+
+        # Simulate user cancelling the dialog
+        mock_dialog.getExistingDirectory.return_value = ""
+
+        with patch.object(SettingsSyncTab, '_setup_ui'):
+            tab = SettingsSyncTab(mock_settings_sync, mock_char_manager)
+
+            tab._add_custom_path()
+
+            # Verify nothing was added
+            mock_settings_sync.add_custom_path.assert_not_called()

@@ -637,13 +637,23 @@ class SettingsSyncTab(QWidget):
         )
 
         if path:
-            self._log(f"Custom path: {path}")
-            # TODO: Add custom path to settings_sync
-            QMessageBox.information(
+            path_obj = Path(path)
+            self._log(f"Adding custom path: {path}")
+
+            # Add to settings_sync
+            self.settings_sync.add_custom_path(path_obj)
+
+            # Ask if user wants to rescan
+            reply = QMessageBox.question(
                 self,
-                "Feature Coming Soon",
-                "Custom path support will be added in a future update."
+                "Custom Path Added",
+                f"Added: {path}\n\nWould you like to scan for characters now?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.Yes
             )
+
+            if reply == QMessageBox.StandardButton.Yes:
+                self._scan_settings()
 
     def _log(self, message: str):
         """Add message to log"""
