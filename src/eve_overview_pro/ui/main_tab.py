@@ -446,14 +446,34 @@ class GridApplier:
             return False
 
     def _move_window(self, window_id: str, x: int, y: int, w: int, h: int):
-        subprocess.run(
-            ['xdotool', 'windowmove', '--sync', window_id, str(x), str(y)],
-            capture_output=True, timeout=2
-        )
-        subprocess.run(
-            ['xdotool', 'windowsize', '--sync', window_id, str(w), str(h)],
-            capture_output=True, timeout=2
-        )
+        """Move and resize a window, with fallback for Wine/Proton windows"""
+        import time
+
+        # Try with --sync first, fallback to no-sync for Wine/Proton windows
+        try:
+            subprocess.run(
+                ['xdotool', 'windowmove', '--sync', window_id, str(x), str(y)],
+                capture_output=True, timeout=2
+            )
+        except subprocess.TimeoutExpired:
+            # Wine windows don't respond to sync, retry without it
+            subprocess.run(
+                ['xdotool', 'windowmove', window_id, str(x), str(y)],
+                capture_output=True, timeout=2
+            )
+            time.sleep(0.1)  # Brief pause for window to settle
+
+        try:
+            subprocess.run(
+                ['xdotool', 'windowsize', '--sync', window_id, str(w), str(h)],
+                capture_output=True, timeout=2
+            )
+        except subprocess.TimeoutExpired:
+            subprocess.run(
+                ['xdotool', 'windowsize', window_id, str(w), str(h)],
+                capture_output=True, timeout=2
+            )
+            time.sleep(0.1)
 
 
 def pil_to_qimage(pil_image: Image.Image) -> QImage:
