@@ -66,6 +66,10 @@ target-version = ["py38", "py39", "py310", "py311", "py312"]
 profile = "black"
 line_length = 100
 
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
