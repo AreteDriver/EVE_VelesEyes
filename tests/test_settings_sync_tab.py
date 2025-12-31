@@ -171,6 +171,13 @@ class TestSettingsSyncTab:
             tab.target_list = MagicMock()
             tab.target_list.count.return_value = 2
             tab.target_list.item.side_effect = [mock_item1, mock_item2]
+            tab.target_list.selectedItems.return_value = [mock_item1, mock_item2]
+
+            # Mock source_combo and buttons (needed by _update_button_states)
+            tab.source_combo = MagicMock()
+            tab.source_combo.currentData.return_value = None
+            tab.preview_btn = MagicMock()
+            tab.sync_btn = MagicMock()
 
             tab._select_all_targets()
 
@@ -190,6 +197,13 @@ class TestSettingsSyncTab:
         with patch.object(SettingsSyncTab, '_setup_ui'):
             tab = SettingsSyncTab(mock_settings_sync, mock_char_manager)
             tab.target_list = MagicMock()
+            tab.target_list.selectedItems.return_value = []
+
+            # Mock source_combo and buttons (needed by _update_button_states)
+            tab.source_combo = MagicMock()
+            tab.source_combo.currentData.return_value = None
+            tab.preview_btn = MagicMock()
+            tab.sync_btn = MagicMock()
 
             tab._clear_targets()
 

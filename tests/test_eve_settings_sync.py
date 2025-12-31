@@ -562,9 +562,8 @@ class TestSettingsBackupCopy:
             settings_dir = base / "settings_Default"
             settings_dir.mkdir()
 
-            # Create some files
+            # Create the character's .dat file
             (settings_dir / "core_char_123.dat").write_text("data")
-            (settings_dir / "prefs.ini").write_text("prefs")
 
             char_settings = EVECharacterSettings(
                 character_name="BackupTest",
@@ -576,12 +575,11 @@ class TestSettingsBackupCopy:
 
             sync._backup_settings(char_settings)
 
-            # Check backup was created
-            backups = list(base.glob("backup_BackupTest_*"))
+            # Check backup was created (file backup, not directory)
+            # Format: core_char_123_backup_YYYYMMDD_HHMMSS.dat
+            backups = list(settings_dir.glob("core_char_123_backup_*.dat"))
             assert len(backups) == 1
-            backup_dir = backups[0]
-            assert (backup_dir / "core_char_123.dat").exists()
-            assert (backup_dir / "prefs.ini").exists()
+            assert backups[0].read_text() == "data"
 
     def test_copy_settings(self):
         """Test copying settings between characters"""
@@ -596,10 +594,8 @@ class TestSettingsBackupCopy:
             source_dir = base / "source"
             source_dir.mkdir()
             (source_dir / "core_char_111.dat").write_text("source data")
-            (source_dir / "prefs.ini").write_text("source prefs")
-            (source_dir / "overview.yaml").write_text("overview: data")
 
-            # Target settings
+            # Target settings directory
             target_dir = base / "target"
             target_dir.mkdir()
 
@@ -622,9 +618,9 @@ class TestSettingsBackupCopy:
             result = sync._copy_settings(source, target)
 
             assert result is True
-            # Check files were copied
-            assert (target_dir / "core_char_111.dat").exists()
-            assert (target_dir / "prefs.ini").exists()
+            # Check source .dat content was copied to target .dat file
+            assert (target_dir / "core_char_222.dat").exists()
+            assert (target_dir / "core_char_222.dat").read_text() == "source data"
 
     def test_copy_settings_empty_source(self):
         """Test copying from empty source directory"""
@@ -706,9 +702,13 @@ class TestSyncIntegration:
             results = sync.sync_settings("SourcePilot", ["TargetPilot"], backup=True)
 
             assert results["TargetPilot"] is True
-            # Backup should exist
-            backups = list(base.glob("backup_TargetPilot_*"))
+            # Backup should exist (file backup in target's settings dir)
+            backups = list(target_dir.glob("core_char_222_backup_*.dat"))
             assert len(backups) == 1
+            # Verify backup contains original content
+            assert backups[0].read_text() == "old target"
+            # Verify target now has source content
+            assert (target_dir / "core_char_222.dat").read_text() == "source"
 
     def test_sync_multiple_targets(self):
         """Test syncing to multiple targets"""
