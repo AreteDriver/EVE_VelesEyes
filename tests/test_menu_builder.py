@@ -24,6 +24,7 @@ from eve_overview_pro.ui.menu_builder import (
     MenuBuilder,
     ToolbarBuilder,
     build_toolbar_actions,
+    format_tooltip_with_shortcut,
 )
 
 
@@ -745,3 +746,68 @@ class TestContextMenuBuilderZoomHandler:
 
         # Verify triggered.connect was called for zoom actions
         assert mock_action_instance.triggered.connect.called
+
+
+class TestFormatTooltipWithShortcut:
+    """Tests for format_tooltip_with_shortcut helper function."""
+
+    def test_tooltip_with_shortcut(self):
+        """Test tooltip and shortcut are combined."""
+        spec = ActionSpec(
+            id="test",
+            label="Test",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.APP_MENU,
+            tooltip="Do something",
+            shortcut="Ctrl+S",
+        )
+        result = format_tooltip_with_shortcut(spec)
+        assert result == "Do something (Ctrl+S)"
+
+    def test_tooltip_without_shortcut(self):
+        """Test tooltip without shortcut returns tooltip only."""
+        spec = ActionSpec(
+            id="test",
+            label="Test",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.APP_MENU,
+            tooltip="Do something",
+        )
+        result = format_tooltip_with_shortcut(spec)
+        assert result == "Do something"
+
+    def test_shortcut_without_tooltip(self):
+        """Test shortcut without tooltip shows shortcut in parens."""
+        spec = ActionSpec(
+            id="test",
+            label="Test",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.APP_MENU,
+            shortcut="Ctrl+S",
+        )
+        result = format_tooltip_with_shortcut(spec)
+        assert result == "(Ctrl+S)"
+
+    def test_no_tooltip_no_shortcut(self):
+        """Test empty tooltip and no shortcut returns empty string."""
+        spec = ActionSpec(
+            id="test",
+            label="Test",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.APP_MENU,
+        )
+        result = format_tooltip_with_shortcut(spec)
+        assert result == ""
+
+    def test_empty_tooltip_with_shortcut(self):
+        """Test empty tooltip with shortcut shows shortcut."""
+        spec = ActionSpec(
+            id="test",
+            label="Test",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.APP_MENU,
+            tooltip="",
+            shortcut="F5",
+        )
+        result = format_tooltip_with_shortcut(spec)
+        assert result == "(F5)"

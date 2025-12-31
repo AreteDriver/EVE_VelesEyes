@@ -18,6 +18,23 @@ from eve_overview_pro.ui.action_registry import (
 )
 
 
+def format_tooltip_with_shortcut(spec: ActionSpec) -> str:
+    """Format tooltip text, appending keyboard shortcut if available.
+
+    Args:
+        spec: ActionSpec with tooltip and optional shortcut
+
+    Returns:
+        Formatted tooltip string, e.g., "Save settings (Ctrl+S)"
+    """
+    tooltip = spec.tooltip or ""
+    if spec.shortcut:
+        if tooltip:
+            return f"{tooltip} ({spec.shortcut})"
+        return f"({spec.shortcut})"
+    return tooltip
+
+
 class MenuBuilder:
     """
     Builds Qt menus from the Action Registry.
@@ -190,12 +207,11 @@ class MenuBuilder:
         """
         action = QAction(spec.label, parent)
 
-        if spec.tooltip:
-            action.setToolTip(spec.tooltip)
-
-        if spec.shortcut:
-            # Note: shortcut display only, actual hotkey via HotkeyManager
-            action.setStatusTip(f"{spec.tooltip} ({spec.shortcut})")
+        # Set tooltip with shortcut hint
+        tooltip = format_tooltip_with_shortcut(spec)
+        if tooltip:
+            action.setToolTip(tooltip)
+            action.setStatusTip(tooltip)
 
         if spec.checkable:
             action.setCheckable(True)
@@ -340,8 +356,9 @@ class ContextMenuBuilder:
                 spec = self.registry.get(item)
                 if spec:
                     action = QAction(spec.label, menu)
-                    if spec.tooltip:
-                        action.setToolTip(spec.tooltip)
+                    tooltip = format_tooltip_with_shortcut(spec)
+                    if tooltip:
+                        action.setToolTip(tooltip)
                     handler = handlers.get(item)
                     if handler:
                         action.triggered.connect(handler)
@@ -427,8 +444,10 @@ class ToolbarBuilder:
         for spec in ordered_actions:
             btn = QPushButton(spec.label, parent)
 
-            if spec.tooltip:
-                btn.setToolTip(spec.tooltip)
+            # Set tooltip with shortcut hint
+            tooltip = format_tooltip_with_shortcut(spec)
+            if tooltip:
+                btn.setToolTip(tooltip)
 
             if spec.checkable:
                 btn.setCheckable(True)
@@ -476,8 +495,10 @@ class ToolbarBuilder:
 
         btn = QPushButton(spec.label, parent)
 
-        if spec.tooltip:
-            btn.setToolTip(spec.tooltip)
+        # Set tooltip with shortcut hint
+        tooltip = format_tooltip_with_shortcut(spec)
+        if tooltip:
+            btn.setToolTip(tooltip)
 
         if spec.checkable:
             btn.setCheckable(True)
