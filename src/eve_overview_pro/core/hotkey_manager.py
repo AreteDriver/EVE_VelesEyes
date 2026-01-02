@@ -25,20 +25,46 @@ class HotkeyManager(QObject):
         # Track currently pressed modifiers
         self.pressed_modifiers: Set[str] = set()
 
+    def _normalize_combo(self, key_combo: str) -> str:
+        """Normalize hotkey combo for pynput compatibility.
+
+        Fixes common format issues:
+        - <ctrl>+<v> -> <ctrl>+v (single letters shouldn't have brackets)
+        - <ctrl>+<R> -> <ctrl>+r (lowercase letters)
+        """
+        parts = key_combo.split('+')
+        normalized = []
+        modifiers = {'ctrl', 'alt', 'shift', 'cmd', 'super', 'win'}
+
+        for part in parts:
+            part = part.strip()
+            inner = part.strip('<>').lower()
+
+            # Keep modifiers and special keys in brackets
+            if inner in modifiers or len(inner) > 1:
+                normalized.append(f'<{inner}>')
+            else:
+                # Single character - no brackets, lowercase
+                normalized.append(inner)
+
+        return '+'.join(normalized)
+
     def register_hotkey(self, name: str, key_combo: str, callback: Callable) -> bool:
         """Register a global hotkey"""
         try:
-            self.hotkeys[name] = {'combo': key_combo, 'callback': callback}
+            # Normalize the combo for pynput
+            normalized_combo = self._normalize_combo(key_combo)
+            self.hotkeys[name] = {'combo': normalized_combo, 'callback': callback}
 
             # Determine if single key or combo
-            if self._is_single_key(key_combo):
-                key_char = key_combo.strip('<>').lower()
+            if self._is_single_key(normalized_combo):
+                key_char = normalized_combo.strip('<>').lower()
                 self.single_key_hotkeys[key_char] = {'name': name, 'callback': callback}
             else:
-                self.combo_hotkeys[key_combo] = {'name': name, 'callback': callback}
+                self.combo_hotkeys[normalized_combo] = {'name': name, 'callback': callback}
 
             self._restart_listeners()
-            self.logger.info(f"Registered hotkey '{name}': {key_combo}")
+            self.logger.info(f"Registered hotkey '{name}': {normalized_combo}")
             return True
         except Exception as e:
             self.logger.error(f"Failed to register hotkey: {e}")

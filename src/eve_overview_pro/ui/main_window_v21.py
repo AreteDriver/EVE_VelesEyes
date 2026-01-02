@@ -20,7 +20,6 @@ from eve_overview_pro.core.hotkey_manager import HotkeyManager
 from eve_overview_pro.core.layout_manager import LayoutManager
 from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 from eve_overview_pro.ui.action_registry import ActionRegistry
-from eve_overview_pro.ui.layouts_tab import LayoutsTab
 from eve_overview_pro.ui.menu_builder import MenuBuilder
 from eve_overview_pro.ui.settings_manager import SettingsManager
 from eve_overview_pro.ui.themes import get_theme_manager
@@ -85,9 +84,8 @@ class MainWindowV21(QMainWindow):
 
         # Create tabs
         self._create_main_tab()
-        self._create_characters_tab()
-        self._create_layouts_tab()
         self._create_hotkeys_tab()
+        self._create_characters_tab()
         self._create_settings_sync_tab()
         self._create_settings_tab()
 
@@ -200,13 +198,14 @@ class MainWindowV21(QMainWindow):
         groups = self.settings_manager.get("cycling_groups", {})
 
         # Use current cycling group, fall back to Default
+        members = []
         if self.current_cycling_group in groups:
             members = groups[self.current_cycling_group]
         elif "Default" in groups:
             members = groups["Default"]
-        else:
-            # If no groups, use all active windows
-            members = []
+
+        # If group is empty, use all active windows
+        if not members:
             if hasattr(self, 'main_tab') and hasattr(self.main_tab, 'window_manager'):
                 for frame in self.main_tab.window_manager.preview_frames.values():
                     members.append(frame.character_name)
@@ -479,19 +478,6 @@ class MainWindowV21(QMainWindow):
         # Connect signals
         self.characters_tab.team_selected.connect(self._on_team_selected)
 
-    def _create_layouts_tab(self):
-        """Create Layouts tab for window arrangement and grid patterns"""
-        self.layouts_tab = LayoutsTab(
-            self.layout_manager,
-            self.main_tab,
-            settings_manager=self.settings_manager,
-            character_manager=self.character_manager
-        )
-        self.tabs.addTab(self.layouts_tab, "Layouts")
-
-        # Connect layout applied signal
-        self.layouts_tab.layout_applied.connect(self._on_layout_applied)
-
     def _create_hotkeys_tab(self):
         """Create Automation tab (hotkeys & cycling) - formerly 'Hotkeys & Cycling'"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
@@ -593,10 +579,6 @@ class MainWindowV21(QMainWindow):
             team: Team object
         """
         self.logger.info(f"Team selected: {team.name}")
-
-        # Load associated layout if it exists
-        if hasattr(self, 'layouts_tab') and hasattr(self.layouts_tab, 'load_layout'):
-            self.layouts_tab.load_layout(team.layout_name)
 
     @Slot(str)
     def _on_layout_applied(self, preset_name: str):
