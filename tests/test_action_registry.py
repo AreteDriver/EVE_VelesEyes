@@ -360,6 +360,189 @@ class TestAuditActions:
         assert any("no_handler_test" in issue for issue in results["issues"])
 
 
+class TestBindHandlerEdgeCases:
+    """Tests for bind_handler edge cases"""
+
+    @pytest.fixture(autouse=True)
+    def reset_registry(self):
+        """Reset singleton before each test"""
+        ActionRegistry.reset_instance()
+        yield
+        ActionRegistry.reset_instance()
+
+    def test_bind_handler_to_nonexistent_action(self):
+        """bind_handler warns when action doesn't exist"""
+        registry = ActionRegistry.get_instance()
+
+        def handler():
+            pass
+
+        # This should log a warning and return without binding
+        registry.bind_handler("totally_nonexistent_action_xyz", handler)
+
+        # Handler should not be bound
+        assert registry.get_handler("totally_nonexistent_action_xyz") is None
+
+
+class TestAuditActionsEdgeCases:
+    """Tests for audit_actions edge cases"""
+
+    @pytest.fixture(autouse=True)
+    def reset_registry(self):
+        """Reset singleton before each test"""
+        ActionRegistry.reset_instance()
+        yield
+        ActionRegistry.reset_instance()
+
+    def test_audit_actions_with_none_registry(self):
+        """audit_actions uses get_instance when registry is None"""
+        from eve_overview_pro.ui.action_registry import audit_actions
+
+        # This should work and use the singleton
+        results = audit_actions(None)
+
+        assert results["total_actions"] > 0
+        assert results["passed"] is True
+
+    def test_audit_detects_duplicate_homes(self):
+        """audit_actions detects actions appearing in multiple homes"""
+        from unittest.mock import MagicMock
+
+        registry = ActionRegistry.get_instance()
+
+        # Create a mock action that appears to have multiple homes
+        # We need to hack the registry to simulate this edge case
+        mock_action_1 = ActionSpec(
+            id="dupe_home_test",
+            label="Dupe Home Test",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.TRAY_MENU,
+        )
+        mock_action_2 = ActionSpec(
+            id="dupe_home_test",
+            label="Dupe Home Test",
+            scope=ActionScope.GLOBAL,
+            primary_home=PrimaryHome.APP_MENU,  # Different home, same ID
+        )
+
+        # Manually insert both to simulate a bug (normally not possible)
+        original_all_actions = registry.all_actions
+
+        def mock_all_actions():
+            actions = original_all_actions()
+            # Add both "versions" of the same action with different homes
+            # This simulates a bug where the same action_id appears twice
+            return actions + [mock_action_1, mock_action_2]
+
+        registry.all_actions = mock_all_actions
+
+        results = audit_actions(registry)
+
+        # Should detect the duplicate
+        assert results["passed"] is False
+        assert len(results["duplicates"]) > 0
+        assert any(d["action_id"] == "dupe_home_test" for d in results["duplicates"])
+
+
+class TestPrintAuditReport:
+    """Tests for print_audit_report function"""
+
+    @pytest.fixture(autouse=True)
+    def reset_registry(self):
+        """Reset singleton before each test"""
+        ActionRegistry.reset_instance()
+        yield
+        ActionRegistry.reset_instance()
+
+    def test_print_audit_report_runs(self, capsys):
+        """print_audit_report executes without error"""
+        from eve_overview_pro.ui.action_registry import print_audit_report
+
+        result = print_audit_report()
+
+        # Should return True for passing audit
+        assert result is True
+
+        # Check output contains expected sections
+        captured = capsys.readouterr()
+        assert "UI ACTION REGISTRY AUDIT REPORT" in captured.out
+        assert "Total Actions:" in captured.out
+        assert "Actions by Primary Home" in captured.out
+        assert "Actions by Scope" in captured.out
+        assert "AUDIT RESULT: PASSED" in captured.out
+
+    def test_print_audit_report_with_none_uses_audit_actions(self, capsys):
+        """print_audit_report with None runs audit_actions internally"""
+        from eve_overview_pro.ui.action_registry import print_audit_report
+
+        result = print_audit_report(None)
+
+        assert result is True
+        captured = capsys.readouterr()
+        assert "PASSED" in captured.out
+
+    def test_print_audit_report_shows_duplicates(self, capsys):
+        """print_audit_report shows duplicates when present"""
+        from eve_overview_pro.ui.action_registry import print_audit_report
+
+        # Create results with duplicates
+        results = {
+            "total_actions": 10,
+            "by_home": {"tray_menu": ["action1"]},
+            "by_scope": {"GLOBAL": ["action1"]},
+            "duplicates": [{"action_id": "test_dup", "homes": ["home1", "home2"]}],
+            "issues": [],
+            "passed": False,
+        }
+
+        result = print_audit_report(results)
+
+        assert result is False
+        captured = capsys.readouterr()
+        assert "DUPLICATES FOUND" in captured.out
+        assert "test_dup" in captured.out
+        assert "AUDIT RESULT: FAILED" in captured.out
+
+    def test_print_audit_report_shows_issues(self, capsys):
+        """print_audit_report shows warnings for issues"""
+        from eve_overview_pro.ui.action_registry import print_audit_report
+
+        # Create results with issues
+        results = {
+            "total_actions": 5,
+            "by_home": {"tray_menu": ["action1"]},
+            "by_scope": {"GLOBAL": ["action1"]},
+            "duplicates": [],
+            "issues": ["Action 'test_action' has no handler_name defined"],
+            "passed": True,
+        }
+
+        result = print_audit_report(results)
+
+        assert result is True
+        captured = capsys.readouterr()
+        assert "Warnings" in captured.out
+        assert "no handler_name" in captured.out
+
+    def test_print_audit_report_no_duplicates_shows_ok(self, capsys):
+        """print_audit_report shows OK when no duplicates"""
+        from eve_overview_pro.ui.action_registry import print_audit_report
+
+        results = {
+            "total_actions": 5,
+            "by_home": {"tray_menu": ["action1"]},
+            "by_scope": {"GLOBAL": ["action1"]},
+            "duplicates": [],
+            "issues": [],
+            "passed": True,
+        }
+
+        print_audit_report(results)
+
+        captured = capsys.readouterr()
+        assert "[OK] No duplicate actions" in captured.out
+
+
 class TestRegistryActionCoverage:
     """Tests verifying expected actions are registered"""
 
