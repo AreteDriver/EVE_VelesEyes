@@ -501,19 +501,16 @@ class TestOnCharacterDetected:
 class TestOnTeamSelected:
     """Tests for _on_team_selected slot"""
 
-    def test_on_team_selected_loads_layout(self):
-        """Test that team selection loads associated layout"""
+    def test_on_team_selected_logs_team_name(self):
+        """Test that team selection logs the team name"""
         window = create_mock_window()
 
         mock_team = MagicMock()
         mock_team.name = "Fleet1"
-        mock_team.layout_name = "FleetLayout"
-
-        window.layouts_tab = MagicMock()
 
         window._on_team_selected(mock_team)
 
-        window.layouts_tab.load_layout.assert_called_with("FleetLayout")
+        window.logger.info.assert_called_with("Team selected: Fleet1")
 
 
 # Test layout applied
