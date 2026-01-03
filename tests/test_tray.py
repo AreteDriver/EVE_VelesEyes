@@ -127,6 +127,95 @@ class TestCreateIcon:
                 assert hasattr(SystemTray, '_create_icon')
                 assert callable(SystemTray._create_icon)
 
+    @patch('eve_overview_pro.ui.tray.ActionRegistry')
+    @patch('eve_overview_pro.ui.tray.MenuBuilder')
+    @patch('eve_overview_pro.ui.tray.QSystemTrayIcon')
+    @patch('eve_overview_pro.ui.tray.QMenu')
+    @patch('eve_overview_pro.ui.tray.QObject.__init__')
+    @patch('eve_overview_pro.ui.tray.QIcon')
+    @patch('eve_overview_pro.ui.tray.QPixmap')
+    @patch('eve_overview_pro.ui.tray.QPainter')
+    @patch('eve_overview_pro.ui.tray.QFont')
+    @patch('eve_overview_pro.ui.tray.QColor')
+    def test_create_icon_fallback_when_no_files(self, mock_qcolor, mock_qfont,
+                                                  mock_qpainter, mock_qpixmap,
+                                                  mock_qicon, mock_qobject_init,
+                                                  mock_qmenu, mock_tray_icon,
+                                                  mock_menu_builder, mock_registry):
+        """Test _create_icon creates programmatic icon when no files exist"""
+        from pathlib import Path
+
+        mock_qobject_init.return_value = None
+        mock_registry_instance = MagicMock()
+        mock_registry.get_instance.return_value = mock_registry_instance
+
+        # Setup mocks for icon creation
+        mock_pixmap_instance = MagicMock()
+        mock_qpixmap.return_value = mock_pixmap_instance
+
+        mock_painter_instance = MagicMock()
+        mock_qpainter.return_value = mock_painter_instance
+
+        mock_icon_instance = MagicMock()
+        mock_qicon.return_value = mock_icon_instance
+
+        from eve_overview_pro.ui.tray import SystemTray
+
+        # Mock Path.exists to return False for all icon paths
+        with patch.object(Path, 'exists', return_value=False):
+            with patch.object(SystemTray, '_setup_menu'):
+                tray = SystemTray()
+
+        # Verify programmatic icon was created
+        mock_qpixmap.assert_called_with(32, 32)
+        mock_pixmap_instance.fill.assert_called()
+        mock_qpainter.assert_called()
+        mock_painter_instance.end.assert_called()
+
+    @patch('eve_overview_pro.ui.tray.ActionRegistry')
+    @patch('eve_overview_pro.ui.tray.MenuBuilder')
+    @patch('eve_overview_pro.ui.tray.QSystemTrayIcon')
+    @patch('eve_overview_pro.ui.tray.QMenu')
+    @patch('eve_overview_pro.ui.tray.QObject.__init__')
+    @patch('eve_overview_pro.ui.tray.QIcon')
+    def test_create_icon_loads_from_file_when_exists(self, mock_qicon,
+                                                       mock_qobject_init,
+                                                       mock_qmenu, mock_tray_icon,
+                                                       mock_menu_builder, mock_registry):
+        """Test _create_icon loads from file when icon file exists"""
+        import tempfile
+        from pathlib import Path
+
+        mock_qobject_init.return_value = None
+        mock_registry_instance = MagicMock()
+        mock_registry.get_instance.return_value = mock_registry_instance
+
+        mock_icon_instance = MagicMock()
+        mock_qicon.return_value = mock_icon_instance
+
+        from eve_overview_pro.ui.tray import SystemTray
+
+        # Create a temporary icon file
+        with tempfile.TemporaryDirectory() as tmpdir:
+            icon_dir = Path(tmpdir) / ".local" / "share" / "argus-overview"
+            icon_dir.mkdir(parents=True)
+            icon_file = icon_dir / "icon.png"
+            icon_file.write_bytes(b"fake png data")
+
+            # Patch Path.home to return our temp directory
+            with patch('pathlib.Path.home', return_value=Path(tmpdir)):
+                with patch.object(SystemTray, '_setup_menu'):
+                    tray = SystemTray()
+
+            # QIcon should have been called with the path string
+            # when the file exists at the expected location
+            mock_qicon.assert_called()
+            # Get the call args - should be called with a string path
+            call_args = mock_qicon.call_args_list
+            # At least one call should have a string argument (the path)
+            path_calls = [c for c in call_args if c[0] and isinstance(c[0][0], str)]
+            assert len(path_calls) > 0
+
 
 class TestShowHide:
     """Tests for show/hide methods"""
