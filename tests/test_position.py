@@ -405,6 +405,105 @@ class TestCalculateGridPositions:
         assert result["w2"].x == expected_x2
 
 
+class TestCascadeFallback:
+    """Tests for cascade fallback positioning"""
+
+    @pytest.fixture
+    def manager(self):
+        """Create a fresh manager"""
+        m = PositionManager()
+        m.snap_to_grid = False  # Disable for predictable tests
+        return m
+
+    def test_cascade_when_no_space_right_or_below(self, manager):
+        """Falls back to cascade when no space right or below"""
+        # Mock a very small screen
+        with patch.object(PositionManager, '_get_primary_screen') as mock_screen:
+            mock_screen.return_value = QRect(0, 0, 400, 400)
+
+            # Register a position that takes up most of the screen
+            first_pos = ThumbnailPosition(20, 20, 280, 200)
+            manager.register_position("win1", first_pos)
+
+            # Get next position - should cascade
+            pos = manager.get_next_position("win2")
+
+            # Cascade offset = len(positions) * 30 = 1 * 30 = 30
+            expected_x = first_pos.x + 30
+            expected_y = first_pos.y + 30
+            assert pos.x == expected_x
+            assert pos.y == expected_y
+
+    def test_cascade_offset_increases_with_windows(self, manager):
+        """Cascade offset increases with more windows"""
+        with patch.object(PositionManager, '_get_primary_screen') as mock_screen:
+            mock_screen.return_value = QRect(0, 0, 400, 400)
+
+            # Register multiple positions
+            first_pos = ThumbnailPosition(20, 20, 280, 200)
+            manager.register_position("win1", first_pos)
+            manager.register_position("win2", ThumbnailPosition(50, 50, 280, 200))
+            manager.register_position("win3", ThumbnailPosition(80, 80, 280, 200))
+
+            pos = manager.get_next_position("win4")
+
+            # Cascade offset = len(positions) * 30 = 3 * 30 = 90
+            expected_x = first_pos.x + 90
+            expected_y = first_pos.y + 90
+            assert pos.x == expected_x
+            assert pos.y == expected_y
+
+
+class TestGetPrimaryScreen:
+    """Tests for _get_primary_screen method"""
+
+    def test_with_qapplication_instance(self):
+        """Returns screen geometry when QApplication exists"""
+        from unittest.mock import MagicMock
+
+        manager = PositionManager()
+
+        # Mock QApplication.instance() to return a mock app with screen
+        mock_screen = MagicMock()
+        mock_screen.availableGeometry.return_value = QRect(0, 0, 2560, 1440)
+
+        mock_app = MagicMock()
+        mock_app.primaryScreen.return_value = mock_screen
+
+        with patch('eve_overview_pro.core.position.QApplication.instance',
+                   return_value=mock_app):
+            result = manager._get_primary_screen()
+
+            assert result == QRect(0, 0, 2560, 1440)
+
+    def test_with_qapplication_no_screen(self):
+        """Falls back when QApplication has no primary screen"""
+        from unittest.mock import MagicMock
+
+        manager = PositionManager()
+
+        mock_app = MagicMock()
+        mock_app.primaryScreen.return_value = None
+
+        with patch('eve_overview_pro.core.position.QApplication.instance',
+                   return_value=mock_app):
+            result = manager._get_primary_screen()
+
+            # Should return fallback 1920x1080
+            assert result == QRect(0, 0, 1920, 1080)
+
+    def test_without_qapplication_instance(self):
+        """Falls back when no QApplication instance"""
+        manager = PositionManager()
+
+        with patch('eve_overview_pro.core.position.QApplication.instance',
+                   return_value=None):
+            result = manager._get_primary_screen()
+
+            # Should return fallback 1920x1080
+            assert result == QRect(0, 0, 1920, 1080)
+
+
 class TestApplyLayoutPreset:
     """Tests for applying layout presets"""
 
