@@ -158,6 +158,78 @@ class TestWindowUtils:
 
         assert result is None
 
+    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    def test_get_focused_window_invalid_output(self, mock_run):
+        """Test get_focused_window handles non-integer output."""
+        from eve_overview_pro.utils.window_utils import get_focused_window
+
+        # xdotool returns something that can't be converted to int
+        mock_run.return_value = MagicMock(returncode=0, stdout="not_a_number\n")
+
+        result = get_focused_window()
+
+        # Should return None since "not_a_number" isn't a valid window ID
+        assert result is None
+
+    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    def test_move_window_timeout_fallback(self, mock_run):
+        """Test move_window falls back when --sync times out."""
+        import subprocess
+
+        from eve_overview_pro.utils.window_utils import move_window
+
+        # First call (with --sync) times out, second (without) succeeds
+        mock_run.side_effect = [
+            subprocess.TimeoutExpired("xdotool", 2),  # windowmove --sync timeout
+            MagicMock(returncode=0),  # windowmove without --sync
+            subprocess.TimeoutExpired("xdotool", 2),  # windowsize --sync timeout
+            MagicMock(returncode=0),  # windowsize without --sync
+        ]
+
+        result = move_window("0x03800003", 100, 200, 800, 600)
+
+        assert result is True
+        assert mock_run.call_count == 4
+
+    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    def test_move_window_exception(self, mock_run):
+        """Test move_window handles unexpected exceptions."""
+        from eve_overview_pro.utils.window_utils import move_window
+
+        mock_run.side_effect = OSError("xdotool crashed")
+
+        result = move_window("0x03800003", 100, 200, 800, 600)
+
+        assert result is False
+
+    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    def test_activate_window_timeout_fallback(self, mock_run):
+        """Test activate_window falls back when --sync times out."""
+        import subprocess
+
+        from eve_overview_pro.utils.window_utils import activate_window
+
+        mock_run.side_effect = [
+            subprocess.TimeoutExpired("xdotool", 2),  # First call with --sync
+            MagicMock(returncode=0),  # Fallback without --sync
+        ]
+
+        result = activate_window("0x03800003")
+
+        assert result is True
+        assert mock_run.call_count == 2
+
+    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    def test_activate_window_exception(self, mock_run):
+        """Test activate_window handles unexpected exceptions."""
+        from eve_overview_pro.utils.window_utils import activate_window
+
+        mock_run.side_effect = OSError("xdotool crashed")
+
+        result = activate_window("0x03800003")
+
+        assert result is False
+
 
 class TestUtilsExports:
     """Test that utils module exports all expected symbols."""
