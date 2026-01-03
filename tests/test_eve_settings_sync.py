@@ -751,6 +751,388 @@ class TestSyncIntegration:
             assert results["Target3"] is True
 
 
+class TestExceptionHandling:
+    """Tests for exception handling paths"""
+
+    def test_load_logs_breaks_after_10_lines_no_listener(self):
+        """Test that log parsing breaks after 10 lines if no Listener found"""
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logs_dir = Path(tmpdir)
+
+            # Create a log file with more than 10 lines but no Listener
+            log_file = logs_dir / "20251208_053612_12345678.txt"
+            log_file.write_text("\n".join([f"Line {i}" for i in range(20)]))
+
+            sync = EVESettingsSync()
+            sync.eve_logs_paths = [logs_dir]
+            sync.character_id_to_name.clear()
+
+            sync._load_character_names_from_logs()
+
+            # Character ID should not be in the map since no Listener found
+            assert "12345678" not in sync.character_id_to_name
+
+    def test_load_logs_handles_read_exception(self):
+        """Test that log parsing handles file read exceptions"""
+        from unittest.mock import patch, mock_open
+
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logs_dir = Path(tmpdir)
+            log_file = logs_dir / "20251208_053612_87654321.txt"
+            log_file.write_text("test")
+
+            sync = EVESettingsSync()
+            sync.eve_logs_paths = [logs_dir]
+            sync.character_id_to_name.clear()
+
+            # Patch open to raise exception
+            with patch("builtins.open", side_effect=IOError("Read error")):
+                sync._load_character_names_from_logs()
+
+            # Should not crash, just skip
+            assert "87654321" not in sync.character_id_to_name
+
+    def test_get_all_known_characters_skips_files_in_base(self):
+        """Test that get_all_known_characters skips files (not dirs) in server dir"""
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            # Create a file instead of directory
+            (base / "not_a_directory.txt").touch()
+
+            # Also create a valid structure
+            server_dir = base / "tranquility"
+            settings_dir = server_dir / "settings_Default"
+            settings_dir.mkdir(parents=True)
+            (settings_dir / "core_char_11111111.dat").touch()
+
+            sync = EVESettingsSync()
+            sync.eve_paths = [base]
+            sync.custom_paths = []
+
+            characters = sync.get_all_known_characters()
+
+            # Should only find the valid character
+            assert len(characters) == 1
+            assert characters[0].character_id == "11111111"
+
+    def test_get_all_known_characters_skips_non_settings_dirs(self):
+        """Test that get_all_known_characters skips dirs not starting with 'settings'"""
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            server_dir = base / "tranquility"
+
+            # Create a non-settings directory
+            other_dir = server_dir / "cache"
+            other_dir.mkdir(parents=True)
+            (other_dir / "core_char_99999999.dat").touch()
+
+            # Also create a file instead of dir
+            (server_dir / "somefile.txt").touch()
+
+            # Create valid settings dir
+            settings_dir = server_dir / "settings_Default"
+            settings_dir.mkdir(parents=True)
+            (settings_dir / "core_char_11111111.dat").touch()
+
+            sync = EVESettingsSync()
+            sync.eve_paths = [base]
+            sync.custom_paths = []
+
+            characters = sync.get_all_known_characters()
+
+            # Should only find the character in settings_* dir
+            assert len(characters) == 1
+            assert characters[0].character_id == "11111111"
+
+    def test_get_all_known_characters_skips_invalid_char_files(self):
+        """Test that get_all_known_characters skips files with invalid names"""
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            server_dir = base / "tranquility"
+            settings_dir = server_dir / "settings_Default"
+            settings_dir.mkdir(parents=True)
+
+            # Create invalid file names
+            (settings_dir / "core_char_.dat").touch()
+            (settings_dir / "core_char_abc.dat").touch()
+
+            # Create valid file
+            (settings_dir / "core_char_11111111.dat").touch()
+
+            sync = EVESettingsSync()
+            sync.eve_paths = [base]
+            sync.custom_paths = []
+
+            characters = sync.get_all_known_characters()
+
+            # Should only find the valid character
+            assert len(characters) == 1
+            assert characters[0].character_id == "11111111"
+
+    def test_get_all_known_characters_handles_stat_error(self):
+        """Test that get_all_known_characters handles OSError on stat"""
+        from unittest.mock import patch
+
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            server_dir = base / "tranquility"
+            settings_dir = server_dir / "settings_Default"
+            settings_dir.mkdir(parents=True)
+            (settings_dir / "core_char_11111111.dat").touch()
+
+            sync = EVESettingsSync()
+            sync.eve_paths = [base]
+            sync.custom_paths = []
+
+            # Patch stat to raise OSError
+            original_stat = Path.stat
+
+            def mock_stat(self, **kwargs):
+                if "core_char_" in str(self):
+                    raise OSError("Permission denied")
+                return original_stat(self, **kwargs)
+
+            with patch.object(Path, 'stat', mock_stat):
+                characters = sync.get_all_known_characters()
+
+            # Should find character but with None last_seen
+            assert len(characters) == 1
+            assert characters[0].last_seen is None
+
+    def test_scan_for_characters_handles_iteration_error(self):
+        """Test that scan_for_characters handles errors during iteration"""
+        from unittest.mock import patch
+
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            # Create minimal structure
+            server_dir = base / "tranquility"
+            server_dir.mkdir()
+
+            sync = EVESettingsSync()
+            sync.eve_paths = [base]
+            sync.custom_paths = []
+
+            # Patch iterdir to raise exception
+            with patch.object(Path, 'iterdir', side_effect=PermissionError("Access denied")):
+                characters = sync.scan_for_characters()
+
+            # Should return empty list, not crash
+            assert characters == []
+
+    def test_scan_for_characters_skips_non_dirs(self):
+        """Test that scan_for_characters skips files and non-settings dirs"""
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            server_dir = base / "tranquility"
+            server_dir.mkdir()
+
+            # Create a file in server_dir (not a directory)
+            (server_dir / "somefile.txt").touch()
+
+            # Create a non-settings directory
+            cache_dir = server_dir / "cache"
+            cache_dir.mkdir()
+            (cache_dir / "core_char_99999999.dat").touch()
+
+            # Create a file inside server_dir that looks like a dir
+            (base / "file_not_dir.txt").touch()
+
+            # Create valid structure too
+            settings_dir = server_dir / "settings_Default"
+            settings_dir.mkdir()
+            (settings_dir / "core_char_11111111.dat").touch()
+
+            sync = EVESettingsSync()
+            sync.eve_paths = [base]
+            sync.custom_paths = []
+
+            characters = sync.scan_for_characters()
+
+            # Should only find the character in settings_Default
+            assert len(characters) == 1
+            assert characters[0].character_id == "11111111"
+
+    def test_sync_settings_logs_failure(self):
+        """Test that sync_settings logs when copy fails but doesn't raise"""
+        from unittest.mock import patch
+
+        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            source_dir = base / "source"
+            source_dir.mkdir()
+            (source_dir / "core_char_111.dat").write_text("source")
+
+            target_dir = base / "target"
+            target_dir.mkdir()
+
+            sync = EVESettingsSync()
+            sync.character_settings["Source"] = EVECharacterSettings(
+                character_name="Source",
+                character_id="111",
+                settings_dir=source_dir,
+                core_char_file=source_dir / "core_char_111.dat",
+                has_settings=True
+            )
+            sync.character_settings["Target"] = EVECharacterSettings(
+                character_name="Target",
+                character_id="222",
+                settings_dir=target_dir,
+                core_char_file=target_dir / "core_char_222.dat",
+                has_settings=True
+            )
+
+            # Make _copy_settings return False (failure)
+            with patch.object(sync, '_copy_settings', return_value=False):
+                results = sync.sync_settings("Source", ["Target"], backup=False)
+
+            # Should record failure
+            assert results["Target"] is False
+
+    def test_parse_char_file_handles_exception(self):
+        """Test that _parse_char_file handles exceptions gracefully"""
+        from unittest.mock import patch
+
+        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            settings_dir = Path(tmpdir)
+            char_file = settings_dir / "core_char_12345678.dat"
+            char_file.touch()
+
+            sync = EVESettingsSync()
+
+            # Patch glob to raise exception during user file search
+            with patch.object(Path, 'glob', side_effect=Exception("Glob error")):
+                result = sync._parse_char_file(char_file, settings_dir)
+
+            assert result is None
+
+    def test_sync_settings_handles_exception_during_sync(self):
+        """Test that sync_settings handles exceptions during sync"""
+        from unittest.mock import patch
+
+        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            source_dir = base / "source"
+            source_dir.mkdir()
+            (source_dir / "core_char_111.dat").write_text("source")
+
+            target_dir = base / "target"
+            target_dir.mkdir()
+            (target_dir / "core_char_222.dat").write_text("target")
+
+            sync = EVESettingsSync()
+            sync.character_settings["Source"] = EVECharacterSettings(
+                character_name="Source",
+                character_id="111",
+                settings_dir=source_dir,
+                core_char_file=source_dir / "core_char_111.dat",
+                has_settings=True
+            )
+            sync.character_settings["Target"] = EVECharacterSettings(
+                character_name="Target",
+                character_id="222",
+                settings_dir=target_dir,
+                core_char_file=target_dir / "core_char_222.dat",
+                has_settings=True
+            )
+
+            # Patch _copy_settings to raise exception
+            with patch.object(sync, '_copy_settings', side_effect=Exception("Copy failed")):
+                results = sync.sync_settings("Source", ["Target"], backup=False)
+
+            assert results["Target"] is False
+
+    def test_backup_settings_handles_exception(self):
+        """Test that _backup_settings raises exception on failure"""
+        import pytest
+
+        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            settings_dir = Path(tmpdir)
+            # Create the file first
+            (settings_dir / "core_char_123.dat").write_text("data")
+
+            char_settings = EVECharacterSettings(
+                character_name="Test",
+                character_id="123",
+                settings_dir=settings_dir,
+                core_char_file=settings_dir / "core_char_123.dat",
+                has_settings=True
+            )
+
+            sync = EVESettingsSync()
+
+            # Make directory read-only to cause backup failure
+            settings_dir.chmod(0o444)
+            try:
+                with pytest.raises(Exception):
+                    sync._backup_settings(char_settings)
+            finally:
+                settings_dir.chmod(0o755)
+
+    def test_copy_settings_handles_exception(self):
+        """Test that _copy_settings handles exceptions gracefully"""
+        from unittest.mock import patch
+
+        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            source_dir = base / "source"
+            source_dir.mkdir()
+            (source_dir / "core_char_111.dat").write_text("source")
+
+            target_dir = base / "target"
+            target_dir.mkdir()
+
+            source = EVECharacterSettings(
+                character_name="Source",
+                character_id="111",
+                settings_dir=source_dir,
+                core_char_file=source_dir / "core_char_111.dat",
+                has_settings=True
+            )
+
+            target = EVECharacterSettings(
+                character_name="Target",
+                character_id="222",
+                settings_dir=target_dir,
+                core_char_file=target_dir / "core_char_222.dat",
+                has_settings=True
+            )
+
+            sync = EVESettingsSync()
+
+            # Patch shutil.copy2 to raise exception
+            with patch("shutil.copy2", side_effect=PermissionError("No access")):
+                result = sync._copy_settings(source, target)
+
+            assert result is False
+
+
 # Test edge cases
 class TestEdgeCases:
     """Tests for edge cases and error handling"""
