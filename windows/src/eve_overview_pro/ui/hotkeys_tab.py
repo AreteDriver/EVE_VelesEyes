@@ -15,7 +15,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QInputDialog,
     QLabel,
-    QLineEdit,
     QListWidget,
     QListWidgetItem,
     QMessageBox,
@@ -24,6 +23,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from eve_overview_pro.ui.hotkey_edit import HotkeyEdit
 
 
 class DraggableCharacterList(QListWidget):
@@ -284,17 +285,15 @@ class HotkeysTab(QWidget):
         hotkey_layout = QFormLayout()
         hotkey_group.setLayout(hotkey_layout)
 
-        # Cycle forward hotkey
-        self.cycle_forward_edit = QLineEdit()
-        self.cycle_forward_edit.setPlaceholderText("ctrl+shift+] (brackets auto-added)")
+        # Cycle forward hotkey - uses HotkeyEdit for any key capture
+        self.cycle_forward_edit = HotkeyEdit()
         self.cycle_forward_edit.setText(
             self.settings_manager.get("hotkeys.cycle_next", "<ctrl>+<shift>+<]>")
         )
         hotkey_layout.addRow("Cycle Forward:", self.cycle_forward_edit)
 
-        # Cycle backward hotkey
-        self.cycle_backward_edit = QLineEdit()
-        self.cycle_backward_edit.setPlaceholderText("ctrl+shift+[ (brackets auto-added)")
+        # Cycle backward hotkey - uses HotkeyEdit for any key capture
+        self.cycle_backward_edit = HotkeyEdit()
         self.cycle_backward_edit.setText(
             self.settings_manager.get("hotkeys.cycle_prev", "<ctrl>+<shift>+<[>")
         )
@@ -521,14 +520,9 @@ class HotkeysTab(QWidget):
         return '+'.join(formatted_parts)
 
     def _save_hotkeys(self):
-        """Save hotkey settings with auto-formatted brackets"""
-        # Auto-format with brackets
-        forward = self._format_hotkey(self.cycle_forward_edit.text())
-        backward = self._format_hotkey(self.cycle_backward_edit.text())
-
-        # Update display with formatted version
-        self.cycle_forward_edit.setText(forward)
-        self.cycle_backward_edit.setText(backward)
+        """Save hotkey settings - HotkeyEdit already provides correct format"""
+        forward = self.cycle_forward_edit.text()
+        backward = self.cycle_backward_edit.text()
 
         self.settings_manager.set("hotkeys.cycle_next", forward, auto_save=False)
         self.settings_manager.set("hotkeys.cycle_prev", backward, auto_save=True)
