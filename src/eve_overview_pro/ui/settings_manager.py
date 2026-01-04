@@ -76,8 +76,8 @@ class SettingsManager:
             "toggle_always_on_top": "<ctrl>+<alt>+t",
             "toggle_thumbnails": "<ctrl>+<shift>+t",
             "toggle_lock": "<ctrl>+<shift>+l",
-            "cycle_next": "<ctrl>+<tab>",
-            "cycle_prev": "<ctrl>+<shift>+<tab>"
+            "cycle_next": "<ctrl>+<shift>+<]>",
+            "cycle_prev": "<ctrl>+<shift>+<[>"
         },
         "character_hotkeys": {},
         "character_labels": {},
