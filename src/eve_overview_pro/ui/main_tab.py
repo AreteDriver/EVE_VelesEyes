@@ -1080,6 +1080,7 @@ class MainTab(QWidget):
         # v2.2 State
         self._thumbnails_visible = True
         self._positions_locked = False
+        self._windows_minimized = False  # Track if windows are minimized
 
         # v2.3: Layout controls
         self.grid_applier = GridApplier()
@@ -1096,8 +1097,11 @@ class MainTab(QWidget):
 
         self._setup_ui()
 
-        # Start capture loop
-        self.window_manager.start_capture_loop()
+        # Start capture loop (unless disabled for GPU/CPU savings)
+        if not (settings_manager and settings_manager.get("performance.disable_previews", False)):
+            self.window_manager.start_capture_loop()
+        else:
+            self.logger.info("Previews disabled - capture loop not started (GPU/CPU savings)")
 
         self.logger.info("Main tab initialized")
 
@@ -1184,11 +1188,16 @@ class MainTab(QWidget):
         self.lock_btn = toolbar_builder.create_button("lock_positions", self._toggle_lock)
         toolbar_layout.addWidget(self.lock_btn)
 
-        # Add remaining buttons
-        for action_id in ["minimize_inactive", "refresh_capture"]:
-            btn = toolbar_builder.create_button(action_id, handlers.get(action_id))
-            if btn:
-                toolbar_layout.addWidget(btn)
+        # Add minimize inactive button (store reference for state indicator)
+        self.minimize_inactive_btn = toolbar_builder.create_button("minimize_inactive", self.minimize_inactive_windows)
+        if self.minimize_inactive_btn:
+            self.minimize_inactive_btn.setCheckable(True)
+            toolbar_layout.addWidget(self.minimize_inactive_btn)
+
+        # Add refresh button
+        refresh_btn = toolbar_builder.create_button("refresh_capture", self._refresh_all)
+        if refresh_btn:
+            toolbar_layout.addWidget(refresh_btn)
 
         toolbar_layout.addStretch()
 
@@ -1650,26 +1659,56 @@ class MainTab(QWidget):
             self._update_status()
 
     def minimize_inactive_windows(self):
-        """Minimize all windows except focused one"""
+        """Toggle minimize/restore all windows except focused one"""
         try:
-            # Get currently focused window
-            result = subprocess.run(['xdotool', 'getwindowfocus'], capture_output=True, text=True, timeout=1)
-            if result.returncode == 0:
-                focused_id = result.stdout.strip()
-
-                minimized_count = 0
+            if self._windows_minimized:
+                # Restore all windows
+                restored_count = 0
                 for window_id in self.window_manager.preview_frames.keys():
-                    if window_id != focused_id:
-                        if self.capture_system.minimize_window(window_id):
-                            minimized_count += 1
+                    if self.capture_system.restore_window(window_id):
+                        restored_count += 1
 
-                self.logger.info(f"Minimized {minimized_count} inactive windows")
-                self.status_label.setText(f"Minimized {minimized_count} windows (GPU savings!)")
+                self._windows_minimized = False
+                self._update_minimize_button_style()
+                self.logger.info(f"Restored {restored_count} windows")
+                self.status_label.setText(f"Restored {restored_count} windows")
             else:
-                self.logger.warning("Failed to get focused window")
+                # Minimize inactive windows
+                result = subprocess.run(['xdotool', 'getwindowfocus'], capture_output=True, text=True, timeout=1)
+                if result.returncode == 0:
+                    focused_id = result.stdout.strip()
+
+                    minimized_count = 0
+                    for window_id in self.window_manager.preview_frames.keys():
+                        if window_id != focused_id:
+                            if self.capture_system.minimize_window(window_id):
+                                minimized_count += 1
+
+                    if minimized_count > 0:
+                        self._windows_minimized = True
+                        self._update_minimize_button_style()
+
+                    self.logger.info(f"Minimized {minimized_count} inactive windows")
+                    self.status_label.setText(f"Minimized {minimized_count} windows (GPU savings!)")
+                else:
+                    self.logger.warning("Failed to get focused window")
 
         except Exception as e:
-            self.logger.error(f"Error minimizing windows: {e}")
+            self.logger.error(f"Error minimizing/restoring windows: {e}")
+
+    def _update_minimize_button_style(self):
+        """Update minimize button visual state"""
+        if hasattr(self, 'minimize_inactive_btn') and self.minimize_inactive_btn:
+            self.minimize_inactive_btn.setChecked(self._windows_minimized)
+            if self._windows_minimized:
+                self.minimize_inactive_btn.setText("Restore")
+                self.minimize_inactive_btn.setStyleSheet(
+                    "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }"
+                    "QPushButton:hover { background-color: #66BB6A; }"
+                )
+            else:
+                self.minimize_inactive_btn.setText("Minimize Inactive")
+                self.minimize_inactive_btn.setStyleSheet("")
 
     def _refresh_all(self):
         """Refresh all captures"""
@@ -1690,3 +1729,22 @@ class MainTab(QWidget):
             self.status_label.setText("No windows in preview - Click 'Add Window' to start")
         else:
             self.status_label.setText(f"Capturing {count} window(s) at {self.window_manager.refresh_rate} FPS")
+
+    def set_previews_enabled(self, enabled: bool):
+        """
+        Enable or disable window preview captures.
+        When disabled, saves GPU/CPU but window cycling still works.
+
+        Args:
+            enabled: True to enable captures, False to disable
+        """
+        if enabled:
+            if not self.window_manager.capture_timer.isActive():
+                self.window_manager.start_capture_loop()
+                self.status_label.setText("Previews enabled")
+                self.logger.info("Preview captures enabled")
+        else:
+            if self.window_manager.capture_timer.isActive():
+                self.window_manager.stop_capture_loop()
+                self.status_label.setText("Previews disabled (GPU/CPU savings)")
+                self.logger.info("Preview captures disabled - GPU/CPU savings active")

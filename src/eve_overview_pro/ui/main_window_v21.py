@@ -544,7 +544,12 @@ class MainWindowV21(QMainWindow):
                 self.logger.warning("Capture worker count change requires restart")
             elif key == "performance.default_refresh_rate":
                 # Apply to main tab if it exists
-                pass
+                if hasattr(self, 'main_tab'):
+                    self.main_tab.window_manager.set_refresh_rate(value)
+            elif key == "performance.disable_previews":
+                # Toggle preview captures on/off (GPU/CPU savings)
+                if hasattr(self, 'main_tab'):
+                    self.main_tab.set_previews_enabled(not value)
 
         elif key.startswith("alerts"):
             # Update alert detector config

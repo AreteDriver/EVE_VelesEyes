@@ -517,6 +517,8 @@ class TestWindowManager:
         mock_capture_system = MagicMock()
         mock_alert_detector = MagicMock()
         mock_settings_manager = MagicMock()
+        # Mock the settings_manager.get() to return expected value
+        mock_settings_manager.get.return_value = 5  # Default refresh rate
 
         manager = WindowManager(
             mock_char_manager,
@@ -529,7 +531,7 @@ class TestWindowManager:
         assert manager.capture_system is mock_capture_system
         assert manager.alert_detector is mock_alert_detector
         assert manager.settings_manager is mock_settings_manager
-        assert manager.refresh_rate == 30
+        assert manager.refresh_rate == 5  # Default is 5 FPS for efficiency
         assert manager.preview_frames == {}
 
     def test_set_refresh_rate(self):

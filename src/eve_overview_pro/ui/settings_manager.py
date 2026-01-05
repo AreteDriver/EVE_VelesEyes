@@ -27,6 +27,7 @@ class SettingsManager:
             "hot_reload": True
         },
         "performance": {
+            "disable_previews": False,  # Disable all window captures (saves GPU/CPU)
             "default_refresh_rate": 1,  # FPS - 1 is efficient, increase if needed
             "capture_workers": 1,  # Single worker to reduce overhead
             "enable_caching": True,

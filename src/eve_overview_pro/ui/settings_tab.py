@@ -212,6 +212,21 @@ class PerformancePanel(QWidget):
         group = QGroupBox("Performance Settings")
         form = QFormLayout()
 
+        # Disable previews (GPU/CPU saver)
+        self.disable_previews_check = QCheckBox()
+        self.disable_previews_check.setChecked(
+            self.settings_manager.get("performance.disable_previews", False)
+        )
+        self.disable_previews_check.stateChanged.connect(
+            lambda: self.setting_changed.emit("performance.disable_previews", self.disable_previews_check.isChecked())
+        )
+        self.disable_previews_check.setToolTip(
+            "Disable all window preview captures.\n"
+            "Significantly reduces GPU/CPU usage.\n"
+            "Window cycling and hotkeys still work."
+        )
+        form.addRow("Disable previews:", self.disable_previews_check)
+
         # Refresh rate
         self.refresh_rate_spin = QSpinBox()
         self.refresh_rate_spin.setRange(1, 60)
