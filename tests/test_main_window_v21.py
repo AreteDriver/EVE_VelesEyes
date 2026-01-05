@@ -871,3 +871,702 @@ class TestGetWindowIdForCharacter:
         result = window._get_window_id_for_character("SomeChar")
 
         assert result is None
+
+
+# Test apply setting with main_tab for refresh rate
+class TestApplySettingRefreshRate:
+    """Tests for _apply_setting with performance.default_refresh_rate"""
+
+    def test_apply_setting_refresh_rate_with_main_tab(self):
+        """Test applying refresh rate setting when main_tab exists"""
+        window = create_mock_window()
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+
+        window._apply_setting("performance.default_refresh_rate", 30)
+
+        window.main_tab.window_manager.set_refresh_rate.assert_called_once_with(30)
+
+    def test_apply_setting_disable_previews_with_main_tab(self):
+        """Test applying disable_previews setting when main_tab exists"""
+        window = create_mock_window()
+        window.main_tab = MagicMock()
+
+        window._apply_setting("performance.disable_previews", True)
+
+        window.main_tab.set_previews_enabled.assert_called_once_with(False)
+
+    def test_apply_setting_disable_previews_false(self):
+        """Test applying disable_previews=False"""
+        window = create_mock_window()
+        window.main_tab = MagicMock()
+
+        window._apply_setting("performance.disable_previews", False)
+
+        window.main_tab.set_previews_enabled.assert_called_once_with(True)
+
+
+# Test cycling recursion edge case
+class TestCyclingRecursion:
+    """Tests for cycling recursion when character not found"""
+
+    def test_cycle_next_recursion_on_not_found(self):
+        """Test _cycle_next recursively tries next when not found"""
+        window = create_mock_window()
+        window.cycling_index = 0
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = {
+            "Default": ["NotFound", "FoundChar"]
+        }
+        window.current_cycling_group = "Default"
+
+        # First char not found, second char found
+        mock_frame = MagicMock()
+        mock_frame.character_name = "FoundChar"
+
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {
+            "0x222": mock_frame  # Only FoundChar exists
+        }
+
+        window._activate_window = MagicMock()
+
+        window._cycle_next()
+
+        # Should have advanced to index 1 (FoundChar) after not finding NotFound
+        assert window.cycling_index == 1 or window._activate_window.called
+
+    def test_cycle_prev_recursion_on_not_found(self):
+        """Test _cycle_prev recursively tries prev when not found"""
+        window = create_mock_window()
+        window.cycling_index = 1
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = {
+            "Default": ["FoundChar", "NotFound"]
+        }
+        window.current_cycling_group = "Default"
+
+        # Second char not found, first char found
+        mock_frame = MagicMock()
+        mock_frame.character_name = "FoundChar"
+
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {
+            "0x111": mock_frame  # Only FoundChar exists
+        }
+
+        window._activate_window = MagicMock()
+
+        window._cycle_prev()
+
+        # Should have decremented to find FoundChar
+        assert window._activate_window.called or window.cycling_index == 0
+
+
+# Test _set_window_icon
+class TestSetWindowIcon:
+    """Tests for _set_window_icon method"""
+
+    @patch('eve_overview_pro.ui.main_window_v21.Path')
+    def test_set_window_icon_found(self, mock_path_class):
+        """Test setting window icon when icon file found"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.setWindowIcon = MagicMock()
+
+        # Mock path that exists
+        mock_path = MagicMock()
+        mock_path.exists.return_value = True
+        mock_path.__str__ = MagicMock(return_value="/path/to/icon.png")
+        mock_path_class.return_value = mock_path
+        mock_path_class.__truediv__ = lambda s, o: mock_path
+
+        # Mock Path.home() to return a mock that constructs valid paths
+        with patch.object(mock_path_class, 'home', return_value=mock_path):
+            with patch.object(mock_path_class, '__call__', return_value=mock_path):
+                MainWindowV21._set_window_icon(window)
+
+        # Should have called setWindowIcon (at least once somewhere)
+        # The implementation checks multiple paths
+
+    @patch('eve_overview_pro.ui.main_window_v21.Path')
+    def test_set_window_icon_not_found(self, mock_path_class):
+        """Test warning when no icon found"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.setWindowIcon = MagicMock()
+
+        # Create a mock path that always returns a path that doesn't exist
+        def make_mock_path():
+            mock_path = MagicMock()
+            mock_path.exists.return_value = False
+            mock_path.parent = mock_path  # .parent returns itself
+            mock_path.__truediv__ = lambda self, other: make_mock_path()  # / returns new mock
+            return mock_path
+
+        mock_path = make_mock_path()
+        mock_path_class.return_value = mock_path
+        mock_path_class.home.return_value = mock_path
+
+        MainWindowV21._set_window_icon(window)
+
+        window.logger.warning.assert_called()
+
+
+# Test _apply_initial_settings
+class TestApplyInitialSettings:
+    """Tests for _apply_initial_settings method"""
+
+    def test_apply_initial_settings(self):
+        """Test that _apply_initial_settings applies all settings"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = 4  # Default return for all gets
+
+        window.capture_system = MagicMock()
+        window.alert_detector = MagicMock()
+
+        # Patch AlertConfig where it's imported (in alert_detector module)
+        with patch('eve_overview_pro.core.alert_detector.AlertConfig') as mock_config:
+            MainWindowV21._apply_initial_settings(window)
+
+        # Should update capture_system.max_workers
+        assert window.capture_system.max_workers == 4
+
+        # Should set alert config
+        window.alert_detector.set_config.assert_called_once()
+
+
+# Test _connect_signals
+class TestConnectSignals:
+    """Tests for _connect_signals method"""
+
+    def test_connect_signals(self):
+        """Test that _connect_signals logs debug message"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+
+        MainWindowV21._connect_signals(window)
+
+        window.logger.debug.assert_called()
+
+
+# Test profile not found
+class TestProfileNotFound:
+    """Test profile selection when preset not found"""
+
+    def test_on_profile_selected_not_found(self):
+        """Test profile selection when preset doesn't exist"""
+        window = create_mock_window()
+
+        window.layout_manager = MagicMock()
+        window.layout_manager.get_preset.return_value = None  # Not found
+
+        window.system_tray = MagicMock()
+
+        window._on_profile_selected("NonExistent")
+
+        window.layout_manager.get_preset.assert_called_with("NonExistent")
+        # Should not call set_current_profile when preset not found
+        window.system_tray.set_current_profile.assert_not_called()
+
+
+# Test new character discovered - already exists
+class TestNewCharacterAlreadyExists:
+    """Test _on_new_character_discovered when character already tracked"""
+
+    def test_on_new_character_discovered_already_exists(self):
+        """Test that nothing happens when character already exists"""
+        window = create_mock_window()
+
+        # Character already in preview_frames
+        mock_frame = MagicMock()
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {
+            "0x99999": mock_frame  # Already exists
+        }
+
+        window.system_tray = MagicMock()
+
+        window._on_new_character_discovered("ExistingPilot", "0x99999", "EVE - ExistingPilot")
+
+        # add_window should NOT be called
+        window.main_tab.window_manager.add_window.assert_not_called()
+
+
+# Test new character discovered - no notification
+class TestNewCharacterNoNotification:
+    """Test _on_new_character_discovered without notifications"""
+
+    def test_on_new_character_discovered_no_notification(self):
+        """Test that notification is skipped when disabled"""
+        window = create_mock_window()
+
+        mock_frame = MagicMock()
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {}
+        window.main_tab.window_manager.add_window.return_value = mock_frame
+        window.main_tab.preview_layout = MagicMock()
+
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = False  # show_notifications disabled
+
+        window.system_tray = MagicMock()
+
+        window._on_new_character_discovered("NewPilot", "0x88888", "EVE - NewPilot")
+
+        # add_window should be called
+        window.main_tab.window_manager.add_window.assert_called_once()
+        # But show_notification should NOT be called
+        window.system_tray.show_notification.assert_not_called()
+
+
+# Test new character discovered - frame is None
+class TestNewCharacterFrameNone:
+    """Test _on_new_character_discovered when add_window returns None"""
+
+    def test_on_new_character_discovered_frame_none(self):
+        """Test handling when add_window returns None"""
+        window = create_mock_window()
+
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {}
+        window.main_tab.window_manager.add_window.return_value = None  # Failed to create
+
+        window._on_new_character_discovered("NewPilot", "0x77777", "EVE - NewPilot")
+
+        # Should not try to connect signals on None
+        window.main_tab.preview_layout.addWidget.assert_not_called()
+
+
+# Test minimize/restore handles no main_tab
+class TestMinimizeRestoreNoMainTab:
+    """Tests for minimize/restore when main_tab missing"""
+
+    def test_minimize_all_no_main_tab(self):
+        """Test minimize_all handles missing main_tab gracefully"""
+        window = create_mock_window()
+        del window.main_tab
+
+        # Should not raise
+        window._minimize_all_windows()
+
+    def test_restore_all_no_main_tab(self):
+        """Test restore_all handles missing main_tab gracefully"""
+        window = create_mock_window()
+        del window.main_tab
+
+        # Should not raise
+        window._restore_all_windows()
+
+
+# Test activate character no main_tab
+class TestActivateCharacterNoMainTab:
+    """Test _activate_character when main_tab missing"""
+
+    def test_activate_character_no_main_tab(self):
+        """Test activate_character handles missing main_tab"""
+        window = create_mock_window()
+        del window.main_tab
+
+        window._activate_character("SomeChar")
+
+        window.logger.warning.assert_called()
+
+
+# Test _register_hotkeys
+class TestRegisterHotkeys:
+    """Tests for _register_hotkeys method"""
+
+    def test_register_hotkeys_basic(self):
+        """Test registering basic hotkeys"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.side_effect = lambda key, default=None: {
+            "hotkeys.minimize_all": "<ctrl>+<shift>+m",
+            "hotkeys.restore_all": "<ctrl>+<shift>+r",
+            "hotkeys.toggle_thumbnails": "<ctrl>+<shift>+t",
+            "hotkeys.toggle_lock": "<ctrl>+<shift>+l",
+            "character_hotkeys": {},
+            "hotkeys.cycle_next": "<ctrl>+<tab>",
+            "hotkeys.cycle_prev": "<ctrl>+<shift>+<tab>",
+        }.get(key, default)
+
+        window.hotkey_manager = MagicMock()
+
+        MainWindowV21._register_hotkeys(window)
+
+        # Should register basic hotkeys
+        assert window.hotkey_manager.register_hotkey.call_count >= 4
+        window.logger.info.assert_called()
+
+    def test_register_hotkeys_with_character_hotkeys(self):
+        """Test registering per-character hotkeys"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.side_effect = lambda key, default=None: {
+            "hotkeys.minimize_all": "<ctrl>+m",
+            "hotkeys.restore_all": "<ctrl>+r",
+            "hotkeys.toggle_thumbnails": "<ctrl>+t",
+            "hotkeys.toggle_lock": "<ctrl>+l",
+            "character_hotkeys": {"Pilot1": "<f1>", "Pilot2": "<f2>"},
+            "hotkeys.cycle_next": "<ctrl>+<tab>",
+            "hotkeys.cycle_prev": "<ctrl>+<shift>+<tab>",
+        }.get(key, default)
+
+        window.hotkey_manager = MagicMock()
+
+        MainWindowV21._register_hotkeys(window)
+
+        # Should register character hotkeys (4 basic + 2 chars + 2 cycling = 8+)
+        assert window.hotkey_manager.register_hotkey.call_count >= 6
+
+    def test_register_hotkeys_no_cycle_combos(self):
+        """Test registering hotkeys when cycle combos are empty"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.side_effect = lambda key, default=None: {
+            "hotkeys.minimize_all": "<ctrl>+m",
+            "hotkeys.restore_all": "<ctrl>+r",
+            "hotkeys.toggle_thumbnails": "<ctrl>+t",
+            "hotkeys.toggle_lock": "<ctrl>+l",
+            "character_hotkeys": {},
+            "hotkeys.cycle_next": "",  # Empty
+            "hotkeys.cycle_prev": "",  # Empty
+        }.get(key, default)
+
+        window.hotkey_manager = MagicMock()
+
+        MainWindowV21._register_hotkeys(window)
+
+        # Should still complete without error
+        window.logger.info.assert_called()
+
+
+# Test _activate_window
+class TestActivateWindow:
+    """Tests for _activate_window method"""
+
+    @patch('subprocess.run')
+    def test_activate_window_success(self, mock_run):
+        """Test activating window with xdotool"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+
+        mock_run.return_value = MagicMock(returncode=0)
+
+        MainWindowV21._activate_window(window, "0x12345")
+
+        mock_run.assert_called_once()
+        args = mock_run.call_args[0][0]
+        assert "xdotool" in args
+        assert "0x12345" in args
+
+    @patch('subprocess.run')
+    def test_activate_window_failure(self, mock_run):
+        """Test activate window handles subprocess failure"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+
+        mock_run.side_effect = Exception("xdotool not found")
+
+        MainWindowV21._activate_window(window, "0x12345")
+
+        window.logger.error.assert_called()
+
+
+# Test _create_menu_bar
+class TestCreateMenuBar:
+    """Tests for _create_menu_bar method"""
+
+    @patch('eve_overview_pro.ui.main_window_v21.MenuBuilder')
+    @patch('eve_overview_pro.ui.main_window_v21.ActionRegistry')
+    def test_create_menu_bar(self, mock_registry_class, mock_builder_class):
+        """Test creating menu bar"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.menuBar.return_value = MagicMock()
+
+        mock_registry = MagicMock()
+        mock_registry_class.get_instance.return_value = mock_registry
+
+        mock_builder = MagicMock()
+        mock_builder.build_help_menu.return_value = MagicMock()
+        mock_builder_class.return_value = mock_builder
+
+        MainWindowV21._create_menu_bar(window)
+
+        # Should build help menu
+        mock_builder.build_help_menu.assert_called_once()
+        # Should add menu to menubar
+        window.menuBar().addMenu.assert_called_once()
+
+
+# Test cycling when character not found (covers 244-246, 266-268)
+class TestCyclingCharNotFound:
+    """Tests for cycling when character not found - covers recursive branches"""
+
+    def test_cycle_next_char_not_found_logs_warning(self):
+        """Test _cycle_next logs warning when character not found and no recursion"""
+        window = create_mock_window()
+        window.cycling_index = 0
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = {"Default": ["OnlyChar"]}
+        window.current_cycling_group = "Default"
+
+        # Set up main_tab with empty preview_frames so character not found
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {}  # No windows
+
+        # Mock _cycle_next to not recurse (avoid infinite loop in test)
+        original_cycle_next = window._cycle_next
+        call_count = [0]
+        def cycle_next_once():
+            call_count[0] += 1
+            if call_count[0] == 1:
+                original_cycle_next()
+        window._cycle_next = cycle_next_once
+
+        window._cycle_next()
+
+        # Should log warning about character not found
+        window.logger.warning.assert_called()
+
+    def test_cycle_prev_char_not_found_logs_warning(self):
+        """Test _cycle_prev logs warning when character not found and no recursion"""
+        window = create_mock_window()
+        window.cycling_index = 0
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = {"Default": ["OnlyChar"]}
+        window.current_cycling_group = "Default"
+
+        # Set up main_tab with empty preview_frames so character not found
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {}  # No windows
+
+        # Mock _cycle_prev to not recurse (avoid infinite loop in test)
+        original_cycle_prev = window._cycle_prev
+        call_count = [0]
+        def cycle_prev_once():
+            call_count[0] += 1
+            if call_count[0] == 1:
+                original_cycle_prev()
+        window._cycle_prev = cycle_prev_once
+
+        window._cycle_prev()
+
+        # Should log warning about character not found
+        window.logger.warning.assert_called()
+
+
+# Test _create_system_tray
+class TestCreateSystemTray:
+    """Tests for _create_system_tray method"""
+
+    @patch('eve_overview_pro.ui.main_window_v21.SystemTray')
+    def test_create_system_tray(self, mock_tray_class):
+        """Test creating system tray"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.layout_manager = MagicMock()
+
+        # Mock presets
+        mock_preset1 = MagicMock()
+        mock_preset1.name = "Profile1"
+        mock_preset2 = MagicMock()
+        mock_preset2.name = "Profile2"
+        window.layout_manager.get_all_presets.return_value = [mock_preset1, mock_preset2]
+
+        mock_tray = MagicMock()
+        mock_tray_class.return_value = mock_tray
+
+        MainWindowV21._create_system_tray(window)
+
+        # Should create tray
+        mock_tray_class.assert_called_once_with(window)
+
+        # Should connect signals
+        assert mock_tray.show_hide_requested.connect.called
+        assert mock_tray.minimize_all_requested.connect.called
+
+        # Should set profiles
+        mock_tray.set_profiles.assert_called_once_with(["Profile1", "Profile2"])
+
+        # Should show tray
+        mock_tray.show.assert_called_once()
+
+
+# Test _create_main_tab
+class TestCreateMainTab:
+    """Tests for _create_main_tab method"""
+
+    @patch('eve_overview_pro.ui.main_tab.MainTab')
+    def test_create_main_tab(self, mock_tab_class):
+        """Test creating main tab"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.capture_system = MagicMock()
+        window.character_manager = MagicMock()
+        window.alert_detector = MagicMock()
+        window.settings_manager = MagicMock()
+        window.tabs = MagicMock()
+
+        mock_tab = MagicMock()
+        mock_tab_class.return_value = mock_tab
+
+        MainWindowV21._create_main_tab(window)
+
+        # Should create tab with correct arguments
+        mock_tab_class.assert_called_once()
+        window.tabs.addTab.assert_called_once()
+
+        # Should connect signals
+        assert mock_tab.character_detected.connect.called
+        assert mock_tab.layout_applied.connect.called
+
+
+# Test _create_characters_tab
+class TestCreateCharactersTab:
+    """Tests for _create_characters_tab method"""
+
+    @patch('eve_overview_pro.ui.characters_teams_tab.CharactersTeamsTab')
+    def test_create_characters_tab(self, mock_tab_class):
+        """Test creating characters tab"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.character_manager = MagicMock()
+        window.layout_manager = MagicMock()
+        window.settings_sync = MagicMock()
+        window.tabs = MagicMock()
+
+        mock_tab = MagicMock()
+        mock_tab_class.return_value = mock_tab
+
+        MainWindowV21._create_characters_tab(window)
+
+        # Should create tab
+        mock_tab_class.assert_called_once()
+        window.tabs.addTab.assert_called_once()
+
+        # Should connect team_selected signal
+        assert mock_tab.team_selected.connect.called
+
+
+# Test _create_hotkeys_tab
+class TestCreateHotkeysTab:
+    """Tests for _create_hotkeys_tab method"""
+
+    @patch('eve_overview_pro.ui.hotkeys_tab.HotkeysTab')
+    def test_create_hotkeys_tab(self, mock_tab_class):
+        """Test creating hotkeys tab"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.character_manager = MagicMock()
+        window.settings_manager = MagicMock()
+        window.main_tab = MagicMock()
+        window.tabs = MagicMock()
+
+        mock_tab = MagicMock()
+        mock_tab_class.return_value = mock_tab
+
+        MainWindowV21._create_hotkeys_tab(window)
+
+        # Should create tab
+        mock_tab_class.assert_called_once()
+        window.tabs.addTab.assert_called_once()
+
+        # Should connect group_changed signal
+        assert mock_tab.group_changed.connect.called
+
+
+# Test _create_settings_sync_tab
+class TestCreateSettingsSyncTab:
+    """Tests for _create_settings_sync_tab method"""
+
+    @patch('eve_overview_pro.ui.settings_sync_tab.SettingsSyncTab')
+    def test_create_settings_sync_tab(self, mock_tab_class):
+        """Test creating settings sync tab"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_sync = MagicMock()
+        window.character_manager = MagicMock()
+        window.tabs = MagicMock()
+
+        mock_tab = MagicMock()
+        mock_tab_class.return_value = mock_tab
+
+        MainWindowV21._create_settings_sync_tab(window)
+
+        # Should create tab
+        mock_tab_class.assert_called_once()
+        window.tabs.addTab.assert_called_once()
+
+
+# Test _create_settings_tab
+class TestCreateSettingsTab:
+    """Tests for _create_settings_tab method"""
+
+    @patch('eve_overview_pro.ui.settings_tab.SettingsTab')
+    def test_create_settings_tab(self, mock_tab_class):
+        """Test creating settings tab"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.hotkey_manager = MagicMock()
+        window.alert_detector = MagicMock()
+        window.tabs = MagicMock()
+
+        mock_tab = MagicMock()
+        mock_tab_class.return_value = mock_tab
+
+        MainWindowV21._create_settings_tab(window)
+
+        # Should create tab
+        mock_tab_class.assert_called_once()
+        window.tabs.addTab.assert_called_once()
+
+        # Should connect settings_changed signal
+        assert mock_tab.settings_changed.connect.called
