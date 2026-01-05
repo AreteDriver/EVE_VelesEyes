@@ -27,11 +27,11 @@ class SettingsManager:
             "hot_reload": True
         },
         "performance": {
-            "default_refresh_rate": 30,  # FPS
-            "capture_workers": 4,
+            "default_refresh_rate": 1,  # FPS - 1 is efficient, increase if needed
+            "capture_workers": 1,  # Single worker to reduce overhead
             "enable_caching": True,
-            "cache_size_mb": 100,
-            "capture_quality": "medium"  # low, medium, high
+            "cache_size_mb": 50,
+            "capture_quality": "low"  # low, medium, high
         },
         "thumbnails": {
             "opacity_on_hover": 0.3,

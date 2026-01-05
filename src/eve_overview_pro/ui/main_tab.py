@@ -914,7 +914,11 @@ class WindowManager:
         # State
         self.preview_frames: Dict[str, WindowPreviewWidget] = {}
         self.pending_requests: Dict[str, str] = {}  # request_id -> window_id
-        self.refresh_rate = 30  # FPS
+        # Read refresh rate from settings (default 5 FPS for efficiency)
+        if settings_manager:
+            self.refresh_rate = settings_manager.get("performance.default_refresh_rate", 5)
+        else:
+            self.refresh_rate = 5  # Low default for efficiency
 
         # Timer for capture loop
         self.capture_timer = QTimer()

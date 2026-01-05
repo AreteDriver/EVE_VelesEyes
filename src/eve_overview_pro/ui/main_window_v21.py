@@ -43,10 +43,13 @@ class MainWindowV21(QMainWindow):
         self.character_manager = CharacterManager()
         self.layout_manager = LayoutManager()
         self.alert_detector = AlertDetector()
-        self.capture_system = WindowCaptureThreaded()
         self.hotkey_manager = HotkeyManager()
         self.settings_sync = EVESettingsSync()
         self.settings_manager = SettingsManager()
+
+        # Initialize capture system with settings (after settings_manager)
+        capture_workers = self.settings_manager.get("performance.capture_workers", 1)
+        self.capture_system = WindowCaptureThreaded(max_workers=capture_workers)
 
         # v2.2: Auto-discovery
         self.auto_discovery = AutoDiscovery(
