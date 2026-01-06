@@ -1595,3 +1595,255 @@ class TestLayoutsTabRefreshFromSettings:
             tab._on_group_selected.assert_called_once()
 
 
+class TestLayoutsTabSetupUI:
+    """Tests for LayoutsTab._setup_ui method"""
+
+    def test_setup_ui_creates_layout(self):
+        """Test _setup_ui creates vertical layout with sections"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+
+            mock_top = MagicMock()
+            mock_grid = MagicMock()
+            mock_bottom = MagicMock()
+            tab._create_top_section = MagicMock(return_value=mock_top)
+            tab._create_grid_section = MagicMock(return_value=mock_grid)
+            tab._create_bottom_section = MagicMock(return_value=mock_bottom)
+            tab._on_group_selected = MagicMock()
+            tab.setLayout = MagicMock()
+
+            with patch('eve_overview_pro.ui.layouts_tab.QVBoxLayout') as mock_layout_cls:
+                mock_layout = MagicMock()
+                mock_layout_cls.return_value = mock_layout
+
+                tab._setup_ui()
+
+                # Verify layout created
+                mock_layout.setContentsMargins.assert_called_once_with(10, 10, 10, 10)
+                tab.setLayout.assert_called_once_with(mock_layout)
+
+                # Verify sections added
+                assert mock_layout.addWidget.call_count == 3
+                tab._on_group_selected.assert_called_once()
+
+
+class TestLayoutsTabCreateTopSection:
+    """Tests for LayoutsTab._create_top_section method"""
+
+    def test_create_top_section_creates_group_selector(self):
+        """Test _create_top_section creates group selector widgets"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab._refresh_groups = MagicMock()
+            tab._on_group_selected = MagicMock()
+            tab._on_pattern_changed = MagicMock()
+            tab._auto_arrange = MagicMock()
+            tab._update_grid_size = MagicMock()
+
+            with patch('eve_overview_pro.ui.layouts_tab.QGroupBox') as mock_groupbox_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QHBoxLayout') as mock_hlayout_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QVBoxLayout'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QLabel'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QComboBox') as mock_combo_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QPushButton') as mock_btn_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QSpinBox') as mock_spin_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QCheckBox') as mock_checkbox_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.get_all_patterns', return_value=['2x2', '3x1']):
+
+                mock_section = MagicMock()
+                mock_groupbox_cls.return_value = mock_section
+
+                mock_hlayout = MagicMock()
+                mock_hlayout_cls.return_value = mock_hlayout
+
+                mock_combo = MagicMock()
+                mock_combo_cls.return_value = mock_combo
+
+                mock_btn = MagicMock()
+                mock_btn_cls.return_value = mock_btn
+
+                mock_spin = MagicMock()
+                mock_spin_cls.return_value = mock_spin
+
+                mock_checkbox = MagicMock()
+                mock_checkbox_cls.return_value = mock_checkbox
+
+                result = tab._create_top_section()
+
+                # Verify section created
+                mock_groupbox_cls.assert_called_with("Layout Configuration")
+                assert result == mock_section
+
+                # Verify combos created for group and pattern
+                assert mock_combo_cls.call_count >= 2
+                tab._refresh_groups.assert_called_once()
+
+    def test_create_top_section_creates_grid_size_controls(self):
+        """Test _create_top_section creates grid size spinboxes"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab._refresh_groups = MagicMock()
+            tab._on_group_selected = MagicMock()
+            tab._on_pattern_changed = MagicMock()
+            tab._auto_arrange = MagicMock()
+            tab._update_grid_size = MagicMock()
+
+            with patch('eve_overview_pro.ui.layouts_tab.QGroupBox'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QHBoxLayout'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QVBoxLayout'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QLabel'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QComboBox'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QPushButton'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QSpinBox') as mock_spin_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QCheckBox'), \
+                 patch('eve_overview_pro.ui.layouts_tab.get_all_patterns', return_value=[]):
+
+                mock_spin = MagicMock()
+                mock_spin_cls.return_value = mock_spin
+
+                tab._create_top_section()
+
+                # Verify spinboxes created (rows, cols, spacing, monitor = 4)
+                assert mock_spin_cls.call_count >= 4
+                # Verify valueChanged connected
+                mock_spin.valueChanged.connect.assert_called()
+
+
+class TestLayoutsTabCreateGridSection:
+    """Tests for LayoutsTab._create_grid_section method"""
+
+    def test_create_grid_section_creates_scroll_area(self):
+        """Test _create_grid_section creates scroll area with grid"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+
+            with patch('eve_overview_pro.ui.layouts_tab.QGroupBox') as mock_groupbox_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QVBoxLayout') as mock_vlayout_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QLabel') as mock_label_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QScrollArea') as mock_scroll_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.ArrangementGrid') as mock_grid_cls:
+
+                mock_section = MagicMock()
+                mock_groupbox_cls.return_value = mock_section
+
+                mock_layout = MagicMock()
+                mock_vlayout_cls.return_value = mock_layout
+
+                mock_scroll = MagicMock()
+                mock_scroll_cls.return_value = mock_scroll
+
+                mock_grid = MagicMock()
+                mock_grid_cls.return_value = mock_grid
+
+                result = tab._create_grid_section()
+
+                # Verify section created
+                mock_groupbox_cls.assert_called_with("Window Arrangement")
+                assert result == mock_section
+
+                # Verify scroll area setup
+                mock_scroll.setWidgetResizable.assert_called_with(True)
+                mock_scroll.setMinimumHeight.assert_called_with(300)
+                mock_scroll.setWidget.assert_called_with(mock_grid)
+
+                # Verify arrangement_grid assigned
+                assert tab.arrangement_grid == mock_grid
+
+    def test_create_grid_section_creates_instructions_label(self):
+        """Test _create_grid_section creates instructions label"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+
+            with patch('eve_overview_pro.ui.layouts_tab.QGroupBox'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QVBoxLayout'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QLabel') as mock_label_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QScrollArea'), \
+                 patch('eve_overview_pro.ui.layouts_tab.ArrangementGrid'):
+
+                mock_label = MagicMock()
+                mock_label_cls.return_value = mock_label
+
+                tab._create_grid_section()
+
+                # Verify label created with instructions
+                assert mock_label_cls.call_count >= 1
+                mock_label.setWordWrap.assert_called_with(True)
+
+
+class TestLayoutsTabCreateBottomSection:
+    """Tests for LayoutsTab._create_bottom_section method"""
+
+    def test_create_bottom_section_creates_apply_button(self):
+        """Test _create_bottom_section creates apply button"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab._apply_to_active_windows = MagicMock()
+
+            with patch('eve_overview_pro.ui.layouts_tab.QWidget') as mock_widget_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QHBoxLayout') as mock_hlayout_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QLabel') as mock_label_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QPushButton') as mock_btn_cls:
+
+                mock_widget = MagicMock()
+                mock_widget_cls.return_value = mock_widget
+
+                mock_layout = MagicMock()
+                mock_hlayout_cls.return_value = mock_layout
+
+                mock_label = MagicMock()
+                mock_label_cls.return_value = mock_label
+
+                mock_btn = MagicMock()
+                mock_btn_cls.return_value = mock_btn
+
+                result = tab._create_bottom_section()
+
+                # Verify widget created
+                assert result == mock_widget
+                mock_layout.setContentsMargins.assert_called_with(0, 0, 0, 0)
+
+                # Verify apply button created
+                mock_btn_cls.assert_called_with("Apply to Active Windows")
+                mock_btn.clicked.connect.assert_called()
+
+                # Verify info_label assigned
+                assert tab.info_label == mock_label
+
+    def test_create_bottom_section_creates_info_label(self):
+        """Test _create_bottom_section creates info label"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab._apply_to_active_windows = MagicMock()
+
+            with patch('eve_overview_pro.ui.layouts_tab.QWidget'), \
+                 patch('eve_overview_pro.ui.layouts_tab.QHBoxLayout') as mock_hlayout_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QLabel') as mock_label_cls, \
+                 patch('eve_overview_pro.ui.layouts_tab.QPushButton'):
+
+                mock_layout = MagicMock()
+                mock_hlayout_cls.return_value = mock_layout
+
+                mock_label = MagicMock()
+                mock_label_cls.return_value = mock_label
+
+                tab._create_bottom_section()
+
+                # Verify label created
+                mock_label_cls.assert_called_with("Select a group to begin")
+                mock_layout.addStretch.assert_called_once()
+
+
