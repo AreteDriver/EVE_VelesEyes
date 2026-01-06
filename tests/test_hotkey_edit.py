@@ -182,3 +182,151 @@ class TestHotkeyEditUpdateDisplay:
         # Modifiers should come before 'a'
         assert ctrl_pos < a_pos
         assert shift_pos < a_pos
+
+    def test_update_display_empty_keys(self, qapp):
+        """Test update display with no pressed keys."""
+        widget = HotkeyEdit()
+        widget._pressed_keys = set()
+        widget._update_display()
+        # Should not crash, display unchanged
+        assert widget.display.text() == "" or "Record" in widget.display.placeholderText()
+
+
+class TestHotkeyEditKeyPress:
+    """Tests for key press handling."""
+
+    def test_on_key_press_not_recording(self, qapp):
+        """Test key press when not recording is ignored."""
+        widget = HotkeyEdit()
+        widget._recording = False
+        widget._pressed_keys = set()
+
+        mock_key = MagicMock()
+        widget._on_key_press(mock_key)
+
+        # Should not add any keys
+        assert len(widget._pressed_keys) == 0
+
+    def test_on_key_press_adds_key(self, qapp):
+        """Test key press when recording adds key."""
+        widget = HotkeyEdit()
+        widget._recording = True
+        widget._pressed_keys = set()
+
+        # Mock a key with name attribute
+        mock_key = MagicMock()
+        mock_key.name = "f13"
+        del mock_key.char  # Remove char attribute
+
+        widget._on_key_press(mock_key)
+
+        assert "f13" in widget._pressed_keys
+
+    def test_on_key_release_not_recording(self, qapp):
+        """Test key release when not recording is ignored."""
+        widget = HotkeyEdit()
+        widget._recording = False
+        widget._pressed_keys = {"f13"}
+
+        mock_key = MagicMock()
+        widget._on_key_release(mock_key)
+
+        # Should not finalize
+        assert widget._hotkey == ""
+
+    def test_on_key_release_finalizes(self, qapp):
+        """Test key release when recording finalizes hotkey."""
+        widget = HotkeyEdit()
+        widget._recording = True
+        widget._pressed_keys = {"f13"}
+
+        mock_key = MagicMock()
+        widget._on_key_release(mock_key)
+
+        # Should have finalized
+        assert widget._hotkey == "<f13>"
+
+
+class TestHotkeyEditKeyToString:
+    """Extended tests for key-to-string conversion."""
+
+    def test_key_to_string_alt(self, qapp):
+        """Test alt key conversion."""
+        widget = HotkeyEdit()
+        try:
+            from pynput import keyboard
+            result = widget._key_to_string(keyboard.Key.alt)
+            assert result == "alt"
+        except ImportError:
+            pytest.skip("pynput not available")
+
+    def test_key_to_string_alt_gr(self, qapp):
+        """Test alt_gr key conversion."""
+        widget = HotkeyEdit()
+        try:
+            from pynput import keyboard
+            result = widget._key_to_string(keyboard.Key.alt_gr)
+            assert result == "alt"
+        except ImportError:
+            pytest.skip("pynput not available")
+
+    def test_key_to_string_cmd(self, qapp):
+        """Test cmd/super key conversion."""
+        widget = HotkeyEdit()
+        try:
+            from pynput import keyboard
+            result = widget._key_to_string(keyboard.Key.cmd)
+            assert result == "cmd"
+        except ImportError:
+            pytest.skip("pynput not available")
+
+    def test_key_to_string_char_key(self, qapp):
+        """Test character key conversion."""
+        widget = HotkeyEdit()
+
+        # Mock a key with char attribute
+        mock_key = MagicMock()
+        mock_key.char = "a"
+        del mock_key.name  # Remove name to trigger char path
+
+        result = widget._key_to_string(mock_key)
+        assert result == "a"
+
+    def test_key_to_string_char_uppercase(self, qapp):
+        """Test uppercase character key is lowercased."""
+        widget = HotkeyEdit()
+
+        mock_key = MagicMock()
+        mock_key.char = "A"
+        del mock_key.name
+
+        result = widget._key_to_string(mock_key)
+        assert result == "a"
+
+
+class TestHotkeyEditFinalizeEmpty:
+    """Tests for finalize with empty keys."""
+
+    def test_finalize_hotkey_empty_stops_recording(self, qapp):
+        """Test finalizing with no keys stops recording."""
+        widget = HotkeyEdit()
+        widget._recording = True
+        widget._pressed_keys = set()  # Empty
+
+        widget._finalize_hotkey()
+
+        assert not widget._recording
+
+
+class TestHotkeyEditPynputUnavailable:
+    """Tests for when pynput is not available."""
+
+    def test_start_recording_no_pynput(self, qapp):
+        """Test start recording when pynput unavailable."""
+        widget = HotkeyEdit()
+
+        with patch('eve_overview_pro.ui.hotkey_edit.PYNPUT_AVAILABLE', False):
+            widget._start_recording()
+
+            assert "not available" in widget.display.text()
+            assert not widget._recording
