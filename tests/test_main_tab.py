@@ -1698,3 +1698,268 @@ class TestMainTabMinimizeRestore:
 
             tab._windows_minimized = True
             assert tab._windows_minimized is True
+
+
+# =============================================================================
+# WindowManager Capture Cycle Tests
+# =============================================================================
+
+class TestWindowManagerCaptureCycle:
+    """Tests for WindowManager capture cycle methods"""
+
+    def test_capture_cycle_requests_captures(self):
+        """Test _capture_cycle requests captures for visible frames"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.logger = MagicMock()
+            manager.capture_system = MagicMock()
+            manager.capture_system.capture_window_async.return_value = "req-1"
+            manager.pending_requests = {}
+            manager._process_capture_results = MagicMock()
+
+            mock_frame = MagicMock()
+            mock_frame.isVisible.return_value = True
+            mock_frame.zoom_factor = 1.0
+            manager.preview_frames = {"0x123": mock_frame}
+
+            manager._capture_cycle()
+
+            manager.capture_system.capture_window_async.assert_called_once()
+            assert "req-1" in manager.pending_requests
+
+    def test_capture_cycle_skips_invisible_frames(self):
+        """Test _capture_cycle skips invisible frames"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.logger = MagicMock()
+            manager.capture_system = MagicMock()
+            manager.pending_requests = {}
+            manager._process_capture_results = MagicMock()
+
+            mock_frame = MagicMock()
+            mock_frame.isVisible.return_value = False
+            manager.preview_frames = {"0x123": mock_frame}
+
+            manager._capture_cycle()
+
+            manager.capture_system.capture_window_async.assert_not_called()
+
+    def test_capture_cycle_handles_exception(self):
+        """Test _capture_cycle handles capture exceptions"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.logger = MagicMock()
+            manager.capture_system = MagicMock()
+            manager.capture_system.capture_window_async.side_effect = Exception("Capture failed")
+            manager.pending_requests = {}
+            manager._process_capture_results = MagicMock()
+
+            mock_frame = MagicMock()
+            mock_frame.isVisible.return_value = True
+            manager.preview_frames = {"0x123": mock_frame}
+
+            manager._capture_cycle()  # Should not raise
+
+            manager.logger.error.assert_called()
+
+
+class TestWindowManagerProcessResults:
+    """Tests for WindowManager._process_capture_results"""
+
+    def test_process_capture_results_updates_frame(self):
+        """Test _process_capture_results updates preview frames"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        from PIL import Image
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.logger = MagicMock()
+            manager.pending_requests = {"req-1": "0x123"}
+
+            mock_frame = MagicMock()
+            manager.preview_frames = {"0x123": mock_frame}
+
+            mock_image = Image.new("RGB", (100, 100))
+            manager.capture_system = MagicMock()
+            manager.capture_system.get_result.side_effect = [
+                ("req-1", "0x123", mock_image),
+                None
+            ]
+            manager.alert_detector = MagicMock()
+            manager.alert_detector.analyze_frame.return_value = None
+
+            manager._process_capture_results()
+
+            mock_frame.update_frame.assert_called_once_with(mock_image)
+
+    def test_process_capture_results_no_results(self):
+        """Test _process_capture_results with no results"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.logger = MagicMock()
+            manager.pending_requests = {}
+            manager.preview_frames = {}
+            manager.capture_system = MagicMock()
+            manager.capture_system.get_result.return_value = None
+
+            manager._process_capture_results()  # Should not raise
+
+    def test_process_capture_results_sets_alert(self):
+        """Test _process_capture_results sets alert on frame"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        from eve_overview_pro.core.alert_detector import AlertLevel
+        from PIL import Image
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.logger = MagicMock()
+            manager.pending_requests = {"req-1": "0x123"}
+
+            mock_frame = MagicMock()
+            manager.preview_frames = {"0x123": mock_frame}
+
+            mock_image = Image.new("RGB", (100, 100))
+            manager.capture_system = MagicMock()
+            manager.capture_system.get_result.side_effect = [
+                ("req-1", "0x123", mock_image),
+                None
+            ]
+            manager.alert_detector = MagicMock()
+            manager.alert_detector.analyze_frame.return_value = AlertLevel.HIGH
+
+            manager._process_capture_results()
+
+            mock_frame.set_alert.assert_called_once_with(AlertLevel.HIGH)
+
+
+# =============================================================================
+# MainTab Additional Methods Tests
+# =============================================================================
+
+class TestMainTabPreviewsEnabled:
+    """Tests for MainTab.set_previews_enabled"""
+
+    def test_set_previews_enabled_starts_capture(self):
+        """Test set_previews_enabled(True) starts capture when not active"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.capture_timer.isActive.return_value = False
+            tab.status_label = MagicMock()
+            tab.logger = MagicMock()
+
+            tab.set_previews_enabled(True)
+
+            tab.window_manager.start_capture_loop.assert_called_once()
+
+    def test_set_previews_enabled_stops_capture(self):
+        """Test set_previews_enabled(False) stops capture when active"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.capture_timer.isActive.return_value = True
+            tab.status_label = MagicMock()
+            tab.logger = MagicMock()
+
+            tab.set_previews_enabled(False)
+
+            tab.window_manager.stop_capture_loop.assert_called_once()
+
+
+class TestMainTabOneClickImport:
+    """Tests for MainTab.one_click_import"""
+
+    def test_one_click_import_has_method(self):
+        """Test MainTab has one_click_import method"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        assert hasattr(MainTab, 'one_click_import')
+
+    def test_one_click_import_no_windows(self):
+        """Test one_click_import shows message when no windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+
+            with patch('eve_overview_pro.ui.main_tab.scan_eve_windows', return_value=[]):
+                with patch('PySide6.QtWidgets.QMessageBox.information') as mock_msg:
+                    tab.one_click_import()
+                    mock_msg.assert_called_once()
+
+
+class TestWindowPreviewWidgetUpdateFrame:
+    """Tests for WindowPreviewWidget.update_frame"""
+
+    def test_update_frame_handles_none_image(self):
+        """Test update_frame handles None image"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.logger = MagicMock()
+            widget.preview_label = MagicMock()
+            widget._current_pixmap = None
+
+            widget.update_frame(None)  # Should not raise
+
+            widget.preview_label.setPixmap.assert_not_called()
+
+
+class TestWindowManagerStartStop:
+    """Tests for WindowManager start/stop methods"""
+
+    def test_start_capture_loop(self):
+        """Test start_capture_loop starts timer"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.capture_timer = MagicMock()
+            manager.refresh_rate = 30
+            manager.logger = MagicMock()
+
+            manager.start_capture_loop()
+
+            manager.capture_timer.start.assert_called_once()
+
+    def test_stop_capture_loop(self):
+        """Test stop_capture_loop stops timer"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.capture_timer = MagicMock()
+            manager.logger = MagicMock()
+
+            manager.stop_capture_loop()
+
+            manager.capture_timer.stop.assert_called_once()
+
+    def test_set_refresh_rate_clamps_value(self):
+        """Test set_refresh_rate clamps FPS to 1-60 range"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, '__init__', return_value=None):
+            manager = WindowManager.__new__(WindowManager)
+            manager.capture_timer = MagicMock()
+            manager.capture_timer.isActive.return_value = False
+
+            manager.set_refresh_rate(100)  # Too high
+            assert manager.refresh_rate == 60
+
+            manager.set_refresh_rate(0)  # Too low
+            assert manager.refresh_rate == 1

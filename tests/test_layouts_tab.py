@@ -1365,3 +1365,233 @@ class TestGridApplierMoveWindowTimeout:
 
         assert mock_subprocess.call_count == 3
         mock_sleep.assert_called_once_with(0.1)
+
+
+# =============================================================================
+# LayoutsTab UI Setup Tests
+# =============================================================================
+
+class TestLayoutsTabUISetup:
+    """Tests for LayoutsTab UI setup methods"""
+
+    def test_layouts_tab_has_setup_ui(self):
+        """Test LayoutsTab has _setup_ui method"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        assert hasattr(LayoutsTab, '_setup_ui')
+
+    def test_layouts_tab_has_create_top_section(self):
+        """Test LayoutsTab has _create_top_section method"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        assert hasattr(LayoutsTab, '_create_top_section')
+
+    def test_layouts_tab_has_create_grid_section(self):
+        """Test LayoutsTab has _create_grid_section method"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        assert hasattr(LayoutsTab, '_create_grid_section')
+
+    def test_layouts_tab_has_create_bottom_section(self):
+        """Test LayoutsTab has _create_bottom_section method"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        assert hasattr(LayoutsTab, '_create_bottom_section')
+
+    def test_layouts_tab_has_refresh_groups(self):
+        """Test LayoutsTab has _refresh_groups method"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        assert hasattr(LayoutsTab, '_refresh_groups')
+
+    def test_layouts_tab_has_on_group_selected(self):
+        """Test LayoutsTab has _on_group_selected method"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        assert hasattr(LayoutsTab, '_on_group_selected')
+
+    def test_layouts_tab_has_on_pattern_changed(self):
+        """Test LayoutsTab has _on_pattern_changed method"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        assert hasattr(LayoutsTab, '_on_pattern_changed')
+
+
+class TestLayoutsTabRefreshGroups:
+    """Tests for LayoutsTab._refresh_groups method"""
+
+    def test_refresh_groups_populates_combo(self):
+        """Test _refresh_groups populates group combo"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.cycling_groups = {"Default": [], "PvP": ["char1"]}
+            tab.group_combo = MagicMock()
+            tab.group_combo.count.return_value = 0  # Initially empty
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = {"Default": [], "PvP": ["char1"]}
+            tab.logger = MagicMock()
+
+            tab._refresh_groups()
+
+            # Should have cleared and added items
+            tab.group_combo.clear.assert_called_once()
+            assert tab.group_combo.addItem.call_count >= 2
+
+    def test_refresh_groups_restores_selection(self):
+        """Test _refresh_groups restores previous selection"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.cycling_groups = {"Default": [], "PvP": []}
+            tab.group_combo = MagicMock()
+            tab.group_combo.count.return_value = 2  # Has items
+            tab.group_combo.currentText.return_value = "PvP"
+            tab.group_combo.findText.return_value = 1
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = {"Default": [], "PvP": []}
+            tab.logger = MagicMock()
+
+            tab._refresh_groups()
+
+            tab.group_combo.setCurrentIndex.assert_called_with(1)
+
+
+class TestLayoutsTabOnGroupSelected:
+    """Tests for LayoutsTab._on_group_selected method"""
+
+    def test_on_group_selected_clears_tiles(self):
+        """Test _on_group_selected clears arrangement grid"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.group_combo = MagicMock()
+            tab.group_combo.currentText.return_value = "Default"
+            tab.arrangement_grid = MagicMock()
+            tab.cycling_groups = {"Default": []}
+            tab.info_label = MagicMock()
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Custom"
+            tab.logger = MagicMock()
+
+            tab._on_group_selected()
+
+            tab.arrangement_grid.clear_tiles.assert_called_once()
+
+    def test_on_group_selected_adds_characters(self):
+        """Test _on_group_selected adds group members"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.group_combo = MagicMock()
+            tab.group_combo.currentText.return_value = "PvP"
+            tab.arrangement_grid = MagicMock()
+            tab.arrangement_grid.grid_cols = 3
+            tab.cycling_groups = {"PvP": ["Char1", "Char2"]}
+            tab.info_label = MagicMock()
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Custom"
+            tab.logger = MagicMock()
+
+            tab._on_group_selected()
+
+            # Should add 2 characters
+            assert tab.arrangement_grid.add_character.call_count == 2
+
+    def test_on_group_selected_all_active_windows(self):
+        """Test _on_group_selected with 'All Active Windows'"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.group_combo = MagicMock()
+            tab.group_combo.currentText.return_value = "All Active Windows"
+            tab.arrangement_grid = MagicMock()
+            tab.cycling_groups = {}
+            tab.info_label = MagicMock()
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Custom"
+            tab.logger = MagicMock()
+
+            # Mock main_tab with window manager
+            tab.main_tab = MagicMock()
+            mock_frame = MagicMock()
+            mock_frame.character_name = "TestChar"
+            tab.main_tab.window_manager.preview_frames = {"123": mock_frame}
+
+            tab._on_group_selected()
+
+            tab.arrangement_grid.add_character.assert_called_with("TestChar")
+
+    def test_on_group_selected_auto_arranges(self):
+        """Test _on_group_selected auto-arranges when pattern selected"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.group_combo = MagicMock()
+            tab.group_combo.currentText.return_value = "Default"
+            tab.arrangement_grid = MagicMock()
+            tab.cycling_groups = {"Default": []}
+            tab.info_label = MagicMock()
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "2x2 Grid"
+            tab._auto_arrange = MagicMock()
+            tab.logger = MagicMock()
+
+            tab._on_group_selected()
+
+            tab._auto_arrange.assert_called_once()
+
+
+class TestLayoutsTabOnPatternChanged:
+    """Tests for LayoutsTab._on_pattern_changed method"""
+
+    def test_on_pattern_changed_stacked(self):
+        """Test _on_pattern_changed with Stacked pattern"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Stacked (All Same Position)"
+            tab.stack_checkbox = MagicMock()
+            tab.arrangement_grid = MagicMock()
+            tab.logger = MagicMock()
+
+            tab._on_pattern_changed()
+
+            tab.stack_checkbox.setChecked.assert_called_with(True)
+
+    def test_on_pattern_changed_grid(self):
+        """Test _on_pattern_changed with Grid pattern"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "2x2 Grid"
+            tab.stack_checkbox = MagicMock()
+            tab.arrangement_grid = MagicMock()
+            tab.logger = MagicMock()
+
+            tab._on_pattern_changed()
+
+            tab.stack_checkbox.setChecked.assert_called_with(False)
+
+
+class TestLayoutsTabRefreshFromSettings:
+    """Tests for LayoutsTab.refresh_groups_from_settings method"""
+
+    def test_refresh_groups_from_settings_calls_methods(self):
+        """Test refresh_groups_from_settings calls internal methods"""
+        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+
+        with patch.object(LayoutsTab, '__init__', return_value=None):
+            tab = LayoutsTab.__new__(LayoutsTab)
+            tab._refresh_groups = MagicMock()
+            tab._on_group_selected = MagicMock()
+
+            tab.refresh_groups_from_settings()
+
+            tab._refresh_groups.assert_called_once()
+            tab._on_group_selected.assert_called_once()
+
+
