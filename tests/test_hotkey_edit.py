@@ -303,6 +303,18 @@ class TestHotkeyEditKeyToString:
         result = widget._key_to_string(mock_key)
         assert result == "a"
 
+    def test_key_to_string_unknown_key_returns_none(self, qapp):
+        """Test unknown key without name or char returns None."""
+        widget = HotkeyEdit()
+
+        mock_key = MagicMock()
+        # Remove both name and char attributes
+        del mock_key.name
+        del mock_key.char
+
+        result = widget._key_to_string(mock_key)
+        assert result is None
+
 
 class TestHotkeyEditFinalizeEmpty:
     """Tests for finalize with empty keys."""
