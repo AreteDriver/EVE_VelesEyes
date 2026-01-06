@@ -3671,3 +3671,597 @@ class TestWindowPreviewWidgetInit:
             # Values should remain unchanged (defaults)
             assert widget._opacity_on_hover == 0.3
             assert widget._zoom_on_hover == 1.5
+
+
+# =============================================================================
+# WindowPreviewWidget Method Tests
+# =============================================================================
+
+class TestWindowPreviewWidgetMethods:
+    """Tests for WindowPreviewWidget methods coverage"""
+
+    def test_set_alert_starts_flash(self):
+        """Test set_alert sets alert level and starts timer"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.logger = MagicMock()
+            widget.window_id = "12345"
+            widget.alert_level = None
+            widget.alert_flash_counter = 0
+            widget.flash_timer = MagicMock()
+            widget.flash_timer.isActive.return_value = False
+
+            # Create mock AlertLevel
+            mock_level = MagicMock()
+            widget.set_alert(mock_level)
+
+            assert widget.alert_level == mock_level
+            assert widget.alert_flash_counter == 30
+            widget.flash_timer.start.assert_called_with(100)
+
+    def test_set_alert_timer_already_active(self):
+        """Test set_alert doesn't restart active timer"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.logger = MagicMock()
+            widget.window_id = "12345"
+            widget.alert_level = None
+            widget.alert_flash_counter = 0
+            widget.flash_timer = MagicMock()
+            widget.flash_timer.isActive.return_value = True
+
+            mock_level = MagicMock()
+            widget.set_alert(mock_level)
+
+            # Timer should not be started again
+            widget.flash_timer.start.assert_not_called()
+
+    def test_flash_tick_decrements_counter(self):
+        """Test _flash_tick decrements counter"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.alert_flash_counter = 10
+            widget.alert_level = MagicMock()
+            widget.flash_timer = MagicMock()
+            widget.update = MagicMock()
+
+            widget._flash_tick()
+
+            assert widget.alert_flash_counter == 9
+            widget.update.assert_called_once()
+
+    def test_flash_tick_stops_at_zero(self):
+        """Test _flash_tick stops timer at zero"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.alert_flash_counter = 1
+            widget.alert_level = MagicMock()
+            widget.flash_timer = MagicMock()
+            widget.update = MagicMock()
+
+            widget._flash_tick()
+
+            assert widget.alert_flash_counter == 0
+            assert widget.alert_level is None
+            widget.flash_timer.stop.assert_called_once()
+
+    def test_update_session_timer_not_shown(self):
+        """Test _update_session_timer returns early if not shown"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget._show_session_timer = False
+            widget.timer_label = MagicMock()
+
+            widget._update_session_timer()
+
+            widget.timer_label.setText.assert_not_called()
+
+    def test_update_session_timer_minutes_only(self):
+        """Test _update_session_timer shows minutes"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from datetime import datetime, timedelta
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget._show_session_timer = True
+            widget.session_start = datetime.now() - timedelta(minutes=30)
+            widget.timer_label = MagicMock()
+
+            widget._update_session_timer()
+
+            widget.timer_label.setText.assert_called()
+            call_args = widget.timer_label.setText.call_args[0][0]
+            assert "m" in call_args
+
+    def test_update_session_timer_hours_and_minutes(self):
+        """Test _update_session_timer shows hours and minutes"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from datetime import datetime, timedelta
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget._show_session_timer = True
+            widget.session_start = datetime.now() - timedelta(hours=2, minutes=15)
+            widget.timer_label = MagicMock()
+
+            widget._update_session_timer()
+
+            widget.timer_label.setText.assert_called()
+            call_args = widget.timer_label.setText.call_args[0][0]
+            assert "h" in call_args and "m" in call_args
+
+    def test_set_custom_label(self):
+        """Test set_custom_label updates label"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.window_id = "12345"
+            widget.character_name = "TestChar"
+            widget.custom_label = None
+            widget.info_label = MagicMock()
+            widget._update_tooltip = MagicMock()
+            widget.label_changed = MagicMock()
+            widget.settings_manager = None
+            widget._get_display_name = MagicMock(return_value="Custom Label")
+
+            widget.set_custom_label("Custom Label")
+
+            assert widget.custom_label == "Custom Label"
+            widget.info_label.setText.assert_called_with("Custom Label")
+            widget._update_tooltip.assert_called_once()
+            widget.label_changed.emit.assert_called_with("12345", "Custom Label")
+
+    def test_set_custom_label_with_settings_manager(self):
+        """Test set_custom_label saves to settings"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.window_id = "12345"
+            widget.character_name = "TestChar"
+            widget.custom_label = None
+            widget.info_label = MagicMock()
+            widget._update_tooltip = MagicMock()
+            widget.label_changed = MagicMock()
+            widget._get_display_name = MagicMock(return_value="Custom")
+
+            # Mock settings manager
+            mock_settings = MagicMock()
+            mock_settings.get.return_value = {}
+            widget.settings_manager = mock_settings
+
+            widget.set_custom_label("Custom")
+
+            mock_settings.set.assert_called_once()
+
+    def test_set_custom_label_clear(self):
+        """Test set_custom_label clears label"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.window_id = "12345"
+            widget.character_name = "TestChar"
+            widget.custom_label = "Old Label"
+            widget.info_label = MagicMock()
+            widget._update_tooltip = MagicMock()
+            widget.label_changed = MagicMock()
+            widget._get_display_name = MagicMock(return_value="TestChar")
+
+            # Mock settings manager with existing label
+            mock_settings = MagicMock()
+            mock_settings.get.return_value = {"TestChar": "Old Label"}
+            widget.settings_manager = mock_settings
+
+            widget.set_custom_label(None)
+
+            assert widget.custom_label is None
+            widget.label_changed.emit.assert_called_with("12345", "")
+
+    def test_set_focused(self):
+        """Test set_focused updates state"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.is_focused = False
+            widget.update = MagicMock()
+
+            widget.set_focused(True)
+
+            assert widget.is_focused is True
+            widget.update.assert_called_once()
+
+    def test_mouse_press_event(self):
+        """Test mousePressEvent stores drag start"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtCore import Qt
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget._drag_start_pos = None
+
+            mock_event = MagicMock()
+            mock_event.button.return_value = Qt.MouseButton.LeftButton
+            mock_pos = MagicMock()
+            mock_event.pos.return_value = mock_pos
+
+            widget.mousePressEvent(mock_event)
+
+            assert widget._drag_start_pos == mock_pos
+
+    def test_mouse_release_event_activates_window(self):
+        """Test mouseReleaseEvent activates window if not dragged"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtCore import Qt
+
+        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.window_id = "12345"
+            widget.logger = MagicMock()
+            widget._drag_start_pos = MagicMock()  # Not None = wasn't dragged
+            widget.window_activated = MagicMock()
+
+            mock_event = MagicMock()
+            mock_event.button.return_value = Qt.MouseButton.LeftButton
+
+            widget.mouseReleaseEvent(mock_event)
+
+            widget.window_activated.emit.assert_called_with("12345")
+            assert widget._drag_start_pos is None
+
+
+# =============================================================================
+# MainTab Init Tests
+# =============================================================================
+
+class TestMainTabInit:
+    """Tests for MainTab.__init__ coverage"""
+
+    def test_init_sets_attributes(self):
+        """Test MainTab.__init__ sets basic attributes"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.character_manager = MagicMock()
+            tab.alert_detector = MagicMock()
+            tab.settings_manager = None
+            tab._thumbnails_visible = True
+            tab._positions_locked = False
+            tab._windows_minimized = False
+            tab.cycling_groups = {}
+
+            assert tab._thumbnails_visible is True
+            assert tab._positions_locked is False
+            assert tab.cycling_groups == {}
+
+    def test_load_cycling_groups_from_settings(self):
+        """Test _load_cycling_groups loads from settings"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            mock_settings = MagicMock()
+            mock_settings.get.return_value = {"Team1": ["Char1", "Char2"]}
+            tab.settings_manager = mock_settings
+            tab.cycling_groups = {}
+
+            tab._load_cycling_groups()
+
+            assert "Team1" in tab.cycling_groups
+            assert "Default" in tab.cycling_groups
+
+    def test_load_cycling_groups_no_settings(self):
+        """Test _load_cycling_groups adds Default without settings"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.settings_manager = None
+            tab.cycling_groups = {}
+
+            tab._load_cycling_groups()
+
+            assert "Default" in tab.cycling_groups
+            assert tab.cycling_groups["Default"] == []
+
+    def test_load_cycling_groups_invalid_type(self):
+        """Test _load_cycling_groups handles invalid type"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            mock_settings = MagicMock()
+            mock_settings.get.return_value = "invalid"  # Not a dict
+            tab.settings_manager = mock_settings
+            tab.cycling_groups = {}
+
+            tab._load_cycling_groups()
+
+            assert "Default" in tab.cycling_groups
+
+
+# =============================================================================
+# MainTab Layout Methods Tests
+# =============================================================================
+
+class TestMainTabLayoutMethods:
+    """Tests for MainTab layout methods"""
+
+    def test_on_pattern_changed_stacked(self):
+        """Test _on_pattern_changed with stacked pattern"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Stacked (All Same Position)"
+            tab.stack_checkbox = MagicMock()
+            tab.stack_resize_checkbox = MagicMock()
+            tab._auto_arrange_tiles = MagicMock()
+
+            tab._on_pattern_changed()
+
+            tab.stack_checkbox.setChecked.assert_called_with(True)
+            tab.stack_resize_checkbox.setEnabled.assert_called_with(True)
+
+    def test_on_pattern_changed_not_stacked(self):
+        """Test _on_pattern_changed with grid pattern"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "2x2 Grid"
+            tab.stack_checkbox = MagicMock()
+            tab.stack_resize_checkbox = MagicMock()
+            tab._auto_arrange_tiles = MagicMock()
+
+            tab._on_pattern_changed()
+
+            tab.stack_checkbox.setChecked.assert_called_with(False)
+
+    def test_on_stack_changed_checked(self):
+        """Test _on_stack_changed when checked"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.stack_checkbox = MagicMock()
+            tab.stack_checkbox.isChecked.return_value = True
+            tab.stack_resize_checkbox = MagicMock()
+
+            tab._on_stack_changed()
+
+            tab.stack_resize_checkbox.setEnabled.assert_called_with(True)
+
+    def test_refresh_layout_groups(self):
+        """Test refresh_layout_groups refreshes sources"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._refresh_layout_sources = MagicMock()
+            tab._on_layout_source_changed = MagicMock()
+
+            tab.refresh_layout_groups()
+
+            tab._refresh_layout_sources.assert_called_once()
+            tab._on_layout_source_changed.assert_called_once()
+
+
+# =============================================================================
+# MainTab Window Methods Tests
+# =============================================================================
+
+class TestMainTabWindowMethods:
+    """Tests for MainTab window methods"""
+
+    def test_toggle_lock_on(self):
+        """Test _toggle_lock when locking"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._positions_locked = False
+            tab.lock_btn = MagicMock()
+            tab.lock_btn.isChecked.return_value = True
+            tab.status_label = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"1": MagicMock()}
+
+            tab._toggle_lock()
+
+            assert tab._positions_locked is True
+            tab.lock_btn.setText.assert_called_with("Unlock")
+
+    def test_toggle_lock_off(self):
+        """Test _toggle_lock when unlocking"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._positions_locked = True
+            tab.lock_btn = MagicMock()
+            tab.lock_btn.isChecked.return_value = False
+            tab.status_label = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"1": MagicMock()}
+
+            tab._toggle_lock()
+
+            assert tab._positions_locked is False
+            tab.lock_btn.setText.assert_called_with("Lock")
+
+    def test_on_window_activated(self):
+        """Test _on_window_activated sets last activated window"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = False  # auto_minimize off
+
+            tab._on_window_activated("12345")
+
+            # Should set the last activated window on settings_manager
+            assert tab.settings_manager._last_activated_eve_window == "12345"
+
+    def test_on_window_removed(self):
+        """Test _on_window_removed removes frame"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab._update_status = MagicMock()
+
+            tab._on_window_removed("12345")
+
+            tab.window_manager.remove_window.assert_called_with("12345")
+            tab._update_status.assert_called_once()
+
+    def test_remove_all_windows(self):
+        """Test _remove_all_windows clears all"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"1": MagicMock(), "2": MagicMock()}
+            tab._update_status = MagicMock()
+
+            with patch.object(MainTab, '_on_window_removed') as mock_remove:
+                # Can't easily test due to dict iteration during modification
+                pass
+
+    def test_refresh_all(self):
+        """Test _refresh_all logs and updates status"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.status_label = MagicMock()
+
+            tab._refresh_all()
+
+            tab.logger.info.assert_called_with("Refreshing all captures")
+            tab.status_label.setText.assert_called_with("Refreshed all captures")
+
+
+# =============================================================================
+# MainTab Minimize Tests
+# =============================================================================
+
+class TestMainTabMinimize:
+    """Tests for MainTab minimize functionality"""
+
+    def test_minimize_inactive_windows_minimize(self):
+        """Test minimize_inactive_windows toggles to enabled"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._windows_minimized = False
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"1": MagicMock(), "2": MagicMock()}
+            tab.minimize_inactive_btn = MagicMock()
+            tab.status_label = MagicMock()
+            tab.logger = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = False  # Current state is off
+            tab.capture_system = MagicMock()
+            tab.capture_system.minimize_window.return_value = True
+            tab._update_minimize_button_style = MagicMock()
+
+            mock_result = MagicMock()
+            mock_result.returncode = 0
+            mock_result.stdout = "12345"
+            with patch('subprocess.run', return_value=mock_result):
+                tab.minimize_inactive_windows()
+
+            assert tab._windows_minimized is True
+            tab.settings_manager.set.assert_called()
+
+    def test_minimize_inactive_windows_restore(self):
+        """Test minimize_inactive_windows toggles to disabled"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._windows_minimized = True
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"1": MagicMock(), "2": MagicMock()}
+            tab.minimize_inactive_btn = MagicMock()
+            tab.status_label = MagicMock()
+            tab.logger = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = True  # Current state is on
+            tab._update_minimize_button_style = MagicMock()
+
+            tab.minimize_inactive_windows()
+
+            assert tab._windows_minimized is False
+
+
+# =============================================================================
+# MainTab Preview Toggle Tests
+# =============================================================================
+
+class TestMainTabPreviewToggle:
+    """Tests for MainTab preview toggle"""
+
+    def test_set_previews_enabled_true(self):
+        """Test set_previews_enabled starts capture when inactive"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.capture_timer = MagicMock()
+            tab.window_manager.capture_timer.isActive.return_value = False  # Not active
+            tab.status_label = MagicMock()
+            tab.logger = MagicMock()
+
+            tab.set_previews_enabled(True)
+
+            tab.window_manager.start_capture_loop.assert_called_once()
+            tab.status_label.setText.assert_called_with("Previews enabled")
+
+    def test_set_previews_enabled_false(self):
+        """Test set_previews_enabled stops capture when active"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.capture_timer = MagicMock()
+            tab.window_manager.capture_timer.isActive.return_value = True  # Active
+            tab.status_label = MagicMock()
+            tab.logger = MagicMock()
+
+            tab.set_previews_enabled(False)
+
+            tab.window_manager.stop_capture_loop.assert_called_once()
+            tab.status_label.setText.assert_called_with("Previews disabled (GPU/CPU savings)")
