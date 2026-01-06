@@ -1963,3 +1963,252 @@ class TestWindowManagerStartStop:
 
             manager.set_refresh_rate(0)  # Too low
             assert manager.refresh_rate == 1
+
+
+# =============================================================================
+# MainTab Cycling Groups Tests
+# =============================================================================
+
+class TestMainTabCyclingGroups:
+    """Tests for MainTab cycling groups methods"""
+
+    def test_load_cycling_groups_with_settings(self):
+        """Test _load_cycling_groups loads groups from settings"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = {
+                "Team1": ["char1", "char2"],
+                "Team2": ["char3"]
+            }
+            tab.cycling_groups = {}
+
+            tab._load_cycling_groups()
+
+            assert "Team1" in tab.cycling_groups
+            assert "Team2" in tab.cycling_groups
+            assert tab.cycling_groups["Team1"] == ["char1", "char2"]
+
+    def test_load_cycling_groups_without_settings(self):
+        """Test _load_cycling_groups when settings_manager is None"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.settings_manager = None
+            tab.cycling_groups = {}
+
+            tab._load_cycling_groups()
+
+            # Should create Default group
+            assert "Default" in tab.cycling_groups
+
+    def test_load_cycling_groups_creates_default(self):
+        """Test _load_cycling_groups creates Default if missing"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = {"Team1": ["char1"]}
+            tab.cycling_groups = {}
+
+            tab._load_cycling_groups()
+
+            assert "Default" in tab.cycling_groups
+            assert "Team1" in tab.cycling_groups
+
+    def test_load_cycling_groups_invalid_type(self):
+        """Test _load_cycling_groups handles non-dict gracefully"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = "invalid"  # Not a dict
+            tab.cycling_groups = {}
+
+            tab._load_cycling_groups()
+
+            # Should create Default group, not crash
+            assert "Default" in tab.cycling_groups
+
+
+# =============================================================================
+# MainTab Status Update Tests
+# =============================================================================
+
+class TestMainTabUpdateStatus:
+    """Tests for MainTab _update_status method"""
+
+    def test_update_status_zero_windows(self):
+        """Test _update_status with no windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.get_active_window_count.return_value = 0
+            tab.active_count_label = MagicMock()
+            tab.status_label = MagicMock()
+
+            tab._update_status()
+
+            tab.active_count_label.setText.assert_called_with("Active: 0")
+            assert "No windows" in tab.status_label.setText.call_args[0][0]
+
+    def test_update_status_with_windows(self):
+        """Test _update_status with active windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.get_active_window_count.return_value = 3
+            tab.window_manager.refresh_rate = 30
+            tab.active_count_label = MagicMock()
+            tab.status_label = MagicMock()
+
+            tab._update_status()
+
+            tab.active_count_label.setText.assert_called_with("Active: 3")
+            status_text = tab.status_label.setText.call_args[0][0]
+            assert "3 window(s)" in status_text
+            assert "30 FPS" in status_text
+
+
+# =============================================================================
+# MainTab Refresh Rate Tests
+# =============================================================================
+
+class TestMainTabRefreshRate:
+    """Tests for MainTab refresh rate handling"""
+
+    def test_on_refresh_rate_changed(self):
+        """Test _on_refresh_rate_changed updates window manager"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, '__init__', return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.logger = MagicMock()
+
+            tab._on_refresh_rate_changed(45)
+
+            tab.window_manager.set_refresh_rate.assert_called_once_with(45)
+
+
+# =============================================================================
+# GridApplier Additional Tests
+# =============================================================================
+
+class TestGridApplierApplyArrangement:
+    """Additional tests for GridApplier apply_arrangement method"""
+
+    def test_apply_arrangement_stacked_with_grid_size(self):
+        """Test apply_arrangement in stacked mode with grid sizing"""
+        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+
+        applier = GridApplier()
+        applier.logger = MagicMock()
+        applier._move_window = MagicMock()
+
+        screen = ScreenGeometry(0, 0, 1920, 1080, True)
+        arrangement = {"char1": (0, 0), "char2": (0, 1)}
+        window_map = {"char1": "111", "char2": "222"}
+
+        result = applier.apply_arrangement(
+            arrangement, window_map, screen,
+            grid_rows=2, grid_cols=2, spacing=10,
+            stacked=True, stacked_use_grid_size=True
+        )
+
+        assert result is True
+        assert applier._move_window.call_count == 2
+
+    def test_apply_arrangement_stacked_position_only(self):
+        """Test apply_arrangement in stacked mode keeping window size"""
+        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+
+        applier = GridApplier()
+        applier.logger = MagicMock()
+        applier._move_window = MagicMock()
+        applier._move_window_position_only = MagicMock()
+
+        screen = ScreenGeometry(0, 0, 1920, 1080, True)
+        arrangement = {"char1": (0, 0)}
+        window_map = {"char1": "111"}
+
+        result = applier.apply_arrangement(
+            arrangement, window_map, screen,
+            grid_rows=2, grid_cols=2, spacing=10,
+            stacked=True, stacked_use_grid_size=False
+        )
+
+        assert result is True
+        applier._move_window_position_only.assert_called_once()
+
+    def test_apply_arrangement_grid_mode(self):
+        """Test apply_arrangement in grid mode"""
+        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+
+        applier = GridApplier()
+        applier.logger = MagicMock()
+        applier._move_window = MagicMock()
+
+        screen = ScreenGeometry(0, 0, 1920, 1080, True)
+        arrangement = {"char1": (0, 0), "char2": (0, 1), "char3": (1, 0)}
+        window_map = {"char1": "111", "char2": "222", "char3": "333"}
+
+        result = applier.apply_arrangement(
+            arrangement, window_map, screen,
+            grid_rows=2, grid_cols=2, spacing=10,
+            stacked=False
+        )
+
+        assert result is True
+        assert applier._move_window.call_count == 3
+
+    def test_apply_arrangement_skips_missing_windows(self):
+        """Test apply_arrangement skips characters not in window_map"""
+        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+
+        applier = GridApplier()
+        applier.logger = MagicMock()
+        applier._move_window = MagicMock()
+
+        screen = ScreenGeometry(0, 0, 1920, 1080, True)
+        arrangement = {"char1": (0, 0), "char2": (0, 1)}
+        window_map = {"char1": "111"}  # char2 not in map
+
+        result = applier.apply_arrangement(
+            arrangement, window_map, screen,
+            grid_rows=2, grid_cols=2, spacing=10,
+            stacked=False
+        )
+
+        assert result is True
+        assert applier._move_window.call_count == 1  # Only char1
+
+    def test_apply_arrangement_exception(self):
+        """Test apply_arrangement handles exceptions"""
+        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+
+        applier = GridApplier()
+        applier.logger = MagicMock()
+        applier._move_window = MagicMock(side_effect=Exception("xdotool failed"))
+
+        screen = ScreenGeometry(0, 0, 1920, 1080, True)
+        arrangement = {"char1": (0, 0)}
+        window_map = {"char1": "111"}
+
+        result = applier.apply_arrangement(
+            arrangement, window_map, screen,
+            grid_rows=2, grid_cols=2, spacing=10,
+            stacked=False
+        )
+
+        assert result is False
+        applier.logger.error.assert_called_once()
