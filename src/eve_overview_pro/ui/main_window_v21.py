@@ -275,8 +275,8 @@ class MainWindowV21(QMainWindow):
             auto_minimize = self.settings_manager.get("performance.auto_minimize_inactive", False)
 
             if auto_minimize:
-                # Get the last activated EVE window (tracked internally)
-                last_eve_window = getattr(self, '_last_activated_eve_window', None)
+                # Get the last activated EVE window (shared via settings_manager)
+                last_eve_window = getattr(self.settings_manager, '_last_activated_eve_window', None)
 
                 if last_eve_window and last_eve_window != window_id:
                     # Minimize the previous EVE window
@@ -287,8 +287,8 @@ class MainWindowV21(QMainWindow):
                     )
                     self.logger.info(f"Auto-minimized previous EVE window: {last_eve_window}")
 
-            # Track this as the last activated EVE window
-            self._last_activated_eve_window = window_id
+            # Track this as the last activated EVE window (shared via settings_manager)
+            self.settings_manager._last_activated_eve_window = window_id
 
             # Activate the new window
             subprocess.run(
@@ -372,7 +372,8 @@ class MainWindowV21(QMainWindow):
         if hasattr(self, 'main_tab'):
             for window_id, frame in self.main_tab.window_manager.preview_frames.items():
                 if frame.character_name == char_name:
-                    self.capture_system.activate_window(window_id)
+                    # Use _activate_window which has auto-minimize logic
+                    self._activate_window(window_id)
                     self.logger.info(f"Activated character: {char_name}")
                     return
         self.logger.warning(f"Character not found: {char_name}")

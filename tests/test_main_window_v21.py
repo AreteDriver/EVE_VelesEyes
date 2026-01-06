@@ -347,9 +347,12 @@ class TestMinimizeRestoreWindows:
 class TestActivateCharacter:
     """Tests for _activate_character method"""
 
-    def test_activate_character_found(self):
+    @patch('subprocess.run')
+    def test_activate_character_found(self, mock_run):
         """Test activating a found character"""
         window = create_mock_window()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = False  # auto_minimize off
 
         mock_frame = MagicMock()
         mock_frame.character_name = "TestPilot"
@@ -360,11 +363,13 @@ class TestActivateCharacter:
             "0x12345": mock_frame
         }
 
-        window.capture_system = MagicMock()
+        mock_run.return_value = MagicMock(returncode=0)
 
         window._activate_character("TestPilot")
 
-        window.capture_system.activate_window.assert_called_with("0x12345")
+        # Should call xdotool windowactivate via _activate_window
+        calls = [str(c) for c in mock_run.call_args_list]
+        assert any('windowactivate' in c and '0x12345' in c for c in calls)
 
     def test_activate_character_not_found(self):
         """Test activating a character not found"""
@@ -1315,7 +1320,7 @@ class TestActivateWindow:
         window.logger = MagicMock()
         window.settings_manager = MagicMock()
         window.settings_manager.get.return_value = True  # auto_minimize ON
-        window._last_activated_eve_window = "0x99999"  # Previous EVE window
+        window.settings_manager._last_activated_eve_window = "0x99999"  # Previous EVE window (shared)
 
         mock_run.return_value = MagicMock(returncode=0)
 
