@@ -1502,3 +1502,248 @@ class TestTeamBuilderEdgeCases:
 
             # _add_member_to_list should NOT be called because char was not found
             builder._add_member_to_list.assert_not_called()
+
+
+class TestUISetupMethods:
+    """Tests for _setup_ui, _create_left_panel, _create_right_panel"""
+
+    def test_setup_ui_creates_splitter(self):
+        """Test _setup_ui creates horizontal splitter with panels"""
+        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+
+        with patch.object(CharactersTeamsTab, '__init__', return_value=None):
+            tab = CharactersTeamsTab.__new__(CharactersTeamsTab)
+
+            mock_left_panel = MagicMock()
+            mock_right_panel = MagicMock()
+            tab._create_left_panel = MagicMock(return_value=mock_left_panel)
+            tab._create_right_panel = MagicMock(return_value=mock_right_panel)
+
+            with patch('eve_overview_pro.ui.characters_teams_tab.QHBoxLayout') as mock_layout_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QSplitter') as mock_splitter_cls:
+
+                mock_layout = MagicMock()
+                mock_layout_cls.return_value = mock_layout
+
+                mock_splitter = MagicMock()
+                mock_splitter_cls.return_value = mock_splitter
+
+                tab.setLayout = MagicMock()
+
+                tab._setup_ui()
+
+                # Verify layout created and set
+                mock_layout.setContentsMargins.assert_called_once_with(5, 5, 5, 5)
+                tab.setLayout.assert_called_once_with(mock_layout)
+
+                # Verify splitter created and panels added
+                mock_layout.addWidget.assert_called_once_with(mock_splitter)
+                assert mock_splitter.addWidget.call_count == 2
+                mock_splitter.setSizes.assert_called_once_with([600, 400])
+
+    def test_setup_ui_calls_panel_creators(self):
+        """Test _setup_ui calls both panel creation methods"""
+        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+
+        with patch.object(CharactersTeamsTab, '__init__', return_value=None):
+            tab = CharactersTeamsTab.__new__(CharactersTeamsTab)
+
+            tab._create_left_panel = MagicMock(return_value=MagicMock())
+            tab._create_right_panel = MagicMock(return_value=MagicMock())
+            tab.setLayout = MagicMock()
+
+            with patch('eve_overview_pro.ui.characters_teams_tab.QHBoxLayout'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QSplitter'):
+                tab._setup_ui()
+
+            tab._create_left_panel.assert_called_once()
+            tab._create_right_panel.assert_called_once()
+
+    def test_create_left_panel_creates_toolbar(self):
+        """Test _create_left_panel creates toolbar with action buttons"""
+        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+
+        with patch.object(CharactersTeamsTab, '__init__', return_value=None):
+            tab = CharactersTeamsTab.__new__(CharactersTeamsTab)
+            tab.character_manager = MagicMock()
+            tab.settings_sync = None  # No scan button
+            tab._add_character = MagicMock()
+            tab._edit_character = MagicMock()
+            tab._delete_character = MagicMock()
+
+            with patch('eve_overview_pro.ui.characters_teams_tab.QWidget') as mock_widget_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QVBoxLayout') as mock_vlayout_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QHBoxLayout') as mock_hlayout_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.ToolbarBuilder') as mock_builder_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.CharacterTable') as mock_table_cls:
+
+                mock_panel = MagicMock()
+                mock_widget_cls.return_value = mock_panel
+
+                mock_vlayout = MagicMock()
+                mock_vlayout_cls.return_value = mock_vlayout
+
+                mock_hlayout = MagicMock()
+                mock_hlayout_cls.return_value = mock_hlayout
+
+                mock_builder = MagicMock()
+                mock_builder.create_button.return_value = MagicMock()  # Return a button
+                mock_builder_cls.return_value = mock_builder
+
+                mock_table = MagicMock()
+                mock_table_cls.return_value = mock_table
+
+                result = tab._create_left_panel()
+
+                # Verify panel setup
+                mock_panel.setLayout.assert_called_once_with(mock_vlayout)
+
+                # Verify toolbar buttons created
+                assert mock_builder.create_button.call_count >= 3  # add, edit, delete
+
+                # Verify character table created
+                mock_table_cls.assert_called_once_with(tab.character_manager)
+                assert result == mock_panel
+
+    def test_create_left_panel_with_settings_sync(self):
+        """Test _create_left_panel adds scan button when settings_sync available"""
+        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+
+        with patch.object(CharactersTeamsTab, '__init__', return_value=None):
+            tab = CharactersTeamsTab.__new__(CharactersTeamsTab)
+            tab.character_manager = MagicMock()
+            tab.settings_sync = MagicMock()  # Has settings_sync
+            tab._add_character = MagicMock()
+            tab._edit_character = MagicMock()
+            tab._delete_character = MagicMock()
+            tab._scan_eve_folder = MagicMock()
+
+            with patch('eve_overview_pro.ui.characters_teams_tab.QWidget'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QVBoxLayout'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QHBoxLayout'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.ToolbarBuilder') as mock_builder_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.CharacterTable'):
+
+                mock_builder = MagicMock()
+                mock_builder.create_button.return_value = MagicMock()
+                mock_builder_cls.return_value = mock_builder
+
+                tab._create_left_panel()
+
+                # Verify scan_eve_folder button was requested
+                button_names = [call[0][0] for call in mock_builder.create_button.call_args_list]
+                assert "scan_eve_folder" in button_names
+
+    def test_create_left_panel_handles_none_buttons(self):
+        """Test _create_left_panel handles None return from create_button"""
+        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+
+        with patch.object(CharactersTeamsTab, '__init__', return_value=None):
+            tab = CharactersTeamsTab.__new__(CharactersTeamsTab)
+            tab.character_manager = MagicMock()
+            tab.settings_sync = None
+            tab._add_character = MagicMock()
+            tab._edit_character = MagicMock()
+            tab._delete_character = MagicMock()
+
+            with patch('eve_overview_pro.ui.characters_teams_tab.QWidget') as mock_widget_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QVBoxLayout'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QHBoxLayout') as mock_hlayout_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.ToolbarBuilder') as mock_builder_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.CharacterTable'):
+
+                mock_panel = MagicMock()
+                mock_widget_cls.return_value = mock_panel
+
+                mock_hlayout = MagicMock()
+                mock_hlayout_cls.return_value = mock_hlayout
+
+                mock_builder = MagicMock()
+                mock_builder.create_button.return_value = None  # Return None
+                mock_builder_cls.return_value = mock_builder
+
+                result = tab._create_left_panel()
+
+                # Should not crash, toolbar addWidget not called for None buttons
+                # But addStretch should still be called
+                mock_hlayout.addStretch.assert_called_once()
+                assert result == mock_panel
+
+    def test_create_right_panel_creates_team_selector(self):
+        """Test _create_right_panel creates team selector combo"""
+        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+
+        with patch.object(CharactersTeamsTab, '__init__', return_value=None):
+            tab = CharactersTeamsTab.__new__(CharactersTeamsTab)
+            tab.character_manager = MagicMock()
+            tab.layout_manager = MagicMock()
+            tab.character_table = MagicMock()  # Set by _create_left_panel
+            tab._on_team_selected = MagicMock()
+            tab._on_team_modified = MagicMock()
+            tab._refresh_teams = MagicMock()
+
+            with patch('eve_overview_pro.ui.characters_teams_tab.QWidget') as mock_widget_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QVBoxLayout') as mock_vlayout_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QHBoxLayout') as mock_hlayout_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QLabel'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QComboBox') as mock_combo_cls, \
+                 patch('eve_overview_pro.ui.characters_teams_tab.TeamBuilder') as mock_builder_cls:
+
+                mock_panel = MagicMock()
+                mock_widget_cls.return_value = mock_panel
+
+                mock_vlayout = MagicMock()
+                mock_vlayout_cls.return_value = mock_vlayout
+
+                mock_hlayout = MagicMock()
+                mock_hlayout_cls.return_value = mock_hlayout
+
+                mock_combo = MagicMock()
+                mock_combo_cls.return_value = mock_combo
+
+                mock_team_builder = MagicMock()
+                mock_builder_cls.return_value = mock_team_builder
+
+                result = tab._create_right_panel()
+
+                # Verify combo created and connected
+                mock_combo.currentTextChanged.connect.assert_called_once()
+                tab._refresh_teams.assert_called_once()
+
+                # Verify team builder created
+                mock_builder_cls.assert_called_once_with(tab.character_manager, tab.layout_manager)
+                mock_team_builder.team_modified.connect.assert_called_once()
+
+                assert result == mock_panel
+                assert tab.team_combo == mock_combo
+                assert tab.team_builder == mock_team_builder
+
+    def test_create_right_panel_connects_character_table(self):
+        """Test _create_right_panel connects character_table to team_builder"""
+        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+
+        with patch.object(CharactersTeamsTab, '__init__', return_value=None):
+            tab = CharactersTeamsTab.__new__(CharactersTeamsTab)
+            tab.character_manager = MagicMock()
+            tab.layout_manager = MagicMock()
+            tab.character_table = MagicMock()  # Already created
+            tab._on_team_selected = MagicMock()
+            tab._on_team_modified = MagicMock()
+            tab._refresh_teams = MagicMock()
+
+            with patch('eve_overview_pro.ui.characters_teams_tab.QWidget'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QVBoxLayout'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QHBoxLayout'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QLabel'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.QComboBox'), \
+                 patch('eve_overview_pro.ui.characters_teams_tab.TeamBuilder') as mock_builder_cls:
+
+                mock_team_builder = MagicMock()
+                mock_builder_cls.return_value = mock_team_builder
+
+                tab._create_right_panel()
+
+                # Verify character_table.character_selected connected to team_builder.add_member
+                tab.character_table.character_selected.connect.assert_called_once_with(
+                    mock_team_builder.add_member
+                )
