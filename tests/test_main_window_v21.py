@@ -57,6 +57,7 @@ def create_mock_window():
     window._open_url = lambda url: MainWindowV21._open_url(window, url)
     window._open_donation_link = lambda: MainWindowV21._open_donation_link(window)
     window._on_new_character_discovered = lambda c, wid, t: MainWindowV21._on_new_character_discovered(window, c, wid, t)
+    window._apply_low_power_mode = lambda enabled: MainWindowV21._apply_low_power_mode(window, enabled)
 
     return window
 
@@ -1602,3 +1603,130 @@ class TestCreateSettingsTab:
 
         # Should connect settings_changed signal
         assert mock_tab.settings_changed.connect.called
+
+
+# Test _apply_low_power_mode
+class TestApplyLowPowerMode:
+    """Tests for _apply_low_power_mode method"""
+
+    def test_enable_low_power_mode(self):
+        """Test enabling low power mode"""
+        window = create_mock_window()
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.refresh_rate_spin = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = 30  # previous FPS
+        window.statusBar = MagicMock(return_value=MagicMock())
+
+        window._apply_low_power_mode(True)
+
+        # Should set FPS to 5
+        window.main_tab.window_manager.set_refresh_rate.assert_called_with(5)
+        # Should update spinner
+        window.main_tab.refresh_rate_spin.setValue.assert_called_with(5)
+        # Should disable alerts
+        window.settings_manager.set.assert_called()
+        # Should show status message
+        window.statusBar().showMessage.assert_called()
+
+    def test_disable_low_power_mode(self):
+        """Test disabling low power mode restores previous settings"""
+        window = create_mock_window()
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.refresh_rate_spin = MagicMock()
+        window.settings_manager = MagicMock()
+        window.statusBar = MagicMock(return_value=MagicMock())
+
+        # Simulate that low power mode was previously enabled
+        window._low_power_previous = {'fps': 30, 'alerts': True}
+
+        window._apply_low_power_mode(False)
+
+        # Should restore FPS to 30
+        window.main_tab.window_manager.set_refresh_rate.assert_called_with(30)
+        # Should update spinner
+        window.main_tab.refresh_rate_spin.setValue.assert_called_with(30)
+        # Should restore alerts
+        window.settings_manager.set.assert_called()
+        # Should show status message
+        window.statusBar().showMessage.assert_called()
+
+    def test_enable_low_power_mode_stores_previous(self):
+        """Test that enabling stores previous settings for restoration"""
+        window = create_mock_window()
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.refresh_rate_spin = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.side_effect = lambda k, d=None: {
+            "performance.default_refresh_rate": 45,
+            "alerts.enabled": True
+        }.get(k, d)
+        window.statusBar = MagicMock(return_value=MagicMock())
+
+        window._apply_low_power_mode(True)
+
+        # Should have stored previous values
+        assert hasattr(window, '_low_power_previous')
+        assert window._low_power_previous['fps'] == 45
+        assert window._low_power_previous['alerts'] is True
+
+    def test_disable_low_power_mode_without_previous(self):
+        """Test disabling when no previous settings stored"""
+        window = create_mock_window()
+        window.main_tab = MagicMock()
+        window.settings_manager = MagicMock()
+        window.statusBar = MagicMock(return_value=MagicMock())
+
+        # No _low_power_previous attribute
+        window._apply_low_power_mode(False)
+
+        # Should still show status message
+        window.statusBar().showMessage.assert_called()
+
+    def test_enable_low_power_no_main_tab(self):
+        """Test enabling low power mode when main_tab doesn't exist"""
+        window = create_mock_window()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = 30
+        window.statusBar = MagicMock(return_value=MagicMock())
+
+        # Remove main_tab attribute
+        del window.main_tab
+
+        # Should not raise
+        window._apply_low_power_mode(True)
+
+        # Should still show status
+        window.statusBar().showMessage.assert_called()
+
+
+# Test _apply_setting for low_power_mode
+class TestApplySettingLowPowerMode:
+    """Tests for _apply_setting with low_power_mode"""
+
+    def test_apply_setting_low_power_mode_enabled(self):
+        """Test applying low_power_mode setting (enabled)"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window._apply_low_power_mode = MagicMock()
+
+        MainWindowV21._apply_setting(window, "performance.low_power_mode", True)
+
+        window._apply_low_power_mode.assert_called_once_with(True)
+
+    def test_apply_setting_low_power_mode_disabled(self):
+        """Test applying low_power_mode setting (disabled)"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window._apply_low_power_mode = MagicMock()
+
+        MainWindowV21._apply_setting(window, "performance.low_power_mode", False)
+
+        window._apply_low_power_mode.assert_called_once_with(False)
