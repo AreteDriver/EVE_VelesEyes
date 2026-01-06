@@ -19,7 +19,6 @@ jobs:
   lint:
     name: Lint & Format
     runs-on: ubuntu-latest
-    continue-on-error: true  # Report issues but don't fail CI
     steps:
       - uses: actions/checkout@v6
 
@@ -57,7 +56,7 @@ jobs:
           pip install mypy types-requests types-cachetools
 
       - name: Run mypy
-        run: mypy . --ignore-missing-imports --no-error-summary || true
+        run: mypy . --ignore-missing-imports --no-error-summary
 
   test:
     name: Test (Python ${{ matrix.python-version }})
