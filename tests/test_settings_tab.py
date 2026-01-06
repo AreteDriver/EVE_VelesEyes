@@ -110,6 +110,28 @@ class TestPerformancePanel:
 
         assert hasattr(PerformancePanel, 'setting_changed')
 
+    @patch('eve_overview_pro.ui.settings_tab.QWidget.__init__')
+    def test_on_low_power_changed_emits_signal(self, mock_widget):
+        """Test _on_low_power_changed emits setting_changed with checkbox state"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.settings_tab import PerformancePanel
+
+        mock_settings = MagicMock()
+        mock_settings.get.return_value = 30
+
+        with patch.object(PerformancePanel, '_setup_ui'):
+            panel = PerformancePanel(mock_settings)
+            panel.low_power_check = MagicMock()
+            panel.low_power_check.isChecked.return_value = True
+            panel.setting_changed = MagicMock()
+
+            panel._on_low_power_changed()
+
+            panel.setting_changed.emit.assert_called_once_with(
+                "performance.low_power_mode", True
+            )
+
 
 # Test AlertsPanel
 class TestAlertsPanel:
