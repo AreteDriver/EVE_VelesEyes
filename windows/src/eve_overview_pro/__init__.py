@@ -1,2 +1,2 @@
-"""Argus Overview v2.4"""
-__version__ = "2.4.2"
+"""Argus Overview v2.6"""
+__version__ = "2.6.0"

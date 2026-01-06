@@ -4,7 +4,7 @@
 Professional multi-boxing tool for EVE Online on Linux. Window preview management, team organization, layout presets, and settings synchronization.
 
 **Stack**: Python, PySide6 (Qt), python-xlib
-**Version**: 2.4.x
+**Version**: 2.6.x
 **Platforms**: Linux (native), Windows (separate repo)
 
 ---
