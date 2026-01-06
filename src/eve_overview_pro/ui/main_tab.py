@@ -639,8 +639,8 @@ class WindowPreviewWidget(QWidget):
         self.settings_manager = settings_manager
 
         # State
-        self.current_pixmap = None
-        self.alert_level = None
+        self.current_pixmap: Optional[QPixmap] = None
+        self.alert_level: Optional[AlertLevel] = None
         self.alert_flash_counter = 0
         self.zoom_factor = 0.3  # 30% scale
 
@@ -1312,7 +1312,8 @@ class MainTab(QWidget):
 
         # Add lock button (store reference for state updates)
         self.lock_btn = toolbar_builder.create_button("lock_positions", self._toggle_lock)
-        toolbar_layout.addWidget(self.lock_btn)
+        if self.lock_btn:
+            toolbar_layout.addWidget(self.lock_btn)
 
         # Add minimize inactive button (store reference for state indicator)
         self.minimize_inactive_btn = toolbar_builder.create_button(

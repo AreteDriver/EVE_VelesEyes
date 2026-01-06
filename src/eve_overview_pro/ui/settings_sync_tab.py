@@ -413,7 +413,8 @@ class SettingsSyncTab(QWidget):
 
     def _scan_settings(self):
         """Start scanning for EVE settings"""
-        self.scan_btn.setEnabled(False)
+        if self.scan_btn:
+            self.scan_btn.setEnabled(False)
         self.progress_bar.setVisible(True)
         self.progress_bar.setValue(0)
         self._log("Starting EVE settings scan...")
@@ -433,7 +434,8 @@ class SettingsSyncTab(QWidget):
     def _on_scan_complete(self, characters: list):
         """Handle scan completion"""
         self.scanned_characters = characters
-        self.scan_btn.setEnabled(True)
+        if self.scan_btn:
+            self.scan_btn.setEnabled(True)
         self.progress_bar.setVisible(False)
 
         self._log(f"Scan complete. Found {len(characters)} character(s).")
@@ -455,7 +457,8 @@ class SettingsSyncTab(QWidget):
 
     def _on_scan_error(self, error_msg: str):
         """Handle scan error"""
-        self.scan_btn.setEnabled(True)
+        if self.scan_btn:
+            self.scan_btn.setEnabled(True)
         self.progress_bar.setVisible(False)
         self._log(f"ERROR: {error_msg}")
         QMessageBox.critical(self, "Scan Error", f"Failed to scan settings:\n{error_msg}")
@@ -620,8 +623,10 @@ class SettingsSyncTab(QWidget):
 
     def _on_sync_complete(self, results: dict):
         """Handle sync completion"""
-        self.sync_btn.setEnabled(True)
-        self.preview_btn.setEnabled(True)
+        if self.sync_btn:
+            self.sync_btn.setEnabled(True)
+        if self.preview_btn:
+            self.preview_btn.setEnabled(True)
         self.progress_bar.setVisible(False)
 
         # Log results
@@ -642,8 +647,10 @@ class SettingsSyncTab(QWidget):
 
     def _on_sync_error(self, error_msg: str):
         """Handle sync error"""
-        self.sync_btn.setEnabled(True)
-        self.preview_btn.setEnabled(True)
+        if self.sync_btn:
+            self.sync_btn.setEnabled(True)
+        if self.preview_btn:
+            self.preview_btn.setEnabled(True)
         self.progress_bar.setVisible(False)
         self._log(f"ERROR: {error_msg}")
         QMessageBox.critical(self, "Sync Error", f"Failed to sync settings:\n{error_msg}")

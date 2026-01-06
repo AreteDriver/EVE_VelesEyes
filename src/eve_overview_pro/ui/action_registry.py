@@ -18,7 +18,7 @@ but must not create duplicate clickable UI.
 import logging
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set
 
 
 class ActionScope(Enum):
@@ -696,7 +696,7 @@ class ActionRegistry:
             self.logger.warning(f"No handler bound for action: {action_id}")
 
 
-def audit_actions(registry: Optional[ActionRegistry] = None) -> Dict:
+def audit_actions(registry: Optional[ActionRegistry] = None) -> Dict[str, Any]:
     """
     Audit the action registry for duplicates and issues.
 
@@ -706,7 +706,7 @@ def audit_actions(registry: Optional[ActionRegistry] = None) -> Dict:
     if registry is None:
         registry = ActionRegistry.get_instance()
 
-    results = {
+    results: Dict[str, Any] = {
         "total_actions": 0,
         "by_home": {},
         "by_scope": {},

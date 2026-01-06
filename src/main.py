@@ -30,6 +30,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Optional, TextIO
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QPalette
@@ -50,7 +51,7 @@ class SingleInstance:
 
     def __init__(self, app_name: str = "argus-overview"):
         self.app_name = app_name
-        self.lock_file = None
+        self.lock_file: Optional[TextIO] = None
         self.lock_path = Path.home() / ".config" / "argus-overview" / f"{app_name}.lock"
 
         # Ensure directory exists

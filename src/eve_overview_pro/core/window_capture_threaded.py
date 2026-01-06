@@ -8,7 +8,7 @@ import logging
 import subprocess
 import threading
 from queue import Empty, Queue
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from PIL import Image
 
@@ -19,9 +19,9 @@ class WindowCaptureThreaded:
     def __init__(self, max_workers: int = 4):
         self.logger = logging.getLogger(__name__)
         self.max_workers = max_workers
-        self.capture_queue = Queue()
-        self.result_queue = Queue()
-        self.workers = []
+        self.capture_queue: Queue[Any] = Queue()
+        self.result_queue: Queue[Any] = Queue()
+        self.workers: List[threading.Thread] = []
         self.running = False
 
     def start(self):
@@ -90,7 +90,7 @@ class WindowCaptureThreaded:
             )
 
             if result.returncode == 0 and result.stdout:
-                img = Image.open(io.BytesIO(result.stdout))
+                img: Image.Image = Image.open(io.BytesIO(result.stdout))
 
                 if scale != 1.0:
                     new_size = (int(img.width * scale), int(img.height * scale))

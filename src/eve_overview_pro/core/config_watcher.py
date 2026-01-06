@@ -5,7 +5,7 @@ v2.2 Feature: Automatically detect and apply config changes without restart
 
 import logging
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 
 from PySide6.QtCore import QObject, QTimer, Signal
 
@@ -56,8 +56,8 @@ class ConfigWatcher(QObject):
         self._debounce_timer.setSingleShot(True)
         self._debounce_timer.timeout.connect(self._emit_change)
 
-        # Watchdog observer
-        self._observer: Optional[Observer] = None
+        # Watchdog observer (Any type to handle conditional import)
+        self._observer: Optional[Any] = None
         self._running = False
 
         # Fallback polling timer

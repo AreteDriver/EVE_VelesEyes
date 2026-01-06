@@ -6,6 +6,7 @@ v2.2: Added system tray, auto-discovery, themes, hotkey enhancements
 
 import logging
 from pathlib import Path
+from typing import Optional
 
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent, QIcon
@@ -224,7 +225,7 @@ class MainWindowV21(QMainWindow):
 
         return members
 
-    def _get_window_id_for_character(self, char_name: str) -> str:
+    def _get_window_id_for_character(self, char_name: str) -> Optional[str]:
         """Get window ID for a character name"""
         if hasattr(self, "main_tab") and hasattr(self.main_tab, "window_manager"):
             for window_id, frame in self.main_tab.window_manager.preview_frames.items():

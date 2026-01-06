@@ -237,8 +237,8 @@ class PositionManager:
     def _get_primary_screen(self) -> QRect:
         """Get primary screen geometry"""
         app = QApplication.instance()
-        if app:
-            screen = app.primaryScreen()
+        if app is not None:
+            screen = app.primaryScreen()  # type: ignore[attr-defined]
             if screen:
                 return screen.availableGeometry()
 
@@ -263,7 +263,11 @@ class PositionManager:
         self.logger.info(f"Applied layout preset with {len(positions)} positions")
 
     def calculate_grid_positions(
-        self, window_ids: List[str], columns: int = 3, start_x: int = None, start_y: int = None
+        self,
+        window_ids: List[str],
+        columns: int = 3,
+        start_x: Optional[int] = None,
+        start_y: Optional[int] = None,
     ) -> Dict[str, ThumbnailPosition]:
         """
         Calculate grid positions for thumbnails.

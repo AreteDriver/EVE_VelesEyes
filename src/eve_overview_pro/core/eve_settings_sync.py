@@ -337,7 +337,7 @@ class EVESettingsSync:
         Returns:
             Dict mapping target character names to success status
         """
-        results = {}
+        results: Dict[str, bool] = {}
 
         if source_char not in self.character_settings:
             self.logger.error(f"Source character '{source_char}' not found")

@@ -221,7 +221,9 @@ class ThemeManager:
 
         # Get application
         if app is None:
-            app = QApplication.instance()
+            instance = QApplication.instance()
+            if instance is not None:
+                app = instance  # type: ignore[assignment]
 
         if app is None:
             self.logger.error("No QApplication instance")
