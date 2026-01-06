@@ -2,6 +2,7 @@
 Unit tests for the Settings Manager module
 Tests SettingsManager class with JSON persistence and nested key support
 """
+
 import json
 import tempfile
 from pathlib import Path
@@ -28,11 +29,11 @@ class TestSettingsManagerInit:
         """Test that init uses default config dir when none specified"""
         from eve_overview_pro.ui.settings_manager import SettingsManager
 
-        with patch.object(Path, 'home') as mock_home:
+        with patch.object(Path, "home") as mock_home:
             mock_home.return_value = Path("/mock/home")
-            with patch.object(Path, 'mkdir'):
-                with patch.object(Path, 'exists', return_value=False):
-                    with patch.object(SettingsManager, 'load_settings'):
+            with patch.object(Path, "mkdir"):
+                with patch.object(Path, "exists", return_value=False):
+                    with patch.object(SettingsManager, "load_settings"):
                         manager = SettingsManager(config_dir=None)
                         # Check it would use default path
                         assert "argus-overview" in str(manager.config_dir)
@@ -166,7 +167,7 @@ class TestLoadSettings:
 
             # Create custom settings file
             custom_settings = {"version": "test", "custom_key": "custom_value"}
-            with open(settings_file, 'w') as f:
+            with open(settings_file, "w") as f:
                 json.dump(custom_settings, f)
 
             manager = SettingsManager(config_dir=config_dir)
@@ -186,7 +187,7 @@ class TestLoadSettings:
 
             # Create partial settings file
             partial_settings = {"version": "partial", "general": {"start_with_system": True}}
-            with open(settings_file, 'w') as f:
+            with open(settings_file, "w") as f:
                 json.dump(partial_settings, f)
 
             manager = SettingsManager(config_dir=config_dir)
@@ -206,7 +207,7 @@ class TestLoadSettings:
             config_dir.mkdir(parents=True, exist_ok=True)
 
             # Create invalid JSON file
-            with open(settings_file, 'w') as f:
+            with open(settings_file, "w") as f:
                 f.write("{ invalid json }")
 
             manager = SettingsManager(config_dir=config_dir)
@@ -264,7 +265,7 @@ class TestSaveSettings:
             result = manager.save_settings()
 
             assert result is True
-            temp_file = manager.settings_file.with_suffix('.json.tmp')
+            temp_file = manager.settings_file.with_suffix(".json.tmp")
             assert not temp_file.exists()
 
     def test_save_settings_returns_false_on_error(self):
@@ -277,7 +278,7 @@ class TestSaveSettings:
             manager = SettingsManager(config_dir=config_dir)
 
             # Make the file read-only by removing parent directory write permission
-            with patch('builtins.open', side_effect=PermissionError("denied")):
+            with patch("builtins.open", side_effect=PermissionError("denied")):
                 result = manager.save_settings()
 
             assert result is False
@@ -543,10 +544,10 @@ class TestExportImport:
                 "settings": {
                     "version": "imported",
                     "general": {"start_with_system": True},
-                    "custom_imported": "value"
-                }
+                    "custom_imported": "value",
+                },
             }
-            with open(import_path, 'w') as f:
+            with open(import_path, "w") as f:
                 json.dump(import_data, f)
 
             manager = SettingsManager(config_dir=config_dir)
@@ -567,11 +568,8 @@ class TestExportImport:
             import_path = Path(tmpdir) / "old_format.json"
 
             # Create old format file (no wrapper)
-            old_format = {
-                "version": "old",
-                "general": {"start_with_system": True}
-            }
-            with open(import_path, 'w') as f:
+            old_format = {"version": "old", "general": {"start_with_system": True}}
+            with open(import_path, "w") as f:
                 json.dump(old_format, f)
 
             manager = SettingsManager(config_dir=config_dir)
@@ -589,7 +587,7 @@ class TestExportImport:
             config_dir = Path(tmpdir) / "config"
             import_path = Path(tmpdir) / "invalid.json"
 
-            with open(import_path, 'w') as f:
+            with open(import_path, "w") as f:
                 f.write("not valid json")
 
             manager = SettingsManager(config_dir=config_dir)
@@ -773,7 +771,7 @@ class TestExceptionHandling:
             manager = SettingsManager(config_dir=config_dir)
 
             # Try to export to an invalid path (directory, not file)
-            with patch('builtins.open', side_effect=PermissionError("denied")):
+            with patch("builtins.open", side_effect=PermissionError("denied")):
                 result = manager.export_config(Path(tmpdir) / "export.json")
 
             assert result is False
@@ -788,18 +786,15 @@ class TestExceptionHandling:
 
             # Create valid import file
             import_data = {
-                "settings": {
-                    "version": "imported",
-                    "general": {"start_with_system": True}
-                }
+                "settings": {"version": "imported", "general": {"start_with_system": True}}
             }
-            with open(import_path, 'w') as f:
+            with open(import_path, "w") as f:
                 json.dump(import_data, f)
 
             manager = SettingsManager(config_dir=config_dir)
 
             # Make save_settings return False
-            with patch.object(manager, 'save_settings', return_value=False):
+            with patch.object(manager, "save_settings", return_value=False):
                 result = manager.import_config(import_path)
 
             assert result is False
@@ -825,7 +820,7 @@ class TestExceptionHandling:
             manager = SettingsManager(config_dir=Path(tmpdir))
 
             # Make get() raise an exception
-            with patch.object(manager, 'get', side_effect=Exception("get failed")):
+            with patch.object(manager, "get", side_effect=Exception("get failed")):
                 result = manager.validate()
 
             assert result is False
@@ -877,10 +872,7 @@ class TestEdgeCases:
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
 
-            complex_value = {
-                "nested": {"deeply": {"value": [1, 2, 3]}},
-                "list": ["a", "b", "c"]
-            }
+            complex_value = {"nested": {"deeply": {"value": [1, 2, 3]}}, "list": ["a", "b", "c"]}
 
             result = manager.set("complex", complex_value)
 
@@ -902,6 +894,6 @@ class TestEdgeCases:
             assert manager.get("unicode_test") == unicode_value
 
             # Verify it persists correctly
-            with open(manager.settings_file, encoding='utf-8') as f:
+            with open(manager.settings_file, encoding="utf-8") as f:
                 saved = json.load(f)
             assert saved["unicode_test"] == unicode_value

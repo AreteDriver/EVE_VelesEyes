@@ -3,6 +3,7 @@ UI modules for Argus Overview
 
 v2.4: Added ActionRegistry for UI action management
 """
+
 from eve_overview_pro.ui.action_registry import (
     ActionRegistry,
     ActionScope,

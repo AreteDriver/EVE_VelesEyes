@@ -53,13 +53,18 @@ argus-overview = "main:main"
 [tool.ruff]
 line-length = 100
 target-version = "py38"
+exclude = ["windows/", "build/", "dist/", ".venv/"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
 ignore = [
     "E501",  # Line too long (handled by formatter)
     "N802",  # Function name should be lowercase (Qt method overrides use camelCase)
+    "N806",  # Variable in function should be lowercase (Mock class variables)
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F811", "B017"]  # Duplicate class definitions, bare exceptions in test assertions
 
 [tool.black]
 line-length = 100

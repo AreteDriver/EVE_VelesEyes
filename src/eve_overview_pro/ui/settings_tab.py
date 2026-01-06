@@ -2,6 +2,7 @@
 Settings Tab - Application settings configuration
 Configure all application settings with category-based panels
 """
+
 import logging
 from typing import Any
 
@@ -67,8 +68,7 @@ class HotkeyEditDialog(QDialog):
 
         # Format hint
         hint_label = QLabel(
-            "Format: <ctrl>+<alt>+<key> or <shift>+<key>\n"
-            "Examples: <ctrl>+<alt>+1, <shift>+f5"
+            "Format: <ctrl>+<alt>+<key> or <shift>+<key>\nExamples: <ctrl>+<alt>+1, <shift>+f5"
         )
         hint_label.setStyleSheet("color: #666; font-size: 9pt;")
         hint_label.setWordWrap(True)
@@ -86,8 +86,7 @@ class HotkeyEditDialog(QDialog):
 
         # Buttons
         button_box = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok |
-            QDialogButtonBox.StandardButton.Cancel
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         button_box.accepted.connect(self._save_hotkey)
         button_box.rejected.connect(self.reject)
@@ -106,7 +105,7 @@ class HotkeyEditDialog(QDialog):
             self,
             "Test Hotkey",
             f"Hotkey '{combo}' would be registered for action '{self.action}'.\n\n"
-            "Note: Actual testing requires hotkey manager integration."
+            "Note: Actual testing requires hotkey manager integration.",
         )
 
     def _save_hotkey(self):
@@ -117,11 +116,11 @@ class HotkeyEditDialog(QDialog):
             return
 
         # Basic validation
-        if not ('<' in combo and '>' in combo):
+        if not ("<" in combo and ">" in combo):
             QMessageBox.warning(
-                self, "Invalid Format",
-                "Hotkey must be in format: <modifier>+<key>\n"
-                "Example: <ctrl>+<alt>+1"
+                self,
+                "Invalid Format",
+                "Hotkey must be in format: <modifier>+<key>\nExample: <ctrl>+<alt>+1",
             )
             return
 
@@ -134,8 +133,10 @@ class HotkeyEditDialog(QDialog):
 
 # Settings Panels
 
+
 class GeneralPanel(QWidget):
     """General application settings"""
+
     setting_changed = Signal(str, object)
 
     def __init__(self, settings_manager):
@@ -155,7 +156,9 @@ class GeneralPanel(QWidget):
             self.settings_manager.get("general.start_with_system", False)
         )
         self.start_system_check.stateChanged.connect(
-            lambda: self.setting_changed.emit("general.start_with_system", self.start_system_check.isChecked())
+            lambda: self.setting_changed.emit(
+                "general.start_with_system", self.start_system_check.isChecked()
+            )
         )
         form.addRow("Start with system:", self.start_system_check)
 
@@ -165,7 +168,9 @@ class GeneralPanel(QWidget):
             self.settings_manager.get("general.minimize_to_tray", True)
         )
         self.minimize_tray_check.stateChanged.connect(
-            lambda: self.setting_changed.emit("general.minimize_to_tray", self.minimize_tray_check.isChecked())
+            lambda: self.setting_changed.emit(
+                "general.minimize_to_tray", self.minimize_tray_check.isChecked()
+            )
         )
         form.addRow("Minimize to tray:", self.minimize_tray_check)
 
@@ -175,16 +180,16 @@ class GeneralPanel(QWidget):
             self.settings_manager.get("general.show_notifications", True)
         )
         self.notifications_check.stateChanged.connect(
-            lambda: self.setting_changed.emit("general.show_notifications", self.notifications_check.isChecked())
+            lambda: self.setting_changed.emit(
+                "general.show_notifications", self.notifications_check.isChecked()
+            )
         )
         form.addRow("Show notifications:", self.notifications_check)
 
         # Auto-save interval
         self.auto_save_spin = QSpinBox()
         self.auto_save_spin.setRange(1, 60)
-        self.auto_save_spin.setValue(
-            self.settings_manager.get("general.auto_save_interval", 5)
-        )
+        self.auto_save_spin.setValue(self.settings_manager.get("general.auto_save_interval", 5))
         self.auto_save_spin.setSuffix(" min")
         self.auto_save_spin.valueChanged.connect(
             lambda v: self.setting_changed.emit("general.auto_save_interval", v)
@@ -199,6 +204,7 @@ class GeneralPanel(QWidget):
 
 class PerformancePanel(QWidget):
     """Performance settings"""
+
     setting_changed = Signal(str, object)
 
     def __init__(self, settings_manager):
@@ -225,9 +231,7 @@ class PerformancePanel(QWidget):
             "• Reduces CPU/GPU load significantly\n\n"
             "Use when running multiple EVE clients."
         )
-        self.low_power_check.setStyleSheet(
-            "QCheckBox { font-weight: bold; color: #e67e22; }"
-        )
+        self.low_power_check.setStyleSheet("QCheckBox { font-weight: bold; color: #e67e22; }")
         form.addRow("⚡ Low Power Mode:", self.low_power_check)
 
         # Disable previews (GPU/CPU saver)
@@ -236,7 +240,9 @@ class PerformancePanel(QWidget):
             self.settings_manager.get("performance.disable_previews", False)
         )
         self.disable_previews_check.stateChanged.connect(
-            lambda: self.setting_changed.emit("performance.disable_previews", self.disable_previews_check.isChecked())
+            lambda: self.setting_changed.emit(
+                "performance.disable_previews", self.disable_previews_check.isChecked()
+            )
         )
         self.disable_previews_check.setToolTip(
             "Disable all window preview captures.\n"
@@ -260,9 +266,7 @@ class PerformancePanel(QWidget):
         # Capture workers
         self.workers_spin = QSpinBox()
         self.workers_spin.setRange(1, 16)
-        self.workers_spin.setValue(
-            self.settings_manager.get("performance.capture_workers", 4)
-        )
+        self.workers_spin.setValue(self.settings_manager.get("performance.capture_workers", 4))
         self.workers_spin.valueChanged.connect(
             lambda v: self.setting_changed.emit("performance.capture_workers", v)
         )
@@ -270,20 +274,18 @@ class PerformancePanel(QWidget):
 
         # Caching
         self.caching_check = QCheckBox()
-        self.caching_check.setChecked(
-            self.settings_manager.get("performance.enable_caching", True)
-        )
+        self.caching_check.setChecked(self.settings_manager.get("performance.enable_caching", True))
         self.caching_check.stateChanged.connect(
-            lambda: self.setting_changed.emit("performance.enable_caching", self.caching_check.isChecked())
+            lambda: self.setting_changed.emit(
+                "performance.enable_caching", self.caching_check.isChecked()
+            )
         )
         form.addRow("Enable caching:", self.caching_check)
 
         # Cache size
         self.cache_size_spin = QSpinBox()
         self.cache_size_spin.setRange(10, 1000)
-        self.cache_size_spin.setValue(
-            self.settings_manager.get("performance.cache_size_mb", 100)
-        )
+        self.cache_size_spin.setValue(self.settings_manager.get("performance.cache_size_mb", 100))
         self.cache_size_spin.setSuffix(" MB")
         self.cache_size_spin.valueChanged.connect(
             lambda v: self.setting_changed.emit("performance.cache_size_mb", v)
@@ -313,6 +315,7 @@ class PerformancePanel(QWidget):
 
 class AlertsPanel(QWidget):
     """Alert settings"""
+
     setting_changed = Signal(str, object)
 
     def __init__(self, settings_manager):
@@ -325,9 +328,7 @@ class AlertsPanel(QWidget):
 
         # Enable alerts
         self.alerts_check = QCheckBox("Enable alerts")
-        self.alerts_check.setChecked(
-            self.settings_manager.get("alerts.enabled", True)
-        )
+        self.alerts_check.setChecked(self.settings_manager.get("alerts.enabled", True))
         self.alerts_check.stateChanged.connect(
             lambda: self.setting_changed.emit("alerts.enabled", self.alerts_check.isChecked())
         )
@@ -352,7 +353,9 @@ class AlertsPanel(QWidget):
             self.settings_manager.get("alerts.red_flash.visual_border", True)
         )
         self.red_flash_visual.stateChanged.connect(
-            lambda: self.setting_changed.emit("alerts.red_flash.visual_border", self.red_flash_visual.isChecked())
+            lambda: self.setting_changed.emit(
+                "alerts.red_flash.visual_border", self.red_flash_visual.isChecked()
+            )
         )
         red_flash_layout.addRow("Visual border:", self.red_flash_visual)
 
@@ -361,15 +364,15 @@ class AlertsPanel(QWidget):
             self.settings_manager.get("alerts.red_flash.sound_alert", False)
         )
         self.red_flash_sound.stateChanged.connect(
-            lambda: self.setting_changed.emit("alerts.red_flash.sound_alert", self.red_flash_sound.isChecked())
+            lambda: self.setting_changed.emit(
+                "alerts.red_flash.sound_alert", self.red_flash_sound.isChecked()
+            )
         )
         red_flash_layout.addRow("Sound alert:", self.red_flash_sound)
 
         self.red_flash_cooldown = QSpinBox()
         self.red_flash_cooldown.setRange(1, 60)
-        self.red_flash_cooldown.setValue(
-            self.settings_manager.get("alerts.red_flash.cooldown", 5)
-        )
+        self.red_flash_cooldown.setValue(self.settings_manager.get("alerts.red_flash.cooldown", 5))
         self.red_flash_cooldown.setSuffix(" sec")
         self.red_flash_cooldown.valueChanged.connect(
             lambda v: self.setting_changed.emit("alerts.red_flash.cooldown", v)
@@ -398,7 +401,9 @@ class AlertsPanel(QWidget):
             self.settings_manager.get("alerts.screen_change.visual_border", True)
         )
         self.screen_change_visual.stateChanged.connect(
-            lambda: self.setting_changed.emit("alerts.screen_change.visual_border", self.screen_change_visual.isChecked())
+            lambda: self.setting_changed.emit(
+                "alerts.screen_change.visual_border", self.screen_change_visual.isChecked()
+            )
         )
         screen_change_layout.addRow("Visual border:", self.screen_change_visual)
 
@@ -411,6 +416,7 @@ class AlertsPanel(QWidget):
 
 class HotkeysPanel(QWidget):
     """Hotkey settings"""
+
     setting_changed = Signal(str, object)
 
     def __init__(self, settings_manager, hotkey_manager):
@@ -502,11 +508,14 @@ class HotkeysPanel(QWidget):
             QMessageBox.information(self, "No Selection", "Please select a hotkey to reset.")
             return
 
-        QMessageBox.information(self, "Feature", "Reset to default will be implemented in a future update.")
+        QMessageBox.information(
+            self, "Feature", "Reset to default will be implemented in a future update."
+        )
 
 
 class AppearancePanel(QWidget):
     """Appearance settings"""
+
     setting_changed = Signal(str, object)
 
     def __init__(self, settings_manager):
@@ -523,9 +532,7 @@ class AppearancePanel(QWidget):
         # Theme
         self.theme_combo = QComboBox()
         self.theme_combo.addItems(["dark", "light", "system"])
-        self.theme_combo.setCurrentText(
-            self.settings_manager.get("appearance.theme", "dark")
-        )
+        self.theme_combo.setCurrentText(self.settings_manager.get("appearance.theme", "dark"))
         self.theme_combo.currentTextChanged.connect(
             lambda v: self.setting_changed.emit("appearance.theme", v)
         )
@@ -534,9 +541,7 @@ class AppearancePanel(QWidget):
         # Font size
         self.font_size_spin = QSpinBox()
         self.font_size_spin.setRange(8, 16)
-        self.font_size_spin.setValue(
-            self.settings_manager.get("appearance.font_size", 10)
-        )
+        self.font_size_spin.setValue(self.settings_manager.get("appearance.font_size", 10))
         self.font_size_spin.setSuffix(" pt")
         self.font_size_spin.valueChanged.connect(
             lambda v: self.setting_changed.emit("appearance.font_size", v)
@@ -545,11 +550,11 @@ class AppearancePanel(QWidget):
 
         # Compact mode
         self.compact_check = QCheckBox()
-        self.compact_check.setChecked(
-            self.settings_manager.get("appearance.compact_mode", False)
-        )
+        self.compact_check.setChecked(self.settings_manager.get("appearance.compact_mode", False))
         self.compact_check.stateChanged.connect(
-            lambda: self.setting_changed.emit("appearance.compact_mode", self.compact_check.isChecked())
+            lambda: self.setting_changed.emit(
+                "appearance.compact_mode", self.compact_check.isChecked()
+            )
         )
         form.addRow("Compact mode:", self.compact_check)
 
@@ -574,12 +579,15 @@ class AppearancePanel(QWidget):
         color = QColorDialog.getColor(QColor(self.accent_color), self, "Select Accent Color")
         if color.isValid():
             self.accent_color = color.name()
-            self.accent_btn.setStyleSheet(f"background-color: {self.accent_color}; min-height: 30px;")
+            self.accent_btn.setStyleSheet(
+                f"background-color: {self.accent_color}; min-height: 30px;"
+            )
             self.setting_changed.emit("appearance.accent_color", self.accent_color)
 
 
 class AdvancedPanel(QWidget):
     """Advanced settings"""
+
     setting_changed = Signal(str, object)
 
     def __init__(self, settings_manager):
@@ -596,9 +604,7 @@ class AdvancedPanel(QWidget):
         # Log level
         self.log_level_combo = QComboBox()
         self.log_level_combo.addItems(["DEBUG", "INFO", "WARNING", "ERROR"])
-        self.log_level_combo.setCurrentText(
-            self.settings_manager.get("advanced.log_level", "INFO")
-        )
+        self.log_level_combo.setCurrentText(self.settings_manager.get("advanced.log_level", "INFO"))
         self.log_level_combo.currentTextChanged.connect(
             lambda v: self.setting_changed.emit("advanced.log_level", v)
         )
@@ -613,9 +619,7 @@ class AdvancedPanel(QWidget):
 
         # Enable debug
         self.debug_check = QCheckBox()
-        self.debug_check.setChecked(
-            self.settings_manager.get("advanced.enable_debug", False)
-        )
+        self.debug_check.setChecked(self.settings_manager.get("advanced.enable_debug", False))
         self.debug_check.stateChanged.connect(
             lambda: self.setting_changed.emit("advanced.enable_debug", self.debug_check.isChecked())
         )
@@ -648,17 +652,21 @@ class AdvancedPanel(QWidget):
 
     def _clear_cache(self):
         """Clear application cache"""
-        QMessageBox.information(self, "Clear Cache", "Cache clearing will be implemented in a future update.")
+        QMessageBox.information(
+            self, "Clear Cache", "Cache clearing will be implemented in a future update."
+        )
 
     def _export_settings(self):
         """Export settings to file"""
         from PySide6.QtWidgets import QFileDialog
+
         filename, _ = QFileDialog.getSaveFileName(
             self, "Export Settings", "", "JSON Files (*.json)"
         )
         if filename:
             try:
                 from pathlib import Path
+
                 self.settings_manager.export_config(Path(filename))
                 QMessageBox.information(self, "Success", f"Settings exported to {filename}")
             except Exception as e:
@@ -667,16 +675,19 @@ class AdvancedPanel(QWidget):
     def _import_settings(self):
         """Import settings from file"""
         from PySide6.QtWidgets import QFileDialog
+
         filename, _ = QFileDialog.getOpenFileName(
             self, "Import Settings", "", "JSON Files (*.json)"
         )
         if filename:
             try:
                 from pathlib import Path
+
                 self.settings_manager.import_config(Path(filename))
                 QMessageBox.information(
-                    self, "Success",
-                    f"Settings imported from {filename}\nRestart required to apply all changes."
+                    self,
+                    "Success",
+                    f"Settings imported from {filename}\nRestart required to apply all changes.",
                 )
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to import settings: {e}")
@@ -684,6 +695,7 @@ class AdvancedPanel(QWidget):
 
 class SettingsTab(QWidget):
     """Main Settings Tab widget"""
+
     settings_changed = Signal(str, object)  # key, value
 
     def __init__(self, settings_manager, hotkey_manager, alert_detector):
@@ -757,14 +769,7 @@ class SettingsTab(QWidget):
         self.category_tree = QTreeWidget()
         self.category_tree.setHeaderHidden(True)
 
-        categories = [
-            "General",
-            "Performance",
-            "Alerts",
-            "Hotkeys",
-            "Appearance",
-            "Advanced"
-        ]
+        categories = ["General", "Performance", "Alerts", "Hotkeys", "Appearance", "Advanced"]
 
         for category in categories:
             item = QTreeWidgetItem([category])
@@ -790,7 +795,7 @@ class SettingsTab(QWidget):
                 "Alerts": 2,
                 "Hotkeys": 3,
                 "Appearance": 4,
-                "Advanced": 5
+                "Advanced": 5,
             }
             category = current.text(0)
             if category in categories:
@@ -817,12 +822,13 @@ class SettingsTab(QWidget):
             self,
             "Confirm Reset",
             "Reset all settings to defaults?\n\nThis action cannot be undone.",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:
             self.settings_manager.reset_to_defaults()
             QMessageBox.information(
-                self, "Reset Complete",
-                "All settings have been reset to defaults.\nRestart required to apply changes."
+                self,
+                "Reset Complete",
+                "All settings have been reset to defaults.\nRestart required to apply changes.",
             )

@@ -11,6 +11,7 @@ Tests cover:
 - Screen change detection
 - History management
 """
+
 from unittest.mock import MagicMock
 
 import pytest
@@ -63,7 +64,7 @@ class TestAlertConfig:
             sound_enabled=True,
             visual_border=False,
             border_color="#00ff00",
-            border_flash_duration=5
+            border_flash_duration=5,
         )
 
         assert config.enabled is False
@@ -153,14 +154,14 @@ class TestAnalyzeFrame:
     def normal_image(self):
         """Create a normal (non-red) image"""
         # Create a blue/green image (no red)
-        img = Image.new('RGB', (100, 100), color=(50, 100, 150))
+        img = Image.new("RGB", (100, 100), color=(50, 100, 150))
         return img
 
     @pytest.fixture
     def red_image(self):
         """Create a predominantly red image"""
         # Create a very red image (simulates damage flash)
-        img = Image.new('RGB', (100, 100), color=(255, 50, 50))
+        img = Image.new("RGB", (100, 100), color=(255, 50, 50))
         return img
 
     def test_disabled_returns_none(self, detector, normal_image):
@@ -224,21 +225,21 @@ class TestRedFlashDetection:
     def test_pure_red_detected(self, detector):
         """Pure red image detected as flash"""
         detector.config.red_flash_threshold = 0.5
-        img = Image.new('RGB', (100, 100), color=(255, 0, 0))
+        img = Image.new("RGB", (100, 100), color=(255, 0, 0))
 
         result = detector._detect_red_flash(img)
         assert result
 
     def test_blue_not_detected(self, detector):
         """Blue image not detected as flash"""
-        img = Image.new('RGB', (100, 100), color=(0, 0, 255))
+        img = Image.new("RGB", (100, 100), color=(0, 0, 255))
 
         result = detector._detect_red_flash(img)
         assert not result
 
     def test_green_not_detected(self, detector):
         """Green image not detected as flash"""
-        img = Image.new('RGB', (100, 100), color=(0, 255, 0))
+        img = Image.new("RGB", (100, 100), color=(0, 255, 0))
 
         result = detector._detect_red_flash(img)
         assert not result
@@ -246,7 +247,7 @@ class TestRedFlashDetection:
     def test_threshold_respected(self, detector):
         """Threshold controls detection sensitivity"""
         # Create image with 50% red pixels
-        img = Image.new('RGB', (100, 100), color=(255, 0, 0))
+        img = Image.new("RGB", (100, 100), color=(255, 0, 0))
         pixels = img.load()
         for x in range(50, 100):
             for y in range(100):
@@ -263,7 +264,7 @@ class TestRedFlashDetection:
     def test_dark_red_not_detected(self, detector):
         """Dark red (below brightness threshold) not detected"""
         # Red must be > 200 to count
-        img = Image.new('RGB', (100, 100), color=(150, 50, 50))
+        img = Image.new("RGB", (100, 100), color=(150, 50, 50))
 
         result = detector._detect_red_flash(img)
         assert not result
@@ -279,16 +280,16 @@ class TestScreenChangeDetection:
 
     def test_identical_images_no_change(self, detector):
         """Identical images show no change"""
-        img1 = Image.new('RGB', (100, 100), color=(100, 100, 100))
-        img2 = Image.new('RGB', (100, 100), color=(100, 100, 100))
+        img1 = Image.new("RGB", (100, 100), color=(100, 100, 100))
+        img2 = Image.new("RGB", (100, 100), color=(100, 100, 100))
 
         result = detector._detect_screen_change(img1, img2)
         assert not result
 
     def test_completely_different_detected(self, detector):
         """Completely different images detected as change"""
-        img1 = Image.new('RGB', (100, 100), color=(0, 0, 0))
-        img2 = Image.new('RGB', (100, 100), color=(255, 255, 255))
+        img1 = Image.new("RGB", (100, 100), color=(0, 0, 0))
+        img2 = Image.new("RGB", (100, 100), color=(255, 255, 255))
 
         result = detector._detect_screen_change(img1, img2)
         assert result
@@ -296,7 +297,7 @@ class TestScreenChangeDetection:
     def test_partial_change_threshold(self, detector):
         """Partial change respects threshold"""
         # Create mostly similar images with 20% different
-        img1 = Image.new('RGB', (100, 100), color=(100, 100, 100))
+        img1 = Image.new("RGB", (100, 100), color=(100, 100, 100))
         img2 = img1.copy()
         pixels = img2.load()
         for x in range(20):
@@ -313,8 +314,8 @@ class TestScreenChangeDetection:
 
     def test_handles_different_sizes(self, detector):
         """Handles images of different sizes"""
-        img1 = Image.new('RGB', (200, 200), color=(100, 100, 100))
-        img2 = Image.new('RGB', (50, 50), color=(100, 100, 100))
+        img1 = Image.new("RGB", (200, 200), color=(100, 100, 100))
+        img2 = Image.new("RGB", (50, 50), color=(100, 100, 100))
 
         # Should not raise
         result = detector._detect_screen_change(img1, img2)
@@ -362,18 +363,18 @@ class TestMediumAlertOnChange:
     def test_change_triggers_medium_alert(self, detector):
         """Significant screen change triggers MEDIUM alert"""
         # First frame - stores as previous
-        img1 = Image.new('RGB', (100, 100), color=(50, 50, 50))
+        img1 = Image.new("RGB", (100, 100), color=(50, 50, 50))
         detector.analyze_frame("win1", img1)
 
         # Second frame - very different
-        img2 = Image.new('RGB', (100, 100), color=(200, 200, 200))
+        img2 = Image.new("RGB", (100, 100), color=(200, 200, 200))
         result = detector.analyze_frame("win1", img2)
 
         assert result == AlertLevel.MEDIUM
 
     def test_no_change_no_alert(self, detector):
         """No change means no alert"""
-        img = Image.new('RGB', (100, 100), color=(100, 100, 100))
+        img = Image.new("RGB", (100, 100), color=(100, 100, 100))
 
         # First frame
         detector.analyze_frame("win1", img)
@@ -394,7 +395,7 @@ class TestExceptionHandling:
 
     def test_red_flash_handles_conversion_error(self, detector):
         """_detect_red_flash handles image conversion errors"""
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import MagicMock
 
         # Create a mock image that raises on convert
         mock_image = MagicMock()
@@ -409,11 +410,12 @@ class TestExceptionHandling:
         """_detect_red_flash handles numpy array errors"""
         from unittest.mock import patch
 
-        img = Image.new('RGB', (100, 100), color=(255, 0, 0))
+        img = Image.new("RGB", (100, 100), color=(255, 0, 0))
 
         # Mock numpy.array to raise
-        with patch('eve_overview_pro.core.alert_detector.np.array',
-                   side_effect=Exception("numpy failed")):
+        with patch(
+            "eve_overview_pro.core.alert_detector.np.array", side_effect=Exception("numpy failed")
+        ):
             result = detector._detect_red_flash(img)
 
         # Should return False on error
@@ -438,12 +440,12 @@ class TestExceptionHandling:
         """_detect_screen_change handles numpy errors"""
         from unittest.mock import patch
 
-        img1 = Image.new('RGB', (100, 100), color=(50, 50, 50))
-        img2 = Image.new('RGB', (100, 100), color=(200, 200, 200))
+        img1 = Image.new("RGB", (100, 100), color=(50, 50, 50))
+        img2 = Image.new("RGB", (100, 100), color=(200, 200, 200))
 
         # Mock numpy.array to raise on second call (during comparison)
         call_count = [0]
-        original_array = __import__('numpy').array
+        original_array = __import__("numpy").array
 
         def mock_array(*args, **kwargs):
             call_count[0] += 1
@@ -451,8 +453,7 @@ class TestExceptionHandling:
                 raise Exception("numpy failed")
             return original_array(*args, **kwargs)
 
-        with patch('eve_overview_pro.core.alert_detector.np.array',
-                   side_effect=mock_array):
+        with patch("eve_overview_pro.core.alert_detector.np.array", side_effect=mock_array):
             result = detector._detect_screen_change(img1, img2)
 
         # Should return False on error

@@ -2,6 +2,7 @@
 Layout Manager - Presets and Auto-Grid System
 Handles saving/loading window layouts and auto-tiling patterns
 """
+
 import json
 import logging
 from dataclasses import asdict, dataclass, field
@@ -13,6 +14,7 @@ from typing import Dict, List, Optional
 
 class GridPattern(Enum):
     """Available grid patterns"""
+
     GRID_2X2 = "2x2"
     GRID_3X1 = "3x1"
     GRID_1X3 = "1x3"
@@ -26,6 +28,7 @@ class GridPattern(Enum):
 @dataclass
 class WindowLayout:
     """Layout for a single window"""
+
     window_id: str
     x: int
     y: int
@@ -40,6 +43,7 @@ class WindowLayout:
 @dataclass
 class LayoutPreset:
     """Complete layout preset"""
+
     name: str
     description: str = ""
     windows: List[WindowLayout] = field(default_factory=list)
@@ -51,13 +55,13 @@ class LayoutPreset:
     def to_dict(self) -> Dict:
         """Convert to dictionary"""
         data = asdict(self)
-        data['windows'] = [asdict(w) for w in self.windows]
+        data["windows"] = [asdict(w) for w in self.windows]
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'LayoutPreset':
+    def from_dict(cls, data: Dict) -> "LayoutPreset":
         """Create from dictionary"""
-        windows_data = data.pop('windows', [])
+        windows_data = data.pop("windows", [])
         preset = cls(**data)
         preset.windows = [WindowLayout(**w) for w in windows_data]
         return preset
@@ -70,12 +74,12 @@ class LayoutManager:
         self.logger = logging.getLogger(__name__)
 
         if config_dir is None:
-            config_dir = Path.home() / '.config' / 'eve-overview-pro'
+            config_dir = Path.home() / ".config" / "eve-overview-pro"
 
         self.config_dir = Path(config_dir)
         self.config_dir.mkdir(parents=True, exist_ok=True)
 
-        self.layouts_dir = self.config_dir / 'layouts'
+        self.layouts_dir = self.config_dir / "layouts"
         self.layouts_dir.mkdir(exist_ok=True)
 
         self.presets: Dict[str, LayoutPreset] = {}
@@ -83,7 +87,7 @@ class LayoutManager:
 
     def _load_presets(self):
         """Load all layout presets"""
-        for preset_file in self.layouts_dir.glob('*.json'):
+        for preset_file in self.layouts_dir.glob("*.json"):
             try:
                 with open(preset_file) as f:
                     data = json.load(f)
@@ -100,7 +104,7 @@ class LayoutManager:
             preset.modified_at = datetime.now().isoformat()
             preset_file = self.layouts_dir / f"{preset.name}.json"
 
-            with open(preset_file, 'w') as f:
+            with open(preset_file, "w") as f:
                 json.dump(preset.to_dict(), f, indent=2)
 
             self.presets[preset.name] = preset
@@ -134,8 +138,9 @@ class LayoutManager:
         """Get all layout presets"""
         return list(self.presets.values())
 
-    def create_preset_from_current(self, name: str, description: str,
-                                   current_windows: Dict) -> LayoutPreset:
+    def create_preset_from_current(
+        self, name: str, description: str, current_windows: Dict
+    ) -> LayoutPreset:
         """Create a preset from current window positions
 
         Args:
@@ -150,29 +155,25 @@ class LayoutManager:
         for window_id, geom in current_windows.items():
             layout = WindowLayout(
                 window_id=window_id,
-                x=geom.get('x', 0),
-                y=geom.get('y', 0),
-                width=geom.get('width', 400),
-                height=geom.get('height', 300),
-                monitor=geom.get('monitor', 0),
-                opacity=geom.get('opacity', 1.0),
-                zoom=geom.get('zoom', 0.3),
-                always_on_top=geom.get('always_on_top', True)
+                x=geom.get("x", 0),
+                y=geom.get("y", 0),
+                width=geom.get("width", 400),
+                height=geom.get("height", 300),
+                monitor=geom.get("monitor", 0),
+                opacity=geom.get("opacity", 1.0),
+                zoom=geom.get("zoom", 0.3),
+                always_on_top=geom.get("always_on_top", True),
             )
             windows.append(layout)
 
-        preset = LayoutPreset(
-            name=name,
-            description=description,
-            windows=windows
-        )
+        preset = LayoutPreset(name=name, description=description, windows=windows)
 
         return preset
 
     # Grid Pattern Calculations
-    def calculate_grid_layout(self, pattern: GridPattern, windows: List[str],
-                              screen_geometry: Dict,
-                              spacing: int = 10) -> Dict[str, Dict]:
+    def calculate_grid_layout(
+        self, pattern: GridPattern, windows: List[str], screen_geometry: Dict, spacing: int = 10
+    ) -> Dict[str, Dict]:
         """Calculate grid layout positions
 
         Args:
@@ -188,10 +189,10 @@ class LayoutManager:
         if num_windows == 0:
             return {}
 
-        screen_x = screen_geometry.get('x', 0)
-        screen_y = screen_geometry.get('y', 0)
-        screen_width = screen_geometry.get('width', 1920)
-        screen_height = screen_geometry.get('height', 1080)
+        screen_x = screen_geometry.get("x", 0)
+        screen_y = screen_geometry.get("y", 0)
+        screen_width = screen_geometry.get("width", 1920)
+        screen_height = screen_geometry.get("height", 1080)
 
         layouts = {}
 
@@ -205,10 +206,10 @@ class LayoutManager:
                 col = i % cols
                 row = i // cols
                 layouts[window_id] = {
-                    'x': screen_x + spacing + col * (win_width + spacing),
-                    'y': screen_y + spacing + row * (win_height + spacing),
-                    'width': win_width,
-                    'height': win_height
+                    "x": screen_x + spacing + col * (win_width + spacing),
+                    "y": screen_y + spacing + row * (win_height + spacing),
+                    "width": win_width,
+                    "height": win_height,
                 }
 
         elif pattern == GridPattern.GRID_3X1:
@@ -218,10 +219,10 @@ class LayoutManager:
 
             for i, window_id in enumerate(windows[:3]):
                 layouts[window_id] = {
-                    'x': screen_x + spacing + i * (win_width + spacing),
-                    'y': screen_y + spacing,
-                    'width': win_width,
-                    'height': win_height
+                    "x": screen_x + spacing + i * (win_width + spacing),
+                    "y": screen_y + spacing,
+                    "width": win_width,
+                    "height": win_height,
                 }
 
         elif pattern == GridPattern.GRID_1X3:
@@ -231,10 +232,10 @@ class LayoutManager:
 
             for i, window_id in enumerate(windows[:3]):
                 layouts[window_id] = {
-                    'x': screen_x + spacing,
-                    'y': screen_y + spacing + i * (win_height + spacing),
-                    'width': win_width,
-                    'height': win_height
+                    "x": screen_x + spacing,
+                    "y": screen_y + spacing + i * (win_height + spacing),
+                    "width": win_width,
+                    "height": win_height,
                 }
 
         elif pattern == GridPattern.GRID_4X1:
@@ -244,10 +245,10 @@ class LayoutManager:
 
             for i, window_id in enumerate(windows[:4]):
                 layouts[window_id] = {
-                    'x': screen_x + spacing + i * (win_width + spacing),
-                    'y': screen_y + spacing,
-                    'width': win_width,
-                    'height': win_height
+                    "x": screen_x + spacing + i * (win_width + spacing),
+                    "y": screen_y + spacing,
+                    "width": win_width,
+                    "height": win_height,
                 }
 
         elif pattern == GridPattern.MAIN_PLUS_SIDES:
@@ -256,10 +257,10 @@ class LayoutManager:
                 # Main window (left 60%)
                 main_width = int(screen_width * 0.6) - spacing * 2
                 layouts[windows[0]] = {
-                    'x': screen_x + spacing,
-                    'y': screen_y + spacing,
-                    'width': main_width,
-                    'height': screen_height - spacing * 2
+                    "x": screen_x + spacing,
+                    "y": screen_y + spacing,
+                    "width": main_width,
+                    "height": screen_height - spacing * 2,
                 }
 
             # Side windows (right 40%, stacked vertically)
@@ -270,10 +271,10 @@ class LayoutManager:
 
                 for i, window_id in enumerate(windows[1:4]):
                     layouts[window_id] = {
-                        'x': side_x,
-                        'y': screen_y + spacing + i * (side_height + spacing),
-                        'width': side_width,
-                        'height': side_height
+                        "x": side_x,
+                        "y": screen_y + spacing + i * (side_height + spacing),
+                        "width": side_width,
+                        "height": side_height,
                     }
 
         elif pattern == GridPattern.CASCADE:
@@ -284,16 +285,17 @@ class LayoutManager:
 
             for i, window_id in enumerate(windows):
                 layouts[window_id] = {
-                    'x': screen_x + spacing + i * offset,
-                    'y': screen_y + spacing + i * offset,
-                    'width': base_width,
-                    'height': base_height
+                    "x": screen_x + spacing + i * offset,
+                    "y": screen_y + spacing + i * offset,
+                    "width": base_width,
+                    "height": base_height,
                 }
 
         return layouts
 
-    def auto_arrange(self, windows: List[str], pattern: GridPattern,
-                     screen_geometry: Dict, spacing: int = 10) -> Dict[str, Dict]:
+    def auto_arrange(
+        self, windows: List[str], pattern: GridPattern, screen_geometry: Dict, spacing: int = 10
+    ) -> Dict[str, Dict]:
         """Auto-arrange windows in a grid pattern
 
         Args:

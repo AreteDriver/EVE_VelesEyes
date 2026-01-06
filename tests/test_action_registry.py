@@ -8,6 +8,7 @@ Tests cover:
 - Handler binding
 - Audit functions for duplicate detection
 """
+
 import pytest
 
 from eve_overview_pro.ui.action_registry import (
@@ -268,6 +269,7 @@ class TestActionRegistry:
         registry = ActionRegistry.get_instance()
 
         called = []
+
         def handler():
             called.append(True)
 
@@ -283,6 +285,7 @@ class TestActionRegistry:
         registry = ActionRegistry.get_instance()
 
         result = []
+
         def handler(value):
             result.append(value)
 
@@ -406,7 +409,6 @@ class TestAuditActionsEdgeCases:
 
     def test_audit_detects_duplicate_homes(self):
         """audit_actions detects actions appearing in multiple homes"""
-        from unittest.mock import MagicMock
 
         registry = ActionRegistry.get_instance()
 

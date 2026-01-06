@@ -2,6 +2,7 @@
 Visual Activity Alert Detector
 Monitors windows for visual changes and triggers alerts
 """
+
 import logging
 from dataclasses import dataclass
 from enum import Enum
@@ -13,6 +14,7 @@ from PIL import Image
 
 class AlertLevel(Enum):
     """Alert severity levels"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -21,6 +23,7 @@ class AlertLevel(Enum):
 @dataclass
 class AlertConfig:
     """Configuration for alert detection"""
+
     enabled: bool = True
     red_flash_threshold: float = 0.7  # Threshold for red flash detection
     change_threshold: float = 0.3  # Threshold for general screen change
@@ -110,7 +113,7 @@ class AlertDetector:
         """
         try:
             # Convert to RGB array
-            img_array = np.array(image.convert('RGB'))
+            img_array = np.array(image.convert("RGB"))
 
             # Extract color channels
             r = img_array[:, :, 0].astype(float)
@@ -133,8 +136,7 @@ class AlertDetector:
             self.logger.error(f"Red flash detection error: {e}")
             return False
 
-    def _detect_screen_change(self, current: Image.Image,
-                             previous: Image.Image) -> bool:
+    def _detect_screen_change(self, current: Image.Image, previous: Image.Image) -> bool:
         """Detect significant change between frames
 
         Args:
@@ -147,8 +149,8 @@ class AlertDetector:
         try:
             # Resize to common size for comparison
             size = (100, 100)
-            current_resized = current.resize(size).convert('L')
-            previous_resized = previous.resize(size).convert('L')
+            current_resized = current.resize(size).convert("L")
+            previous_resized = previous.resize(size).convert("L")
 
             # Convert to arrays
             current_array = np.array(current_resized).astype(float)

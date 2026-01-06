@@ -2,6 +2,7 @@
 Unit tests for the Hotkeys & Cycling Tab module
 Tests DraggableCharacterList, CyclingGroupList, HotkeysTab
 """
+
 from unittest.mock import MagicMock, patch
 
 
@@ -9,17 +10,17 @@ from unittest.mock import MagicMock, patch
 class TestDraggableCharacterList:
     """Tests for DraggableCharacterList widget"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_init_enables_drag(self, mock_init):
         """Test that init enables drag"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import DraggableCharacterList
 
-        with patch.object(DraggableCharacterList, 'setDragEnabled') as mock_drag:
-            with patch.object(DraggableCharacterList, 'setDefaultDropAction'):
-                with patch.object(DraggableCharacterList, 'setSelectionMode'):
-                    with patch.object(DraggableCharacterList, 'setAlternatingRowColors'):
+        with patch.object(DraggableCharacterList, "setDragEnabled") as mock_drag:
+            with patch.object(DraggableCharacterList, "setDefaultDropAction"):
+                with patch.object(DraggableCharacterList, "setSelectionMode"):
+                    with patch.object(DraggableCharacterList, "setAlternatingRowColors"):
                         DraggableCharacterList()
 
                         mock_drag.assert_called_once_with(True)
@@ -29,39 +30,39 @@ class TestDraggableCharacterList:
 class TestCyclingGroupList:
     """Tests for CyclingGroupList widget"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_init_accepts_drops(self, mock_init):
         """Test that init enables drop accepting"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops') as mock_drops:
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops") as mock_drops:
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     CyclingGroupList()
 
                                     mock_drops.assert_called_once_with(True)
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_get_members_empty(self, mock_init):
         """Test get_members with empty list"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
-                                    with patch.object(CyclingGroupList, 'count', return_value=0):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
+                                    with patch.object(CyclingGroupList, "count", return_value=0):
                                         list_widget = CyclingGroupList()
 
                                         result = list_widget.get_members()
@@ -72,14 +73,14 @@ class TestCyclingGroupList:
         """Test that members_changed signal exists"""
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        assert hasattr(CyclingGroupList, 'members_changed')
+        assert hasattr(CyclingGroupList, "members_changed")
 
 
 # Test HotkeysTab
 class TestHotkeysTab:
     """Tests for HotkeysTab widget"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test HotkeysTab initialization"""
         mock_widget.return_value = None
@@ -92,14 +93,14 @@ class TestHotkeysTab:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
-            with patch.object(HotkeysTab, '_load_groups'):
+        with patch.object(HotkeysTab, "_setup_ui"):
+            with patch.object(HotkeysTab, "_load_groups"):
                 tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
                 assert tab.character_manager is mock_char_manager
                 assert tab.settings_manager is mock_settings_manager
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_load_groups_creates_default(self, mock_widget):
         """Test that _load_groups creates Default group if missing"""
         mock_widget.return_value = None
@@ -112,7 +113,7 @@ class TestHotkeysTab:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}  # No groups
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             assert "Default" in tab.cycling_groups
@@ -123,7 +124,7 @@ class TestHotkeysTab:
 class TestFormatHotkey:
     """Tests for _format_hotkey method"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_format_simple_combo(self, mock_widget):
         """Test formatting simple key combo"""
         mock_widget.return_value = None
@@ -136,14 +137,14 @@ class TestFormatHotkey:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab._format_hotkey("ctrl+shift+]")
 
             assert result == "<ctrl>+<shift>+<]>"
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_format_already_bracketed(self, mock_widget):
         """Test formatting already bracketed keys"""
         mock_widget.return_value = None
@@ -156,14 +157,14 @@ class TestFormatHotkey:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab._format_hotkey("<ctrl>+<shift>+<]>")
 
             assert result == "<ctrl>+<shift>+<]>"
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_format_empty(self, mock_widget):
         """Test formatting empty string"""
         mock_widget.return_value = None
@@ -176,7 +177,7 @@ class TestFormatHotkey:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab._format_hotkey("")
@@ -188,7 +189,7 @@ class TestFormatHotkey:
 class TestGroupManagement:
     """Tests for cycling group management"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_get_cycling_group(self, mock_widget):
         """Test get_cycling_group method"""
         mock_widget.return_value = None
@@ -199,18 +200,16 @@ class TestGroupManagement:
         mock_char_manager.get_all_characters.return_value = []
 
         mock_settings_manager = MagicMock()
-        mock_settings_manager.get.return_value = {
-            "TestGroup": ["Char1", "Char2"]
-        }
+        mock_settings_manager.get.return_value = {"TestGroup": ["Char1", "Char2"]}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab.get_cycling_group("TestGroup")
 
             assert result == ["Char1", "Char2"]
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_get_nonexistent_group(self, mock_widget):
         """Test get_cycling_group for nonexistent group"""
         mock_widget.return_value = None
@@ -223,14 +222,14 @@ class TestGroupManagement:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab.get_cycling_group("NonexistentGroup")
 
             assert result == []
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_get_all_groups(self, mock_widget):
         """Test get_all_groups method"""
         mock_widget.return_value = None
@@ -241,12 +240,9 @@ class TestGroupManagement:
         mock_char_manager.get_all_characters.return_value = []
 
         mock_settings_manager = MagicMock()
-        mock_settings_manager.get.return_value = {
-            "Group1": ["A", "B"],
-            "Group2": ["C", "D"]
-        }
+        mock_settings_manager.get.return_value = {"Group1": ["A", "B"], "Group2": ["C", "D"]}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab.get_all_groups()
@@ -264,13 +260,13 @@ class TestSignals:
         """Test HotkeysTab has group_changed signal"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        assert hasattr(HotkeysTab, 'group_changed')
+        assert hasattr(HotkeysTab, "group_changed")
 
     def test_cycling_group_list_signal_exists(self):
         """Test CyclingGroupList has members_changed signal"""
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        assert hasattr(CyclingGroupList, 'members_changed')
+        assert hasattr(CyclingGroupList, "members_changed")
 
 
 # =============================================================================
@@ -281,20 +277,20 @@ class TestSignals:
 class TestCyclingGroupListDragDrop:
     """Tests for CyclingGroupList drag and drop functionality"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_drag_enter_accepts_text(self, mock_init):
         """Test dragEnterEvent accepts text MIME data"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
 
                                     mock_event = MagicMock()
@@ -304,20 +300,20 @@ class TestCyclingGroupListDragDrop:
 
                                     mock_event.acceptProposedAction.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_drag_enter_accepts_from_self(self, mock_init):
         """Test dragEnterEvent accepts from self (reorder)"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
 
                                     mock_event = MagicMock()
@@ -328,20 +324,20 @@ class TestCyclingGroupListDragDrop:
 
                                     mock_event.acceptProposedAction.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_drag_enter_accepts_from_character_list(self, mock_init):
         """Test dragEnterEvent accepts from DraggableCharacterList"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList, DraggableCharacterList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
 
                                     # Create mock source that is DraggableCharacterList
@@ -354,20 +350,20 @@ class TestCyclingGroupListDragDrop:
 
                                     mock_event.acceptProposedAction.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_drag_enter_ignores_other_sources(self, mock_init):
         """Test dragEnterEvent ignores other sources"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
 
                                     mock_event = MagicMock()
@@ -378,20 +374,20 @@ class TestCyclingGroupListDragDrop:
 
                                     mock_event.ignore.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_drag_move_accepts(self, mock_init):
         """Test dragMoveEvent accepts proposed action"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
 
                                     mock_event = MagicMock()
@@ -400,21 +396,21 @@ class TestCyclingGroupListDragDrop:
 
                                     mock_event.acceptProposedAction.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.dropEvent')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.dropEvent")
     def test_drop_from_self_reorders(self, mock_super_drop, mock_init):
         """Test dropEvent from self triggers reorder"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
                                     list_widget.members_changed = MagicMock()
 
@@ -426,24 +422,26 @@ class TestCyclingGroupListDragDrop:
                                     mock_super_drop.assert_called_once()
                                     list_widget.members_changed.emit.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidgetItem')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidgetItem")
     def test_drop_from_character_list_adds_items(self, mock_item, mock_init):
         """Test dropEvent from character list adds items"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList, DraggableCharacterList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
-                                    with patch.object(CyclingGroupList, 'count', return_value=0):
-                                        with patch.object(CyclingGroupList, 'item', return_value=None):
-                                            with patch.object(CyclingGroupList, 'addItem'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
+                                    with patch.object(CyclingGroupList, "count", return_value=0):
+                                        with patch.object(
+                                            CyclingGroupList, "item", return_value=None
+                                        ):
+                                            with patch.object(CyclingGroupList, "addItem"):
                                                 list_widget = CyclingGroupList()
                                                 list_widget.members_changed = MagicMock()
 
@@ -451,7 +449,9 @@ class TestCyclingGroupListDragDrop:
                                                 mock_source = MagicMock(spec=DraggableCharacterList)
                                                 mock_char_item = MagicMock()
                                                 mock_char_item.text.return_value = "TestChar"
-                                                mock_source.selectedItems.return_value = [mock_char_item]
+                                                mock_source.selectedItems.return_value = [
+                                                    mock_char_item
+                                                ]
 
                                                 mock_event = MagicMock()
                                                 mock_event.source.return_value = mock_source
@@ -461,20 +461,20 @@ class TestCyclingGroupListDragDrop:
                                                 list_widget.members_changed.emit.assert_called_once()
                                                 mock_event.acceptProposedAction.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_drop_ignores_other_sources(self, mock_init):
         """Test dropEvent ignores other sources"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
 
                                     mock_event = MagicMock()
@@ -484,30 +484,34 @@ class TestCyclingGroupListDragDrop:
 
                                     mock_event.ignore.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidget.__init__")
     def test_get_members_with_items(self, mock_init):
         """Test get_members with items in list"""
         mock_init.return_value = None
 
         from eve_overview_pro.ui.hotkeys_tab import CyclingGroupList
 
-        with patch.object(CyclingGroupList, 'setAcceptDrops'):
-            with patch.object(CyclingGroupList, 'setDragEnabled'):
-                with patch.object(CyclingGroupList, 'setDragDropMode'):
-                    with patch.object(CyclingGroupList, 'setDefaultDropAction'):
-                        with patch.object(CyclingGroupList, 'setSelectionMode'):
-                            with patch.object(CyclingGroupList, 'setAlternatingRowColors'):
-                                with patch.object(CyclingGroupList, 'setStyleSheet'):
+        with patch.object(CyclingGroupList, "setAcceptDrops"):
+            with patch.object(CyclingGroupList, "setDragEnabled"):
+                with patch.object(CyclingGroupList, "setDragDropMode"):
+                    with patch.object(CyclingGroupList, "setDefaultDropAction"):
+                        with patch.object(CyclingGroupList, "setSelectionMode"):
+                            with patch.object(CyclingGroupList, "setAlternatingRowColors"):
+                                with patch.object(CyclingGroupList, "setStyleSheet"):
                                     list_widget = CyclingGroupList()
 
                                     # Mock count and items
-                                    with patch.object(list_widget, 'count', return_value=2):
+                                    with patch.object(list_widget, "count", return_value=2):
                                         mock_item1 = MagicMock()
                                         mock_item1.text.return_value = "Char1"
                                         mock_item2 = MagicMock()
                                         mock_item2.text.return_value = "Char2"
 
-                                        with patch.object(list_widget, 'item', side_effect=[mock_item1, mock_item2]):
+                                        with patch.object(
+                                            list_widget,
+                                            "item",
+                                            side_effect=[mock_item1, mock_item2],
+                                        ):
                                             result = list_widget.get_members()
 
                                             assert result == ["Char1", "Char2"]
@@ -516,7 +520,7 @@ class TestCyclingGroupListDragDrop:
 class TestHotkeysTabInteraction:
     """Tests for HotkeysTab interaction methods"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_save_groups(self, mock_widget):
         """Test _save_groups saves to settings"""
         mock_widget.return_value = None
@@ -528,7 +532,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.cycling_groups = {"Test": ["A", "B"]}
 
@@ -538,7 +542,7 @@ class TestHotkeysTabInteraction:
                 "cycling_groups", {"Test": ["A", "B"]}, auto_save=True
             )
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_load_groups_with_invalid_data(self, mock_widget):
         """Test _load_groups handles invalid data"""
         mock_widget.return_value = None
@@ -550,12 +554,12 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = "invalid"  # Not a dict
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             assert tab.cycling_groups == {"Default": []}
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_on_group_selected(self, mock_widget):
         """Test _on_group_selected loads members"""
         mock_widget.return_value = None
@@ -567,7 +571,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {"TestGroup": ["A", "B"]}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab._load_group_members = MagicMock()
 
@@ -576,7 +580,7 @@ class TestHotkeysTabInteraction:
             assert tab.current_group == "TestGroup"
             tab._load_group_members.assert_called_with("TestGroup")
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_on_group_selected_empty(self, mock_widget):
         """Test _on_group_selected with empty name"""
         mock_widget.return_value = None
@@ -588,7 +592,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab._load_group_members = MagicMock()
 
@@ -596,7 +600,7 @@ class TestHotkeysTabInteraction:
 
             tab._load_group_members.assert_not_called()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_on_members_changed(self, mock_widget):
         """Test _on_members_changed saves and emits signal"""
         mock_widget.return_value = None
@@ -608,7 +612,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.current_group = "TestGroup"
             tab.group_member_list = MagicMock()
@@ -622,7 +626,7 @@ class TestHotkeysTabInteraction:
             tab._save_groups.assert_called_once()
             tab.group_changed.emit.assert_called_with("TestGroup", ["A", "B"])
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_on_members_changed_no_current_group(self, mock_widget):
         """Test _on_members_changed with no current group"""
         mock_widget.return_value = None
@@ -634,7 +638,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.current_group = None
             tab._save_groups = MagicMock()
@@ -643,8 +647,8 @@ class TestHotkeysTabInteraction:
 
             tab._save_groups.assert_not_called()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QInputDialog')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QInputDialog")
     def test_create_new_group_success(self, mock_dialog, mock_widget):
         """Test _create_new_group successful creation"""
         mock_widget.return_value = None
@@ -657,7 +661,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab._save_groups = MagicMock()
             tab._refresh_group_combo = MagicMock()
@@ -669,8 +673,8 @@ class TestHotkeysTabInteraction:
             tab._save_groups.assert_called_once()
             tab._refresh_group_combo.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QInputDialog')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QInputDialog")
     def test_create_new_group_cancelled(self, mock_dialog, mock_widget):
         """Test _create_new_group when cancelled"""
         mock_widget.return_value = None
@@ -683,7 +687,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             initial_groups = tab.cycling_groups.copy()
 
@@ -691,9 +695,9 @@ class TestHotkeysTabInteraction:
 
             assert tab.cycling_groups == initial_groups
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QInputDialog')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QInputDialog")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_create_new_group_duplicate(self, mock_msgbox, mock_dialog, mock_widget):
         """Test _create_new_group with duplicate name"""
         mock_widget.return_value = None
@@ -706,14 +710,14 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             tab._create_new_group()
 
             mock_msgbox.warning.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_delete_current_group_none(self, mock_widget):
         """Test _delete_current_group with no current group"""
         mock_widget.return_value = None
@@ -725,7 +729,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.current_group = None
             initial_groups = tab.cycling_groups.copy()
@@ -734,8 +738,8 @@ class TestHotkeysTabInteraction:
 
             assert tab.cycling_groups == initial_groups
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_delete_current_group_default(self, mock_msgbox, mock_widget):
         """Test _delete_current_group cannot delete Default"""
         mock_widget.return_value = None
@@ -747,7 +751,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.current_group = "Default"
 
@@ -755,8 +759,8 @@ class TestHotkeysTabInteraction:
 
             mock_msgbox.warning.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_delete_current_group_confirmed(self, mock_msgbox, mock_widget):
         """Test _delete_current_group when confirmed"""
         mock_widget.return_value = None
@@ -773,7 +777,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {"TestGroup": ["A"]}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.current_group = "TestGroup"
             tab._save_groups = MagicMock()
@@ -784,7 +788,7 @@ class TestHotkeysTabInteraction:
             assert "TestGroup" not in tab.cycling_groups
             tab._save_groups.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_remove_selected_member(self, mock_widget):
         """Test _remove_selected_member removes current item"""
         mock_widget.return_value = None
@@ -796,7 +800,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.currentItem.return_value = MagicMock()
@@ -808,7 +812,7 @@ class TestHotkeysTabInteraction:
             tab.group_member_list.takeItem.assert_called_once()
             tab._on_members_changed.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_remove_selected_member_none_selected(self, mock_widget):
         """Test _remove_selected_member with no selection"""
         mock_widget.return_value = None
@@ -820,7 +824,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.currentItem.return_value = None
@@ -830,8 +834,8 @@ class TestHotkeysTabInteraction:
 
             tab.group_member_list.takeItem.assert_not_called()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_clear_group_members_empty(self, mock_msgbox, mock_widget):
         """Test _clear_group_members with empty list"""
         mock_widget.return_value = None
@@ -843,7 +847,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.count.return_value = 0
@@ -852,8 +856,8 @@ class TestHotkeysTabInteraction:
 
             mock_msgbox.question.assert_not_called()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_clear_group_members_confirmed(self, mock_msgbox, mock_widget):
         """Test _clear_group_members when confirmed"""
         mock_widget.return_value = None
@@ -870,7 +874,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.count.return_value = 3
@@ -881,8 +885,8 @@ class TestHotkeysTabInteraction:
             tab.group_member_list.clear.assert_called_once()
             tab._on_members_changed.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_load_active_windows_no_main_tab(self, mock_msgbox, mock_widget):
         """Test _load_active_windows with no main_tab"""
         mock_widget.return_value = None
@@ -894,7 +898,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.main_tab = None
 
@@ -902,8 +906,8 @@ class TestHotkeysTabInteraction:
 
             mock_msgbox.warning.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_load_active_windows_no_active(self, mock_msgbox, mock_widget):
         """Test _load_active_windows with no active windows"""
         mock_widget.return_value = None
@@ -915,7 +919,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.main_tab = MagicMock()
             tab.main_tab.window_manager.preview_frames = {}
@@ -924,9 +928,9 @@ class TestHotkeysTabInteraction:
 
             mock_msgbox.information.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QListWidgetItem')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QListWidgetItem")
     def test_load_active_windows_success(self, mock_item, mock_msgbox, mock_widget):
         """Test _load_active_windows with active windows"""
         mock_widget.return_value = None
@@ -938,7 +942,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             mock_frame = MagicMock()
@@ -955,7 +959,7 @@ class TestHotkeysTabInteraction:
             tab.group_member_list.addItem.assert_called()
             tab._on_members_changed.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_move_member_up(self, mock_widget):
         """Test _move_member_up moves item up"""
         mock_widget.return_value = None
@@ -967,7 +971,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.currentRow.return_value = 2
@@ -981,7 +985,7 @@ class TestHotkeysTabInteraction:
             tab.group_member_list.setCurrentRow.assert_called_with(1)
             tab._on_members_changed.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_move_member_up_at_top(self, mock_widget):
         """Test _move_member_up at top does nothing"""
         mock_widget.return_value = None
@@ -993,7 +997,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.currentRow.return_value = 0
@@ -1003,7 +1007,7 @@ class TestHotkeysTabInteraction:
 
             tab.group_member_list.takeItem.assert_not_called()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_move_member_down(self, mock_widget):
         """Test _move_member_down moves item down"""
         mock_widget.return_value = None
@@ -1015,7 +1019,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.currentRow.return_value = 1
@@ -1030,7 +1034,7 @@ class TestHotkeysTabInteraction:
             tab.group_member_list.setCurrentRow.assert_called_with(2)
             tab._on_members_changed.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_move_member_down_at_bottom(self, mock_widget):
         """Test _move_member_down at bottom does nothing"""
         mock_widget.return_value = None
@@ -1042,7 +1046,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.group_member_list = MagicMock()
             tab.group_member_list.currentRow.return_value = 4
@@ -1053,8 +1057,8 @@ class TestHotkeysTabInteraction:
 
             tab.group_member_list.takeItem.assert_not_called()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
-    @patch('eve_overview_pro.ui.hotkeys_tab.QMessageBox')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QMessageBox")
     def test_save_hotkeys(self, mock_msgbox, mock_widget):
         """Test _save_hotkeys saves settings"""
         mock_widget.return_value = None
@@ -1066,7 +1070,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab.cycle_forward_edit = MagicMock()
             tab.cycle_forward_edit.text.return_value = "<ctrl>+<shift>+]"
@@ -1083,7 +1087,7 @@ class TestHotkeysTabInteraction:
             )
             mock_msgbox.information.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_refresh_characters(self, mock_widget):
         """Test refresh_characters calls _populate_character_list"""
         mock_widget.return_value = None
@@ -1095,7 +1099,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
             tab._populate_character_list = MagicMock()
 
@@ -1103,7 +1107,7 @@ class TestHotkeysTabInteraction:
 
             tab._populate_character_list.assert_called_once()
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_format_hotkey_with_spaces(self, mock_widget):
         """Test _format_hotkey handles spaces"""
         mock_widget.return_value = None
@@ -1115,14 +1119,14 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab._format_hotkey(" ctrl + shift + ] ")
 
             assert result == "<ctrl>+<shift>+<]>"
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.QWidget.__init__')
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
     def test_format_hotkey_empty_parts(self, mock_widget):
         """Test _format_hotkey handles empty parts"""
         mock_widget.return_value = None
@@ -1134,7 +1138,7 @@ class TestHotkeysTabInteraction:
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
 
-        with patch.object(HotkeysTab, '_setup_ui'):
+        with patch.object(HotkeysTab, "_setup_ui"):
             tab = HotkeysTab(mock_char_manager, mock_settings_manager)
 
             result = tab._format_hotkey("ctrl++shift")
@@ -1149,7 +1153,7 @@ class TestHotkeysTabSetupUI:
         """Test _setup_ui creates main layout"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.logger = MagicMock()
             tab.character_manager = MagicMock()
@@ -1162,11 +1166,13 @@ class TestHotkeysTabSetupUI:
             mock_layout = MagicMock()
             mock_splitter = MagicMock()
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QHBoxLayout', return_value=mock_layout):
-                with patch('eve_overview_pro.ui.hotkeys_tab.QSplitter', return_value=mock_splitter):
-                    with patch.object(tab, 'setLayout'):
-                        with patch.object(tab, '_create_character_panel', return_value=MagicMock()):
-                            with patch.object(tab, '_create_cycling_panel', return_value=MagicMock()):
+            with patch("eve_overview_pro.ui.hotkeys_tab.QHBoxLayout", return_value=mock_layout):
+                with patch("eve_overview_pro.ui.hotkeys_tab.QSplitter", return_value=mock_splitter):
+                    with patch.object(tab, "setLayout"):
+                        with patch.object(tab, "_create_character_panel", return_value=MagicMock()):
+                            with patch.object(
+                                tab, "_create_cycling_panel", return_value=MagicMock()
+                            ):
                                 tab._setup_ui()
 
                                 mock_layout.setContentsMargins.assert_called_with(10, 10, 10, 10)
@@ -1176,7 +1182,7 @@ class TestHotkeysTabSetupUI:
         """Test _create_character_panel creates panel structure"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.logger = MagicMock()
             tab.character_manager = MagicMock()
@@ -1186,11 +1192,11 @@ class TestHotkeysTabSetupUI:
             mock_panel = MagicMock()
             mock_layout = MagicMock()
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QGroupBox', return_value=mock_panel):
-                with patch('eve_overview_pro.ui.hotkeys_tab.QVBoxLayout', return_value=mock_layout):
-                    with patch('eve_overview_pro.ui.hotkeys_tab.QLabel'):
-                        with patch('eve_overview_pro.ui.hotkeys_tab.DraggableCharacterList'):
-                            with patch('eve_overview_pro.ui.hotkeys_tab.QPushButton') as mock_btn:
+            with patch("eve_overview_pro.ui.hotkeys_tab.QGroupBox", return_value=mock_panel):
+                with patch("eve_overview_pro.ui.hotkeys_tab.QVBoxLayout", return_value=mock_layout):
+                    with patch("eve_overview_pro.ui.hotkeys_tab.QLabel"):
+                        with patch("eve_overview_pro.ui.hotkeys_tab.DraggableCharacterList"):
+                            with patch("eve_overview_pro.ui.hotkeys_tab.QPushButton") as mock_btn:
                                 mock_btn_instance = MagicMock()
                                 mock_btn.return_value = mock_btn_instance
 
@@ -1203,7 +1209,7 @@ class TestHotkeysTabSetupUI:
         """Test _create_cycling_panel creates panel with all sections"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.logger = MagicMock()
             tab.character_manager = MagicMock()
@@ -1217,17 +1223,30 @@ class TestHotkeysTabSetupUI:
             mock_combo = MagicMock()
             mock_combo.count.return_value = 0
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QWidget', return_value=mock_panel):
-                with patch('eve_overview_pro.ui.hotkeys_tab.QVBoxLayout', return_value=mock_vlayout):
-                    with patch('eve_overview_pro.ui.hotkeys_tab.ToolbarBuilder'):
-                        with patch('eve_overview_pro.ui.hotkeys_tab.QGroupBox'):
-                            with patch('eve_overview_pro.ui.hotkeys_tab.QHBoxLayout'):
-                                with patch('eve_overview_pro.ui.hotkeys_tab.QComboBox', return_value=mock_combo):
-                                    with patch('eve_overview_pro.ui.hotkeys_tab.QLabel'):
-                                        with patch('eve_overview_pro.ui.hotkeys_tab.CyclingGroupList'):
-                                            with patch('eve_overview_pro.ui.hotkeys_tab.QPushButton'):
-                                                with patch('eve_overview_pro.ui.hotkeys_tab.QFormLayout'):
-                                                    with patch('eve_overview_pro.ui.hotkeys_tab.HotkeyEdit'):
+            with patch("eve_overview_pro.ui.hotkeys_tab.QWidget", return_value=mock_panel):
+                with patch(
+                    "eve_overview_pro.ui.hotkeys_tab.QVBoxLayout", return_value=mock_vlayout
+                ):
+                    with patch("eve_overview_pro.ui.hotkeys_tab.ToolbarBuilder"):
+                        with patch("eve_overview_pro.ui.hotkeys_tab.QGroupBox"):
+                            with patch("eve_overview_pro.ui.hotkeys_tab.QHBoxLayout"):
+                                with patch(
+                                    "eve_overview_pro.ui.hotkeys_tab.QComboBox",
+                                    return_value=mock_combo,
+                                ):
+                                    with patch("eve_overview_pro.ui.hotkeys_tab.QLabel"):
+                                        with patch(
+                                            "eve_overview_pro.ui.hotkeys_tab.CyclingGroupList"
+                                        ):
+                                            with patch(
+                                                "eve_overview_pro.ui.hotkeys_tab.QPushButton"
+                                            ):
+                                                with patch(
+                                                    "eve_overview_pro.ui.hotkeys_tab.QFormLayout"
+                                                ):
+                                                    with patch(
+                                                        "eve_overview_pro.ui.hotkeys_tab.HotkeyEdit"
+                                                    ):
                                                         result = tab._create_cycling_panel()
 
                                                         assert result == mock_panel
@@ -1237,7 +1256,7 @@ class TestHotkeysTabSetupUI:
         """Test _create_cycling_panel loads first group if present"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.logger = MagicMock()
             tab.character_manager = MagicMock()
@@ -1249,18 +1268,31 @@ class TestHotkeysTabSetupUI:
             mock_combo = MagicMock()
             mock_combo.count.return_value = 0
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QWidget'):
-                with patch('eve_overview_pro.ui.hotkeys_tab.QVBoxLayout'):
-                    with patch('eve_overview_pro.ui.hotkeys_tab.ToolbarBuilder'):
-                        with patch('eve_overview_pro.ui.hotkeys_tab.QGroupBox'):
-                            with patch('eve_overview_pro.ui.hotkeys_tab.QHBoxLayout'):
-                                with patch('eve_overview_pro.ui.hotkeys_tab.QComboBox', return_value=mock_combo):
-                                    with patch('eve_overview_pro.ui.hotkeys_tab.QLabel'):
-                                        with patch('eve_overview_pro.ui.hotkeys_tab.CyclingGroupList'):
-                                            with patch('eve_overview_pro.ui.hotkeys_tab.QPushButton'):
-                                                with patch('eve_overview_pro.ui.hotkeys_tab.QFormLayout'):
-                                                    with patch('eve_overview_pro.ui.hotkeys_tab.HotkeyEdit'):
-                                                        with patch.object(tab, '_load_group_members') as mock_load:
+            with patch("eve_overview_pro.ui.hotkeys_tab.QWidget"):
+                with patch("eve_overview_pro.ui.hotkeys_tab.QVBoxLayout"):
+                    with patch("eve_overview_pro.ui.hotkeys_tab.ToolbarBuilder"):
+                        with patch("eve_overview_pro.ui.hotkeys_tab.QGroupBox"):
+                            with patch("eve_overview_pro.ui.hotkeys_tab.QHBoxLayout"):
+                                with patch(
+                                    "eve_overview_pro.ui.hotkeys_tab.QComboBox",
+                                    return_value=mock_combo,
+                                ):
+                                    with patch("eve_overview_pro.ui.hotkeys_tab.QLabel"):
+                                        with patch(
+                                            "eve_overview_pro.ui.hotkeys_tab.CyclingGroupList"
+                                        ):
+                                            with patch(
+                                                "eve_overview_pro.ui.hotkeys_tab.QPushButton"
+                                            ):
+                                                with patch(
+                                                    "eve_overview_pro.ui.hotkeys_tab.QFormLayout"
+                                                ):
+                                                    with patch(
+                                                        "eve_overview_pro.ui.hotkeys_tab.HotkeyEdit"
+                                                    ):
+                                                        with patch.object(
+                                                            tab, "_load_group_members"
+                                                        ) as mock_load:
                                                             tab._create_cycling_panel()
 
                                                             # First group alphabetically should be loaded
@@ -1271,7 +1303,7 @@ class TestHotkeysTabSetupUI:
         """Test _populate_character_list adds characters"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.logger = MagicMock()
 
@@ -1288,7 +1320,7 @@ class TestHotkeysTabSetupUI:
 
             tab.character_list = MagicMock()
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QListWidgetItem') as mock_item:
+            with patch("eve_overview_pro.ui.hotkeys_tab.QListWidgetItem") as mock_item:
                 mock_item_instance = MagicMock()
                 mock_item.return_value = mock_item_instance
 
@@ -1303,7 +1335,7 @@ class TestHotkeysTabSetupUI:
         """Test _populate_character_list colors online characters green"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.logger = MagicMock()
 
@@ -1315,8 +1347,8 @@ class TestHotkeysTabSetupUI:
             tab.character_manager.get_all_characters.return_value = [mock_char]
             tab.character_list = MagicMock()
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QListWidgetItem') as mock_item:
-                with patch('eve_overview_pro.ui.hotkeys_tab.QColor') as mock_color:
+            with patch("eve_overview_pro.ui.hotkeys_tab.QListWidgetItem") as mock_item:
+                with patch("eve_overview_pro.ui.hotkeys_tab.QColor") as mock_color:
                     mock_item_instance = MagicMock()
                     mock_item.return_value = mock_item_instance
 
@@ -1330,7 +1362,7 @@ class TestHotkeysTabSetupUI:
         """Test _populate_character_list colors offline characters gray"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.logger = MagicMock()
 
@@ -1342,8 +1374,8 @@ class TestHotkeysTabSetupUI:
             tab.character_manager.get_all_characters.return_value = [mock_char]
             tab.character_list = MagicMock()
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QListWidgetItem') as mock_item:
-                with patch('eve_overview_pro.ui.hotkeys_tab.QColor') as mock_color:
+            with patch("eve_overview_pro.ui.hotkeys_tab.QListWidgetItem") as mock_item:
+                with patch("eve_overview_pro.ui.hotkeys_tab.QColor") as mock_color:
                     mock_item_instance = MagicMock()
                     mock_item.return_value = mock_item_instance
 
@@ -1356,7 +1388,7 @@ class TestHotkeysTabSetupUI:
         """Test _refresh_group_combo populates dropdown"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.cycling_groups = {"Alpha": [], "Beta": [], "Default": []}
             tab.group_combo = MagicMock()
@@ -1374,7 +1406,7 @@ class TestHotkeysTabSetupUI:
         """Test _refresh_group_combo restores previous selection"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.cycling_groups = {"Alpha": [], "Beta": []}
             tab.group_combo = MagicMock()
@@ -1390,12 +1422,12 @@ class TestHotkeysTabSetupUI:
         """Test _load_group_members populates list"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.cycling_groups = {"TestGroup": ["Char1", "Char2"]}
             tab.group_member_list = MagicMock()
 
-            with patch('eve_overview_pro.ui.hotkeys_tab.QListWidgetItem') as mock_item:
+            with patch("eve_overview_pro.ui.hotkeys_tab.QListWidgetItem") as mock_item:
                 mock_item_instance = MagicMock()
                 mock_item.return_value = mock_item_instance
 
@@ -1409,7 +1441,7 @@ class TestHotkeysTabSetupUI:
         """Test _load_group_members with nonexistent group"""
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
-        with patch.object(HotkeysTab, '__init__', return_value=None):
+        with patch.object(HotkeysTab, "__init__", return_value=None):
             tab = HotkeysTab.__new__(HotkeysTab)
             tab.cycling_groups = {"Default": []}
             tab.group_member_list = MagicMock()

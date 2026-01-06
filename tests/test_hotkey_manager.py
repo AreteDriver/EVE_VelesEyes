@@ -8,6 +8,7 @@ Tests cover:
 - Key combo formatting
 - Modifier tracking
 """
+
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -251,36 +252,36 @@ class TestModifierTracking:
 
     def test_on_key_release_clears_ctrl(self, manager):
         """Releasing ctrl clears modifier"""
-        manager.pressed_modifiers.add('ctrl')
+        manager.pressed_modifiers.add("ctrl")
 
         mock_key = MagicMock()
-        mock_key.name = 'ctrl_l'
+        mock_key.name = "ctrl_l"
 
         manager._on_key_release(mock_key)
 
-        assert 'ctrl' not in manager.pressed_modifiers
+        assert "ctrl" not in manager.pressed_modifiers
 
     def test_on_key_release_clears_alt(self, manager):
         """Releasing alt clears modifier"""
-        manager.pressed_modifiers.add('alt')
+        manager.pressed_modifiers.add("alt")
 
         mock_key = MagicMock()
-        mock_key.name = 'alt_l'
+        mock_key.name = "alt_l"
 
         manager._on_key_release(mock_key)
 
-        assert 'alt' not in manager.pressed_modifiers
+        assert "alt" not in manager.pressed_modifiers
 
     def test_on_key_release_clears_shift(self, manager):
         """Releasing shift clears modifier"""
-        manager.pressed_modifiers.add('shift')
+        manager.pressed_modifiers.add("shift")
 
         mock_key = MagicMock()
-        mock_key.name = 'shift_l'
+        mock_key.name = "shift_l"
 
         manager._on_key_release(mock_key)
 
-        assert 'shift' not in manager.pressed_modifiers
+        assert "shift" not in manager.pressed_modifiers
 
 
 class TestOnKeyPress:
@@ -298,7 +299,7 @@ class TestOnKeyPress:
     def test_triggers_registered_hotkey(self, manager):
         """Triggers callback for registered key"""
         mock_key = MagicMock()
-        mock_key.char = 'x'
+        mock_key.char = "x"
         del mock_key.name  # Remove name attribute
 
         manager._on_key_press(mock_key)
@@ -308,7 +309,7 @@ class TestOnKeyPress:
     def test_ignores_unregistered_key(self, manager):
         """Ignores unregistered keys"""
         mock_key = MagicMock()
-        mock_key.char = 'y'
+        mock_key.char = "y"
         del mock_key.name
 
         manager._on_key_press(mock_key)
@@ -317,10 +318,10 @@ class TestOnKeyPress:
 
     def test_blocked_when_modifier_pressed(self, manager):
         """Single key blocked when modifier held"""
-        manager.pressed_modifiers.add('ctrl')
+        manager.pressed_modifiers.add("ctrl")
 
         mock_key = MagicMock()
-        mock_key.char = 'x'
+        mock_key.char = "x"
         del mock_key.name
 
         manager._on_key_press(mock_key)
@@ -330,11 +331,11 @@ class TestOnKeyPress:
     def test_tracks_ctrl_press(self, manager):
         """Tracks ctrl key press"""
         mock_key = MagicMock()
-        mock_key.name = 'ctrl_l'
+        mock_key.name = "ctrl_l"
 
         manager._on_key_press(mock_key)
 
-        assert 'ctrl' in manager.pressed_modifiers
+        assert "ctrl" in manager.pressed_modifiers
 
 
 class TestStartStop:
@@ -388,8 +389,8 @@ class TestRestartListeners:
         mock_listener = MagicMock()
         manager.combo_listener = mock_listener
 
-        with patch.object(manager, '_start_combo_listener'):
-            with patch.object(manager, '_start_key_listener'):
+        with patch.object(manager, "_start_combo_listener"):
+            with patch.object(manager, "_start_key_listener"):
                 manager._restart_listeners()
 
         mock_listener.stop.assert_called_once()
@@ -401,8 +402,8 @@ class TestRestartListeners:
         mock_listener = MagicMock()
         manager.key_listener = mock_listener
 
-        with patch.object(manager, '_start_combo_listener'):
-            with patch.object(manager, '_start_key_listener'):
+        with patch.object(manager, "_start_combo_listener"):
+            with patch.object(manager, "_start_key_listener"):
                 manager._restart_listeners()
 
         mock_listener.stop.assert_called_once()
@@ -414,8 +415,8 @@ class TestRestartListeners:
         mock_listener.stop.side_effect = RuntimeError("Stop failed")
         manager.combo_listener = mock_listener
 
-        with patch.object(manager, '_start_combo_listener'):
-            with patch.object(manager, '_start_key_listener'):
+        with patch.object(manager, "_start_combo_listener"):
+            with patch.object(manager, "_start_key_listener"):
                 # Should not raise
                 manager._restart_listeners()
 
@@ -426,8 +427,8 @@ class TestRestartListeners:
         mock_listener.stop.side_effect = RuntimeError("Key listener stop failed")
         manager.key_listener = mock_listener
 
-        with patch.object(manager, '_start_combo_listener'):
-            with patch.object(manager, '_start_key_listener'):
+        with patch.object(manager, "_start_combo_listener"):
+            with patch.object(manager, "_start_key_listener"):
                 # Should not raise
                 manager._restart_listeners()
 
@@ -439,8 +440,8 @@ class TestRestartListeners:
         manager = HotkeyManager()
         manager.combo_hotkeys = {"<ctrl>+a": {"name": "test", "callback": MagicMock()}}
 
-        with patch.object(manager, '_start_combo_listener') as mock_start:
-            with patch.object(manager, '_start_key_listener'):
+        with patch.object(manager, "_start_combo_listener") as mock_start:
+            with patch.object(manager, "_start_key_listener"):
                 manager._restart_listeners()
 
         mock_start.assert_called_once()
@@ -450,8 +451,8 @@ class TestRestartListeners:
         manager = HotkeyManager()
         manager.single_key_hotkeys = {"a": {"name": "test", "callback": MagicMock()}}
 
-        with patch.object(manager, '_start_combo_listener'):
-            with patch.object(manager, '_start_key_listener') as mock_start:
+        with patch.object(manager, "_start_combo_listener"):
+            with patch.object(manager, "_start_key_listener") as mock_start:
                 manager._restart_listeners()
 
         mock_start.assert_called_once()
@@ -466,7 +467,7 @@ class TestStartComboListener:
         callback = MagicMock()
         manager.combo_hotkeys = {"<ctrl>+a": {"name": "test", "callback": callback}}
 
-        with patch('eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys') as mock_ghk:
+        with patch("eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys") as mock_ghk:
             manager._start_combo_listener()
 
         mock_ghk.assert_called_once()
@@ -479,7 +480,7 @@ class TestStartComboListener:
         manager = HotkeyManager()
         manager.combo_hotkeys = {"<ctrl>+a": {"name": "test", "callback": MagicMock()}}
 
-        with patch('eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys') as mock_ghk:
+        with patch("eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys") as mock_ghk:
             mock_ghk.side_effect = RuntimeError("Failed")
             # Should not raise
             manager._start_combo_listener()
@@ -503,7 +504,10 @@ class TestStartComboListener:
         signal_received = []
         manager.hotkey_triggered.connect(lambda name: signal_received.append(name))
 
-        with patch('eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys', side_effect=capture_hotkey_map):
+        with patch(
+            "eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys",
+            side_effect=capture_hotkey_map,
+        ):
             manager._start_combo_listener()
 
             # Call the wrapper
@@ -523,7 +527,7 @@ class TestStartKeyListener:
         """Creates keyboard Listener"""
         manager = HotkeyManager()
 
-        with patch('eve_overview_pro.core.hotkey_manager.keyboard.Listener') as mock_listener:
+        with patch("eve_overview_pro.core.hotkey_manager.keyboard.Listener") as mock_listener:
             manager._start_key_listener()
 
         mock_listener.assert_called_once()
@@ -532,7 +536,7 @@ class TestStartKeyListener:
         """Handles exception when creating listener"""
         manager = HotkeyManager()
 
-        with patch('eve_overview_pro.core.hotkey_manager.keyboard.Listener') as mock_listener:
+        with patch("eve_overview_pro.core.hotkey_manager.keyboard.Listener") as mock_listener:
             mock_listener.side_effect = RuntimeError("Failed")
             # Should not raise
             manager._start_key_listener()
@@ -553,29 +557,29 @@ class TestOnKeyPressAdvanced:
     def test_tracks_alt_press(self, manager):
         """Tracks alt key press"""
         mock_key = MagicMock()
-        mock_key.name = 'alt_l'
+        mock_key.name = "alt_l"
 
         manager._on_key_press(mock_key)
 
-        assert 'alt' in manager.pressed_modifiers
+        assert "alt" in manager.pressed_modifiers
 
     def test_tracks_alt_gr_press(self, manager):
         """Tracks alt_gr key press"""
         mock_key = MagicMock()
-        mock_key.name = 'alt_gr'
+        mock_key.name = "alt_gr"
 
         manager._on_key_press(mock_key)
 
-        assert 'alt' in manager.pressed_modifiers
+        assert "alt" in manager.pressed_modifiers
 
     def test_tracks_shift_press(self, manager):
         """Tracks shift key press"""
         mock_key = MagicMock()
-        mock_key.name = 'shift_r'
+        mock_key.name = "shift_r"
 
         manager._on_key_press(mock_key)
 
-        assert 'shift' in manager.pressed_modifiers
+        assert "shift" in manager.pressed_modifiers
 
     def test_uses_key_name_when_no_char(self, manager):
         """Uses key.name when key.char is None"""
@@ -583,7 +587,7 @@ class TestOnKeyPressAdvanced:
 
         mock_key = MagicMock()
         mock_key.char = None
-        mock_key.name = 'enter'
+        mock_key.name = "enter"
 
         manager._on_key_press(mock_key)
 
@@ -604,7 +608,7 @@ class TestOnKeyPressAdvanced:
         manager.callback.side_effect = RuntimeError("Callback failed")
 
         mock_key = MagicMock()
-        mock_key.char = 'x'
+        mock_key.char = "x"
         del mock_key.name
 
         # Should not raise
@@ -646,33 +650,33 @@ class TestOnKeyReleaseAdvanced:
 
     def test_clears_ctrl_r(self, manager):
         """Clears ctrl on ctrl_r release"""
-        manager.pressed_modifiers.add('ctrl')
+        manager.pressed_modifiers.add("ctrl")
         mock_key = MagicMock()
-        mock_key.name = 'ctrl_r'
+        mock_key.name = "ctrl_r"
 
         manager._on_key_release(mock_key)
 
-        assert 'ctrl' not in manager.pressed_modifiers
+        assert "ctrl" not in manager.pressed_modifiers
 
     def test_clears_alt_r(self, manager):
         """Clears alt on alt_r release"""
-        manager.pressed_modifiers.add('alt')
+        manager.pressed_modifiers.add("alt")
         mock_key = MagicMock()
-        mock_key.name = 'alt_r'
+        mock_key.name = "alt_r"
 
         manager._on_key_release(mock_key)
 
-        assert 'alt' not in manager.pressed_modifiers
+        assert "alt" not in manager.pressed_modifiers
 
     def test_clears_alt_gr(self, manager):
         """Clears alt on alt_gr release"""
-        manager.pressed_modifiers.add('alt')
+        manager.pressed_modifiers.add("alt")
         mock_key = MagicMock()
-        mock_key.name = 'alt_gr'
+        mock_key.name = "alt_gr"
 
         manager._on_key_release(mock_key)
 
-        assert 'alt' not in manager.pressed_modifiers
+        assert "alt" not in manager.pressed_modifiers
 
 
 class TestRegisterHotkeyErrors:

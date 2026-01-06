@@ -2,13 +2,15 @@
 Unit tests for the Main Tab module
 Tests FlowLayout, DraggableTile, ArrangementGrid, GridApplier, WindowPreviewWidget, WindowManager, MainTab
 """
-from unittest.mock import MagicMock, patch
-from PySide6.QtCore import Qt, QRect
 
+from unittest.mock import MagicMock, patch
+
+from PySide6.QtCore import QRect, Qt
 
 # =============================================================================
 # pil_to_qimage Function Tests
 # =============================================================================
+
 
 class TestPilToQimage:
     """Tests for pil_to_qimage helper function"""
@@ -22,11 +24,12 @@ class TestPilToQimage:
 
     def test_pil_to_qimage_rgb(self):
         """Test pil_to_qimage with RGB image"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
 
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
+
         # Create a small RGB image
-        img = Image.new('RGB', (10, 10), color='red')
+        img = Image.new("RGB", (10, 10), color="red")
         result = pil_to_qimage(img)
 
         assert result is not None
@@ -35,11 +38,12 @@ class TestPilToQimage:
 
     def test_pil_to_qimage_rgba(self):
         """Test pil_to_qimage with RGBA image"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
 
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
+
         # Create a small RGBA image
-        img = Image.new('RGBA', (10, 10), color=(255, 0, 0, 128))
+        img = Image.new("RGBA", (10, 10), color=(255, 0, 0, 128))
         result = pil_to_qimage(img)
 
         assert result is not None
@@ -48,11 +52,12 @@ class TestPilToQimage:
 
     def test_pil_to_qimage_grayscale(self):
         """Test pil_to_qimage with grayscale image"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
 
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
+
         # Create a small grayscale image
-        img = Image.new('L', (10, 10), color=128)
+        img = Image.new("L", (10, 10), color=128)
         result = pil_to_qimage(img)
 
         assert result is not None
@@ -61,11 +66,12 @@ class TestPilToQimage:
 
     def test_pil_to_qimage_other_mode(self):
         """Test pil_to_qimage with other mode (converts to RGB)"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
 
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
+
         # Create a P (palette) mode image
-        img = Image.new('P', (10, 10))
+        img = Image.new("P", (10, 10))
         result = pil_to_qimage(img)
 
         assert result is not None
@@ -77,6 +83,7 @@ class TestPilToQimage:
 # FlowLayout Tests
 # =============================================================================
 
+
 class TestFlowLayout:
     """Tests for FlowLayout class"""
 
@@ -84,7 +91,7 @@ class TestFlowLayout:
         """Test FlowLayout initialization"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
@@ -98,7 +105,7 @@ class TestFlowLayout:
         """Test addItem method"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
 
@@ -111,7 +118,7 @@ class TestFlowLayout:
         """Test count method"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = [MagicMock(), MagicMock()]
 
@@ -121,7 +128,7 @@ class TestFlowLayout:
         """Test itemAt with valid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             mock_item = MagicMock()
             layout._item_list = [mock_item]
@@ -132,7 +139,7 @@ class TestFlowLayout:
         """Test itemAt with invalid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
 
@@ -143,7 +150,7 @@ class TestFlowLayout:
         """Test takeAt with valid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             mock_item = MagicMock()
             layout._item_list = [mock_item]
@@ -157,7 +164,7 @@ class TestFlowLayout:
         """Test takeAt with invalid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
 
@@ -167,7 +174,7 @@ class TestFlowLayout:
         """Test expandingDirections returns 0"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
 
             assert layout.expandingDirections() == Qt.Orientation(0)
@@ -176,7 +183,7 @@ class TestFlowLayout:
         """Test hasHeightForWidth returns True"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
 
             assert layout.hasHeightForWidth() is True
@@ -185,7 +192,7 @@ class TestFlowLayout:
         """Test heightForWidth calls _do_layout"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
@@ -199,14 +206,14 @@ class TestFlowLayout:
         """Test setGeometry calls _do_layout"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
             layout._spacing = 10
 
-            with patch.object(layout, '_do_layout', return_value=100) as mock_do_layout:
-                with patch('PySide6.QtWidgets.QLayout.setGeometry'):
+            with patch.object(layout, "_do_layout", return_value=100) as mock_do_layout:
+                with patch("PySide6.QtWidgets.QLayout.setGeometry"):
                     layout.setGeometry(QRect(0, 0, 200, 200))
 
                     mock_do_layout.assert_called_once()
@@ -215,23 +222,24 @@ class TestFlowLayout:
         """Test sizeHint returns minimum size"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
             layout._spacing = 10
 
-            with patch.object(layout, 'minimumSize', return_value=MagicMock()):
+            with patch.object(layout, "minimumSize", return_value=MagicMock()):
                 result = layout.sizeHint()
 
                 assert result is not None
 
     def test_minimum_size_empty(self):
         """Test minimumSize with no items"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
         from PySide6.QtCore import QSize
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
@@ -242,10 +250,11 @@ class TestFlowLayout:
 
     def test_minimum_size_with_items(self):
         """Test minimumSize with items"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
         from PySide6.QtCore import QSize
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._margin = 10
 
@@ -261,7 +270,7 @@ class TestFlowLayout:
         """Test _do_layout with empty item list"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
@@ -273,10 +282,11 @@ class TestFlowLayout:
 
     def test_do_layout_with_items(self):
         """Test _do_layout with items"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
         from PySide6.QtCore import QSize
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._margin = 10
             layout._spacing = 10
@@ -298,6 +308,7 @@ class TestFlowLayout:
 # DraggableTile Tests
 # =============================================================================
 
+
 class TestDraggableTile:
     """Tests for DraggableTile class"""
 
@@ -305,7 +316,7 @@ class TestDraggableTile:
         """Test DraggableTile initialization"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.char_name = "TestChar"
             tile.grid_row = 0
@@ -319,7 +330,7 @@ class TestDraggableTile:
         """Test set_position method"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.grid_row = 0
             tile.grid_col = 0
@@ -335,7 +346,7 @@ class TestDraggableTile:
         """Test set_stacked method"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.is_stacked = False
             tile.pos_label = MagicMock()
@@ -351,6 +362,7 @@ class TestDraggableTile:
 # ArrangementGrid Tests
 # =============================================================================
 
+
 class TestArrangementGrid:
     """Tests for ArrangementGrid class"""
 
@@ -358,7 +370,7 @@ class TestArrangementGrid:
         """Test ArrangementGrid initialization"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.rows = 2
             grid.cols = 2
@@ -372,7 +384,7 @@ class TestArrangementGrid:
         """Test get_arrangement returns arrangement"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
 
             mock_tile1 = MagicMock()
@@ -398,7 +410,7 @@ class TestArrangementGrid:
         """Test get_arrangement with no tiles"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.tiles = {}
 
@@ -410,7 +422,7 @@ class TestArrangementGrid:
         """Test clear_tiles removes all tiles"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
 
             mock_tile = MagicMock()
@@ -423,10 +435,10 @@ class TestArrangementGrid:
             mock_tile.deleteLater.assert_called_once()
 
 
-
 # =============================================================================
 # GridApplier Tests
 # =============================================================================
+
 
 class TestGridApplier:
     """Tests for GridApplier class"""
@@ -445,13 +457,13 @@ class TestGridApplier:
 
         applier = GridApplier()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
                 stdout="DP-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 527mm x 296mm",
-                returncode=0
+                returncode=0,
             )
 
-            result = applier.get_screen_geometry(0)
+            applier.get_screen_geometry(0)
 
             # Returns None or ScreenGeometry based on parsing
             # Just verify no exception
@@ -462,10 +474,10 @@ class TestGridApplier:
 
         applier = GridApplier()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(stdout="", returncode=0)
 
-            result = applier.get_screen_geometry(0)
+            applier.get_screen_geometry(0)
 
             # Result depends on fallback logic, just verify no exception
 
@@ -498,6 +510,7 @@ class TestGridApplier:
 # WindowPreviewWidget Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidget:
     """Tests for WindowPreviewWidget class"""
 
@@ -505,7 +518,7 @@ class TestWindowPreviewWidget:
         """Test WindowPreviewWidget initialization"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -517,7 +530,7 @@ class TestWindowPreviewWidget:
         """Test _get_display_name method"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.custom_label = None
@@ -530,7 +543,7 @@ class TestWindowPreviewWidget:
         """Test _get_display_name with custom label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.custom_label = "Custom Name"
@@ -542,10 +555,11 @@ class TestWindowPreviewWidget:
 
     def test_set_focused_true(self):
         """Test set_focused method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = False
             widget.last_activity = datetime.now()
@@ -560,7 +574,7 @@ class TestWindowPreviewWidget:
         """Test set_focused to False"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = True
             widget.update = MagicMock()
@@ -571,10 +585,11 @@ class TestWindowPreviewWidget:
 
     def test_mark_activity(self):
         """Test mark_activity method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.last_activity = datetime.now() - timedelta(minutes=5)
             widget.update = MagicMock()
@@ -587,52 +602,55 @@ class TestWindowPreviewWidget:
 
     def test_get_activity_state_focused(self):
         """Test get_activity_state when focused"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = True
             widget.last_activity = datetime.now()
 
             result = widget.get_activity_state()
 
-            assert result == 'focused'
+            assert result == "focused"
 
     def test_get_activity_state_recent(self):
         """Test get_activity_state when recent activity"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = False
             widget.last_activity = datetime.now() - timedelta(seconds=2)
 
             result = widget.get_activity_state()
 
-            assert result == 'recent'
+            assert result == "recent"
 
     def test_get_activity_state_idle(self):
         """Test get_activity_state when idle"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = False
             widget.last_activity = datetime.now() - timedelta(seconds=10)
 
             result = widget.get_activity_state()
 
-            assert result == 'idle'
+            assert result == "idle"
 
     def test_set_alert(self):
         """Test set_alert method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.alert_level = None
@@ -649,10 +667,10 @@ class TestWindowPreviewWidget:
 
     def test_set_alert_timer_already_active(self):
         """Test set_alert when timer already running"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.alert_level = AlertLevel.LOW
@@ -671,7 +689,7 @@ class TestWindowPreviewWidget:
         """Test _flash_tick decrements counter"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_flash_counter = 10
             widget.alert_level = MagicMock()
@@ -687,7 +705,7 @@ class TestWindowPreviewWidget:
         """Test _flash_tick stops timer at zero"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_flash_counter = 1
             widget.alert_level = MagicMock()
@@ -704,7 +722,7 @@ class TestWindowPreviewWidget:
         """Test _update_session_timer when disabled"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = False
             widget.timer_label = MagicMock()
@@ -715,10 +733,11 @@ class TestWindowPreviewWidget:
 
     def test_update_session_timer_minutes_only(self):
         """Test _update_session_timer with minutes only"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = True
             widget.session_start = datetime.now() - timedelta(minutes=25)
@@ -730,10 +749,11 @@ class TestWindowPreviewWidget:
 
     def test_update_session_timer_with_hours(self):
         """Test _update_session_timer with hours"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = True
             widget.session_start = datetime.now() - timedelta(hours=2, minutes=30)
@@ -747,7 +767,7 @@ class TestWindowPreviewWidget:
         """Test set_custom_label method"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -768,7 +788,7 @@ class TestWindowPreviewWidget:
         """Test set_custom_label saves to settings"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -787,7 +807,7 @@ class TestWindowPreviewWidget:
         """Test set_custom_label clears label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -807,7 +827,7 @@ class TestWindowPreviewWidget:
         """Test _load_settings with settings_manager"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.settings_manager = MagicMock()
@@ -817,7 +837,7 @@ class TestWindowPreviewWidget:
                 "thumbnails.show_activity_indicator": False,
                 "thumbnails.show_session_timer": True,
                 "thumbnails.lock_positions": True,
-                "character_labels": {"TestChar": "My Custom Label"}
+                "character_labels": {"TestChar": "My Custom Label"},
             }.get(k, d)
 
             widget._load_settings()
@@ -833,7 +853,7 @@ class TestWindowPreviewWidget:
         """Test _load_settings without settings_manager"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.settings_manager = None
 
@@ -844,7 +864,7 @@ class TestWindowPreviewWidget:
         """Test _update_tooltip without custom label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
@@ -861,7 +881,7 @@ class TestWindowPreviewWidget:
         """Test _update_tooltip with custom label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
@@ -878,13 +898,13 @@ class TestWindowPreviewWidget:
         """Test enterEvent hover effect"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._is_hovered = False
             widget._opacity_on_hover = 0.3
             widget.opacity_effect = MagicMock()
 
-            with patch('PySide6.QtWidgets.QWidget.enterEvent'):
+            with patch("PySide6.QtWidgets.QWidget.enterEvent"):
                 widget.enterEvent(MagicMock())
 
             assert widget._is_hovered is True
@@ -894,12 +914,12 @@ class TestWindowPreviewWidget:
         """Test leaveEvent restores opacity"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._is_hovered = True
             widget.opacity_effect = MagicMock()
 
-            with patch('PySide6.QtWidgets.QWidget.leaveEvent'):
+            with patch("PySide6.QtWidgets.QWidget.leaveEvent"):
                 widget.leaveEvent(MagicMock())
 
             assert widget._is_hovered is False
@@ -909,7 +929,7 @@ class TestWindowPreviewWidget:
         """Test left click (press + release) emits window_activated signal"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.window_activated = MagicMock()
@@ -921,7 +941,7 @@ class TestWindowPreviewWidget:
 
             # Press sets drag start position
             widget.mousePressEvent(mock_event)
-            assert hasattr(widget, '_drag_start_pos')
+            assert hasattr(widget, "_drag_start_pos")
 
             # Release (without drag) emits window_activated
             widget.mouseReleaseEvent(mock_event)
@@ -932,6 +952,7 @@ class TestWindowPreviewWidget:
 # WindowManager Tests
 # =============================================================================
 
+
 class TestWindowManager:
     """Tests for WindowManager class"""
 
@@ -939,7 +960,7 @@ class TestWindowManager:
         """Test WindowManager initialization"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {}
             manager.logger = MagicMock()
@@ -950,7 +971,7 @@ class TestWindowManager:
         """Test get_active_window_count with no windows"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {}
 
@@ -962,7 +983,7 @@ class TestWindowManager:
         """Test get_active_window_count method"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {"1": MagicMock(), "2": MagicMock()}
 
@@ -974,7 +995,7 @@ class TestWindowManager:
         """Test set_refresh_rate method"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.capture_timer = MagicMock()
@@ -993,7 +1014,7 @@ class TestWindowManager:
         """Test set_refresh_rate clamps values to 1-60"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.capture_timer = MagicMock()
             manager.capture_timer.isActive.return_value = False
@@ -1010,7 +1031,7 @@ class TestWindowManager:
         """Test set_refresh_rate when timer is not active"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.capture_timer = MagicMock()
             manager.capture_timer.isActive.return_value = False
@@ -1028,7 +1049,7 @@ class TestWindowManager:
         """Test add_window with new window"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {}
             manager.logger = MagicMock()
@@ -1036,7 +1057,7 @@ class TestWindowManager:
             manager.alert_detector = MagicMock()
             manager.settings_manager = None
 
-            with patch('eve_overview_pro.ui.main_tab.WindowPreviewWidget') as mock_widget:
+            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget") as mock_widget:
                 mock_frame = MagicMock()
                 mock_widget.return_value = mock_frame
 
@@ -1049,7 +1070,7 @@ class TestWindowManager:
         """Test add_window with existing window"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {"12345": MagicMock()}
             manager.logger = MagicMock()
@@ -1063,7 +1084,7 @@ class TestWindowManager:
         """Test remove_window with existing window"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             mock_frame = MagicMock()
             manager.preview_frames = {"12345": mock_frame}
@@ -1080,7 +1101,7 @@ class TestWindowManager:
         """Test remove_window with non-existent window"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {}
             manager.alert_detector = MagicMock()
@@ -1092,7 +1113,7 @@ class TestWindowManager:
         """Test start_capture_loop method"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.refresh_rate = 10
             manager.capture_timer = MagicMock()
@@ -1106,7 +1127,7 @@ class TestWindowManager:
         """Test stop_capture_loop method"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.capture_timer = MagicMock()
             manager.logger = MagicMock()
@@ -1120,6 +1141,7 @@ class TestWindowManager:
 # MainTab Tests
 # =============================================================================
 
+
 class TestMainTab:
     """Tests for MainTab class"""
 
@@ -1127,7 +1149,7 @@ class TestMainTab:
         """Test MainTab initialization attributes"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._windows_minimized = False
             tab.logger = MagicMock()
@@ -1138,7 +1160,7 @@ class TestMainTab:
         """Test _toggle_lock method"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._positions_locked = False
             tab.window_manager = MagicMock()
@@ -1158,7 +1180,7 @@ class TestMainTab:
         """Test _toggle_lock updates frames"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._positions_locked = False
             mock_frame = MagicMock()
@@ -1178,7 +1200,7 @@ class TestMainTab:
         """Test toggle_thumbnails_visibility method"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._thumbnails_visible = True
             tab.window_manager = MagicMock()
@@ -1195,7 +1217,7 @@ class TestMainTab:
         """Test toggle_thumbnails_visibility updates frame visibility"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._thumbnails_visible = True
             mock_frame = MagicMock()
@@ -1212,7 +1234,7 @@ class TestMainTab:
         """Test _update_status with no windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.get_active_window_count.return_value = 0
@@ -1230,7 +1252,7 @@ class TestMainTab:
         """Test _update_status with windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.get_active_window_count.return_value = 3
@@ -1251,6 +1273,7 @@ class TestMainTab:
 # =============================================================================
 # ScreenGeometry Tests
 # =============================================================================
+
 
 class TestScreenGeometry:
     """Tests for ScreenGeometry dataclass"""
@@ -1291,6 +1314,7 @@ class TestScreenGeometry:
 # get_all_layout_patterns Tests
 # =============================================================================
 
+
 class TestGetAllLayoutPatterns:
     """Tests for get_all_layout_patterns function"""
 
@@ -1324,13 +1348,15 @@ class TestGetAllLayoutPatterns:
 # pil_to_qimage Tests
 # =============================================================================
 
+
 class TestPilToQImage:
     """Tests for pil_to_qimage function"""
 
     def test_rgba_image(self):
         """Test pil_to_qimage with RGBA image"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
+
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
 
         img = Image.new("RGBA", (100, 100), (255, 0, 0, 255))
 
@@ -1342,8 +1368,9 @@ class TestPilToQImage:
 
     def test_rgb_image(self):
         """Test pil_to_qimage with RGB image"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
+
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
 
         img = Image.new("RGB", (100, 100), (255, 0, 0))
 
@@ -1354,8 +1381,9 @@ class TestPilToQImage:
 
     def test_l_image(self):
         """Test pil_to_qimage with grayscale image"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
+
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
 
         img = Image.new("L", (100, 100), 128)
 
@@ -1366,8 +1394,9 @@ class TestPilToQImage:
 
     def test_p_image(self):
         """Test pil_to_qimage with palette image"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
         from PIL import Image
+
+        from eve_overview_pro.ui.main_tab import pil_to_qimage
 
         img = Image.new("P", (100, 100))
 
@@ -1380,15 +1409,17 @@ class TestPilToQImage:
 # Additional WindowPreviewWidget Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidgetAdditional:
     """Additional tests for WindowPreviewWidget"""
 
     def test_update_frame_null_image(self):
         """Test update_frame when conversion fails"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PIL import Image
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.logger = MagicMock()
@@ -1396,7 +1427,7 @@ class TestWindowPreviewWidgetAdditional:
 
             img = Image.new("RGB", (100, 100), (255, 0, 0))
 
-            with patch('eve_overview_pro.ui.main_tab.pil_to_qimage') as mock_convert:
+            with patch("eve_overview_pro.ui.main_tab.pil_to_qimage") as mock_convert:
                 mock_convert.return_value = None
 
                 widget.update_frame(img)
@@ -1406,17 +1437,18 @@ class TestWindowPreviewWidgetAdditional:
 
     def test_update_frame_exception(self):
         """Test update_frame handles exceptions"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PIL import Image
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.logger = MagicMock()
 
             img = Image.new("RGB", (100, 100), (255, 0, 0))
 
-            with patch('eve_overview_pro.ui.main_tab.pil_to_qimage') as mock_convert:
+            with patch("eve_overview_pro.ui.main_tab.pil_to_qimage") as mock_convert:
                 mock_convert.side_effect = Exception("Conversion error")
 
                 widget.update_frame(img)
@@ -1428,6 +1460,7 @@ class TestWindowPreviewWidgetAdditional:
 # MainTab Auto-Minimize Tests
 # =============================================================================
 
+
 class TestMainTabAutoMinimize:
     """Tests for MainTab auto-minimize functionality"""
 
@@ -1435,7 +1468,7 @@ class TestMainTabAutoMinimize:
         """Test _on_window_activated when auto_minimize is disabled"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = False
@@ -1443,7 +1476,7 @@ class TestMainTabAutoMinimize:
             tab.capture_system.activate_window.return_value = True
             tab.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 tab._on_window_activated("0x123")
 
                 # Should NOT minimize anything
@@ -1453,7 +1486,7 @@ class TestMainTabAutoMinimize:
         """Test _on_window_activated when auto_minimize is enabled"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = True
@@ -1462,21 +1495,21 @@ class TestMainTabAutoMinimize:
             tab.capture_system.activate_window.return_value = True
             tab.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 tab._on_window_activated("0x123")
 
                 # Should minimize previous window
                 mock_run.assert_called_once()
                 call_args = mock_run.call_args[0][0]
-                assert 'xdotool' in call_args
-                assert 'windowminimize' in call_args
-                assert '0x111' in call_args
+                assert "xdotool" in call_args
+                assert "windowminimize" in call_args
+                assert "0x111" in call_args
 
     def test_on_window_activated_same_window(self):
         """Test _on_window_activated with same window (no minimize)"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = True
@@ -1485,7 +1518,7 @@ class TestMainTabAutoMinimize:
             tab.capture_system.activate_window.return_value = True
             tab.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 tab._on_window_activated("0x123")
 
                 # Should NOT minimize same window
@@ -1495,7 +1528,7 @@ class TestMainTabAutoMinimize:
         """Test _on_window_activated updates last activated window"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = False
@@ -1511,7 +1544,7 @@ class TestMainTabAutoMinimize:
         """Test _on_window_activated with no previous window"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = True
@@ -1521,7 +1554,7 @@ class TestMainTabAutoMinimize:
             tab.capture_system.activate_window.return_value = True
             tab.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 # Should not raise, should not minimize
                 tab._on_window_activated("0x123")
                 mock_run.assert_not_called()
@@ -1531,6 +1564,7 @@ class TestMainTabAutoMinimize:
 # ArrangementGrid Drag/Drop Tests
 # =============================================================================
 
+
 class TestArrangementGridDragDrop:
     """Tests for ArrangementGrid drag and drop"""
 
@@ -1538,7 +1572,7 @@ class TestArrangementGridDragDrop:
         """Test dragEnterEvent accepts text/plain"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
 
             mock_event = MagicMock()
@@ -1554,7 +1588,7 @@ class TestArrangementGridDragDrop:
         """Test dragEnterEvent checks mime format"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
 
             mock_event = MagicMock()
@@ -1571,7 +1605,7 @@ class TestArrangementGridDragDrop:
         """Test dragMoveEvent accepts"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
 
             mock_event = MagicMock()
@@ -1584,7 +1618,7 @@ class TestArrangementGridDragDrop:
         """Test dropEvent adds character to grid"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid._rows = 2
             grid._cols = 2
@@ -1604,7 +1638,7 @@ class TestArrangementGridDragDrop:
             mock_pos.y.return_value = 50
             mock_event.position.return_value = mock_pos
 
-            with patch.object(grid, 'add_character') as mock_add:
+            with patch.object(grid, "add_character") as mock_add:
                 try:
                     grid.dropEvent(mock_event)
                     # If it runs without error, add_character should be called
@@ -1618,6 +1652,7 @@ class TestArrangementGridDragDrop:
 # WindowPreviewWidget Paint/Context Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidgetPaint:
     """Tests for WindowPreviewWidget paint and context menu"""
 
@@ -1625,16 +1660,16 @@ class TestWindowPreviewWidgetPaint:
         """Test AlertLevel enum is importable"""
         from eve_overview_pro.core.alert_detector import AlertLevel
 
-        assert hasattr(AlertLevel, 'LOW')
-        assert hasattr(AlertLevel, 'MEDIUM')
-        assert hasattr(AlertLevel, 'HIGH')
+        assert hasattr(AlertLevel, "LOW")
+        assert hasattr(AlertLevel, "MEDIUM")
+        assert hasattr(AlertLevel, "HIGH")
 
     def test_widget_has_alert_attributes(self):
         """Test WindowPreviewWidget has alert-related attributes"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_level = AlertLevel.LOW
             widget._flash_visible = False
@@ -1646,24 +1681,25 @@ class TestWindowPreviewWidgetPaint:
         """Test WindowPreviewWidget has contextMenuEvent method"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        assert hasattr(WindowPreviewWidget, 'contextMenuEvent')
+        assert hasattr(WindowPreviewWidget, "contextMenuEvent")
 
     def test_widget_has_paint_event_method(self):
         """Test WindowPreviewWidget has paintEvent method"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        assert hasattr(WindowPreviewWidget, 'paintEvent')
+        assert hasattr(WindowPreviewWidget, "paintEvent")
 
     def test_widget_has_set_alert_method(self):
         """Test WindowPreviewWidget has set_alert method"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        assert hasattr(WindowPreviewWidget, 'set_alert')
+        assert hasattr(WindowPreviewWidget, "set_alert")
 
 
 # =============================================================================
 # GridApplier Extended Tests
 # =============================================================================
+
 
 class TestGridApplierExtended:
     """Extended tests for GridApplier"""
@@ -1679,9 +1715,9 @@ class TestGridApplierExtended:
         """Test GridApplier has expected methods"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        assert hasattr(GridApplier, 'get_screen_geometry')
-        assert hasattr(GridApplier, 'apply_arrangement')
-        assert hasattr(GridApplier, '_move_window')
+        assert hasattr(GridApplier, "get_screen_geometry")
+        assert hasattr(GridApplier, "apply_arrangement")
+        assert hasattr(GridApplier, "_move_window")
 
     def test_screen_geometry_dataclass(self):
         """Test ScreenGeometry dataclass"""
@@ -1701,14 +1737,14 @@ class TestGridApplierExtended:
 
         applier = GridApplier()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
 
             applier._move_window("12345", 0, 0, 960, 540)
 
             assert mock_run.called
             call_args = mock_run.call_args[0][0]
-            assert 'xdotool' in call_args
+            assert "xdotool" in call_args
 
     def test_move_window_position_only(self):
         """Test _move_window_position_only"""
@@ -1716,20 +1752,21 @@ class TestGridApplierExtended:
 
         applier = GridApplier()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
 
             applier._move_window_position_only("12345", 100, 200)
 
             assert mock_run.called
             call_args = mock_run.call_args[0][0]
-            assert 'xdotool' in call_args
-            assert 'windowmove' in call_args
+            assert "xdotool" in call_args
+            assert "windowmove" in call_args
 
 
 # =============================================================================
 # MainTab Minimize/Restore Tests
 # =============================================================================
+
 
 class TestMainTabMinimizeRestore:
     """Tests for MainTab minimize/restore functionality"""
@@ -1738,26 +1775,26 @@ class TestMainTabMinimizeRestore:
         """Test MainTab has minimize_inactive_windows method"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        assert hasattr(MainTab, 'minimize_inactive_windows')
+        assert hasattr(MainTab, "minimize_inactive_windows")
 
     def test_main_tab_has_add_window_method(self):
         """Test MainTab has method to add windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
         # MainTab delegates window management to WindowManager
-        assert hasattr(MainTab, 'window_manager') or hasattr(MainTab, '_on_window_activated')
+        assert hasattr(MainTab, "window_manager") or hasattr(MainTab, "_on_window_activated")
 
     def test_main_tab_has_on_window_activated(self):
         """Test MainTab has _on_window_activated method"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        assert hasattr(MainTab, '_on_window_activated')
+        assert hasattr(MainTab, "_on_window_activated")
 
     def test_windows_minimized_flag(self):
         """Test _windows_minimized flag behavior"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._windows_minimized = False
 
@@ -1771,6 +1808,7 @@ class TestMainTabMinimizeRestore:
 # WindowManager Capture Cycle Tests
 # =============================================================================
 
+
 class TestWindowManagerCaptureCycle:
     """Tests for WindowManager capture cycle methods"""
 
@@ -1778,7 +1816,7 @@ class TestWindowManagerCaptureCycle:
         """Test _capture_cycle requests captures for visible frames"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.capture_system = MagicMock()
@@ -1800,7 +1838,7 @@ class TestWindowManagerCaptureCycle:
         """Test _capture_cycle skips invisible frames"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.capture_system = MagicMock()
@@ -1819,7 +1857,7 @@ class TestWindowManagerCaptureCycle:
         """Test _capture_cycle handles capture exceptions"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.capture_system = MagicMock()
@@ -1841,10 +1879,11 @@ class TestWindowManagerProcessResults:
 
     def test_process_capture_results_updates_frame(self):
         """Test _process_capture_results updates preview frames"""
-        from eve_overview_pro.ui.main_tab import WindowManager
         from PIL import Image
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.pending_requests = {"req-1": "0x123"}
@@ -1854,10 +1893,7 @@ class TestWindowManagerProcessResults:
 
             mock_image = Image.new("RGB", (100, 100))
             manager.capture_system = MagicMock()
-            manager.capture_system.get_result.side_effect = [
-                ("req-1", "0x123", mock_image),
-                None
-            ]
+            manager.capture_system.get_result.side_effect = [("req-1", "0x123", mock_image), None]
             manager.alert_detector = MagicMock()
             manager.alert_detector.analyze_frame.return_value = None
 
@@ -1869,7 +1905,7 @@ class TestWindowManagerProcessResults:
         """Test _process_capture_results with no results"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.pending_requests = {}
@@ -1881,11 +1917,12 @@ class TestWindowManagerProcessResults:
 
     def test_process_capture_results_sets_alert(self):
         """Test _process_capture_results sets alert on frame"""
-        from eve_overview_pro.ui.main_tab import WindowManager
-        from eve_overview_pro.core.alert_detector import AlertLevel
         from PIL import Image
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowManager
+
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.pending_requests = {"req-1": "0x123"}
@@ -1895,10 +1932,7 @@ class TestWindowManagerProcessResults:
 
             mock_image = Image.new("RGB", (100, 100))
             manager.capture_system = MagicMock()
-            manager.capture_system.get_result.side_effect = [
-                ("req-1", "0x123", mock_image),
-                None
-            ]
+            manager.capture_system.get_result.side_effect = [("req-1", "0x123", mock_image), None]
             manager.alert_detector = MagicMock()
             manager.alert_detector.analyze_frame.return_value = AlertLevel.HIGH
 
@@ -1911,6 +1945,7 @@ class TestWindowManagerProcessResults:
 # MainTab Additional Methods Tests
 # =============================================================================
 
+
 class TestMainTabPreviewsEnabled:
     """Tests for MainTab.set_previews_enabled"""
 
@@ -1918,7 +1953,7 @@ class TestMainTabPreviewsEnabled:
         """Test set_previews_enabled(True) starts capture when not active"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.capture_timer.isActive.return_value = False
@@ -1933,7 +1968,7 @@ class TestMainTabPreviewsEnabled:
         """Test set_previews_enabled(False) stops capture when active"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.capture_timer.isActive.return_value = True
@@ -1952,18 +1987,18 @@ class TestMainTabOneClickImport:
         """Test MainTab has one_click_import method"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        assert hasattr(MainTab, 'one_click_import')
+        assert hasattr(MainTab, "one_click_import")
 
     def test_one_click_import_no_windows(self):
         """Test one_click_import shows message when no windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.scan_eve_windows', return_value=[]):
-                with patch('PySide6.QtWidgets.QMessageBox.information') as mock_msg:
+            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=[]):
+                with patch("PySide6.QtWidgets.QMessageBox.information") as mock_msg:
                     tab.one_click_import()
                     mock_msg.assert_called_once()
 
@@ -1975,7 +2010,7 @@ class TestWindowPreviewWidgetUpdateFrame:
         """Test update_frame handles None image"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.logger = MagicMock()
             widget.preview_label = MagicMock()
@@ -1993,7 +2028,7 @@ class TestWindowManagerStartStop:
         """Test start_capture_loop starts timer"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.capture_timer = MagicMock()
             manager.refresh_rate = 30
@@ -2007,7 +2042,7 @@ class TestWindowManagerStartStop:
         """Test stop_capture_loop stops timer"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.capture_timer = MagicMock()
             manager.logger = MagicMock()
@@ -2020,7 +2055,7 @@ class TestWindowManagerStartStop:
         """Test set_refresh_rate clamps FPS to 1-60 range"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.capture_timer = MagicMock()
             manager.capture_timer.isActive.return_value = False
@@ -2036,6 +2071,7 @@ class TestWindowManagerStartStop:
 # MainTab Cycling Groups Tests
 # =============================================================================
 
+
 class TestMainTabCyclingGroups:
     """Tests for MainTab cycling groups methods"""
 
@@ -2043,12 +2079,12 @@ class TestMainTabCyclingGroups:
         """Test _load_cycling_groups loads groups from settings"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = {
                 "Team1": ["char1", "char2"],
-                "Team2": ["char3"]
+                "Team2": ["char3"],
             }
             tab.cycling_groups = {}
 
@@ -2062,7 +2098,7 @@ class TestMainTabCyclingGroups:
         """Test _load_cycling_groups when settings_manager is None"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = None
             tab.cycling_groups = {}
@@ -2076,7 +2112,7 @@ class TestMainTabCyclingGroups:
         """Test _load_cycling_groups creates Default if missing"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = {"Team1": ["char1"]}
@@ -2091,7 +2127,7 @@ class TestMainTabCyclingGroups:
         """Test _load_cycling_groups handles non-dict gracefully"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = "invalid"  # Not a dict
@@ -2107,6 +2143,7 @@ class TestMainTabCyclingGroups:
 # MainTab Status Update Tests
 # =============================================================================
 
+
 class TestMainTabUpdateStatus:
     """Tests for MainTab _update_status method"""
 
@@ -2114,7 +2151,7 @@ class TestMainTabUpdateStatus:
         """Test _update_status with no windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.get_active_window_count.return_value = 0
@@ -2130,7 +2167,7 @@ class TestMainTabUpdateStatus:
         """Test _update_status with active windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.get_active_window_count.return_value = 3
@@ -2150,6 +2187,7 @@ class TestMainTabUpdateStatus:
 # MainTab Refresh Rate Tests
 # =============================================================================
 
+
 class TestMainTabRefreshRate:
     """Tests for MainTab refresh rate handling"""
 
@@ -2157,7 +2195,7 @@ class TestMainTabRefreshRate:
         """Test _on_refresh_rate_changed updates window manager"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.logger = MagicMock()
@@ -2170,6 +2208,7 @@ class TestMainTabRefreshRate:
 # =============================================================================
 # GridApplier Additional Tests
 # =============================================================================
+
 
 class TestGridApplierApplyArrangement:
     """Additional tests for GridApplier apply_arrangement method"""
@@ -2187,9 +2226,14 @@ class TestGridApplierApplyArrangement:
         window_map = {"char1": "111", "char2": "222"}
 
         result = applier.apply_arrangement(
-            arrangement, window_map, screen,
-            grid_rows=2, grid_cols=2, spacing=10,
-            stacked=True, stacked_use_grid_size=True
+            arrangement,
+            window_map,
+            screen,
+            grid_rows=2,
+            grid_cols=2,
+            spacing=10,
+            stacked=True,
+            stacked_use_grid_size=True,
         )
 
         assert result is True
@@ -2209,9 +2253,14 @@ class TestGridApplierApplyArrangement:
         window_map = {"char1": "111"}
 
         result = applier.apply_arrangement(
-            arrangement, window_map, screen,
-            grid_rows=2, grid_cols=2, spacing=10,
-            stacked=True, stacked_use_grid_size=False
+            arrangement,
+            window_map,
+            screen,
+            grid_rows=2,
+            grid_cols=2,
+            spacing=10,
+            stacked=True,
+            stacked_use_grid_size=False,
         )
 
         assert result is True
@@ -2230,9 +2279,7 @@ class TestGridApplierApplyArrangement:
         window_map = {"char1": "111", "char2": "222", "char3": "333"}
 
         result = applier.apply_arrangement(
-            arrangement, window_map, screen,
-            grid_rows=2, grid_cols=2, spacing=10,
-            stacked=False
+            arrangement, window_map, screen, grid_rows=2, grid_cols=2, spacing=10, stacked=False
         )
 
         assert result is True
@@ -2251,9 +2298,7 @@ class TestGridApplierApplyArrangement:
         window_map = {"char1": "111"}  # char2 not in map
 
         result = applier.apply_arrangement(
-            arrangement, window_map, screen,
-            grid_rows=2, grid_cols=2, spacing=10,
-            stacked=False
+            arrangement, window_map, screen, grid_rows=2, grid_cols=2, spacing=10, stacked=False
         )
 
         assert result is True
@@ -2272,9 +2317,7 @@ class TestGridApplierApplyArrangement:
         window_map = {"char1": "111"}
 
         result = applier.apply_arrangement(
-            arrangement, window_map, screen,
-            grid_rows=2, grid_cols=2, spacing=10,
-            stacked=False
+            arrangement, window_map, screen, grid_rows=2, grid_cols=2, spacing=10, stacked=False
         )
 
         assert result is False
@@ -2285,15 +2328,16 @@ class TestGridApplierApplyArrangement:
 # WindowPreviewWidget paintEvent Tests (attribute verification)
 # =============================================================================
 
+
 class TestWindowPreviewWidgetPaintEvent:
     """Tests for WindowPreviewWidget paintEvent-related attributes"""
 
     def test_paint_attributes_high_alert(self):
         """Test widget attributes for HIGH alert paint"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_level = AlertLevel.HIGH
             widget.alert_flash_counter = 10
@@ -2307,10 +2351,10 @@ class TestWindowPreviewWidgetPaintEvent:
 
     def test_paint_attributes_medium_alert(self):
         """Test widget attributes for MEDIUM alert paint"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_level = AlertLevel.MEDIUM
             widget.alert_flash_counter = 10
@@ -2322,19 +2366,19 @@ class TestWindowPreviewWidgetPaintEvent:
         """Test widget attributes for activity indicator"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_activity_indicator = True
-            widget.get_activity_state = MagicMock(return_value='focused')
+            widget.get_activity_state = MagicMock(return_value="focused")
 
             assert widget._show_activity_indicator is True
-            assert widget.get_activity_state() == 'focused'
+            assert widget.get_activity_state() == "focused"
 
     def test_paint_attributes_positions_locked(self):
         """Test widget attributes for positions locked"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._positions_locked = True
 
@@ -2344,26 +2388,27 @@ class TestWindowPreviewWidgetPaintEvent:
         """Test get_activity_state returns 'recent' correctly"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
-            widget.get_activity_state = MagicMock(return_value='recent')
+            widget.get_activity_state = MagicMock(return_value="recent")
 
-            assert widget.get_activity_state() == 'recent'
+            assert widget.get_activity_state() == "recent"
 
     def test_activity_state_inactive(self):
         """Test get_activity_state returns inactive correctly"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
-            widget.get_activity_state = MagicMock(return_value='inactive')
+            widget.get_activity_state = MagicMock(return_value="inactive")
 
-            assert widget.get_activity_state() == 'inactive'
+            assert widget.get_activity_state() == "inactive"
 
 
 # =============================================================================
 # WindowPreviewWidget Mouse Event Tests
 # =============================================================================
+
 
 class TestWindowPreviewWidgetMouseEvents:
     """Tests for WindowPreviewWidget mouse event handlers"""
@@ -2372,7 +2417,7 @@ class TestWindowPreviewWidgetMouseEvents:
         """Test mouseMoveEvent returns early when no drag_start_pos"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._drag_start_pos = None
 
@@ -2384,7 +2429,7 @@ class TestWindowPreviewWidgetMouseEvents:
         """Test mouseMoveEvent returns early when _drag_start_pos not set"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             # Don't set _drag_start_pos at all
 
@@ -2394,10 +2439,11 @@ class TestWindowPreviewWidgetMouseEvents:
 
     def test_mouse_release_activates_window(self):
         """Test mouseReleaseEvent activates window on click"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtCore import Qt
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             # Mock _drag_start_pos to simulate non-drag
             widget._drag_start_pos = MagicMock()  # Not None means didn't drag
@@ -2414,10 +2460,11 @@ class TestWindowPreviewWidgetMouseEvents:
 
     def test_mouse_release_clears_drag_pos(self):
         """Test mouseReleaseEvent clears _drag_start_pos"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtCore import Qt
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._drag_start_pos = MagicMock()
             widget.window_id = "12345"
@@ -2436,6 +2483,7 @@ class TestWindowPreviewWidgetMouseEvents:
 # WindowPreviewWidget Context Menu Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidgetContextMenu:
     """Tests for WindowPreviewWidget.contextMenuEvent"""
 
@@ -2443,7 +2491,7 @@ class TestWindowPreviewWidgetContextMenu:
         """Test contextMenuEvent shows context menu"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.zoom_factor = 0.3
@@ -2457,7 +2505,7 @@ class TestWindowPreviewWidgetContextMenu:
             mock_event = MagicMock()
             mock_event.globalPos.return_value = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.ContextMenuBuilder') as mock_builder:
+            with patch("eve_overview_pro.ui.main_tab.ContextMenuBuilder") as mock_builder:
                 mock_menu = MagicMock()
                 mock_builder.return_value.build_window_context_menu.return_value = mock_menu
 
@@ -2471,6 +2519,7 @@ class TestWindowPreviewWidgetContextMenu:
 # WindowPreviewWidget Dialog/Action Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidgetActions:
     """Tests for WindowPreviewWidget action methods"""
 
@@ -2478,13 +2527,13 @@ class TestWindowPreviewWidgetActions:
         """Test _show_label_dialog when user clicks OK"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.custom_label = None
             widget.character_name = "TestChar"
             widget.set_custom_label = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.QInputDialog') as mock_dialog:
+            with patch("eve_overview_pro.ui.main_tab.QInputDialog") as mock_dialog:
                 mock_dialog.getText.return_value = ("NewLabel", True)
 
                 widget._show_label_dialog()
@@ -2495,13 +2544,13 @@ class TestWindowPreviewWidgetActions:
         """Test _show_label_dialog when user clicks Cancel"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.custom_label = None
             widget.character_name = "TestChar"
             widget.set_custom_label = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.QInputDialog') as mock_dialog:
+            with patch("eve_overview_pro.ui.main_tab.QInputDialog") as mock_dialog:
                 mock_dialog.getText.return_value = ("", False)
 
                 widget._show_label_dialog()
@@ -2512,13 +2561,13 @@ class TestWindowPreviewWidgetActions:
         """Test _show_label_dialog clears label when empty text"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.custom_label = "OldLabel"
             widget.character_name = "TestChar"
             widget.set_custom_label = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.QInputDialog') as mock_dialog:
+            with patch("eve_overview_pro.ui.main_tab.QInputDialog") as mock_dialog:
                 mock_dialog.getText.return_value = ("   ", True)
 
                 widget._show_label_dialog()
@@ -2529,19 +2578,19 @@ class TestWindowPreviewWidgetActions:
         """Test _close_window when user confirms"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
             widget.window_removed = MagicMock()
             widget.logger = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.QMessageBox') as mock_msgbox:
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
                 mock_msgbox.StandardButton.Yes = 1
                 mock_msgbox.StandardButton.No = 0
                 mock_msgbox.question.return_value = 1  # Yes
 
-                with patch('subprocess.run') as mock_run:
+                with patch("subprocess.run") as mock_run:
                     mock_run.return_value = MagicMock(returncode=0)
 
                     widget._close_window()
@@ -2553,17 +2602,17 @@ class TestWindowPreviewWidgetActions:
         """Test _close_window when user cancels"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
 
-            with patch('eve_overview_pro.ui.main_tab.QMessageBox') as mock_msgbox:
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
                 mock_msgbox.StandardButton.Yes = 1
                 mock_msgbox.StandardButton.No = 0
                 mock_msgbox.question.return_value = 0  # No
 
-                with patch('subprocess.run') as mock_run:
+                with patch("subprocess.run") as mock_run:
                     widget._close_window()
 
                     mock_run.assert_not_called()
@@ -2572,18 +2621,18 @@ class TestWindowPreviewWidgetActions:
         """Test _close_window handles exception"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
             widget.logger = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.QMessageBox') as mock_msgbox:
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
                 mock_msgbox.StandardButton.Yes = 1
                 mock_msgbox.StandardButton.No = 0
                 mock_msgbox.question.return_value = 1
 
-                with patch('subprocess.run', side_effect=Exception("wmctrl failed")):
+                with patch("subprocess.run", side_effect=Exception("wmctrl failed")):
                     widget._close_window()
 
                     widget.logger.error.assert_called()
@@ -2592,7 +2641,7 @@ class TestWindowPreviewWidgetActions:
         """Test _minimize_window success"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.capture_system = MagicMock()
@@ -2608,7 +2657,7 @@ class TestWindowPreviewWidgetActions:
         """Test _minimize_window failure"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.capture_system = MagicMock()
@@ -2623,7 +2672,7 @@ class TestWindowPreviewWidgetActions:
         """Test _minimize_window handles exception"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.capture_system = MagicMock()
@@ -2638,7 +2687,7 @@ class TestWindowPreviewWidgetActions:
         """Test _set_zoom sets zoom factor"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.zoom_factor = 0.3
@@ -2653,6 +2702,7 @@ class TestWindowPreviewWidgetActions:
 # WindowManager Init Tests
 # =============================================================================
 
+
 class TestWindowManagerInit:
     """Tests for WindowManager.__init__"""
 
@@ -2666,10 +2716,8 @@ class TestWindowManagerInit:
         mock_settings = MagicMock()
         mock_settings.get.return_value = 15  # Custom FPS
 
-        with patch('eve_overview_pro.ui.main_tab.QTimer'):
-            manager = WindowManager(
-                mock_char_mgr, mock_capture, mock_alert, mock_settings
-            )
+        with patch("eve_overview_pro.ui.main_tab.QTimer"):
+            manager = WindowManager(mock_char_mgr, mock_capture, mock_alert, mock_settings)
 
             assert manager.refresh_rate == 15
             mock_settings.get.assert_called()
@@ -2682,10 +2730,8 @@ class TestWindowManagerInit:
         mock_capture = MagicMock()
         mock_alert = MagicMock()
 
-        with patch('eve_overview_pro.ui.main_tab.QTimer'):
-            manager = WindowManager(
-                mock_char_mgr, mock_capture, mock_alert, None
-            )
+        with patch("eve_overview_pro.ui.main_tab.QTimer"):
+            manager = WindowManager(mock_char_mgr, mock_capture, mock_alert, None)
 
             assert manager.refresh_rate == 5  # Default
 
@@ -2694,6 +2740,7 @@ class TestWindowManagerInit:
 # MainTab Toolbar Tests (attribute verification - no Qt widget creation)
 # =============================================================================
 
+
 class TestMainTabToolbar:
     """Tests for MainTab toolbar handler attributes"""
 
@@ -2701,7 +2748,7 @@ class TestMainTabToolbar:
         """Test toolbar handler methods exist"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.one_click_import = MagicMock()
             tab.show_add_window_dialog = MagicMock()
@@ -2726,6 +2773,7 @@ class TestMainTabToolbar:
 # MainTab Layout Controls Tests (attribute verification)
 # =============================================================================
 
+
 class TestMainTabLayoutControls:
     """Tests for MainTab layout control methods"""
 
@@ -2733,7 +2781,7 @@ class TestMainTabLayoutControls:
         """Test layout control methods can be mocked"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._refresh_layout_sources = MagicMock()
             tab._on_layout_source_changed = MagicMock()
@@ -2756,6 +2804,7 @@ class TestMainTabLayoutControls:
 # MainTab Layout Source Tests (attribute-only to avoid Qt crashes)
 # =============================================================================
 
+
 class TestMainTabLayoutSource:
     """Tests for MainTab layout source attributes"""
 
@@ -2763,7 +2812,7 @@ class TestMainTabLayoutSource:
         """Test layout source attributes can be set"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.layout_source_combo = MagicMock()
             tab.cycling_groups = {"Team1": ["char1"], "Team2": ["char2"]}
@@ -2775,7 +2824,7 @@ class TestMainTabLayoutSource:
         """Test _on_layout_source_changed attributes"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.layout_source_combo = MagicMock()
             tab.layout_source_combo.currentText.return_value = "All Active Windows"
@@ -2795,6 +2844,7 @@ class TestMainTabLayoutSource:
 # MainTab Pattern and Stack Tests (attribute-only)
 # =============================================================================
 
+
 class TestMainTabPatternStack:
     """Tests for MainTab pattern and stack attributes"""
 
@@ -2802,7 +2852,7 @@ class TestMainTabPatternStack:
         """Test _on_stack_changed method"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.stack_checkbox = MagicMock()
             tab.stack_checkbox.isChecked.return_value = True
@@ -2816,7 +2866,7 @@ class TestMainTabPatternStack:
         """Test _on_stack_changed when unchecked"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.stack_checkbox = MagicMock()
             tab.stack_checkbox.isChecked.return_value = False
@@ -2831,6 +2881,7 @@ class TestMainTabPatternStack:
 # MainTab Apply Layout Tests
 # =============================================================================
 
+
 class TestMainTabApplyLayout:
     """Tests for MainTab layout application methods"""
 
@@ -2838,7 +2889,7 @@ class TestMainTabApplyLayout:
         """Test _update_arrangement_grid_size updates grid"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.grid_rows_spin = MagicMock()
             tab.grid_rows_spin.value.return_value = 3
@@ -2854,7 +2905,7 @@ class TestMainTabApplyLayout:
         """Test _auto_arrange_tiles arranges tiles"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.pattern_combo = MagicMock()
             tab.pattern_combo.currentText.return_value = "3x1"
@@ -2869,6 +2920,7 @@ class TestMainTabApplyLayout:
 # FlowLayout _do_layout Coverage Tests
 # =============================================================================
 
+
 class TestFlowLayoutDoLayout:
     """Tests for FlowLayout._do_layout method coverage"""
 
@@ -2876,7 +2928,7 @@ class TestFlowLayoutDoLayout:
         """Test _do_layout handles None widget (line 123)"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
@@ -2893,17 +2945,18 @@ class TestFlowLayoutDoLayout:
 
     def test_do_layout_row_wrap(self):
         """Test _do_layout wraps to new row when width exceeded"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
         from PySide6.QtCore import QSize
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
             layout._spacing = 10
 
             # Create mock items that will cause wrapping
-            for i in range(4):
+            for _i in range(4):
                 mock_item = MagicMock()
                 mock_widget = MagicMock()
                 mock_item.widget.return_value = mock_widget
@@ -2916,10 +2969,11 @@ class TestFlowLayoutDoLayout:
 
     def test_do_layout_center_row(self):
         """Test _do_layout centers rows (not test_only)"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
         from PySide6.QtCore import QSize
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
@@ -2943,7 +2997,7 @@ class TestFlowLayoutDoLayout:
         """Test _center_row with empty row_items (line 154)"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._spacing = 10
 
@@ -2956,6 +3010,7 @@ class TestFlowLayoutDoLayout:
 # DraggableTile Coverage Tests
 # =============================================================================
 
+
 class TestDraggableTileInit:
     """Tests for DraggableTile initialization coverage"""
 
@@ -2963,7 +3018,7 @@ class TestDraggableTileInit:
         """Test DraggableTile.__init__ creates all UI elements"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.char_name = "TestChar"
             tile.color = MagicMock()
@@ -2983,7 +3038,7 @@ class TestDraggableTileInit:
         """Test DraggableTile._update_style sets stylesheet"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.color = MagicMock()
             tile.color.name.return_value = "#ff0000"
@@ -3003,6 +3058,7 @@ class TestDraggableTileInit:
 # ArrangementGrid Coverage Tests
 # =============================================================================
 
+
 class TestArrangementGridSetup:
     """Tests for ArrangementGrid setup methods"""
 
@@ -3010,7 +3066,7 @@ class TestArrangementGridSetup:
         """Test _setup_ui creates grid layout with cells"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.grid_rows = 2
             grid.grid_cols = 3
@@ -3024,7 +3080,7 @@ class TestArrangementGridSetup:
         """Test set_grid_size updates grid dimensions"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.grid_rows = 2
             grid.grid_cols = 3
@@ -3044,19 +3100,19 @@ class TestArrangementGridSetup:
         """Test add_character creates and adds tile"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.tiles = {}
             grid.grid_layout = MagicMock()
 
             # Can't fully test without Qt, but verify method exists
-            assert hasattr(grid, '__class__')
+            assert hasattr(grid, "__class__")
 
     def test_add_character_skips_existing(self):
         """Test add_character skips if character already exists"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.tiles = {"ExistingChar": MagicMock()}
             grid.grid_layout = MagicMock()
@@ -3069,6 +3125,7 @@ class TestArrangementGridSetup:
 # ArrangementGrid Auto Arrange Tests
 # =============================================================================
 
+
 class TestArrangementGridAutoArrange:
     """Tests for ArrangementGrid.auto_arrange_grid patterns"""
 
@@ -3076,7 +3133,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with 2x2 Grid pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile1 = MagicMock()
             mock_tile2 = MagicMock()
@@ -3092,7 +3149,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with 3x1 Row pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile = MagicMock()
             grid.tiles = {"Char1": mock_tile}
@@ -3107,7 +3164,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with 1x3 Column pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile = MagicMock()
             grid.tiles = {"Char1": mock_tile}
@@ -3122,7 +3179,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with 4x1 Row pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile = MagicMock()
             grid.tiles = {"Char1": mock_tile}
@@ -3137,7 +3194,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with 2x3 Grid pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile = MagicMock()
             grid.tiles = {"Char1": mock_tile}
@@ -3152,7 +3209,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with 3x2 Grid pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile = MagicMock()
             grid.tiles = {"Char1": mock_tile}
@@ -3167,7 +3224,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with Main + Sides pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile1 = MagicMock()
             mock_tile2 = MagicMock()
@@ -3183,7 +3240,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with Cascade pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile1 = MagicMock()
             mock_tile2 = MagicMock()
@@ -3199,7 +3256,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with Stacked pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile1 = MagicMock()
             mock_tile2 = MagicMock()
@@ -3217,7 +3274,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with unknown pattern (default)"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             mock_tile = MagicMock()
             grid.tiles = {"Char1": mock_tile}
@@ -3233,7 +3290,7 @@ class TestArrangementGridAutoArrange:
         """Test auto_arrange_grid with no tiles returns early"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.tiles = {}
             grid.arrangement_changed = MagicMock()
@@ -3248,6 +3305,7 @@ class TestArrangementGridAutoArrange:
 # ArrangementGrid Drag Drop Tests
 # =============================================================================
 
+
 class TestArrangementGridDragDrop:
     """Tests for ArrangementGrid drag/drop event handling"""
 
@@ -3255,7 +3313,7 @@ class TestArrangementGridDragDrop:
         """Test dropEvent with x-eve-character mime format"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.logger = MagicMock()
             grid.tiles = {}
@@ -3289,7 +3347,7 @@ class TestArrangementGridDragDrop:
         """Test dropEvent with text mime format"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.logger = MagicMock()
             grid.tiles = {}
@@ -3322,7 +3380,7 @@ class TestArrangementGridDragDrop:
         """Test dropEvent with no valid mime format returns early"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.logger = MagicMock()
             grid.tiles = {}
@@ -3344,7 +3402,7 @@ class TestArrangementGridDragDrop:
         """Test dropEvent removes existing tile for same character"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.logger = MagicMock()
             mock_old_tile = MagicMock()
@@ -3381,21 +3439,23 @@ class TestArrangementGridDragDrop:
 # GridApplier Timeout Tests
 # =============================================================================
 
+
 class TestGridApplierTimeout:
     """Tests for GridApplier timeout handling"""
 
     def test_move_window_timeout_fallback(self):
         """Test _move_window uses fallback on timeout"""
         import subprocess
+
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 # First call raises timeout, second succeeds
                 mock_run.side_effect = [
-                    subprocess.TimeoutExpired('xdotool', 2),
+                    subprocess.TimeoutExpired("xdotool", 2),
                     MagicMock(),  # Fallback windowmove
                     MagicMock(),  # windowsize with sync
                 ]
@@ -3408,16 +3468,17 @@ class TestGridApplierTimeout:
     def test_move_window_size_timeout_fallback(self):
         """Test _move_window size uses fallback on timeout"""
         import subprocess
+
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 # Move succeeds, size times out, fallback succeeds
                 mock_run.side_effect = [
                     MagicMock(),  # windowmove with sync
-                    subprocess.TimeoutExpired('xdotool', 2),
+                    subprocess.TimeoutExpired("xdotool", 2),
                     MagicMock(),  # Fallback windowsize
                 ]
 
@@ -3428,14 +3489,15 @@ class TestGridApplierTimeout:
     def test_move_window_position_only_timeout(self):
         """Test _move_window_position_only timeout fallback"""
         import subprocess
+
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 mock_run.side_effect = [
-                    subprocess.TimeoutExpired('xdotool', 2),
+                    subprocess.TimeoutExpired("xdotool", 2),
                     MagicMock(),
                 ]
 
@@ -3448,6 +3510,7 @@ class TestGridApplierTimeout:
 # GridApplier Screen Geometry Tests
 # =============================================================================
 
+
 class TestGridApplierScreenGeometry:
     """Tests for GridApplier.get_screen_geometry"""
 
@@ -3455,11 +3518,11 @@ class TestGridApplierScreenGeometry:
         """Test get_screen_geometry returns default on xrandr failure"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 mock_result = MagicMock()
                 mock_result.returncode = 1
                 mock_run.return_value = mock_result
@@ -3473,11 +3536,11 @@ class TestGridApplierScreenGeometry:
         """Test get_screen_geometry handles exception"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 mock_run.side_effect = Exception("xrandr error")
 
                 result = applier.get_screen_geometry()
@@ -3489,11 +3552,11 @@ class TestGridApplierScreenGeometry:
         """Test get_screen_geometry parses xrandr output"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 mock_result = MagicMock()
                 mock_result.returncode = 0
                 mock_result.stdout = "DP-1 connected primary 2560x1440+0+0\n"
@@ -3509,11 +3572,11 @@ class TestGridApplierScreenGeometry:
         """Test get_screen_geometry with second monitor"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 mock_result = MagicMock()
                 mock_result.returncode = 0
                 mock_result.stdout = """DP-1 connected primary 2560x1440+0+0
@@ -3530,11 +3593,11 @@ HDMI-1 connected 1920x1080+2560+0
         """Test get_screen_geometry falls back to first monitor if index out of range"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
-            with patch('subprocess.run') as mock_run:
+            with patch("subprocess.run") as mock_run:
                 mock_result = MagicMock()
                 mock_result.returncode = 0
                 mock_result.stdout = "DP-1 connected primary 2560x1440+0+0\n"
@@ -3550,6 +3613,7 @@ HDMI-1 connected 1920x1080+2560+0
 # GridApplier Apply Arrangement Tests
 # =============================================================================
 
+
 class TestGridApplierApplyArrangement:
     """Tests for GridApplier.apply_arrangement"""
 
@@ -3557,7 +3621,7 @@ class TestGridApplierApplyArrangement:
         """Test apply_arrangement in stacked mode"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
             applier._move_window = MagicMock()
@@ -3568,9 +3632,13 @@ class TestGridApplierApplyArrangement:
             window_map = {"Char1": "111", "Char2": "222"}
 
             result = applier.apply_arrangement(
-                arrangement, window_map, screen,
-                grid_rows=2, grid_cols=2,
-                stacked=True, stacked_use_grid_size=True
+                arrangement,
+                window_map,
+                screen,
+                grid_rows=2,
+                grid_cols=2,
+                stacked=True,
+                stacked_use_grid_size=True,
             )
 
             assert result is True
@@ -3580,7 +3648,7 @@ class TestGridApplierApplyArrangement:
         """Test apply_arrangement stacked without grid size"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
             applier._move_window = MagicMock()
@@ -3591,9 +3659,13 @@ class TestGridApplierApplyArrangement:
             window_map = {"Char1": "111"}
 
             result = applier.apply_arrangement(
-                arrangement, window_map, screen,
-                grid_rows=2, grid_cols=2,
-                stacked=True, stacked_use_grid_size=False
+                arrangement,
+                window_map,
+                screen,
+                grid_rows=2,
+                grid_cols=2,
+                stacked=True,
+                stacked_use_grid_size=False,
             )
 
             assert result is True
@@ -3603,7 +3675,7 @@ class TestGridApplierApplyArrangement:
         """Test apply_arrangement in grid mode"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
             applier._move_window = MagicMock()
@@ -3613,9 +3685,7 @@ class TestGridApplierApplyArrangement:
             window_map = {"Char1": "111", "Char2": "222"}
 
             result = applier.apply_arrangement(
-                arrangement, window_map, screen,
-                grid_rows=2, grid_cols=2,
-                stacked=False
+                arrangement, window_map, screen, grid_rows=2, grid_cols=2, stacked=False
             )
 
             assert result is True
@@ -3625,7 +3695,7 @@ class TestGridApplierApplyArrangement:
         """Test apply_arrangement skips characters not in window_map"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
             applier._move_window = MagicMock()
@@ -3635,9 +3705,7 @@ class TestGridApplierApplyArrangement:
             window_map = {"Char1": "111"}  # MissingChar not here
 
             result = applier.apply_arrangement(
-                arrangement, window_map, screen,
-                grid_rows=2, grid_cols=2,
-                stacked=False
+                arrangement, window_map, screen, grid_rows=2, grid_cols=2, stacked=False
             )
 
             assert result is True
@@ -3648,7 +3716,7 @@ class TestGridApplierApplyArrangement:
         """Test apply_arrangement handles exception"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
             applier._move_window = MagicMock(side_effect=Exception("xdotool error"))
@@ -3658,9 +3726,7 @@ class TestGridApplierApplyArrangement:
             window_map = {"Char1": "111"}
 
             result = applier.apply_arrangement(
-                arrangement, window_map, screen,
-                grid_rows=2, grid_cols=2,
-                stacked=False
+                arrangement, window_map, screen, grid_rows=2, grid_cols=2, stacked=False
             )
 
             assert result is False
@@ -3671,6 +3737,7 @@ class TestGridApplierApplyArrangement:
 # WindowPreviewWidget Init Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidgetInit:
     """Tests for WindowPreviewWidget.__init__ coverage"""
 
@@ -3678,7 +3745,7 @@ class TestWindowPreviewWidgetInit:
         """Test WindowPreviewWidget.__init__ sets all attributes"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -3699,7 +3766,7 @@ class TestWindowPreviewWidgetInit:
         """Test _load_settings loads from settings_manager"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             mock_settings = MagicMock()
             mock_settings.get.side_effect = lambda k, d: {
@@ -3724,7 +3791,7 @@ class TestWindowPreviewWidgetInit:
         """Test _load_settings uses defaults without settings_manager"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.settings_manager = None
             widget._opacity_on_hover = 0.3
@@ -3744,6 +3811,7 @@ class TestWindowPreviewWidgetInit:
 # WindowPreviewWidget Method Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidgetMethods:
     """Tests for WindowPreviewWidget methods coverage"""
 
@@ -3751,7 +3819,7 @@ class TestWindowPreviewWidgetMethods:
         """Test set_alert sets alert level and starts timer"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.logger = MagicMock()
             widget.window_id = "12345"
@@ -3772,7 +3840,7 @@ class TestWindowPreviewWidgetMethods:
         """Test set_alert doesn't restart active timer"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.logger = MagicMock()
             widget.window_id = "12345"
@@ -3791,7 +3859,7 @@ class TestWindowPreviewWidgetMethods:
         """Test _flash_tick decrements counter"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_flash_counter = 10
             widget.alert_level = MagicMock()
@@ -3807,7 +3875,7 @@ class TestWindowPreviewWidgetMethods:
         """Test _flash_tick stops timer at zero"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_flash_counter = 1
             widget.alert_level = MagicMock()
@@ -3824,7 +3892,7 @@ class TestWindowPreviewWidgetMethods:
         """Test _update_session_timer returns early if not shown"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = False
             widget.timer_label = MagicMock()
@@ -3835,10 +3903,11 @@ class TestWindowPreviewWidgetMethods:
 
     def test_update_session_timer_minutes_only(self):
         """Test _update_session_timer shows minutes"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = True
             widget.session_start = datetime.now() - timedelta(minutes=30)
@@ -3852,10 +3921,11 @@ class TestWindowPreviewWidgetMethods:
 
     def test_update_session_timer_hours_and_minutes(self):
         """Test _update_session_timer shows hours and minutes"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = True
             widget.session_start = datetime.now() - timedelta(hours=2, minutes=15)
@@ -3871,7 +3941,7 @@ class TestWindowPreviewWidgetMethods:
         """Test set_custom_label updates label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -3893,7 +3963,7 @@ class TestWindowPreviewWidgetMethods:
         """Test set_custom_label saves to settings"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -3916,7 +3986,7 @@ class TestWindowPreviewWidgetMethods:
         """Test set_custom_label clears label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.character_name = "TestChar"
@@ -3940,7 +4010,7 @@ class TestWindowPreviewWidgetMethods:
         """Test set_focused updates state"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = False
             widget.update = MagicMock()
@@ -3952,10 +4022,11 @@ class TestWindowPreviewWidgetMethods:
 
     def test_mouse_press_event(self):
         """Test mousePressEvent stores drag start"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtCore import Qt
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._drag_start_pos = None
 
@@ -3970,10 +4041,11 @@ class TestWindowPreviewWidgetMethods:
 
     def test_mouse_release_event_activates_window(self):
         """Test mouseReleaseEvent activates window if not dragged"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtCore import Qt
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "12345"
             widget.logger = MagicMock()
@@ -3993,6 +4065,7 @@ class TestWindowPreviewWidgetMethods:
 # MainTab Init Tests
 # =============================================================================
 
+
 class TestMainTabInit:
     """Tests for MainTab.__init__ coverage"""
 
@@ -4000,7 +4073,7 @@ class TestMainTabInit:
         """Test MainTab.__init__ sets basic attributes"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.capture_system = MagicMock()
@@ -4020,7 +4093,7 @@ class TestMainTabInit:
         """Test _load_cycling_groups loads from settings"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             mock_settings = MagicMock()
             mock_settings.get.return_value = {"Team1": ["Char1", "Char2"]}
@@ -4036,7 +4109,7 @@ class TestMainTabInit:
         """Test _load_cycling_groups adds Default without settings"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = None
             tab.cycling_groups = {}
@@ -4050,7 +4123,7 @@ class TestMainTabInit:
         """Test _load_cycling_groups handles invalid type"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             mock_settings = MagicMock()
             mock_settings.get.return_value = "invalid"  # Not a dict
@@ -4066,6 +4139,7 @@ class TestMainTabInit:
 # MainTab Layout Methods Tests
 # =============================================================================
 
+
 class TestMainTabLayoutMethods:
     """Tests for MainTab layout methods"""
 
@@ -4073,7 +4147,7 @@ class TestMainTabLayoutMethods:
         """Test _on_pattern_changed with stacked pattern"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.pattern_combo = MagicMock()
             tab.pattern_combo.currentText.return_value = "Stacked (All Same Position)"
@@ -4090,7 +4164,7 @@ class TestMainTabLayoutMethods:
         """Test _on_pattern_changed with grid pattern"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.pattern_combo = MagicMock()
             tab.pattern_combo.currentText.return_value = "2x2 Grid"
@@ -4106,7 +4180,7 @@ class TestMainTabLayoutMethods:
         """Test _on_stack_changed when checked"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.stack_checkbox = MagicMock()
             tab.stack_checkbox.isChecked.return_value = True
@@ -4120,7 +4194,7 @@ class TestMainTabLayoutMethods:
         """Test refresh_layout_groups refreshes sources"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._refresh_layout_sources = MagicMock()
             tab._on_layout_source_changed = MagicMock()
@@ -4135,6 +4209,7 @@ class TestMainTabLayoutMethods:
 # MainTab Window Methods Tests
 # =============================================================================
 
+
 class TestMainTabWindowMethods:
     """Tests for MainTab window methods"""
 
@@ -4142,7 +4217,7 @@ class TestMainTabWindowMethods:
         """Test _toggle_lock when locking"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._positions_locked = False
             tab.lock_btn = MagicMock()
@@ -4162,7 +4237,7 @@ class TestMainTabWindowMethods:
         """Test _toggle_lock when unlocking"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._positions_locked = True
             tab.lock_btn = MagicMock()
@@ -4182,7 +4257,7 @@ class TestMainTabWindowMethods:
         """Test _on_window_activated sets last activated window"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.settings_manager = MagicMock()
@@ -4197,7 +4272,7 @@ class TestMainTabWindowMethods:
         """Test _on_window_removed removes frame"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.window_manager = MagicMock()
@@ -4212,13 +4287,13 @@ class TestMainTabWindowMethods:
         """Test _remove_all_windows clears all"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.preview_frames = {"1": MagicMock(), "2": MagicMock()}
             tab._update_status = MagicMock()
 
-            with patch.object(MainTab, '_on_window_removed') as mock_remove:
+            with patch.object(MainTab, "_on_window_removed"):
                 # Can't easily test due to dict iteration during modification
                 pass
 
@@ -4226,7 +4301,7 @@ class TestMainTabWindowMethods:
         """Test _refresh_all logs and updates status"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.status_label = MagicMock()
@@ -4241,6 +4316,7 @@ class TestMainTabWindowMethods:
 # MainTab Minimize Tests
 # =============================================================================
 
+
 class TestMainTabMinimize:
     """Tests for MainTab minimize functionality"""
 
@@ -4248,7 +4324,7 @@ class TestMainTabMinimize:
         """Test minimize_inactive_windows toggles to enabled"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._windows_minimized = False
             tab.window_manager = MagicMock()
@@ -4265,7 +4341,7 @@ class TestMainTabMinimize:
             mock_result = MagicMock()
             mock_result.returncode = 0
             mock_result.stdout = "12345"
-            with patch('subprocess.run', return_value=mock_result):
+            with patch("subprocess.run", return_value=mock_result):
                 tab.minimize_inactive_windows()
 
             assert tab._windows_minimized is True
@@ -4275,7 +4351,7 @@ class TestMainTabMinimize:
         """Test minimize_inactive_windows toggles to disabled"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._windows_minimized = True
             tab.window_manager = MagicMock()
@@ -4296,6 +4372,7 @@ class TestMainTabMinimize:
 # MainTab Preview Toggle Tests
 # =============================================================================
 
+
 class TestMainTabPreviewToggle:
     """Tests for MainTab preview toggle"""
 
@@ -4303,7 +4380,7 @@ class TestMainTabPreviewToggle:
         """Test set_previews_enabled starts capture when inactive"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.capture_timer = MagicMock()
@@ -4320,7 +4397,7 @@ class TestMainTabPreviewToggle:
         """Test set_previews_enabled stops capture when active"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.capture_timer = MagicMock()
@@ -4338,6 +4415,7 @@ class TestMainTabPreviewToggle:
 # FlowLayout Tests (Lines 69-177)
 # =============================================================================
 
+
 class TestFlowLayoutInit:
     """Tests for FlowLayout initialization"""
 
@@ -4345,7 +4423,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.__init__ sets attributes"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 10
@@ -4359,7 +4437,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.addItem"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
 
@@ -4372,7 +4450,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.count"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = [MagicMock(), MagicMock(), MagicMock()]
 
@@ -4382,7 +4460,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.itemAt with valid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             item1 = MagicMock()
             item2 = MagicMock()
@@ -4395,7 +4473,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.itemAt with invalid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = [MagicMock()]
 
@@ -4406,7 +4484,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.takeAt with valid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             item1 = MagicMock()
             item2 = MagicMock()
@@ -4421,7 +4499,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.takeAt with invalid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = [MagicMock()]
 
@@ -4432,7 +4510,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.expandingDirections"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
 
             result = layout.expandingDirections()
@@ -4444,7 +4522,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout.hasHeightForWidth"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
 
             assert layout.hasHeightForWidth() is True
@@ -4454,6 +4532,7 @@ class TestFlowLayoutInit:
 # DraggableTile Tests (Lines 180-235)
 # =============================================================================
 
+
 class TestDraggableTileInit:
     """Tests for DraggableTile initialization"""
 
@@ -4461,7 +4540,7 @@ class TestDraggableTileInit:
         """Test DraggableTile attributes are set"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.char_name = "TestChar"
             tile.color = MagicMock()
@@ -4478,7 +4557,7 @@ class TestDraggableTileInit:
         """Test DraggableTile.set_position"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.pos_label = MagicMock()
 
@@ -4492,7 +4571,7 @@ class TestDraggableTileInit:
         """Test DraggableTile.set_stacked with True"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.pos_label = MagicMock()
 
@@ -4505,7 +4584,7 @@ class TestDraggableTileInit:
         """Test DraggableTile.set_stacked with False"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.pos_label = MagicMock()
 
@@ -4518,6 +4597,7 @@ class TestDraggableTileInit:
 # ArrangementGrid Tests (Lines 237-425)
 # =============================================================================
 
+
 class TestArrangementGridMethods:
     """Tests for ArrangementGrid methods"""
 
@@ -4525,7 +4605,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.clear_tiles"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             tile2 = MagicMock()
@@ -4542,7 +4622,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.get_arrangement"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             tile1.grid_row = 0
@@ -4560,7 +4640,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with no tiles"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.tiles = {}
 
@@ -4571,7 +4651,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with 2x2 pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             tile2 = MagicMock()
@@ -4589,7 +4669,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with 3x1 Row pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             grid.tiles = {"char1": tile1}
@@ -4604,7 +4684,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with 1x3 Column pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             grid.tiles = {"char1": tile1}
@@ -4619,7 +4699,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with 4x1 Row pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             grid.tiles = {"char1": tile1}
@@ -4634,7 +4714,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with 2x3 Grid pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             grid.tiles = {"char1": tile1}
@@ -4649,7 +4729,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with 3x2 Grid pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             grid.tiles = {"char1": tile1}
@@ -4664,7 +4744,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with Main + Sides pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             tile2 = MagicMock()
@@ -4681,7 +4761,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with Cascade pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             tile2 = MagicMock()
@@ -4697,7 +4777,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with Stacked pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             tile2 = MagicMock()
@@ -4714,7 +4794,7 @@ class TestArrangementGridMethods:
         """Test ArrangementGrid.auto_arrange_grid with unknown pattern"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             grid.tiles = {"char1": tile1}
@@ -4732,6 +4812,7 @@ class TestArrangementGridMethods:
 # WindowPreviewWidget Tests (Lines 600-924)
 # =============================================================================
 
+
 class TestWindowPreviewWidgetMethods2:
     """More tests for WindowPreviewWidget methods"""
 
@@ -4739,7 +4820,7 @@ class TestWindowPreviewWidgetMethods2:
         """Test _get_display_name with custom label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.custom_label = "MyLabel"
             widget.character_name = "CharName"
@@ -4752,7 +4833,7 @@ class TestWindowPreviewWidgetMethods2:
         """Test _get_display_name without custom label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.custom_label = None
             widget.character_name = "CharName"
@@ -4765,7 +4846,7 @@ class TestWindowPreviewWidgetMethods2:
         """Test _load_settings with settings_manager"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.settings_manager = MagicMock()
             widget.settings_manager.get.side_effect = lambda key, default: {
@@ -4791,7 +4872,7 @@ class TestWindowPreviewWidgetMethods2:
         """Test _load_settings without settings_manager"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.settings_manager = None
             widget._opacity_on_hover = 0.3
@@ -4804,7 +4885,7 @@ class TestWindowPreviewWidgetMethods2:
         """Test set_alert starts flash timer"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.logger = MagicMock()
             widget.window_id = "12345"
@@ -4822,7 +4903,7 @@ class TestWindowPreviewWidgetMethods2:
         """Test set_alert when timer already active"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.logger = MagicMock()
             widget.window_id = "12345"
@@ -4840,6 +4921,7 @@ class TestWindowPreviewWidgetMethods2:
 # MainTab Additional Method Tests
 # =============================================================================
 
+
 class TestMainTabOneClickImport:
     """Tests for MainTab one_click_import"""
 
@@ -4847,12 +4929,12 @@ class TestMainTabOneClickImport:
         """Test one_click_import with no EVE windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.scan_eve_windows', return_value=[]):
-                with patch('eve_overview_pro.ui.main_tab.QMessageBox') as mock_msgbox:
+            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=[]):
+                with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
                     tab.one_click_import()
 
                     mock_msgbox.information.assert_called_once()
@@ -4861,7 +4943,7 @@ class TestMainTabOneClickImport:
         """Test one_click_import with EVE windows found"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.window_manager = MagicMock()
@@ -4873,7 +4955,7 @@ class TestMainTabOneClickImport:
             tab._update_status = MagicMock()
 
             windows = [("12345", "EVE - Char1", "Char1")]
-            with patch('eve_overview_pro.ui.main_tab.scan_eve_windows', return_value=windows):
+            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=windows):
                 tab.one_click_import()
 
                 tab.window_manager.add_window.assert_called_with("12345", "Char1")
@@ -4883,7 +4965,7 @@ class TestMainTabOneClickImport:
         """Test one_click_import skips existing windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.window_manager = MagicMock()
@@ -4892,7 +4974,7 @@ class TestMainTabOneClickImport:
             tab._update_status = MagicMock()
 
             windows = [("12345", "EVE - Char1", "Char1")]
-            with patch('eve_overview_pro.ui.main_tab.scan_eve_windows', return_value=windows):
+            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=windows):
                 tab.one_click_import()
 
                 tab.window_manager.add_window.assert_not_called()
@@ -4905,7 +4987,7 @@ class TestMainTabToggleThumbnails:
         """Test toggle_thumbnails_visibility shows thumbnails"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._thumbnails_visible = False
             tab.window_manager = MagicMock()
@@ -4924,7 +5006,7 @@ class TestMainTabToggleThumbnails:
         """Test toggle_thumbnails_visibility hides thumbnails"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab._thumbnails_visible = True
             tab.window_manager = MagicMock()
@@ -4946,7 +5028,7 @@ class TestMainTabUpdateStatus:
         """Test _update_status with active windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.get_active_window_count.return_value = 3
@@ -4961,7 +5043,7 @@ class TestMainTabUpdateStatus:
         """Test _update_status with no active windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.get_active_window_count.return_value = 0
@@ -4971,7 +5053,9 @@ class TestMainTabUpdateStatus:
             tab._update_status()
 
             tab.active_count_label.setText.assert_called_with("Active: 0")
-            tab.status_label.setText.assert_called_with("No windows in preview - Click 'Add Window' to start")
+            tab.status_label.setText.assert_called_with(
+                "No windows in preview - Click 'Add Window' to start"
+            )
 
 
 class TestMainTabRefreshRate:
@@ -4981,7 +5065,7 @@ class TestMainTabRefreshRate:
         """Test _on_refresh_rate_changed updates window manager"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.logger = MagicMock()
@@ -4999,12 +5083,12 @@ class TestMainTabApplyLayout:
         """Test _apply_layout_to_windows with empty arrangement"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.arrangement_grid = MagicMock()
             tab.arrangement_grid.get_arrangement.return_value = {}
 
-            with patch('eve_overview_pro.ui.main_tab.QMessageBox') as mock_msgbox:
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab._apply_layout_to_windows()
 
                 mock_msgbox.warning.assert_called_once()
@@ -5013,7 +5097,7 @@ class TestMainTabApplyLayout:
         """Test _apply_layout_to_windows with no matching windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.arrangement_grid = MagicMock()
             tab.arrangement_grid.get_arrangement.return_value = {"char1": (0, 0)}
@@ -5023,7 +5107,7 @@ class TestMainTabApplyLayout:
             frame.character_name = "other_char"
             tab.window_manager.preview_frames = {"12345": frame}
 
-            with patch('eve_overview_pro.ui.main_tab.QMessageBox') as mock_msgbox:
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab._apply_layout_to_windows()
 
                 mock_msgbox.warning.assert_called_once()
@@ -5032,7 +5116,7 @@ class TestMainTabApplyLayout:
         """Test _apply_layout_to_windows with successful apply"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.arrangement_grid = MagicMock()
             tab.arrangement_grid.get_arrangement.return_value = {"char1": (0, 0)}
@@ -5072,6 +5156,7 @@ class TestMainTabApplyLayout:
 # WindowPreviewWidget Additional Method Tests
 # =============================================================================
 
+
 class TestWindowPreviewWidgetFlashTick:
     """Tests for WindowPreviewWidget _flash_tick"""
 
@@ -5079,7 +5164,7 @@ class TestWindowPreviewWidgetFlashTick:
         """Test _flash_tick decrements counter"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_flash_counter = 10
             widget.flash_timer = MagicMock()
@@ -5094,7 +5179,7 @@ class TestWindowPreviewWidgetFlashTick:
         """Test _flash_tick stops timer at zero"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.alert_flash_counter = 1
             widget.flash_timer = MagicMock()
@@ -5114,7 +5199,7 @@ class TestWindowPreviewWidgetSessionTimer:
         """Test _update_session_timer when disabled"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = False
             widget.timer_label = MagicMock()
@@ -5125,10 +5210,11 @@ class TestWindowPreviewWidgetSessionTimer:
 
     def test_update_session_timer_minutes_only(self):
         """Test _update_session_timer with minutes only"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = True
             widget.session_start = datetime.now() - timedelta(minutes=30)
@@ -5141,10 +5227,11 @@ class TestWindowPreviewWidgetSessionTimer:
 
     def test_update_session_timer_with_hours(self):
         """Test _update_session_timer with hours"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._show_session_timer = True
             widget.session_start = datetime.now() - timedelta(hours=2, minutes=15)
@@ -5163,7 +5250,7 @@ class TestWindowPreviewWidgetCustomLabel:
         """Test set_custom_label sets label and emits signal"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
@@ -5184,7 +5271,7 @@ class TestWindowPreviewWidgetCustomLabel:
         """Test set_custom_label clearing label"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
@@ -5208,7 +5295,7 @@ class TestWindowPreviewWidgetFocus:
         """Test set_focused with True"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.update = MagicMock()
 
@@ -5221,7 +5308,7 @@ class TestWindowPreviewWidgetFocus:
         """Test set_focused with False"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.update = MagicMock()
 
@@ -5232,10 +5319,11 @@ class TestWindowPreviewWidgetFocus:
 
     def test_mark_activity(self):
         """Test mark_activity updates last_activity"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.update = MagicMock()
             old_time = datetime(2020, 1, 1)
@@ -5254,41 +5342,43 @@ class TestWindowPreviewWidgetActivityState:
         """Test get_activity_state returns focused"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = True
 
             result = widget.get_activity_state()
 
-            assert result == 'focused'
+            assert result == "focused"
 
     def test_get_activity_state_recent(self):
         """Test get_activity_state returns recent"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = False
             widget.last_activity = datetime.now() - timedelta(seconds=2)
 
             result = widget.get_activity_state()
 
-            assert result == 'recent'
+            assert result == "recent"
 
     def test_get_activity_state_idle(self):
         """Test get_activity_state returns idle"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.is_focused = False
             widget.last_activity = datetime.now() - timedelta(seconds=60)
 
             result = widget.get_activity_state()
 
-            assert result == 'idle'
+            assert result == "idle"
 
 
 class TestWindowPreviewWidgetHover:
@@ -5298,13 +5388,13 @@ class TestWindowPreviewWidgetHover:
         """Test enterEvent sets hover state"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._opacity_on_hover = 0.5
             widget.opacity_effect = MagicMock()
-            mock_event = MagicMock()
+            MagicMock()
 
-            with patch.object(WindowPreviewWidget, 'enterEvent', return_value=None):
+            with patch.object(WindowPreviewWidget, "enterEvent", return_value=None):
                 widget._is_hovered = True
                 widget.opacity_effect.setOpacity(widget._opacity_on_hover)
 
@@ -5314,12 +5404,12 @@ class TestWindowPreviewWidgetHover:
         """Test leaveEvent restores normal state"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget._is_hovered = True
             widget.opacity_effect = MagicMock()
 
-            with patch.object(WindowPreviewWidget, 'leaveEvent', return_value=None):
+            with patch.object(WindowPreviewWidget, "leaveEvent", return_value=None):
                 widget._is_hovered = False
                 widget.opacity_effect.setOpacity(1.0)
 
@@ -5330,6 +5420,7 @@ class TestWindowPreviewWidgetHover:
 # GridApplier Additional Tests
 # =============================================================================
 
+
 class TestGridApplierScreenGeometry:
     """Tests for GridApplier screen geometry methods"""
 
@@ -5337,7 +5428,7 @@ class TestGridApplierScreenGeometry:
         """Test get_screen_geometry with successful xrandr call"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
@@ -5345,8 +5436,8 @@ class TestGridApplierScreenGeometry:
             mock_result.returncode = 0
             mock_result.stdout = "DP-1 connected primary 1920x1080+0+0"
 
-            with patch('subprocess.run', return_value=mock_result):
-                result = applier.get_screen_geometry(0)
+            with patch("subprocess.run", return_value=mock_result):
+                applier.get_screen_geometry(0)
 
                 # Should return ScreenGeometry or None
                 # The actual parsing depends on implementation
@@ -5355,11 +5446,11 @@ class TestGridApplierScreenGeometry:
         """Test get_screen_geometry with failed xrandr call - returns fallback"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
-            with patch('subprocess.run', side_effect=FileNotFoundError):
+            with patch("subprocess.run", side_effect=FileNotFoundError):
                 result = applier.get_screen_geometry(0)
 
                 # Method returns fallback on exception
@@ -5370,7 +5461,7 @@ class TestGridApplierScreenGeometry:
         """Test get_screen_geometry when xrandr returns non-zero (line 442)"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
@@ -5378,7 +5469,7 @@ class TestGridApplierScreenGeometry:
             mock_result.returncode = 1  # Non-zero = failure
             mock_result.stdout = ""
 
-            with patch('subprocess.run', return_value=mock_result):
+            with patch("subprocess.run", return_value=mock_result):
                 result = applier.get_screen_geometry(0)
 
                 # Should return default on non-zero returncode
@@ -5386,9 +5477,9 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_monitor_out_of_range(self):
         """Test get_screen_geometry with monitor index out of range (line 456)"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from eve_overview_pro.ui.main_tab import GridApplier
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
@@ -5397,7 +5488,7 @@ class TestGridApplierScreenGeometry:
             # Only one monitor at index 0
             mock_result.stdout = "DP-1 connected primary 1920x1080+0+0"
 
-            with patch('subprocess.run', return_value=mock_result):
+            with patch("subprocess.run", return_value=mock_result):
                 # Request monitor 5 when only monitor 0 exists
                 result = applier.get_screen_geometry(5)
 
@@ -5414,7 +5505,7 @@ class TestGridApplierApply:
         """Test apply_arrangement with empty arrangement"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
-        with patch.object(GridApplier, '__init__', return_value=None):
+        with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
@@ -5427,7 +5518,7 @@ class TestGridApplierApply:
                 grid_cols=2,
                 spacing=10,
                 stacked=False,
-                stacked_use_grid_size=False
+                stacked_use_grid_size=False,
             )
 
             assert result is True  # Empty arrangement is success
@@ -5437,6 +5528,7 @@ class TestGridApplierApply:
 # MainTab Additional Tests
 # =============================================================================
 
+
 class TestMainTabAutoArrangeTiles:
     """Tests for MainTab _auto_arrange_tiles"""
 
@@ -5444,7 +5536,7 @@ class TestMainTabAutoArrangeTiles:
         """Test _auto_arrange_tiles calls arrangement_grid"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.pattern_combo = MagicMock()
             tab.pattern_combo.currentText.return_value = "2x2 Grid"
@@ -5462,7 +5554,7 @@ class TestMainTabUpdateArrangementGridSize:
         """Test _update_arrangement_grid_size"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.grid_rows_spin = MagicMock()
             tab.grid_rows_spin.value.return_value = 3
@@ -5479,6 +5571,7 @@ class TestMainTabUpdateArrangementGridSize:
 # FlowLayout Init and Basic Methods Tests
 # =============================================================================
 
+
 class TestFlowLayoutInit:
     """Tests for FlowLayout __init__ (lines 70-73)"""
 
@@ -5486,7 +5579,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout initializes with default values"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             # Call real init manually
             layout._item_list = []
@@ -5501,7 +5594,7 @@ class TestFlowLayoutInit:
         """Test FlowLayout initializes with custom values"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
             layout._margin = 20
@@ -5518,7 +5611,7 @@ class TestFlowLayoutCount:
         """Test count returns 0 for empty list"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
 
@@ -5528,7 +5621,7 @@ class TestFlowLayoutCount:
         """Test count returns correct number"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = [MagicMock(), MagicMock(), MagicMock()]
 
@@ -5542,7 +5635,7 @@ class TestFlowLayoutItemAt:
         """Test itemAt returns item at valid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             item1 = MagicMock()
             item2 = MagicMock()
@@ -5555,7 +5648,7 @@ class TestFlowLayoutItemAt:
         """Test itemAt returns None for invalid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = [MagicMock()]
 
@@ -5570,7 +5663,7 @@ class TestFlowLayoutTakeAt:
         """Test takeAt removes and returns item"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             item1 = MagicMock()
             item2 = MagicMock()
@@ -5586,7 +5679,7 @@ class TestFlowLayoutTakeAt:
         """Test takeAt returns None for invalid index"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = [MagicMock()]
 
@@ -5602,7 +5695,7 @@ class TestFlowLayoutAddItem:
         """Test addItem appends to list"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._item_list = []
 
@@ -5620,7 +5713,7 @@ class TestFlowLayoutCenterRow:
         """Test _center_row with empty items - returns early"""
         from eve_overview_pro.ui.main_tab import FlowLayout
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._margin = 10
             layout._spacing = 10
@@ -5633,10 +5726,11 @@ class TestFlowLayoutCenterRow:
 
     def test_center_row_with_items(self):
         """Test _center_row positions items"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
-        from PySide6.QtCore import QSize, QRect
+        from PySide6.QtCore import QRect, QSize
 
-        with patch.object(FlowLayout, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
             layout._margin = 10
             layout._spacing = 10
@@ -5657,15 +5751,17 @@ class TestFlowLayoutCenterRow:
 # DraggableTile Init Tests (lines 186-213)
 # =============================================================================
 
+
 class TestDraggableTileInit:
     """Tests for DraggableTile __init__"""
 
     def test_init_sets_attributes(self):
         """Test DraggableTile __init__ sets attributes"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
         from PySide6.QtGui import QColor
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import DraggableTile
+
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.char_name = "Test Character"
             tile.color = QColor(255, 100, 100)
@@ -5684,10 +5780,11 @@ class TestDraggableTileUpdateStyle:
 
     def test_update_style(self):
         """Test _update_style applies stylesheet"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
         from PySide6.QtGui import QColor
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import DraggableTile
+
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.color = QColor(255, 100, 100, 200)
             tile.setStyleSheet = MagicMock()
@@ -5707,7 +5804,7 @@ class TestDraggableTileSetPosition:
         """Test set_position updates row/col"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.grid_row = 0
             tile.grid_col = 0
@@ -5727,7 +5824,7 @@ class TestDraggableTileSetStacked:
         """Test set_stacked(True) updates label"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.is_stacked = False
             tile.pos_label = MagicMock()
@@ -5741,7 +5838,7 @@ class TestDraggableTileSetStacked:
         """Test set_stacked(False) keeps position"""
         from eve_overview_pro.ui.main_tab import DraggableTile
 
-        with patch.object(DraggableTile, '__init__', return_value=None):
+        with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
             tile.is_stacked = True
             tile.pos_label = MagicMock()
@@ -5756,6 +5853,7 @@ class TestDraggableTileSetStacked:
 # ArrangementGrid Tests (lines 243-328)
 # =============================================================================
 
+
 class TestArrangementGridInit:
     """Tests for ArrangementGrid __init__"""
 
@@ -5763,7 +5861,7 @@ class TestArrangementGridInit:
         """Test ArrangementGrid __init__ sets defaults"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             grid.logger = MagicMock()
             grid.tiles = {}
@@ -5782,7 +5880,7 @@ class TestArrangementGridClearTiles:
         """Test clear_tiles removes all tiles"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             tile1 = MagicMock()
             tile2 = MagicMock()
@@ -5804,7 +5902,7 @@ class TestArrangementGridAddCharacter:
         """Test add_character skips existing"""
         from eve_overview_pro.ui.main_tab import ArrangementGrid
 
-        with patch.object(ArrangementGrid, '__init__', return_value=None):
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
             existing_tile = MagicMock()
             grid.tiles = {"TestChar": existing_tile}
@@ -5819,6 +5917,7 @@ class TestArrangementGridAddCharacter:
 # WindowPreviewWidget Init Tests (lines 615-688)
 # =============================================================================
 
+
 class TestWindowPreviewWidgetInit:
     """Tests for WindowPreviewWidget __init__"""
 
@@ -5826,7 +5925,7 @@ class TestWindowPreviewWidgetInit:
         """Test __init__ sets default state"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.window_id = "0x12345"
             widget.character_name = "TestChar"
@@ -5845,10 +5944,11 @@ class TestWindowPreviewWidgetUpdateFrame:
 
     def test_update_frame_with_image(self):
         """Test update_frame with valid image"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.image_label = MagicMock()
             widget.current_pixmap = None
@@ -5858,11 +5958,11 @@ class TestWindowPreviewWidgetUpdateFrame:
             # Mock PIL Image
             mock_image = MagicMock()
             mock_image.size = (100, 75)
-            mock_image.tobytes.return_value = b'\x00' * 100 * 75 * 4
-            mock_image.mode = 'RGBA'
+            mock_image.tobytes.return_value = b"\x00" * 100 * 75 * 4
+            mock_image.mode = "RGBA"
 
-            with patch('eve_overview_pro.ui.main_tab.QImage') as mock_qimage:
-                with patch('eve_overview_pro.ui.main_tab.QPixmap.fromImage') as mock_pixmap:
+            with patch("eve_overview_pro.ui.main_tab.QImage"):
+                with patch("eve_overview_pro.ui.main_tab.QPixmap.fromImage") as mock_pixmap:
                     mock_pixmap.return_value = MagicMock()
                     widget.update_frame(mock_image)
 
@@ -5872,14 +5972,14 @@ class TestWindowPreviewWidgetUpdateFrame:
         """Test update_frame returns early if pil_to_qimage returns None"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
-        with patch.object(WindowPreviewWidget, '__init__', return_value=None):
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.image_label = MagicMock()
             widget.current_pixmap = MagicMock()
 
             mock_image = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.pil_to_qimage', return_value=None):
+            with patch("eve_overview_pro.ui.main_tab.pil_to_qimage", return_value=None):
                 widget.update_frame(mock_image)
 
                 # Should not call setPixmap since pil_to_qimage returned None
@@ -5897,6 +5997,7 @@ class TestWindowPreviewWidgetUpdateFrame:
 # WindowManager Tests (lines 1087-1168)
 # =============================================================================
 
+
 class TestWindowManagerAddWindow:
     """Tests for WindowManager.add_window"""
 
@@ -5904,7 +6005,7 @@ class TestWindowManagerAddWindow:
         """Test add_window creates preview frame"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {}
             manager.capture_system = MagicMock()
@@ -5912,7 +6013,7 @@ class TestWindowManagerAddWindow:
             manager.settings_manager = MagicMock()
             manager.logger = MagicMock()
 
-            with patch('eve_overview_pro.ui.main_tab.WindowPreviewWidget') as mock_widget:
+            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget") as mock_widget:
                 mock_widget.return_value = MagicMock()
                 result = manager.add_window("0x12345", "TestChar")
 
@@ -5927,7 +6028,7 @@ class TestWindowManagerRemoveWindow:
         """Test remove_window removes frame"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             mock_frame = MagicMock()
             manager.preview_frames = {"0x12345": mock_frame}
@@ -5943,7 +6044,7 @@ class TestWindowManagerRemoveWindow:
         """Test remove_window with unknown window"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             manager.preview_frames = {}
             manager.alert_detector = MagicMock()
@@ -5960,7 +6061,7 @@ class TestWindowManagerCaptureCycle:
         """Test _capture_cycle requests captures"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             frame1 = MagicMock()
             frame1.isVisible.return_value = True
@@ -5985,7 +6086,7 @@ class TestWindowManagerProcessResults:
         """Test _process_capture_results updates frames"""
         from eve_overview_pro.ui.main_tab import WindowManager
 
-        with patch.object(WindowManager, '__init__', return_value=None):
+        with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
             frame = MagicMock()
             manager.preview_frames = {"0x12345": frame}
@@ -5996,10 +6097,7 @@ class TestWindowManagerProcessResults:
 
             # Mock getting one result then None
             mock_image = MagicMock()
-            manager.capture_system.get_result.side_effect = [
-                ("req1", "0x12345", mock_image),
-                None
-            ]
+            manager.capture_system.get_result.side_effect = [("req1", "0x12345", mock_image), None]
             manager.alert_detector.analyze_frame.return_value = None
 
             manager._process_capture_results()
@@ -6011,6 +6109,7 @@ class TestWindowManagerProcessResults:
 # MainTab Init and Setup Tests (lines 1182-1257)
 # =============================================================================
 
+
 class TestMainTabInit:
     """Tests for MainTab __init__"""
 
@@ -6018,7 +6117,7 @@ class TestMainTabInit:
         """Test __init__ creates window manager"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.capture_system = MagicMock()
@@ -6044,7 +6143,7 @@ class TestMainTabLoadCyclingGroups:
         """Test _load_cycling_groups loads from settings"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = {"Group1": ["char1"]}
@@ -6059,7 +6158,7 @@ class TestMainTabLoadCyclingGroups:
         """Test _load_cycling_groups without settings"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = None
             tab.cycling_groups = {}
@@ -6073,6 +6172,7 @@ class TestMainTabLoadCyclingGroups:
 # MainTab Method Tests (no widget instantiation)
 # =============================================================================
 
+
 class TestMainTabOnStackChanged:
     """Tests for MainTab _on_stack_changed"""
 
@@ -6080,7 +6180,7 @@ class TestMainTabOnStackChanged:
         """Test _on_stack_changed enables resize checkbox"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.stack_checkbox = MagicMock()
             tab.stack_checkbox.isChecked.return_value = True
@@ -6099,7 +6199,7 @@ class TestMainTabRefreshLayoutSources:
         """Test _refresh_layout_sources populates combo"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.layout_source_combo = MagicMock()
             tab.layout_source_combo.count.return_value = 0
@@ -6121,7 +6221,7 @@ class TestMainTabOnLayoutSourceChanged:
         """Test _on_layout_source_changed with Active Windows"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.preview_frames = {}
@@ -6140,7 +6240,7 @@ class TestMainTabOnLayoutSourceChanged:
         """Test _on_layout_source_changed with group"""
         from eve_overview_pro.ui.main_tab import MainTab
 
-        with patch.object(MainTab, '__init__', return_value=None):
+        with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.cycling_groups = {"Team1": ["char1", "char2"]}
             tab.arrangement_grid = MagicMock()

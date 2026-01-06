@@ -2,6 +2,7 @@
 Hotkeys & Cycling Tab - Hotkey assignment and window cycling groups
 Drag-and-drop interface for creating cycling groups and assigning hotkeys
 """
+
 import logging
 from typing import Dict, List, Optional
 
@@ -257,7 +258,9 @@ class HotkeysTab(QWidget):
         member_controls = QHBoxLayout()
 
         # Context actions from registry
-        remove_btn = toolbar_builder.create_button("remove_group_member", self._remove_selected_member)
+        remove_btn = toolbar_builder.create_button(
+            "remove_group_member", self._remove_selected_member
+        )
         if remove_btn:
             member_controls.addWidget(remove_btn)
 
@@ -266,7 +269,9 @@ class HotkeysTab(QWidget):
             member_controls.addWidget(clear_btn)
 
         # Load active windows button (from registry)
-        load_active_btn = toolbar_builder.create_button("load_active_windows", self._load_active_windows)
+        load_active_btn = toolbar_builder.create_button(
+            "load_active_windows", self._load_active_windows
+        )
         if load_active_btn:
             member_controls.addWidget(load_active_btn)
 
@@ -382,9 +387,7 @@ class HotkeysTab(QWidget):
     def _create_new_group(self):
         """Create a new cycling group"""
         name, ok = QInputDialog.getText(
-            self, "New Cycling Group",
-            "Enter group name:",
-            QLineEdit.EchoMode.Normal
+            self, "New Cycling Group", "Enter group name:", QLineEdit.EchoMode.Normal
         )
 
         if ok and name:
@@ -408,9 +411,10 @@ class HotkeysTab(QWidget):
             return
 
         reply = QMessageBox.question(
-            self, "Delete Group",
+            self,
+            "Delete Group",
             f"Delete cycling group '{self.current_group}'?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:
@@ -432,9 +436,10 @@ class HotkeysTab(QWidget):
             return
 
         reply = QMessageBox.question(
-            self, "Clear Group",
+            self,
+            "Clear Group",
             "Remove all members from this group?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:
@@ -443,11 +448,8 @@ class HotkeysTab(QWidget):
 
     def _load_active_windows(self):
         """Load all currently active EVE windows into the current group"""
-        if not self.main_tab or not hasattr(self.main_tab, 'window_manager'):
-            QMessageBox.warning(
-                self, "Error",
-                "Cannot access active windows. Please try again."
-            )
+        if not self.main_tab or not hasattr(self.main_tab, "window_manager"):
+            QMessageBox.warning(self, "Error", "Cannot access active windows. Please try again.")
             return
 
         # Get active character names
@@ -457,10 +459,7 @@ class HotkeysTab(QWidget):
                 active_chars.append(frame.character_name)
 
         if not active_chars:
-            QMessageBox.information(
-                self, "No Active Windows",
-                "No active EVE windows detected."
-            )
+            QMessageBox.information(self, "No Active Windows", "No active EVE windows detected.")
             return
 
         # Clear and add all active characters
@@ -475,9 +474,9 @@ class HotkeysTab(QWidget):
 
         self.logger.info(f"Loaded {len(active_chars)} active windows into group")
         QMessageBox.information(
-            self, "Loaded",
-            f"Loaded {len(active_chars)} active EVE windows.\n\n"
-            f"Use Move Up/Down to reorder them."
+            self,
+            "Loaded",
+            f"Loaded {len(active_chars)} active EVE windows.\n\nUse Move Up/Down to reorder them.",
         )
 
     def _move_member_up(self):
@@ -508,7 +507,7 @@ class HotkeysTab(QWidget):
             return hotkey
 
         # Split by + and wrap each part in brackets if not already
-        parts = hotkey.split('+')
+        parts = hotkey.split("+")
         formatted_parts = []
 
         for part in parts:
@@ -516,12 +515,12 @@ class HotkeysTab(QWidget):
             if not part:
                 continue
             # Remove existing brackets if present
-            if part.startswith('<') and part.endswith('>'):
+            if part.startswith("<") and part.endswith(">"):
                 part = part[1:-1]
             # Add brackets
             formatted_parts.append(f"<{part}>")
 
-        return '+'.join(formatted_parts)
+        return "+".join(formatted_parts)
 
     def _save_hotkeys(self):
         """Save hotkey settings - HotkeyEdit already provides correct format"""
@@ -532,11 +531,12 @@ class HotkeysTab(QWidget):
         self.settings_manager.set("hotkeys.cycle_prev", backward, auto_save=True)
 
         QMessageBox.information(
-            self, "Saved",
+            self,
+            "Saved",
             f"Hotkey settings saved.\n\n"
             f"Forward: {forward}\n"
             f"Backward: {backward}\n\n"
-            f"Restart the app for hotkeys to take effect."
+            f"Restart the app for hotkeys to take effect.",
         )
         self.logger.info(f"Saved hotkeys: forward={forward}, backward={backward}")
 

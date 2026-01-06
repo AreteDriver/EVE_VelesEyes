@@ -2,6 +2,7 @@
 Position Inheritance - Smart positioning for new thumbnail windows
 v2.2 Feature: Automatically position new thumbnails relative to existing ones
 """
+
 import logging
 from dataclasses import dataclass
 from typing import Dict, List, Optional
@@ -13,6 +14,7 @@ from PySide6.QtWidgets import QApplication
 @dataclass
 class ThumbnailPosition:
     """Position and size of a thumbnail"""
+
     x: int
     y: int
     width: int
@@ -22,7 +24,7 @@ class ThumbnailPosition:
         return QRect(self.x, self.y, self.width, self.height)
 
     @classmethod
-    def from_rect(cls, rect: QRect) -> 'ThumbnailPosition':
+    def from_rect(cls, rect: QRect) -> "ThumbnailPosition":
         return cls(rect.x(), rect.y(), rect.width(), rect.height())
 
 
@@ -58,10 +60,9 @@ class PositionManager:
         # Lock positions
         self.locked = False
 
-    def get_next_position(self,
-                          window_id: str,
-                          preset_positions: Optional[Dict[str, ThumbnailPosition]] = None
-                          ) -> ThumbnailPosition:
+    def get_next_position(
+        self, window_id: str, preset_positions: Optional[Dict[str, ThumbnailPosition]] = None
+    ) -> ThumbnailPosition:
         """
         Calculate position for a new thumbnail.
 
@@ -84,10 +85,7 @@ class PositionManager:
         # If no existing thumbnails, start at top-left with margin
         if not self.positions:
             pos = ThumbnailPosition(
-                x=self.MARGIN,
-                y=self.MARGIN,
-                width=self.DEFAULT_WIDTH,
-                height=self.DEFAULT_HEIGHT
+                x=self.MARGIN, y=self.MARGIN, width=self.DEFAULT_WIDTH, height=self.DEFAULT_HEIGHT
             )
             self.logger.debug(f"First thumbnail position: ({pos.x}, {pos.y})")
             return self._snap_position(pos)
@@ -101,10 +99,7 @@ class PositionManager:
             # Check if it fits on screen
             if new_x + self.DEFAULT_WIDTH <= screen.width() - self.MARGIN:
                 pos = ThumbnailPosition(
-                    x=new_x,
-                    y=new_y,
-                    width=self.DEFAULT_WIDTH,
-                    height=self.DEFAULT_HEIGHT
+                    x=new_x, y=new_y, width=self.DEFAULT_WIDTH, height=self.DEFAULT_HEIGHT
                 )
                 self.logger.debug(f"Placing to right of rightmost: ({pos.x}, {pos.y})")
                 return self._snap_position(pos)
@@ -118,10 +113,7 @@ class PositionManager:
             # Check if it fits on screen
             if new_y + self.DEFAULT_HEIGHT <= screen.height() - self.MARGIN:
                 pos = ThumbnailPosition(
-                    x=new_x,
-                    y=new_y,
-                    width=self.DEFAULT_WIDTH,
-                    height=self.DEFAULT_HEIGHT
+                    x=new_x, y=new_y, width=self.DEFAULT_WIDTH, height=self.DEFAULT_HEIGHT
                 )
                 self.logger.debug(f"Placing below bottommost (new row): ({pos.x}, {pos.y})")
                 return self._snap_position(pos)
@@ -134,17 +126,14 @@ class PositionManager:
                 x=first.x + offset,
                 y=first.y + offset,
                 width=self.DEFAULT_WIDTH,
-                height=self.DEFAULT_HEIGHT
+                height=self.DEFAULT_HEIGHT,
             )
             self.logger.debug(f"Fallback cascade position: ({pos.x}, {pos.y})")
             return self._snap_position(pos)
 
         # Ultimate fallback
         return ThumbnailPosition(
-            x=self.MARGIN,
-            y=self.MARGIN,
-            width=self.DEFAULT_WIDTH,
-            height=self.DEFAULT_HEIGHT
+            x=self.MARGIN, y=self.MARGIN, width=self.DEFAULT_WIDTH, height=self.DEFAULT_HEIGHT
         )
 
     def register_position(self, window_id: str, position: ThumbnailPosition):
@@ -228,10 +217,7 @@ class PositionManager:
         snapped_y = round(position.y / self.GRID_SIZE) * self.GRID_SIZE
 
         return ThumbnailPosition(
-            x=snapped_x,
-            y=snapped_y,
-            width=position.width,
-            height=position.height
+            x=snapped_x, y=snapped_y, width=position.width, height=position.height
         )
 
     def _get_rightmost(self) -> Optional[ThumbnailPosition]:
@@ -276,12 +262,9 @@ class PositionManager:
 
         self.logger.info(f"Applied layout preset with {len(positions)} positions")
 
-    def calculate_grid_positions(self,
-                                  window_ids: List[str],
-                                  columns: int = 3,
-                                  start_x: int = None,
-                                  start_y: int = None
-                                  ) -> Dict[str, ThumbnailPosition]:
+    def calculate_grid_positions(
+        self, window_ids: List[str], columns: int = 3, start_x: int = None, start_y: int = None
+    ) -> Dict[str, ThumbnailPosition]:
         """
         Calculate grid positions for thumbnails.
 
@@ -309,10 +292,7 @@ class PositionManager:
             y = start_y + row * (self.DEFAULT_HEIGHT + self.SPACING)
 
             positions[window_id] = ThumbnailPosition(
-                x=x,
-                y=y,
-                width=self.DEFAULT_WIDTH,
-                height=self.DEFAULT_HEIGHT
+                x=x, y=y, width=self.DEFAULT_WIDTH, height=self.DEFAULT_HEIGHT
             )
 
         return positions

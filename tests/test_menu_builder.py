@@ -9,6 +9,7 @@ Tests cover:
 Note: These tests focus on logic that can be tested without a full Qt display.
 Full integration tests would require pytest-qt and a display.
 """
+
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -311,8 +312,8 @@ class TestMenuBuilderBuildMenu:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QMenu')
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QMenu")
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_build_menu_creates_menu(self, mock_action, mock_menu):
         """build_menu creates QMenu with actions"""
         mock_menu_instance = MagicMock()
@@ -324,8 +325,8 @@ class TestMenuBuilderBuildMenu:
         assert result == mock_menu_instance
         assert mock_menu_instance.addAction.called
 
-    @patch('eve_overview_pro.ui.menu_builder.QMenu')
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QMenu")
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_build_menu_uses_existing_menu(self, mock_action, mock_menu):
         """build_menu can add to existing menu"""
         existing_menu = MagicMock()
@@ -345,8 +346,8 @@ class TestMenuBuilderBuildTrayMenu:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QMenu')
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QMenu")
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_build_tray_menu_creates_menu(self, mock_action, mock_menu):
         """build_tray_menu creates menu with actions"""
         mock_menu_instance = MagicMock()
@@ -358,8 +359,8 @@ class TestMenuBuilderBuildTrayMenu:
         assert result == mock_menu_instance
         assert mock_menu_instance.addSeparator.called
 
-    @patch('eve_overview_pro.ui.menu_builder.QMenu')
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QMenu")
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_build_tray_menu_with_profiles(self, mock_action, mock_menu):
         """build_tray_menu includes profiles submenu"""
         mock_menu_instance = MagicMock()
@@ -382,8 +383,8 @@ class TestMenuBuilderBuildHelpMenu:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QMenu')
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QMenu")
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_build_help_menu_creates_menu(self, mock_action, mock_menu):
         """build_help_menu creates Help menu"""
         mock_menu_instance = MagicMock()
@@ -405,7 +406,7 @@ class TestMenuBuilderCreateAction:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_create_action_sets_label(self, mock_action):
         """_create_action sets action label"""
         mock_action_instance = MagicMock()
@@ -416,14 +417,14 @@ class TestMenuBuilderCreateAction:
             id="test",
             label="Test Action",
             scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.HELP_MENU
+            primary_home=PrimaryHome.HELP_MENU,
         )
 
         builder._create_action(spec)
 
         mock_action.assert_called_with("Test Action", None)
 
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_create_action_sets_tooltip(self, mock_action):
         """_create_action sets tooltip"""
         mock_action_instance = MagicMock()
@@ -435,14 +436,14 @@ class TestMenuBuilderCreateAction:
             label="Test",
             tooltip="Test tooltip",
             scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.HELP_MENU
+            primary_home=PrimaryHome.HELP_MENU,
         )
 
         builder._create_action(spec)
 
         mock_action_instance.setToolTip.assert_called_with("Test tooltip")
 
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_create_action_sets_checkable(self, mock_action):
         """_create_action sets checkable"""
         mock_action_instance = MagicMock()
@@ -454,14 +455,14 @@ class TestMenuBuilderCreateAction:
             label="Test",
             scope=ActionScope.GLOBAL,
             primary_home=PrimaryHome.HELP_MENU,
-            checkable=True
+            checkable=True,
         )
 
         builder._create_action(spec)
 
         mock_action_instance.setCheckable.assert_called_with(True)
 
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_create_action_connects_handler(self, mock_action):
         """_create_action connects handler"""
         mock_action_instance = MagicMock()
@@ -470,10 +471,7 @@ class TestMenuBuilderCreateAction:
 
         builder = MenuBuilder()
         spec = ActionSpec(
-            id="test",
-            label="Test",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.HELP_MENU
+            id="test", label="Test", scope=ActionScope.GLOBAL, primary_home=PrimaryHome.HELP_MENU
         )
 
         builder._create_action(spec, handler=handler)
@@ -490,7 +488,7 @@ class TestMenuBuilderPopulateProfiles:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_populate_profiles_empty(self, mock_action):
         """Shows 'No profiles saved' when empty"""
         mock_action_instance = MagicMock()
@@ -505,7 +503,7 @@ class TestMenuBuilderPopulateProfiles:
         mock_action.assert_called_with("(No profiles saved)", mock_menu)
         mock_action_instance.setEnabled.assert_called_with(False)
 
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_populate_profiles_with_profiles(self, mock_action):
         """Adds action for each profile"""
         mock_action_instance = MagicMock()
@@ -515,10 +513,7 @@ class TestMenuBuilderPopulateProfiles:
         mock_menu = MagicMock()
 
         builder._populate_profiles_menu(
-            mock_menu,
-            ["Profile1", "Profile2"],
-            "Profile1",
-            MagicMock()
+            mock_menu, ["Profile1", "Profile2"], "Profile1", MagicMock()
         )
 
         assert mock_action.call_count == 2
@@ -534,8 +529,8 @@ class TestContextMenuBuilderBuildWindowContext:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QMenu')
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QMenu")
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_build_window_context_menu(self, mock_action, mock_menu):
         """build_window_context_menu creates menu"""
         mock_menu_instance = MagicMock()
@@ -562,7 +557,7 @@ class TestToolbarBuilderBuildButtons:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_build_toolbar_buttons_returns_dict(self, mock_button):
         """build_toolbar_buttons returns dict of buttons"""
         mock_button_instance = MagicMock()
@@ -576,7 +571,7 @@ class TestToolbarBuilderBuildButtons:
         assert isinstance(result, dict)
         assert "import_windows" in result
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_build_toolbar_buttons_custom_order(self, mock_button):
         """build_toolbar_buttons respects custom order"""
         mock_button_instance = MagicMock()
@@ -586,9 +581,7 @@ class TestToolbarBuilderBuildButtons:
         handlers = {}
 
         result = builder.build_toolbar_buttons(
-            PrimaryHome.OVERVIEW_TOOLBAR,
-            handlers,
-            action_order=["import_windows"]
+            PrimaryHome.OVERVIEW_TOOLBAR, handlers, action_order=["import_windows"]
         )
 
         # Should only include the ordered action
@@ -604,7 +597,7 @@ class TestToolbarBuilderCreateButton:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_create_button_primary_style(self, mock_button):
         """create_button applies PRIMARY_STYLE for primary actions"""
         mock_button_instance = MagicMock()
@@ -619,7 +612,7 @@ class TestToolbarBuilderCreateButton:
         call_args = mock_button_instance.setStyleSheet.call_args[0][0]
         assert "#ff8c00" in call_args
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_create_button_success_style(self, mock_button):
         """create_button applies SUCCESS_STYLE for success actions"""
         mock_button_instance = MagicMock()
@@ -632,7 +625,7 @@ class TestToolbarBuilderCreateButton:
         call_args = mock_button_instance.setStyleSheet.call_args[0][0]
         assert "#2d5a27" in call_args
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_create_button_danger_style(self, mock_button):
         """create_button applies DANGER_STYLE for danger actions"""
         mock_button_instance = MagicMock()
@@ -645,7 +638,7 @@ class TestToolbarBuilderCreateButton:
         call_args = mock_button_instance.setStyleSheet.call_args[0][0]
         assert "#8b0000" in call_args
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_create_button_connects_handler(self, mock_button):
         """create_button connects handler"""
         mock_button_instance = MagicMock()
@@ -657,7 +650,7 @@ class TestToolbarBuilderCreateButton:
 
         mock_button_instance.clicked.connect.assert_called_with(handler)
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_create_button_checkable(self, mock_button):
         """create_button sets checkable when spec has checkable=True"""
         mock_button_instance = MagicMock()
@@ -665,13 +658,15 @@ class TestToolbarBuilderCreateButton:
 
         # Register a checkable action
         registry = ActionRegistry.get_instance()
-        registry.register(ActionSpec(
-            id="test_checkable",
-            label="Test Checkable",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
-            checkable=True
-        ))
+        registry.register(
+            ActionSpec(
+                id="test_checkable",
+                label="Test Checkable",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+                checkable=True,
+            )
+        )
 
         builder = ToolbarBuilder()
         builder.create_button("test_checkable")
@@ -688,7 +683,7 @@ class TestToolbarBuilderBuildButtonsSuccessStyle:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QPushButton')
+    @patch("eve_overview_pro.ui.menu_builder.QPushButton")
     def test_build_toolbar_buttons_success_style(self, mock_button):
         """build_toolbar_buttons applies SUCCESS_STYLE for success actions"""
         mock_button_instance = MagicMock()
@@ -696,19 +691,21 @@ class TestToolbarBuilderBuildButtonsSuccessStyle:
 
         # Register a success action (scan_eve_folder is in SUCCESS_ACTIONS)
         registry = ActionRegistry.get_instance()
-        registry.register(ActionSpec(
-            id="scan_eve_folder",
-            label="Scan",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.SYNC_TOOLBAR
-        ))
+        registry.register(
+            ActionSpec(
+                id="scan_eve_folder",
+                label="Scan",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.SYNC_TOOLBAR,
+            )
+        )
 
         builder = ToolbarBuilder()
         # Call build_toolbar_buttons which uses SUCCESS_STYLE for scan_eve_folder
         result = builder.build_toolbar_buttons(
             PrimaryHome.SYNC_TOOLBAR,
             {"scan_eve_folder": MagicMock()},
-            action_order=["scan_eve_folder"]
+            action_order=["scan_eve_folder"],
         )
 
         assert "scan_eve_folder" in result
@@ -725,8 +722,8 @@ class TestContextMenuBuilderZoomHandler:
         yield
         ActionRegistry.reset_instance()
 
-    @patch('eve_overview_pro.ui.menu_builder.QMenu')
-    @patch('eve_overview_pro.ui.menu_builder.QAction')
+    @patch("eve_overview_pro.ui.menu_builder.QMenu")
+    @patch("eve_overview_pro.ui.menu_builder.QAction")
     def test_build_window_context_menu_with_zoom_handler(self, mock_action, mock_menu):
         """build_window_context_menu connects zoom_handler callback"""
         mock_menu_instance = MagicMock()

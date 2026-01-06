@@ -4,6 +4,7 @@ Implements 30 FPS capture loop with window previews, alerts, and interactions
 v2.2: Added one-click import, hover effects, activity indicators, session timers
 v2.3: Merged layouts functionality - group-based window arrangement
 """
+
 import logging
 import re
 import subprocess
@@ -53,6 +54,7 @@ from eve_overview_pro.ui.menu_builder import ContextMenuBuilder, ToolbarBuilder
 @dataclass
 class ScreenGeometry:
     """Screen/monitor geometry"""
+
     x: int
     y: int
     width: int
@@ -171,9 +173,15 @@ class FlowLayout(QLayout):
 def get_all_layout_patterns():
     """Get all available layout patterns"""
     return [
-        "2x2 Grid", "3x1 Row", "1x3 Column", "4x1 Row",
-        "2x3 Grid", "3x2 Grid", "Main + Sides", "Cascade",
-        "Stacked (All Same Position)"
+        "2x2 Grid",
+        "3x1 Row",
+        "1x3 Column",
+        "4x1 Row",
+        "2x3 Grid",
+        "3x2 Grid",
+        "Main + Sides",
+        "Cascade",
+        "Stacked (All Same Position)",
     ]
 
 
@@ -314,10 +322,14 @@ class ArrangementGrid(QWidget):
             return
 
         colors = [
-            QColor(255, 100, 100, 200), QColor(100, 255, 100, 200),
-            QColor(100, 100, 255, 200), QColor(255, 255, 100, 200),
-            QColor(255, 100, 255, 200), QColor(100, 255, 255, 200),
-            QColor(255, 165, 0, 200), QColor(165, 100, 255, 200),
+            QColor(255, 100, 100, 200),
+            QColor(100, 255, 100, 200),
+            QColor(100, 100, 255, 200),
+            QColor(255, 255, 100, 200),
+            QColor(255, 100, 255, 200),
+            QColor(100, 255, 255, 200),
+            QColor(255, 165, 0, 200),
+            QColor(165, 100, 255, 200),
         ]
         color = colors[hash(char_name) % len(colors)]
 
@@ -328,10 +340,7 @@ class ArrangementGrid(QWidget):
         self.grid_layout.addWidget(tile, row, col)
 
     def get_arrangement(self) -> Dict[str, Tuple[int, int]]:
-        return {
-            name: (tile.grid_row, tile.grid_col)
-            for name, tile in self.tiles.items()
-        }
+        return {name: (tile.grid_row, tile.grid_col) for name, tile in self.tiles.items()}
 
     def auto_arrange_grid(self, pattern: str):
         chars = list(self.tiles.keys())
@@ -434,20 +443,19 @@ class GridApplier:
     def get_screen_geometry(self, monitor: int = 0) -> Optional[ScreenGeometry]:
         try:
             result = subprocess.run(
-                ['xrandr', '--query'],
-                capture_output=True, text=True, timeout=5
+                ["xrandr", "--query"], capture_output=True, text=True, timeout=5
             )
 
             if result.returncode != 0:
                 return ScreenGeometry(0, 0, 1920, 1080, True)
 
             monitors = []
-            for line in result.stdout.split('\n'):
-                if ' connected' in line:
-                    match = re.search(r'(\d+)x(\d+)\+(\d+)\+(\d+)', line)
+            for line in result.stdout.split("\n"):
+                if " connected" in line:
+                    match = re.search(r"(\d+)x(\d+)\+(\d+)\+(\d+)", line)
                     if match:
                         w, h, x, y = map(int, match.groups())
-                        is_primary = 'primary' in line
+                        is_primary = "primary" in line
                         monitors.append(ScreenGeometry(x, y, w, h, is_primary))
 
             if monitor < len(monitors):
@@ -461,13 +469,17 @@ class GridApplier:
             self.logger.error(f"Failed to get screen geometry: {e}")
             return ScreenGeometry(0, 0, 1920, 1080, True)
 
-    def apply_arrangement(self, arrangement: Dict[str, Tuple[int, int]],
-                         window_map: Dict[str, str],
-                         screen: ScreenGeometry,
-                         grid_rows: int, grid_cols: int,
-                         spacing: int = 10,
-                         stacked: bool = False,
-                         stacked_use_grid_size: bool = True) -> bool:
+    def apply_arrangement(
+        self,
+        arrangement: Dict[str, Tuple[int, int]],
+        window_map: Dict[str, str],
+        screen: ScreenGeometry,
+        grid_rows: int,
+        grid_cols: int,
+        spacing: int = 10,
+        stacked: bool = False,
+        stacked_use_grid_size: bool = True,
+    ) -> bool:
         try:
             # Calculate grid cell size (used for both grid and optionally stacked)
             cell_width = (screen.width - spacing * (grid_cols + 1)) // grid_cols
@@ -509,26 +521,26 @@ class GridApplier:
         # Try with --sync first, fallback to no-sync for Wine/Proton windows
         try:
             subprocess.run(
-                ['xdotool', 'windowmove', '--sync', window_id, str(x), str(y)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowmove", "--sync", window_id, str(x), str(y)],
+                capture_output=True,
+                timeout=2,
             )
         except subprocess.TimeoutExpired:
             # Wine windows don't respond to sync, retry without it
             subprocess.run(
-                ['xdotool', 'windowmove', window_id, str(x), str(y)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowmove", window_id, str(x), str(y)], capture_output=True, timeout=2
             )
             time.sleep(0.1)  # Brief pause for window to settle
 
         try:
             subprocess.run(
-                ['xdotool', 'windowsize', '--sync', window_id, str(w), str(h)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowsize", "--sync", window_id, str(w), str(h)],
+                capture_output=True,
+                timeout=2,
             )
         except subprocess.TimeoutExpired:
             subprocess.run(
-                ['xdotool', 'windowsize', window_id, str(w), str(h)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowsize", window_id, str(w), str(h)], capture_output=True, timeout=2
             )
             time.sleep(0.1)
 
@@ -538,13 +550,13 @@ class GridApplier:
 
         try:
             subprocess.run(
-                ['xdotool', 'windowmove', '--sync', window_id, str(x), str(y)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowmove", "--sync", window_id, str(x), str(y)],
+                capture_output=True,
+                timeout=2,
             )
         except subprocess.TimeoutExpired:
             subprocess.run(
-                ['xdotool', 'windowmove', window_id, str(x), str(y)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowmove", window_id, str(x), str(y)], capture_output=True, timeout=2
             )
             time.sleep(0.1)
 
@@ -568,7 +580,7 @@ def pil_to_qimage(pil_image: Image.Image) -> QImage:
             pil_image.width,
             pil_image.height,
             bytes_per_line,
-            QImage.Format.Format_RGB888
+            QImage.Format.Format_RGB888,
         )
     elif pil_image.mode == "RGBA":
         bytes_per_line = 4 * pil_image.width
@@ -577,7 +589,7 @@ def pil_to_qimage(pil_image: Image.Image) -> QImage:
             pil_image.width,
             pil_image.height,
             bytes_per_line,
-            QImage.Format.Format_RGBA8888
+            QImage.Format.Format_RGBA8888,
         )
     elif pil_image.mode == "L":
         bytes_per_line = pil_image.width
@@ -586,7 +598,7 @@ def pil_to_qimage(pil_image: Image.Image) -> QImage:
             pil_image.width,
             pil_image.height,
             bytes_per_line,
-            QImage.Format.Format_Grayscale8
+            QImage.Format.Format_Grayscale8,
         )
     else:
         # Convert to RGB if unknown mode
@@ -597,7 +609,7 @@ def pil_to_qimage(pil_image: Image.Image) -> QImage:
             rgb_image.width,
             rgb_image.height,
             bytes_per_line,
-            QImage.Format.Format_RGB888
+            QImage.Format.Format_RGB888,
         )
 
 
@@ -606,12 +618,19 @@ class WindowPreviewWidget(QWidget):
     Individual window preview with alerts and interactions
     v2.2: Added hover effects, activity indicator, session timer, custom labels
     """
+
     window_activated = Signal(str)  # window_id
     window_removed = Signal(str)  # window_id
     label_changed = Signal(str, str)  # window_id, new_label
 
-    def __init__(self, window_id: str, character_name: str, capture_system,
-                 settings_manager=None, parent=None):
+    def __init__(
+        self,
+        window_id: str,
+        character_name: str,
+        capture_system,
+        settings_manager=None,
+        parent=None,
+    ):
         super().__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.window_id = window_id
@@ -692,8 +711,12 @@ class WindowPreviewWidget(QWidget):
         if self.settings_manager:
             self._opacity_on_hover = self.settings_manager.get("thumbnails.opacity_on_hover", 0.3)
             self._zoom_on_hover = self.settings_manager.get("thumbnails.zoom_on_hover", 1.5)
-            self._show_activity_indicator = self.settings_manager.get("thumbnails.show_activity_indicator", True)
-            self._show_session_timer = self.settings_manager.get("thumbnails.show_session_timer", False)
+            self._show_activity_indicator = self.settings_manager.get(
+                "thumbnails.show_activity_indicator", True
+            )
+            self._show_session_timer = self.settings_manager.get(
+                "thumbnails.show_session_timer", False
+            )
             self._positions_locked = self.settings_manager.get("thumbnails.lock_positions", False)
 
             # Load custom label
@@ -735,7 +758,7 @@ class WindowPreviewWidget(QWidget):
             scaled_pixmap = self.current_pixmap.scaled(
                 self.image_label.size(),
                 Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.FastTransformation
+                Qt.TransformationMode.FastTransformation,
             )
 
             self.image_label.setPixmap(scaled_pixmap)
@@ -821,12 +844,12 @@ class WindowPreviewWidget(QWidget):
             'focused', 'recent', or 'idle'
         """
         if self.is_focused:
-            return 'focused'
+            return "focused"
 
         elapsed = (datetime.now() - self.last_activity).total_seconds()
         if elapsed < 5:
-            return 'recent'
-        return 'idle'
+            return "recent"
+        return "idle"
 
     def enterEvent(self, event):
         """Handle mouse enter - apply hover effects"""
@@ -872,9 +895,9 @@ class WindowPreviewWidget(QWidget):
         # Draw activity indicator (v2.2)
         if self._show_activity_indicator:
             activity = self.get_activity_state()
-            if activity == 'focused':
+            if activity == "focused":
                 indicator_color = QColor(0, 255, 0, 220)  # Green
-            elif activity == 'recent':
+            elif activity == "recent":
                 indicator_color = QColor(255, 200, 0, 220)  # Yellow
             else:
                 indicator_color = QColor(128, 128, 128, 180)  # Gray
@@ -898,7 +921,7 @@ class WindowPreviewWidget(QWidget):
 
     def mouseMoveEvent(self, event):
         """Handle mouse move - initiate drag if moved far enough"""
-        if not hasattr(self, '_drag_start_pos') or self._drag_start_pos is None:
+        if not hasattr(self, "_drag_start_pos") or self._drag_start_pos is None:
             return
 
         # Check if moved far enough to start drag
@@ -906,8 +929,8 @@ class WindowPreviewWidget(QWidget):
             return
 
         # Start drag operation
-        from PySide6.QtGui import QDrag
         from PySide6.QtCore import QMimeData
+        from PySide6.QtGui import QDrag
 
         drag = QDrag(self)
         mime_data = QMimeData()
@@ -926,7 +949,7 @@ class WindowPreviewWidget(QWidget):
     def mouseReleaseEvent(self, event):
         """Handle mouse release - activate window if not dragging"""
         if event.button() == Qt.MouseButton.LeftButton:
-            if hasattr(self, '_drag_start_pos') and self._drag_start_pos is not None:
+            if hasattr(self, "_drag_start_pos") and self._drag_start_pos is not None:
                 # Didn't drag far enough, treat as click
                 self.window_activated.emit(self.window_id)
                 self.logger.info(f"Activating window: {self.window_id}")
@@ -959,10 +982,7 @@ class WindowPreviewWidget(QWidget):
         """Show dialog to set custom label"""
         current = self.custom_label or ""
         text, ok = QInputDialog.getText(
-            self,
-            "Set Label",
-            f"Enter label for {self.character_name}:",
-            text=current
+            self, "Set Label", f"Enter label for {self.character_name}:", text=current
         )
         if ok:
             self.set_custom_label(text if text.strip() else None)
@@ -974,15 +994,13 @@ class WindowPreviewWidget(QWidget):
             "Close Window",
             f"Close the EVE window for {self.character_name}?\n\nThis will close the game client.",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:
             try:
                 subprocess.run(
-                    ['wmctrl', '-i', '-c', self.window_id],
-                    capture_output=True,
-                    timeout=2
+                    ["wmctrl", "-i", "-c", self.window_id], capture_output=True, timeout=2
                 )
                 self.logger.info(f"Closed window: {self.window_id}")
                 self.window_removed.emit(self.window_id)
@@ -1003,7 +1021,7 @@ class WindowPreviewWidget(QWidget):
     def _set_zoom(self, zoom: float):
         """Set zoom factor"""
         self.zoom_factor = zoom
-        self.logger.debug(f"Zoom set to {int(zoom*100)}% for {self.window_id}")
+        self.logger.debug(f"Zoom set to {int(zoom * 100)}% for {self.window_id}")
 
 
 class WindowManager:
@@ -1012,8 +1030,7 @@ class WindowManager:
     v2.2: Added settings_manager support for thumbnail settings
     """
 
-    def __init__(self, character_manager, capture_system, alert_detector,
-                 settings_manager=None):
+    def __init__(self, character_manager, capture_system, alert_detector, settings_manager=None):
         self.logger = logging.getLogger(__name__)
         self.character_manager = character_manager
         self.capture_system = capture_system
@@ -1075,10 +1092,7 @@ class WindowManager:
 
         # Create preview widget with settings_manager for v2.2 features
         frame = WindowPreviewWidget(
-            window_id,
-            character_name,
-            self.capture_system,
-            settings_manager=self.settings_manager
+            window_id, character_name, self.capture_system, settings_manager=self.settings_manager
         )
         self.preview_frames[window_id] = frame
 
@@ -1120,8 +1134,7 @@ class WindowManager:
             if frame.isVisible():
                 try:
                     request_id = self.capture_system.capture_window_async(
-                        window_id,
-                        scale=frame.zoom_factor
+                        window_id, scale=frame.zoom_factor
                     )
                     self.pending_requests[request_id] = window_id
                 except Exception as e:
@@ -1173,12 +1186,14 @@ class MainTab(QWidget):
     v2.2: One-click import, auto-discovery integration, position management
     v2.3: Merged layouts - group-based window arrangement
     """
+
     character_detected = Signal(str, str)  # window_id, char_name
     thumbnails_toggled = Signal(bool)  # visible
     layout_applied = Signal(str)  # pattern name
 
-    def __init__(self, capture_system, character_manager, alert_detector,
-                 settings_manager=None, parent=None):
+    def __init__(
+        self, capture_system, character_manager, alert_detector, settings_manager=None, parent=None
+    ):
         super().__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.capture_system = capture_system
@@ -1190,7 +1205,11 @@ class MainTab(QWidget):
         self._thumbnails_visible = True
         self._positions_locked = False
         # Load auto-minimize state from settings
-        self._windows_minimized = settings_manager.get("performance.auto_minimize_inactive", False) if settings_manager else False
+        self._windows_minimized = (
+            settings_manager.get("performance.auto_minimize_inactive", False)
+            if settings_manager
+            else False
+        )
 
         # v2.3: Layout controls
         self.grid_applier = GridApplier()
@@ -1199,10 +1218,7 @@ class MainTab(QWidget):
 
         # Create window manager
         self.window_manager = WindowManager(
-            character_manager,
-            capture_system,
-            alert_detector,
-            settings_manager
+            character_manager, capture_system, alert_detector, settings_manager
         )
 
         self._setup_ui()
@@ -1299,7 +1315,9 @@ class MainTab(QWidget):
         toolbar_layout.addWidget(self.lock_btn)
 
         # Add minimize inactive button (store reference for state indicator)
-        self.minimize_inactive_btn = toolbar_builder.create_button("minimize_inactive", self.minimize_inactive_windows)
+        self.minimize_inactive_btn = toolbar_builder.create_button(
+            "minimize_inactive", self.minimize_inactive_windows
+        )
         if self.minimize_inactive_btn:
             self.minimize_inactive_btn.setCheckable(True)
             self._update_minimize_button_style()  # Apply saved state
@@ -1443,7 +1461,11 @@ class MainTab(QWidget):
         """Refresh available sources (groups and active windows)"""
         self._load_cycling_groups()
 
-        current = self.layout_source_combo.currentText() if hasattr(self, 'layout_source_combo') and self.layout_source_combo.count() > 0 else None
+        current = (
+            self.layout_source_combo.currentText()
+            if hasattr(self, "layout_source_combo") and self.layout_source_combo.count() > 0
+            else None
+        )
 
         self.layout_source_combo.blockSignals(True)
         self.layout_source_combo.clear()
@@ -1505,7 +1527,11 @@ class MainTab(QWidget):
         """Apply layout to active windows"""
         arrangement = self.arrangement_grid.get_arrangement()
         if not arrangement:
-            QMessageBox.warning(self, "No Windows", "No windows in arrangement.\n\nSelect a source or import EVE windows first.")
+            QMessageBox.warning(
+                self,
+                "No Windows",
+                "No windows in arrangement.\n\nSelect a source or import EVE windows first.",
+            )
             return
 
         # Build window map (char_name -> window_id)
@@ -1516,9 +1542,10 @@ class MainTab(QWidget):
 
         if not window_map:
             QMessageBox.warning(
-                self, "No Matching Windows",
+                self,
+                "No Matching Windows",
                 "None of the characters in the arrangement have active windows.\n\n"
-                "Make sure the EVE clients are running and detected."
+                "Make sure the EVE clients are running and detected.",
             )
             return
 
@@ -1538,7 +1565,7 @@ class MainTab(QWidget):
             grid_cols=self.grid_cols_spin.value(),
             spacing=self.spacing_spin.value(),
             stacked=self.stack_checkbox.isChecked(),
-            stacked_use_grid_size=self.stack_resize_checkbox.isChecked()
+            stacked_use_grid_size=self.stack_resize_checkbox.isChecked(),
         )
 
         if success:
@@ -1568,7 +1595,7 @@ class MainTab(QWidget):
                 self,
                 "No EVE Windows Found",
                 "No EVE Online windows were detected.\n\n"
-                "Make sure EVE Online clients are running and visible."
+                "Make sure EVE Online clients are running and visible.",
             )
             return
 
@@ -1599,7 +1626,9 @@ class MainTab(QWidget):
         # Show result
         if added_count > 0:
             self.status_label.setText(f"Imported {added_count} character(s)")
-            self.logger.info(f"One-click import: Added {added_count}, skipped {skipped_count} duplicates")
+            self.logger.info(
+                f"One-click import: Added {added_count}, skipped {skipped_count} duplicates"
+            )
         elif skipped_count > 0:
             self.status_label.setText(f"All {skipped_count} EVE windows already imported")
         else:
@@ -1674,7 +1703,9 @@ class MainTab(QWidget):
             return
 
         if not windows:
-            QMessageBox.information(self, "No Windows", "No windows found.\n\nMake sure EVE Online clients are running.")
+            QMessageBox.information(
+                self, "No Windows", "No windows found.\n\nMake sure EVE Online clients are running."
+            )
             return
 
         # Create dialog
@@ -1729,7 +1760,9 @@ class MainTab(QWidget):
                 char_name = window_title.replace("EVE -", "").replace("EVE Online -", "").strip()
 
                 # Try auto-assign to character
-                assignments = self.character_manager.auto_assign_windows([(window_id, window_title)])
+                assignments = self.character_manager.auto_assign_windows(
+                    [(window_id, window_title)]
+                )
 
                 if assignments:
                     # Use detected character name
@@ -1756,19 +1789,26 @@ class MainTab(QWidget):
     def _on_window_activated(self, window_id: str):
         """Handle window activation with optional auto-minimize of previous window"""
         import subprocess
+
         try:
             # Check if auto-minimize is enabled
-            auto_minimize = self.settings_manager.get("performance.auto_minimize_inactive", False) if self.settings_manager else False
+            auto_minimize = (
+                self.settings_manager.get("performance.auto_minimize_inactive", False)
+                if self.settings_manager
+                else False
+            )
 
             if auto_minimize:
                 # Get the last activated EVE window (shared via settings_manager)
-                last_window = getattr(self.settings_manager, '_last_activated_eve_window', None) if self.settings_manager else None
+                last_window = (
+                    getattr(self.settings_manager, "_last_activated_eve_window", None)
+                    if self.settings_manager
+                    else None
+                )
                 if last_window and last_window != window_id:
                     # Minimize the previous EVE window
                     subprocess.run(
-                        ['xdotool', 'windowminimize', last_window],
-                        capture_output=True,
-                        timeout=1
+                        ["xdotool", "windowminimize", last_window], capture_output=True, timeout=1
                     )
                     self.logger.info(f"Auto-minimized previous EVE window: {last_window}")
 
@@ -1798,7 +1838,7 @@ class MainTab(QWidget):
             self,
             "Remove All Windows",
             "Remove all windows from preview?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:
@@ -1813,7 +1853,11 @@ class MainTab(QWidget):
         """Toggle auto-minimize mode - when enabled, cycling minimizes previous window"""
         try:
             # Toggle the setting
-            current = self.settings_manager.get("performance.auto_minimize_inactive", False) if self.settings_manager else False
+            current = (
+                self.settings_manager.get("performance.auto_minimize_inactive", False)
+                if self.settings_manager
+                else False
+            )
             new_value = not current
 
             if self.settings_manager:
@@ -1824,7 +1868,9 @@ class MainTab(QWidget):
 
             if new_value:
                 # Mode enabled - also minimize inactive windows now
-                result = subprocess.run(['xdotool', 'getwindowfocus'], capture_output=True, text=True, timeout=1)
+                result = subprocess.run(
+                    ["xdotool", "getwindowfocus"], capture_output=True, text=True, timeout=1
+                )
                 if result.returncode == 0:
                     focused_id = result.stdout.strip()
                     minimized_count = 0
@@ -1850,7 +1896,7 @@ class MainTab(QWidget):
 
     def _update_minimize_button_style(self):
         """Update minimize button visual state"""
-        if hasattr(self, 'minimize_inactive_btn') and self.minimize_inactive_btn:
+        if hasattr(self, "minimize_inactive_btn") and self.minimize_inactive_btn:
             self.minimize_inactive_btn.setChecked(self._windows_minimized)
             if self._windows_minimized:
                 self.minimize_inactive_btn.setText("⚡ Auto-Min ON")
@@ -1880,7 +1926,9 @@ class MainTab(QWidget):
         if count == 0:
             self.status_label.setText("No windows in preview - Click 'Add Window' to start")
         else:
-            self.status_label.setText(f"Capturing {count} window(s) at {self.window_manager.refresh_rate} FPS")
+            self.status_label.setText(
+                f"Capturing {count} window(s) at {self.window_manager.refresh_rate} FPS"
+            )
 
     def set_previews_enabled(self, enabled: bool):
         """

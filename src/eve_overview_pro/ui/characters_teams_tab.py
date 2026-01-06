@@ -2,6 +2,7 @@
 Characters & Teams Tab - Character roster and team management
 Implements character database, team building with drag-drop, and layout linking
 """
+
 import logging
 from typing import List, Optional
 
@@ -251,12 +252,14 @@ class CharacterDialog(QDialog):
         account = self.account_combo.currentText().strip()
         if account:
             chars_in_account = self.character_manager.get_characters_by_account(account)
-            if len(chars_in_account) >= 3 and (not self.character or self.character.account != account):
+            if len(chars_in_account) >= 3 and (
+                not self.character or self.character.account != account
+            ):
                 reply = QMessageBox.question(
                     self,
                     "Account Full",
                     f"Account '{account}' already has 3 characters.\n\nContinue anyway?",
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 )
                 if reply == QMessageBox.StandardButton.No:
                     return False
@@ -280,13 +283,7 @@ class CharacterDialog(QDialog):
             return self.character
         else:
             # Create new
-            return Character(
-                name=name,
-                account=account,
-                role=role,
-                is_main=is_main,
-                notes=notes
-            )
+            return Character(name=name, account=account, role=role, is_main=is_main, notes=notes)
 
 
 class TeamBuilder(QWidget):
@@ -466,7 +463,7 @@ class TeamBuilder(QWidget):
             "Hauler": QColor(200, 200, 100),
             "Trader": QColor(100, 200, 200),
             "FC": QColor(255, 200, 100),
-            "Booster": QColor(200, 100, 255)
+            "Booster": QColor(200, 100, 255),
         }
         if char.role in role_colors:
             item.setForeground(role_colors[char.role])
@@ -494,7 +491,7 @@ class TeamBuilder(QWidget):
                 team.name,
                 description=team.description,
                 layout_name=team.layout_name,
-                color=team.color
+                color=team.color,
             )
             # Update characters
             old_chars = set(self.current_team.characters)
@@ -516,10 +513,14 @@ class TeamBuilder(QWidget):
                 for char_name in team.characters:
                     self.character_manager.add_character_to_team(team.name, char_name)
 
-                QMessageBox.information(self, "Success", f"Team '{team.name}' created successfully!")
+                QMessageBox.information(
+                    self, "Success", f"Team '{team.name}' created successfully!"
+                )
                 self.current_team = team
             else:
-                QMessageBox.warning(self, "Error", f"Failed to create team '{team.name}'.\nTeam may already exist.")
+                QMessageBox.warning(
+                    self, "Error", f"Failed to create team '{team.name}'.\nTeam may already exist."
+                )
 
         self.team_modified.emit()
 
@@ -563,7 +564,7 @@ class TeamBuilder(QWidget):
                 characters=members,
                 layout_name=layout_name,
                 color=self.team_color,
-                created_at=self.current_team.created_at
+                created_at=self.current_team.created_at,
             )
         else:
             # Create new
@@ -572,7 +573,7 @@ class TeamBuilder(QWidget):
                 description=description,
                 characters=members,
                 layout_name=layout_name,
-                color=self.team_color
+                color=self.team_color,
             )
 
 
@@ -729,7 +730,7 @@ class CharactersTeamsTab(QWidget):
                 account=updated_char.account,
                 role=updated_char.role,
                 is_main=updated_char.is_main,
-                notes=updated_char.notes
+                notes=updated_char.notes,
             )
             self.character_table.populate_table()
             self.logger.info(f"Updated character: {char_name}")
@@ -747,7 +748,7 @@ class CharactersTeamsTab(QWidget):
             self,
             "Confirm Delete",
             f"Delete character '{char_name}'?\n\nThis will also remove them from all teams.",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:
@@ -766,7 +767,7 @@ class CharactersTeamsTab(QWidget):
             self,
             "Scanning EVE Folder",
             "Scanning your EVE installation for character data...\n\n"
-            "This will import ALL characters that have logged in on this computer."
+            "This will import ALL characters that have logged in on this computer.",
         )
 
         try:
@@ -778,7 +779,7 @@ class CharactersTeamsTab(QWidget):
                     self,
                     "No Characters Found",
                     "No character data found in EVE installation.\n\n"
-                    "Make sure you have logged into EVE Online at least once."
+                    "Make sure you have logged into EVE Online at least once.",
                 )
                 return
 
@@ -794,7 +795,7 @@ class CharactersTeamsTab(QWidget):
                 "Import Complete",
                 f"Found {len(eve_characters)} characters in EVE files.\n"
                 f"Imported {imported} new characters.\n"
-                f"({len(eve_characters) - imported} were already in database)"
+                f"({len(eve_characters) - imported} were already in database)",
             )
 
             # Emit signal
@@ -804,11 +805,7 @@ class CharactersTeamsTab(QWidget):
 
         except Exception as e:
             self.logger.error(f"EVE folder scan failed: {e}")
-            QMessageBox.critical(
-                self,
-                "Scan Failed",
-                f"Failed to scan EVE folder:\n{str(e)}"
-            )
+            QMessageBox.critical(self, "Scan Failed", f"Failed to scan EVE folder:\n{str(e)}")
 
     def _on_team_selected(self, team_name: str):
         """Handle team selection from dropdown"""

@@ -2,6 +2,7 @@
 Threaded Window Capture System
 High-performance capture with background threading
 """
+
 import io
 import logging
 import subprocess
@@ -65,6 +66,7 @@ class WindowCaptureThreaded:
             request_id to retrieve result later
         """
         import uuid
+
         request_id = str(uuid.uuid4())
         self.capture_queue.put((window_id, scale, request_id))
         return request_id
@@ -84,9 +86,7 @@ class WindowCaptureThreaded:
         """Synchronous window capture"""
         try:
             result = subprocess.run(
-                ['import', '-window', window_id, '-silent', 'png:-'],
-                capture_output=True,
-                timeout=1
+                ["import", "-window", window_id, "-silent", "png:-"], capture_output=True, timeout=1
             )
 
             if result.returncode == 0 and result.stdout:
@@ -105,16 +105,11 @@ class WindowCaptureThreaded:
     def get_window_list(self) -> List[Tuple[str, str]]:
         """Get list of all windows"""
         try:
-            result = subprocess.run(
-                ['wmctrl', '-l'],
-                capture_output=True,
-                text=True,
-                timeout=2
-            )
+            result = subprocess.run(["wmctrl", "-l"], capture_output=True, text=True, timeout=2)
 
             windows = []
             if result.returncode == 0:
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if line:
                         parts = line.split(None, 3)
                         if len(parts) >= 4:
@@ -131,9 +126,7 @@ class WindowCaptureThreaded:
         """Activate/focus a window"""
         try:
             result = subprocess.run(
-                ['wmctrl', '-i', '-a', window_id],
-                capture_output=True,
-                timeout=1
+                ["wmctrl", "-i", "-a", window_id], capture_output=True, timeout=1
             )
             return result.returncode == 0
         except Exception:
@@ -143,9 +136,7 @@ class WindowCaptureThreaded:
         """Minimize a window"""
         try:
             result = subprocess.run(
-                ['xdotool', 'windowminimize', window_id],
-                capture_output=True,
-                timeout=1
+                ["xdotool", "windowminimize", window_id], capture_output=True, timeout=1
             )
             return result.returncode == 0
         except Exception:
@@ -155,9 +146,7 @@ class WindowCaptureThreaded:
         """Restore a minimized window"""
         try:
             result = subprocess.run(
-                ['xdotool', 'windowactivate', window_id],
-                capture_output=True,
-                timeout=1
+                ["xdotool", "windowactivate", window_id], capture_output=True, timeout=1
             )
             return result.returncode == 0
         except Exception:

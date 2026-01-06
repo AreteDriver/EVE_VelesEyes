@@ -5,6 +5,7 @@ This module provides utilities to build Qt menus (QMenu, QAction) from the
 centralized Action Registry, ensuring all menus are populated from a single
 source of truth.
 """
+
 import logging
 from typing import Callable, Dict, List, Optional
 
@@ -128,19 +129,12 @@ class MenuBuilder:
                 # Add profiles submenu
                 profiles_menu = menu.addMenu("Profiles")
                 self._populate_profiles_menu(
-                    profiles_menu,
-                    profiles,
-                    current_profile,
-                    profile_handler
+                    profiles_menu, profiles, current_profile, profile_handler
                 )
             else:
                 action_spec = self.registry.get(item)
                 if action_spec:
-                    qt_action = self._create_action(
-                        action_spec,
-                        menu,
-                        handlers.get(item)
-                    )
+                    qt_action = self._create_action(action_spec, menu, handlers.get(item))
                     menu.addAction(qt_action)
 
         return menu
@@ -179,11 +173,7 @@ class MenuBuilder:
             else:
                 action_spec = self.registry.get(item)
                 if action_spec:
-                    qt_action = self._create_action(
-                        action_spec,
-                        menu,
-                        handlers.get(item)
-                    )
+                    qt_action = self._create_action(action_spec, menu, handlers.get(item))
                     menu.addAction(qt_action)
 
         return menu
@@ -256,6 +246,7 @@ class MenuBuilder:
                 # Create closure to capture profile name
                 def make_callback(p=profile):
                     return lambda: handler(p)
+
                 action.triggered.connect(make_callback())
 
             menu.addAction(action)
@@ -284,10 +275,7 @@ def build_toolbar_actions(
     builder = MenuBuilder(registry)
     actions = registry.get_by_home(home)
 
-    return [
-        builder._create_action(spec, None, handlers.get(spec.id))
-        for spec in actions
-    ]
+    return [builder._create_action(spec, None, handlers.get(spec.id)) for spec in actions]
 
 
 class ContextMenuBuilder:
@@ -342,7 +330,7 @@ class ContextMenuBuilder:
                 # Zoom submenu (not from registry - dynamic state)
                 zoom_menu = menu.addMenu("Zoom Level")
                 for zoom in [0.2, 0.3, 0.4, 0.5]:
-                    zoom_action = QAction(f"{int(zoom*100)}%", menu)
+                    zoom_action = QAction(f"{int(zoom * 100)}%", menu)
                     if zoom == current_zoom:
                         zoom_action.setCheckable(True)
                         zoom_action.setChecked(True)
@@ -350,6 +338,7 @@ class ContextMenuBuilder:
                         # Create closure to capture zoom value
                         def make_zoom_callback(z=zoom):
                             return lambda: zoom_handler(z)
+
                         zoom_action.triggered.connect(make_zoom_callback())
                     zoom_menu.addAction(zoom_action)
             else:

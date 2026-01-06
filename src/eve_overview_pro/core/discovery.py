@@ -2,6 +2,7 @@
 Auto-Discovery - Background process to detect new EVE windows
 v2.2 Feature: Automatic detection of new EVE clients
 """
+
 import logging
 import re
 import subprocess
@@ -15,6 +16,7 @@ from PySide6.QtCore import QObject, QTimer, Signal
 @dataclass
 class DiscoveredCharacter:
     """Information about a discovered character"""
+
     name: str
     window_id: str
     window_title: str
@@ -41,14 +43,14 @@ class AutoDiscovery(QObject):
 
     # EVE window detection patterns
     EVE_TITLE_PATTERNS = [
-        r'^EVE - (.+)$',           # Standard: "EVE - Character Name"
-        r'^EVE Online - (.+)$',    # Alternative: "EVE Online - Character Name"
+        r"^EVE - (.+)$",  # Standard: "EVE - Character Name"
+        r"^EVE Online - (.+)$",  # Alternative: "EVE Online - Character Name"
     ]
 
     EVE_WM_CLASS_PATTERNS = [
-        'eve',
-        'exefile.exe',
-        'wine',
+        "eve",
+        "exefile.exe",
+        "wine",
     ]
 
     def __init__(self, interval_seconds: int = 5, parent=None):
@@ -147,9 +149,7 @@ class AutoDiscovery(QObject):
 
                     # Add to known characters
                     self.known_characters[window_id] = DiscoveredCharacter(
-                        name=char_name,
-                        window_id=window_id,
-                        window_title=window_title
+                        name=char_name, window_id=window_id, window_title=window_title
                     )
 
                     # Emit signal
@@ -194,15 +194,10 @@ class AutoDiscovery(QObject):
 
         try:
             # Use wmctrl to get window list
-            result = subprocess.run(
-                ['wmctrl', '-l'],
-                capture_output=True,
-                text=True,
-                timeout=2
-            )
+            result = subprocess.run(["wmctrl", "-l"], capture_output=True, text=True, timeout=2)
 
             if result.returncode == 0:
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if not line:
                         continue
 
@@ -273,8 +268,7 @@ class AutoDiscovery(QObject):
             List of active DiscoveredCharacter
         """
         return [
-            char for wid, char in self.known_characters.items()
-            if wid in self.active_window_ids
+            char for wid, char in self.known_characters.items() if wid in self.active_window_ids
         ]
 
     def force_scan(self) -> int:
@@ -306,7 +300,7 @@ class AutoDiscovery(QObject):
                     "name": char.name,
                     "window_id": char.window_id,
                     "first_seen": char.first_seen.isoformat(),
-                    "last_seen": char.last_seen.isoformat()
+                    "last_seen": char.last_seen.isoformat(),
                 }
                 for char in self.known_characters.values()
             ]
@@ -326,8 +320,12 @@ class AutoDiscovery(QObject):
                         name=char_data["name"],
                         window_id=char_data["window_id"],
                         window_title=f"EVE - {char_data['name']}",
-                        first_seen=datetime.fromisoformat(char_data.get("first_seen", datetime.now().isoformat())),
-                        last_seen=datetime.fromisoformat(char_data.get("last_seen", datetime.now().isoformat()))
+                        first_seen=datetime.fromisoformat(
+                            char_data.get("first_seen", datetime.now().isoformat())
+                        ),
+                        last_seen=datetime.fromisoformat(
+                            char_data.get("last_seen", datetime.now().isoformat())
+                        ),
                     )
                     self.known_characters[char.window_id] = char
                 except Exception as e:
@@ -347,15 +345,10 @@ def scan_eve_windows() -> List[Tuple[str, str, str]]:
 
     try:
         # Get all windows
-        result = subprocess.run(
-            ['wmctrl', '-l'],
-            capture_output=True,
-            text=True,
-            timeout=2
-        )
+        result = subprocess.run(["wmctrl", "-l"], capture_output=True, text=True, timeout=2)
 
         if result.returncode == 0:
-            for line in result.stdout.strip().split('\n'):
+            for line in result.stdout.strip().split("\n"):
                 if not line:
                     continue
 

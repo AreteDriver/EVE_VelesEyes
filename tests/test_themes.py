@@ -2,6 +2,7 @@
 Unit tests for the Themes module
 Tests ThemeColors, Theme, ThemeManager, and related functionality
 """
+
 from unittest.mock import MagicMock, patch
 
 
@@ -52,11 +53,7 @@ class TestThemeColors:
         """Test creating ThemeColors with custom values"""
         from eve_overview_pro.ui.themes import ThemeColors
 
-        colors = ThemeColors(
-            window="#000000",
-            text="#00ff00",
-            accent="#ff00ff"
-        )
+        colors = ThemeColors(window="#000000", text="#00ff00", accent="#ff00ff")
 
         assert colors.window == "#000000"
         assert colors.text == "#00ff00"
@@ -74,11 +71,23 @@ class TestThemeColors:
         field_names = {f.name for f in fields(colors)}
 
         expected_fields = {
-            'window', 'window_text', 'base', 'alternate_base',
-            'text', 'bright_text', 'button', 'button_text',
-            'highlight', 'highlighted_text', 'link',
-            'tooltip_base', 'tooltip_text', 'accent',
-            'alert_red', 'alert_yellow', 'alert_green'
+            "window",
+            "window_text",
+            "base",
+            "alternate_base",
+            "text",
+            "bright_text",
+            "button",
+            "button_text",
+            "highlight",
+            "highlighted_text",
+            "link",
+            "tooltip_base",
+            "tooltip_text",
+            "accent",
+            "alert_red",
+            "alert_yellow",
+            "alert_green",
         }
 
         assert field_names == expected_fields
@@ -103,11 +112,7 @@ class TestTheme:
         """Test serializing theme to dict"""
         from eve_overview_pro.ui.themes import Theme, ThemeColors
 
-        colors = ThemeColors(
-            window="#111111",
-            window_text="#222222",
-            accent="#333333"
-        )
+        colors = ThemeColors(window="#111111", window_text="#222222", accent="#333333")
         theme = Theme("my_theme", colors)
 
         result = theme.to_dict()
@@ -126,11 +131,23 @@ class TestTheme:
         result = theme.to_dict()
 
         expected_color_keys = {
-            'window', 'window_text', 'base', 'alternate_base',
-            'text', 'bright_text', 'button', 'button_text',
-            'highlight', 'highlighted_text', 'link',
-            'tooltip_base', 'tooltip_text', 'accent',
-            'alert_red', 'alert_yellow', 'alert_green'
+            "window",
+            "window_text",
+            "base",
+            "alternate_base",
+            "text",
+            "bright_text",
+            "button",
+            "button_text",
+            "highlight",
+            "highlighted_text",
+            "link",
+            "tooltip_base",
+            "tooltip_text",
+            "accent",
+            "alert_red",
+            "alert_yellow",
+            "alert_green",
         }
 
         assert set(result["colors"].keys()) == expected_color_keys
@@ -139,13 +156,7 @@ class TestTheme:
         """Test creating theme from dict"""
         from eve_overview_pro.ui.themes import Theme
 
-        data = {
-            "name": "loaded_theme",
-            "colors": {
-                "window": "#abcdef",
-                "text": "#fedcba"
-            }
-        }
+        data = {"name": "loaded_theme", "colors": {"window": "#abcdef", "text": "#fedcba"}}
 
         theme = Theme.from_dict(data)
 
@@ -159,10 +170,7 @@ class TestTheme:
         """Test from_dict with empty colors dict"""
         from eve_overview_pro.ui.themes import Theme
 
-        data = {
-            "name": "empty_colors",
-            "colors": {}
-        }
+        data = {"name": "empty_colors", "colors": {}}
 
         theme = Theme.from_dict(data)
 
@@ -197,11 +205,9 @@ class TestTheme:
         """Test that to_dict -> from_dict preserves data"""
         from eve_overview_pro.ui.themes import Theme, ThemeColors
 
-        original = Theme("roundtrip_test", ThemeColors(
-            window="#aabbcc",
-            text="#112233",
-            accent="#445566"
-        ))
+        original = Theme(
+            "roundtrip_test", ThemeColors(window="#aabbcc", text="#112233", accent="#445566")
+        )
 
         serialized = original.to_dict()
         restored = Theme.from_dict(serialized)
@@ -383,11 +389,9 @@ class TestThemeManager:
 
         manager = ThemeManager()
 
-        manager.current_theme = Theme("test", ThemeColors(
-            alert_red="#ff0000",
-            alert_yellow="#ffff00",
-            alert_green="#00ff00"
-        ))
+        manager.current_theme = Theme(
+            "test", ThemeColors(alert_red="#ff0000", alert_yellow="#ffff00", alert_green="#00ff00")
+        )
 
         colors = manager.get_alert_colors()
 
@@ -412,7 +416,7 @@ class TestThemeManager:
 
         manager = ThemeManager()
 
-        with patch('eve_overview_pro.ui.themes.QApplication') as mock_qapp:
+        with patch("eve_overview_pro.ui.themes.QApplication") as mock_qapp:
             mock_qapp.instance.return_value = None
 
             result = manager.apply_theme("dark", app=None)
@@ -432,7 +436,7 @@ class TestThemeManager:
         assert result is True
         assert manager.current_theme is not None
         assert manager.current_theme.name == "dark"
-        mock_app.setStyle.assert_called_once_with('Fusion')
+        mock_app.setStyle.assert_called_once_with("Fusion")
         mock_app.setPalette.assert_called_once()
 
     def test_apply_theme_light(self):
@@ -537,15 +541,12 @@ class TestThemePalette:
         manager = ThemeManager()
         mock_app = MagicMock()
 
-        colors = ThemeColors(
-            window="#112233",
-            text="#445566"
-        )
+        colors = ThemeColors(window="#112233", text="#445566")
         theme = Theme("test", colors)
 
         manager._apply_palette(mock_app, theme)
 
-        mock_app.setStyle.assert_called_once_with('Fusion')
+        mock_app.setStyle.assert_called_once_with("Fusion")
         mock_app.setPalette.assert_called_once()
 
         # Verify a palette was passed
@@ -573,7 +574,7 @@ class TestEdgeCases:
             "name": "test",
             "colors": {"window": "#000000"},
             "unknown_key": "ignored",
-            "another_unknown": 123
+            "another_unknown": 123,
         }
 
         theme = Theme.from_dict(data)
@@ -585,13 +586,7 @@ class TestEdgeCases:
         """Test from_dict handles extra color keys"""
         from eve_overview_pro.ui.themes import Theme
 
-        data = {
-            "name": "test",
-            "colors": {
-                "window": "#000000",
-                "unknown_color": "#ffffff"
-            }
-        }
+        data = {"name": "test", "colors": {"window": "#000000", "unknown_color": "#ffffff"}}
 
         # This might raise or ignore - depends on dataclass behavior
         # With default ThemeColors(**kwargs), unknown keys will raise

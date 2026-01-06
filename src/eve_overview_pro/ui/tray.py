@@ -3,6 +3,7 @@ System Tray - Provides system tray icon with quick actions menu
 v2.2 Feature: Minimize to tray, quick profile switching, toggle visibility
 v2.4: Refactored to use ActionRegistry for menu construction
 """
+
 import logging
 from typing import List, Optional
 
@@ -80,7 +81,14 @@ class SystemTray(QObject):
         icon_paths = [
             Path(__file__).parent.parent.parent.parent / "assets" / "icon_48.png",  # src/../assets
             Path(__file__).parent.parent.parent.parent / "assets" / "icon.png",
-            Path.home() / ".local" / "share" / "icons" / "hicolor" / "48x48" / "apps" / "argus-overview.png",
+            Path.home()
+            / ".local"
+            / "share"
+            / "icons"
+            / "hicolor"
+            / "48x48"
+            / "apps"
+            / "argus-overview.png",
             Path.home() / ".local" / "share" / "argus-overview" / "icon.png",
         ]
 
@@ -194,9 +202,13 @@ class SystemTray(QObject):
         self._current_profile = profile
         self._setup_menu()  # Rebuild menu with updated current profile
 
-    def show_notification(self, title: str, message: str,
-                          icon: QSystemTrayIcon.MessageIcon = QSystemTrayIcon.MessageIcon.Information,
-                          duration: int = 3000):
+    def show_notification(
+        self,
+        title: str,
+        message: str,
+        icon: QSystemTrayIcon.MessageIcon = QSystemTrayIcon.MessageIcon.Information,
+        duration: int = 3000,
+    ):
         """
         Show a notification from the tray
 

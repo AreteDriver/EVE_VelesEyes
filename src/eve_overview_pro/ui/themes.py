@@ -2,6 +2,7 @@
 Themes - Customizable appearance themes for the application
 v2.2 Feature: Dark, Light, EVE, and Custom themes
 """
+
 import logging
 from dataclasses import dataclass
 from typing import Dict, Optional
@@ -13,6 +14,7 @@ from PySide6.QtWidgets import QApplication
 @dataclass
 class ThemeColors:
     """Color scheme for a theme"""
+
     # Window colors
     window: str = "#353535"
     window_text: str = "#ffffff"
@@ -76,76 +78,85 @@ class Theme:
                 "alert_red": self.colors.alert_red,
                 "alert_yellow": self.colors.alert_yellow,
                 "alert_green": self.colors.alert_green,
-            }
+            },
         }
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Theme':
+    def from_dict(cls, data: Dict) -> "Theme":
         """Create theme from dict"""
         colors = ThemeColors(**data.get("colors", {}))
         return cls(data.get("name", "custom"), colors)
 
 
 # Built-in themes
-DARK_THEME = Theme("dark", ThemeColors(
-    window="#353535",
-    window_text="#ffffff",
-    base="#191919",
-    alternate_base="#353535",
-    text="#ffffff",
-    bright_text="#ff0000",
-    button="#353535",
-    button_text="#ffffff",
-    highlight="#2a82da",
-    highlighted_text="#000000",
-    link="#2a82da",
-    tooltip_base="#ffffff",
-    tooltip_text="#000000",
-    accent="#4287f5",
-    alert_red="#ff4444",
-    alert_yellow="#ffcc00",
-    alert_green="#44ff44",
-))
+DARK_THEME = Theme(
+    "dark",
+    ThemeColors(
+        window="#353535",
+        window_text="#ffffff",
+        base="#191919",
+        alternate_base="#353535",
+        text="#ffffff",
+        bright_text="#ff0000",
+        button="#353535",
+        button_text="#ffffff",
+        highlight="#2a82da",
+        highlighted_text="#000000",
+        link="#2a82da",
+        tooltip_base="#ffffff",
+        tooltip_text="#000000",
+        accent="#4287f5",
+        alert_red="#ff4444",
+        alert_yellow="#ffcc00",
+        alert_green="#44ff44",
+    ),
+)
 
-LIGHT_THEME = Theme("light", ThemeColors(
-    window="#f0f0f0",
-    window_text="#000000",
-    base="#ffffff",
-    alternate_base="#f5f5f5",
-    text="#000000",
-    bright_text="#ff0000",
-    button="#e0e0e0",
-    button_text="#000000",
-    highlight="#0078d7",
-    highlighted_text="#ffffff",
-    link="#0066cc",
-    tooltip_base="#ffffcc",
-    tooltip_text="#000000",
-    accent="#0066cc",
-    alert_red="#cc0000",
-    alert_yellow="#cc9900",
-    alert_green="#009900",
-))
+LIGHT_THEME = Theme(
+    "light",
+    ThemeColors(
+        window="#f0f0f0",
+        window_text="#000000",
+        base="#ffffff",
+        alternate_base="#f5f5f5",
+        text="#000000",
+        bright_text="#ff0000",
+        button="#e0e0e0",
+        button_text="#000000",
+        highlight="#0078d7",
+        highlighted_text="#ffffff",
+        link="#0066cc",
+        tooltip_base="#ffffcc",
+        tooltip_text="#000000",
+        accent="#0066cc",
+        alert_red="#cc0000",
+        alert_yellow="#cc9900",
+        alert_green="#009900",
+    ),
+)
 
-EVE_THEME = Theme("eve", ThemeColors(
-    window="#0a0a0f",
-    window_text="#e0e0e0",
-    base="#000000",
-    alternate_base="#0f0f1a",
-    text="#c0c0c0",
-    bright_text="#ff6600",
-    button="#1a1a2e",
-    button_text="#e0e0e0",
-    highlight="#ff8c00",
-    highlighted_text="#000000",
-    link="#ff8c00",
-    tooltip_base="#1a1a2e",
-    tooltip_text="#ffffff",
-    accent="#ff8c00",
-    alert_red="#ff2200",
-    alert_yellow="#ffaa00",
-    alert_green="#00ff66",
-))
+EVE_THEME = Theme(
+    "eve",
+    ThemeColors(
+        window="#0a0a0f",
+        window_text="#e0e0e0",
+        base="#000000",
+        alternate_base="#0f0f1a",
+        text="#c0c0c0",
+        bright_text="#ff6600",
+        button="#1a1a2e",
+        button_text="#e0e0e0",
+        highlight="#ff8c00",
+        highlighted_text="#000000",
+        link="#ff8c00",
+        tooltip_base="#1a1a2e",
+        tooltip_text="#ffffff",
+        accent="#ff8c00",
+        alert_red="#ff2200",
+        alert_yellow="#ffaa00",
+        alert_green="#00ff66",
+    ),
+)
 
 # All built-in themes
 BUILTIN_THEMES = {
@@ -233,7 +244,7 @@ class ThemeManager:
         palette = QPalette()
 
         # Set Fusion style for consistent appearance
-        app.setStyle('Fusion')
+        app.setStyle("Fusion")
 
         # Window colors
         palette.setColor(QPalette.ColorRole.Window, QColor(colors.window))

@@ -9,6 +9,7 @@ Tests cover:
 - Character-team relationships
 - Window assignment
 """
+
 import json
 import tempfile
 from pathlib import Path
@@ -43,7 +44,7 @@ class TestCharacterDataclass:
             notes="Main healer",
             is_main=True,
             window_id="0x12345",
-            last_seen="2025-01-01T00:00:00"
+            last_seen="2025-01-01T00:00:00",
         )
         assert char.name == "MainPilot"
         assert char.account == "Account1"
@@ -69,7 +70,7 @@ class TestCharacterDataclass:
             "notes": "",
             "is_main": False,
             "window_id": None,
-            "last_seen": None
+            "last_seen": None,
         }
         char = Character.from_dict(data)
         assert char.name == "TestPilot"
@@ -85,7 +86,7 @@ class TestCharacterDataclass:
             notes="Test notes",
             is_main=True,
             window_id="0xABCDE",
-            last_seen="2025-12-28T12:00:00"
+            last_seen="2025-12-28T12:00:00",
         )
         data = original.to_dict()
         restored = Character.from_dict(data)
@@ -115,7 +116,7 @@ class TestTeamDataclass:
             description="Small gang roam",
             characters=["Pilot1", "Pilot2"],
             layout_name="Combat",
-            color="#ff0000"
+            color="#ff0000",
         )
         assert team.name == "PvP Squad"
         assert team.description == "Small gang roam"
@@ -139,7 +140,7 @@ class TestTeamDataclass:
             "characters": ["Char1"],
             "layout_name": "Grid",
             "color": "#00ff00",
-            "created_at": "2025-01-01T00:00:00"
+            "created_at": "2025-01-01T00:00:00",
         }
         team = Team.from_dict(data)
         assert team.name == "Loaded Team"
@@ -152,7 +153,7 @@ class TestTeamDataclass:
             description="Test",
             characters=["A", "B", "C"],
             layout_name="Cascade",
-            color="#123456"
+            color="#123456",
         )
         data = original.to_dict()
         restored = Team.from_dict(data)
@@ -185,19 +186,38 @@ class TestCharacterManagerInit:
 
             # Create character file
             chars_file = config_dir / "characters.json"
-            chars_file.write_text(json.dumps({
-                "Pilot1": {"name": "Pilot1", "account": "", "role": "DPS",
-                          "notes": "", "is_main": False, "window_id": None,
-                          "last_seen": None}
-            }))
+            chars_file.write_text(
+                json.dumps(
+                    {
+                        "Pilot1": {
+                            "name": "Pilot1",
+                            "account": "",
+                            "role": "DPS",
+                            "notes": "",
+                            "is_main": False,
+                            "window_id": None,
+                            "last_seen": None,
+                        }
+                    }
+                )
+            )
 
             # Create team file
             teams_file = config_dir / "teams.json"
-            teams_file.write_text(json.dumps({
-                "Team1": {"name": "Team1", "description": "", "characters": [],
-                         "layout_name": "Default", "color": "#4287f5",
-                         "created_at": "2025-01-01"}
-            }))
+            teams_file.write_text(
+                json.dumps(
+                    {
+                        "Team1": {
+                            "name": "Team1",
+                            "description": "",
+                            "characters": [],
+                            "layout_name": "Default",
+                            "color": "#4287f5",
+                            "created_at": "2025-01-01",
+                        }
+                    }
+                )
+            )
 
             manager = CharacterManager(config_dir=config_dir)
             assert len(manager.characters) == 1
@@ -555,14 +575,14 @@ class TestExceptionHandling:
 
     def test_uses_default_config_dir_when_none(self):
         """Uses home config dir when config_dir is None"""
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import patch
 
         mock_home = Path("/fake/home")
-        mock_path = mock_home / '.config' / 'eve-overview-pro'
+        mock_path = mock_home / ".config" / "eve-overview-pro"
 
-        with patch.object(Path, 'home', return_value=mock_home):
-            with patch.object(Path, 'mkdir'):
-                with patch.object(Path, 'exists', return_value=False):
+        with patch.object(Path, "home", return_value=mock_home):
+            with patch.object(Path, "mkdir"):
+                with patch.object(Path, "exists", return_value=False):
                     manager = CharacterManager(config_dir=None)
                     assert manager.config_dir == mock_path
 
@@ -604,8 +624,8 @@ class TestImportFromEveSync:
 
     def test_imports_new_characters(self, manager):
         """Imports new characters from EVE sync data"""
-        from unittest.mock import MagicMock
         from datetime import datetime
+        from unittest.mock import MagicMock
 
         eve_char = MagicMock()
         eve_char.character_name = "NewEVEPilot"
@@ -640,8 +660,8 @@ class TestImportFromEveSync:
 
     def test_updates_last_seen_for_existing(self, manager):
         """Updates last_seen for existing characters"""
-        from unittest.mock import MagicMock
         from datetime import datetime
+        from unittest.mock import MagicMock
 
         # Add existing character without last_seen
         manager.add_character(Character(name="ExistingPilot", last_seen=None))
@@ -673,8 +693,8 @@ class TestImportFromEveSync:
 
     def test_imports_multiple_characters(self, manager):
         """Imports multiple characters at once"""
-        from unittest.mock import MagicMock
         from datetime import datetime
+        from unittest.mock import MagicMock
 
         eve_chars = []
         for i in range(3):
@@ -691,15 +711,15 @@ class TestImportFromEveSync:
 
     def test_saves_after_import(self, manager):
         """Saves data after importing characters"""
-        from unittest.mock import MagicMock, patch
         from datetime import datetime
+        from unittest.mock import MagicMock, patch
 
         eve_char = MagicMock()
         eve_char.character_name = "SavedPilot"
         eve_char.character_id = 12345678
         eve_char.last_seen = datetime(2025, 1, 1)
 
-        with patch.object(manager, 'save_data') as mock_save:
+        with patch.object(manager, "save_data") as mock_save:
             manager.import_from_eve_sync([eve_char])
             mock_save.assert_called_once()
 
@@ -715,7 +735,7 @@ class TestImportFromEveSync:
         eve_char.character_id = 99999999
         eve_char.last_seen = None
 
-        with patch.object(manager, 'save_data') as mock_save:
+        with patch.object(manager, "save_data") as mock_save:
             mock_save.reset_mock()  # Reset from add_character call
             manager.import_from_eve_sync([eve_char])
             mock_save.assert_not_called()

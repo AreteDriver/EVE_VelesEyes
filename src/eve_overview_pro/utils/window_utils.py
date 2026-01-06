@@ -11,7 +11,7 @@ from .constants import TIMEOUT_MEDIUM
 logger = logging.getLogger(__name__)
 
 # X11 window ID pattern: 0x followed by hex digits
-WINDOW_ID_PATTERN = re.compile(r'^0x[0-9a-fA-F]+$')
+WINDOW_ID_PATTERN = re.compile(r"^0x[0-9a-fA-F]+$")
 
 
 def is_valid_window_id(window_id: str) -> bool:
@@ -28,8 +28,9 @@ def is_valid_window_id(window_id: str) -> bool:
     return bool(WINDOW_ID_PATTERN.match(window_id))
 
 
-def move_window(window_id: str, x: int, y: int, w: int, h: int,
-                timeout: float = TIMEOUT_MEDIUM) -> bool:
+def move_window(
+    window_id: str, x: int, y: int, w: int, h: int, timeout: float = TIMEOUT_MEDIUM
+) -> bool:
     """Move and resize a window safely with validation.
 
     Args:
@@ -51,26 +52,30 @@ def move_window(window_id: str, x: int, y: int, w: int, h: int,
         # Try with --sync first, fallback for Wine/Proton windows
         try:
             subprocess.run(
-                ['xdotool', 'windowmove', '--sync', window_id, str(x), str(y)],
-                capture_output=True, timeout=timeout
+                ["xdotool", "windowmove", "--sync", window_id, str(x), str(y)],
+                capture_output=True,
+                timeout=timeout,
             )
         except subprocess.TimeoutExpired:
             # Wine windows don't respond to sync, retry without it
             subprocess.run(
-                ['xdotool', 'windowmove', window_id, str(x), str(y)],
-                capture_output=True, timeout=timeout
+                ["xdotool", "windowmove", window_id, str(x), str(y)],
+                capture_output=True,
+                timeout=timeout,
             )
             time.sleep(0.1)
 
         try:
             subprocess.run(
-                ['xdotool', 'windowsize', '--sync', window_id, str(w), str(h)],
-                capture_output=True, timeout=timeout
+                ["xdotool", "windowsize", "--sync", window_id, str(w), str(h)],
+                capture_output=True,
+                timeout=timeout,
             )
         except subprocess.TimeoutExpired:
             subprocess.run(
-                ['xdotool', 'windowsize', window_id, str(w), str(h)],
-                capture_output=True, timeout=timeout
+                ["xdotool", "windowsize", window_id, str(w), str(h)],
+                capture_output=True,
+                timeout=timeout,
             )
             time.sleep(0.1)
 
@@ -98,13 +103,13 @@ def activate_window(window_id: str, timeout: float = TIMEOUT_MEDIUM) -> bool:
     try:
         try:
             subprocess.run(
-                ['xdotool', 'windowactivate', '--sync', window_id],
-                capture_output=True, timeout=timeout
+                ["xdotool", "windowactivate", "--sync", window_id],
+                capture_output=True,
+                timeout=timeout,
             )
         except subprocess.TimeoutExpired:
             subprocess.run(
-                ['xdotool', 'windowactivate', window_id],
-                capture_output=True, timeout=timeout
+                ["xdotool", "windowactivate", window_id], capture_output=True, timeout=timeout
             )
         return True
     except Exception as e:
@@ -120,8 +125,7 @@ def get_focused_window() -> Optional[str]:
     """
     try:
         result = subprocess.run(
-            ['xdotool', 'getwindowfocus'],
-            capture_output=True, text=True, timeout=1
+            ["xdotool", "getwindowfocus"], capture_output=True, text=True, timeout=1
         )
         if result.returncode == 0:
             window_id = result.stdout.strip()

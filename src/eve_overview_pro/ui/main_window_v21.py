@@ -3,6 +3,7 @@ Main Window v2.2 with Tabbed Interface
 Production implementation with all core modules integrated
 v2.2: Added system tray, auto-discovery, themes, hotkey enhancements
 """
+
 import logging
 from pathlib import Path
 
@@ -140,7 +141,9 @@ class MainWindowV21(QMainWindow):
         """Register global hotkeys (v2.2)"""
         # Minimize all
         minimize_combo = self.settings_manager.get("hotkeys.minimize_all", "<ctrl>+<shift>+m")
-        self.hotkey_manager.register_hotkey("minimize_all", minimize_combo, self._minimize_all_windows)
+        self.hotkey_manager.register_hotkey(
+            "minimize_all", minimize_combo, self._minimize_all_windows
+        )
 
         # Restore all
         restore_combo = self.settings_manager.get("hotkeys.restore_all", "<ctrl>+<shift>+r")
@@ -148,7 +151,9 @@ class MainWindowV21(QMainWindow):
 
         # Toggle thumbnails
         toggle_combo = self.settings_manager.get("hotkeys.toggle_thumbnails", "<ctrl>+<shift>+t")
-        self.hotkey_manager.register_hotkey("toggle_thumbnails", toggle_combo, self._toggle_thumbnails)
+        self.hotkey_manager.register_hotkey(
+            "toggle_thumbnails", toggle_combo, self._toggle_thumbnails
+        )
 
         # Toggle lock
         lock_combo = self.settings_manager.get("hotkeys.toggle_lock", "<ctrl>+<shift>+l")
@@ -157,8 +162,10 @@ class MainWindowV21(QMainWindow):
         # Register per-character hotkeys
         char_hotkeys = self.settings_manager.get("character_hotkeys", {})
         for char_name, combo in char_hotkeys.items():
+
             def make_callback(name=char_name):
                 return lambda: self._activate_character(name)
+
             self.hotkey_manager.register_hotkey(f"char_{char_name}", combo, make_callback())
 
         self.logger.info(f"Registered {len(char_hotkeys)} per-character hotkeys")
@@ -172,7 +179,9 @@ class MainWindowV21(QMainWindow):
         if cycle_prev_combo:
             self.hotkey_manager.register_hotkey("cycle_prev", cycle_prev_combo, self._cycle_prev)
 
-        self.logger.info(f"Registered cycling hotkeys: next={cycle_next_combo}, prev={cycle_prev_combo}")
+        self.logger.info(
+            f"Registered cycling hotkeys: next={cycle_next_combo}, prev={cycle_prev_combo}"
+        )
 
     @Slot()
     def _toggle_visibility(self):
@@ -187,13 +196,13 @@ class MainWindowV21(QMainWindow):
     @Slot()
     def _toggle_thumbnails(self):
         """Toggle thumbnail visibility"""
-        if hasattr(self, 'main_tab'):
+        if hasattr(self, "main_tab"):
             self.main_tab.toggle_thumbnails_visibility()
 
     @Slot()
     def _toggle_lock(self):
         """Toggle position lock"""
-        if hasattr(self, 'main_tab') and hasattr(self.main_tab, 'lock_btn'):
+        if hasattr(self, "main_tab") and hasattr(self.main_tab, "lock_btn"):
             self.main_tab.lock_btn.click()
 
     def _get_cycling_group_members(self) -> list:
@@ -209,7 +218,7 @@ class MainWindowV21(QMainWindow):
 
         # If group is empty, use all active windows
         if not members:
-            if hasattr(self, 'main_tab') and hasattr(self.main_tab, 'window_manager'):
+            if hasattr(self, "main_tab") and hasattr(self.main_tab, "window_manager"):
                 for frame in self.main_tab.window_manager.preview_frames.values():
                     members.append(frame.character_name)
 
@@ -217,7 +226,7 @@ class MainWindowV21(QMainWindow):
 
     def _get_window_id_for_character(self, char_name: str) -> str:
         """Get window ID for a character name"""
-        if hasattr(self, 'main_tab') and hasattr(self.main_tab, 'window_manager'):
+        if hasattr(self, "main_tab") and hasattr(self.main_tab, "window_manager"):
             for window_id, frame in self.main_tab.window_manager.preview_frames.items():
                 if frame.character_name == char_name:
                     return window_id
@@ -270,20 +279,21 @@ class MainWindowV21(QMainWindow):
     def _activate_window(self, window_id: str):
         """Activate a window by ID using xdotool, optionally minimizing previous EVE window"""
         import subprocess
+
         try:
             # Check if auto-minimize is enabled
             auto_minimize = self.settings_manager.get("performance.auto_minimize_inactive", False)
 
             if auto_minimize:
                 # Get the last activated EVE window (shared via settings_manager)
-                last_eve_window = getattr(self.settings_manager, '_last_activated_eve_window', None)
+                last_eve_window = getattr(self.settings_manager, "_last_activated_eve_window", None)
 
                 if last_eve_window and last_eve_window != window_id:
                     # Minimize the previous EVE window
                     subprocess.run(
-                        ['xdotool', 'windowminimize', last_eve_window],
+                        ["xdotool", "windowminimize", last_eve_window],
                         capture_output=True,
-                        timeout=1
+                        timeout=1,
                     )
                     self.logger.info(f"Auto-minimized previous EVE window: {last_eve_window}")
 
@@ -292,9 +302,7 @@ class MainWindowV21(QMainWindow):
 
             # Activate the new window
             subprocess.run(
-                ['xdotool', 'windowactivate', '--sync', window_id],
-                capture_output=True,
-                timeout=2
+                ["xdotool", "windowactivate", "--sync", window_id], capture_output=True, timeout=2
             )
         except Exception as e:
             self.logger.error(f"Failed to activate window {window_id}: {e}")
@@ -313,7 +321,9 @@ class MainWindowV21(QMainWindow):
         """Show settings tab"""
         self.show()
         self.raise_()
-        self.tabs.setCurrentIndex(4)  # Settings tab (Overview=0, Roster=1, Automation=2, Sync=3, Settings=4)
+        self.tabs.setCurrentIndex(
+            4
+        )  # Settings tab (Overview=0, Roster=1, Automation=2, Sync=3, Settings=4)
 
     @Slot()
     def _reload_config(self):
@@ -348,7 +358,7 @@ class MainWindowV21(QMainWindow):
     @Slot()
     def _minimize_all_windows(self):
         """Minimize all EVE windows (v2.2)"""
-        if hasattr(self, 'main_tab'):
+        if hasattr(self, "main_tab"):
             count = 0
             for window_id in self.main_tab.window_manager.preview_frames.keys():
                 if self.capture_system.minimize_window(window_id):
@@ -359,7 +369,7 @@ class MainWindowV21(QMainWindow):
     @Slot()
     def _restore_all_windows(self):
         """Restore all EVE windows (v2.2)"""
-        if hasattr(self, 'main_tab'):
+        if hasattr(self, "main_tab"):
             count = 0
             for window_id in self.main_tab.window_manager.preview_frames.keys():
                 if self.capture_system.restore_window(window_id):
@@ -369,7 +379,7 @@ class MainWindowV21(QMainWindow):
 
     def _activate_character(self, char_name: str):
         """Activate window for a specific character (v2.2 per-character hotkeys)"""
-        if hasattr(self, 'main_tab'):
+        if hasattr(self, "main_tab"):
             for window_id, frame in self.main_tab.window_manager.preview_frames.items():
                 if frame.character_name == char_name:
                     # Use _activate_window which has auto-minimize logic
@@ -384,7 +394,7 @@ class MainWindowV21(QMainWindow):
         self.logger.info(f"Auto-discovered new character: {char_name}")
 
         # Add to main tab if not already there
-        if hasattr(self, 'main_tab'):
+        if hasattr(self, "main_tab"):
             if window_id not in self.main_tab.window_manager.preview_frames:
                 frame = self.main_tab.window_manager.add_window(window_id, char_name)
                 if frame:
@@ -396,8 +406,7 @@ class MainWindowV21(QMainWindow):
                     # Show notification
                     if self.settings_manager.get("general.show_notifications", True):
                         self.system_tray.show_notification(
-                            "New Character Detected",
-                            f"Added: {char_name}"
+                            "New Character Detected", f"Added: {char_name}"
                         )
 
     def _create_menu_bar(self):
@@ -412,8 +421,12 @@ class MainWindowV21(QMainWindow):
         handlers = {
             "about": self._show_about_dialog,
             "donate": self._open_donation_link,
-            "documentation": lambda: self._open_url("https://github.com/AreteDriver/Argus_Overview#readme"),
-            "report_issue": lambda: self._open_url("https://github.com/AreteDriver/Argus_Overview/issues"),
+            "documentation": lambda: self._open_url(
+                "https://github.com/AreteDriver/Argus_Overview#readme"
+            ),
+            "report_issue": lambda: self._open_url(
+                "https://github.com/AreteDriver/Argus_Overview/issues"
+            ),
         }
 
         help_menu = menu_builder.build_help_menu(parent=self, handlers=handlers)
@@ -422,6 +435,7 @@ class MainWindowV21(QMainWindow):
     def _show_about_dialog(self):
         """Show About dialog"""
         from eve_overview_pro.ui.about_dialog import AboutDialog
+
         dialog = AboutDialog(self)
         dialog.exec()
 
@@ -429,19 +443,28 @@ class MainWindowV21(QMainWindow):
         """Open Buy Me a Coffee link"""
         from PySide6.QtCore import QUrl
         from PySide6.QtGui import QDesktopServices
+
         QDesktopServices.openUrl(QUrl("https://buymeacoffee.com/aretedriver"))
 
     def _open_url(self, url: str):
         """Open URL in browser"""
         from PySide6.QtCore import QUrl
         from PySide6.QtGui import QDesktopServices
+
         QDesktopServices.openUrl(QUrl(url))
 
     def _set_window_icon(self):
         """Set the application window icon"""
         icon_paths = [
             Path(__file__).parent.parent.parent.parent / "assets" / "icon.png",  # src/../assets
-            Path.home() / ".local" / "share" / "icons" / "hicolor" / "256x256" / "apps" / "argus-overview.png",
+            Path.home()
+            / ".local"
+            / "share"
+            / "icons"
+            / "hicolor"
+            / "256x256"
+            / "apps"
+            / "argus-overview.png",
             Path.home() / ".local" / "share" / "argus-overview" / "icon.png",
         ]
 
@@ -460,13 +483,14 @@ class MainWindowV21(QMainWindow):
 
         # Apply alert settings
         from eve_overview_pro.core.alert_detector import AlertConfig
+
         alert_config = AlertConfig(
             enabled=self.settings_manager.get("alerts.enabled", True),
             red_flash_threshold=self.settings_manager.get("alerts.red_flash.threshold", 0.7),
             change_threshold=self.settings_manager.get("alerts.screen_change.threshold", 0.3),
             sound_enabled=self.settings_manager.get("alerts.red_flash.sound_alert", False),
             visual_border=self.settings_manager.get("alerts.red_flash.visual_border", True),
-            alert_cooldown=self.settings_manager.get("alerts.red_flash.cooldown", 5)
+            alert_cooldown=self.settings_manager.get("alerts.red_flash.cooldown", 5),
         )
         self.alert_detector.set_config(alert_config)
 
@@ -480,7 +504,7 @@ class MainWindowV21(QMainWindow):
             self.capture_system,
             self.character_manager,
             self.alert_detector,
-            settings_manager=self.settings_manager
+            settings_manager=self.settings_manager,
         )
         self.tabs.addTab(self.main_tab, "Overview")
 
@@ -495,7 +519,7 @@ class MainWindowV21(QMainWindow):
         self.characters_tab = CharactersTeamsTab(
             self.character_manager,
             self.layout_manager,
-            settings_sync=self.settings_sync  # v2.2: Enable EVE folder scanning
+            settings_sync=self.settings_sync,  # v2.2: Enable EVE folder scanning
         )
         self.tabs.addTab(self.characters_tab, "Roster")
 
@@ -507,25 +531,18 @@ class MainWindowV21(QMainWindow):
         from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
 
         self.hotkeys_tab = HotkeysTab(
-            self.character_manager,
-            self.settings_manager,
-            main_tab=self.main_tab
+            self.character_manager, self.settings_manager, main_tab=self.main_tab
         )
         self.tabs.addTab(self.hotkeys_tab, "Automation")
 
         # Connect group changes to refresh layout sources in overview tab
-        self.hotkeys_tab.group_changed.connect(
-            lambda: self.main_tab.refresh_layout_groups()
-        )
+        self.hotkeys_tab.group_changed.connect(lambda: self.main_tab.refresh_layout_groups())
 
     def _create_settings_sync_tab(self):
         """Create Sync tab (EVE settings sync) - formerly 'Settings Sync'"""
         from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
 
-        self.settings_sync_tab = SettingsSyncTab(
-            self.settings_sync,
-            self.character_manager
-        )
+        self.settings_sync_tab = SettingsSyncTab(self.settings_sync, self.character_manager)
         self.tabs.addTab(self.settings_sync_tab, "Sync")
 
     def _create_settings_tab(self):
@@ -533,9 +550,7 @@ class MainWindowV21(QMainWindow):
         from eve_overview_pro.ui.settings_tab import SettingsTab
 
         self.settings_tab = SettingsTab(
-            self.settings_manager,
-            self.hotkey_manager,
-            self.alert_detector
+            self.settings_manager, self.hotkey_manager, self.alert_detector
         )
         self.tabs.addTab(self.settings_tab, "Settings")
 
@@ -568,11 +583,11 @@ class MainWindowV21(QMainWindow):
                 self.logger.warning("Capture worker count change requires restart")
             elif key == "performance.default_refresh_rate":
                 # Apply to main tab if it exists
-                if hasattr(self, 'main_tab'):
+                if hasattr(self, "main_tab"):
                     self.main_tab.window_manager.set_refresh_rate(value)
             elif key == "performance.disable_previews":
                 # Toggle preview captures on/off (GPU/CPU savings)
-                if hasattr(self, 'main_tab'):
+                if hasattr(self, "main_tab"):
                     self.main_tab.set_previews_enabled(not value)
 
         elif key.startswith("alerts"):
@@ -597,17 +612,17 @@ class MainWindowV21(QMainWindow):
             self.logger.info("Enabling Low Power Mode (FPS=5, alerts off)")
 
             # Store previous values for restoration
-            if not hasattr(self, '_low_power_previous'):
+            if not hasattr(self, "_low_power_previous"):
                 self._low_power_previous = {
-                    'fps': self.settings_manager.get("performance.default_refresh_rate", 30),
-                    'alerts': self.settings_manager.get("alerts.enabled", True),
+                    "fps": self.settings_manager.get("performance.default_refresh_rate", 30),
+                    "alerts": self.settings_manager.get("alerts.enabled", True),
                 }
 
             # Set FPS to 5
-            if hasattr(self, 'main_tab'):
+            if hasattr(self, "main_tab"):
                 self.main_tab.window_manager.set_refresh_rate(5)
                 # Also update the spinner in main tab toolbar
-                if hasattr(self.main_tab, 'refresh_rate_spin'):
+                if hasattr(self.main_tab, "refresh_rate_spin"):
                     self.main_tab.refresh_rate_spin.blockSignals(True)
                     self.main_tab.refresh_rate_spin.setValue(5)
                     self.main_tab.refresh_rate_spin.blockSignals(False)
@@ -623,19 +638,19 @@ class MainWindowV21(QMainWindow):
             self.logger.info("Disabling Low Power Mode (restoring previous settings)")
 
             # Restore previous values
-            if hasattr(self, '_low_power_previous'):
+            if hasattr(self, "_low_power_previous"):
                 prev = self._low_power_previous
 
                 # Restore FPS
-                if hasattr(self, 'main_tab'):
-                    self.main_tab.window_manager.set_refresh_rate(prev['fps'])
-                    if hasattr(self.main_tab, 'refresh_rate_spin'):
+                if hasattr(self, "main_tab"):
+                    self.main_tab.window_manager.set_refresh_rate(prev["fps"])
+                    if hasattr(self.main_tab, "refresh_rate_spin"):
                         self.main_tab.refresh_rate_spin.blockSignals(True)
-                        self.main_tab.refresh_rate_spin.setValue(prev['fps'])
+                        self.main_tab.refresh_rate_spin.setValue(prev["fps"])
                         self.main_tab.refresh_rate_spin.blockSignals(False)
 
                 # Restore alerts
-                self.settings_manager.set("alerts.enabled", prev['alerts'])
+                self.settings_manager.set("alerts.enabled", prev["alerts"])
                 self._apply_initial_settings()
 
                 del self._low_power_previous
@@ -657,7 +672,9 @@ class MainWindowV21(QMainWindow):
         self.character_manager.assign_window(char_name, window_id)
 
         # Update characters tab if it exists and has the method
-        if hasattr(self, 'characters_tab') and hasattr(self.characters_tab, 'update_character_status'):
+        if hasattr(self, "characters_tab") and hasattr(
+            self.characters_tab, "update_character_status"
+        ):
             self.characters_tab.update_character_status(char_name, window_id)
 
     @Slot(object)
@@ -697,12 +714,11 @@ class MainWindowV21(QMainWindow):
         """Handle application close - v2.2 minimize to tray support"""
         # Check if we should minimize to tray instead of closing
         if self.settings_manager.get("general.minimize_to_tray", True):
-            if hasattr(self, 'system_tray') and self.system_tray.is_visible():
+            if hasattr(self, "system_tray") and self.system_tray.is_visible():
                 self.logger.info("Minimizing to system tray")
                 self.hide()
                 self.system_tray.show_notification(
-                    "Still Running",
-                    "Argus Overview is still running in the system tray"
+                    "Still Running", "Argus Overview is still running in the system tray"
                 )
                 event.ignore()
                 return
@@ -711,25 +727,25 @@ class MainWindowV21(QMainWindow):
         self.logger.info("Shutting down Argus Overview v2.4...")
 
         # Stop systems
-        if hasattr(self, 'auto_discovery'):
+        if hasattr(self, "auto_discovery"):
             self.auto_discovery.stop()
 
-        if hasattr(self, 'capture_system'):
+        if hasattr(self, "capture_system"):
             self.capture_system.stop()
 
-        if hasattr(self, 'hotkey_manager'):
+        if hasattr(self, "hotkey_manager"):
             self.hotkey_manager.stop()
 
         # Hide tray icon
-        if hasattr(self, 'system_tray'):
+        if hasattr(self, "system_tray"):
             self.system_tray.hide()
 
         # Save settings
-        if hasattr(self, 'settings_manager'):
+        if hasattr(self, "settings_manager"):
             self.settings_manager.save_settings()
 
         # Save character/team data
-        if hasattr(self, 'character_manager'):
+        if hasattr(self, "character_manager"):
             self.character_manager.save_data()
 
         self.logger.info("Shutdown complete")

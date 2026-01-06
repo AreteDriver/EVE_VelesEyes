@@ -2,6 +2,7 @@
 Unit tests for the Main Window v2.1 module
 Tests MainWindowV21 - the main application window
 """
+
 from unittest.mock import MagicMock, patch
 
 
@@ -37,7 +38,9 @@ def create_mock_window():
     window._toggle_visibility = lambda: MainWindowV21._toggle_visibility(window)
     window._toggle_thumbnails = lambda: MainWindowV21._toggle_thumbnails(window)
     window._get_cycling_group_members = lambda: MainWindowV21._get_cycling_group_members(window)
-    window._get_window_id_for_character = lambda char: MainWindowV21._get_window_id_for_character(window, char)
+    window._get_window_id_for_character = lambda char: MainWindowV21._get_window_id_for_character(
+        window, char
+    )
     window._cycle_next = lambda: MainWindowV21._cycle_next(window)
     window._cycle_prev = lambda: MainWindowV21._cycle_prev(window)
     window._activate_window = lambda wid: MainWindowV21._activate_window(window, wid)
@@ -49,15 +52,21 @@ def create_mock_window():
     window._reload_config = lambda: MainWindowV21._reload_config(window)
     window._quit_application = lambda: MainWindowV21._quit_application(window)
     window._apply_setting = lambda k, v: MainWindowV21._apply_setting(window, k, v)
-    window._on_character_detected = lambda wid, char: MainWindowV21._on_character_detected(window, wid, char)
+    window._on_character_detected = lambda wid, char: MainWindowV21._on_character_detected(
+        window, wid, char
+    )
     window._on_team_selected = lambda team: MainWindowV21._on_team_selected(window, team)
     window._on_layout_applied = lambda name: MainWindowV21._on_layout_applied(window, name)
     window.closeEvent = lambda e: MainWindowV21.closeEvent(window, e)
     window._show_about_dialog = lambda: MainWindowV21._show_about_dialog(window)
     window._open_url = lambda url: MainWindowV21._open_url(window, url)
     window._open_donation_link = lambda: MainWindowV21._open_donation_link(window)
-    window._on_new_character_discovered = lambda c, wid, t: MainWindowV21._on_new_character_discovered(window, c, wid, t)
-    window._apply_low_power_mode = lambda enabled: MainWindowV21._apply_low_power_mode(window, enabled)
+    window._on_new_character_discovered = (
+        lambda c, wid, t: MainWindowV21._on_new_character_discovered(window, c, wid, t)
+    )
+    window._apply_low_power_mode = lambda enabled: MainWindowV21._apply_low_power_mode(
+        window, enabled
+    )
 
     return window
 
@@ -130,7 +139,7 @@ class TestCyclingGroupMembers:
         window.settings_manager = MagicMock()
         window.settings_manager.get.return_value = {
             "Default": ["Char1", "Char2"],
-            "PvP": ["Char3", "Char4"]
+            "PvP": ["Char3", "Char4"],
         }
         window.current_cycling_group = "PvP"
 
@@ -142,9 +151,7 @@ class TestCyclingGroupMembers:
         """Test fallback to Default group"""
         window = create_mock_window()
         window.settings_manager = MagicMock()
-        window.settings_manager.get.return_value = {
-            "Default": ["Char1", "Char2"]
-        }
+        window.settings_manager.get.return_value = {"Default": ["Char1", "Char2"]}
         window.current_cycling_group = "NonExistent"
 
         result = window._get_cycling_group_members()
@@ -166,9 +173,7 @@ class TestGetWindowIdForCharacter:
 
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x12345": mock_frame
-        }
+        window.main_tab.window_manager.preview_frames = {"0x12345": mock_frame}
 
         result = window._get_window_id_for_character("TestPilot")
 
@@ -196,9 +201,7 @@ class TestCycling:
         window = create_mock_window()
         window.cycling_index = 0
         window.settings_manager = MagicMock()
-        window.settings_manager.get.return_value = {
-            "Default": ["Char1", "Char2", "Char3"]
-        }
+        window.settings_manager.get.return_value = {"Default": ["Char1", "Char2", "Char3"]}
         window.current_cycling_group = "Default"
 
         # Mock finding window
@@ -206,9 +209,7 @@ class TestCycling:
         mock_frame.character_name = "Char2"
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x12345": mock_frame
-        }
+        window.main_tab.window_manager.preview_frames = {"0x12345": mock_frame}
 
         window._activate_window = MagicMock()
 
@@ -221,9 +222,7 @@ class TestCycling:
         window = create_mock_window()
         window.cycling_index = 2  # Last position
         window.settings_manager = MagicMock()
-        window.settings_manager.get.return_value = {
-            "Default": ["Char1", "Char2", "Char3"]
-        }
+        window.settings_manager.get.return_value = {"Default": ["Char1", "Char2", "Char3"]}
         window.current_cycling_group = "Default"
 
         # Mock finding window
@@ -231,9 +230,7 @@ class TestCycling:
         mock_frame.character_name = "Char1"
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x12345": mock_frame
-        }
+        window.main_tab.window_manager.preview_frames = {"0x12345": mock_frame}
 
         window._activate_window = MagicMock()
 
@@ -246,9 +243,7 @@ class TestCycling:
         window = create_mock_window()
         window.cycling_index = 2
         window.settings_manager = MagicMock()
-        window.settings_manager.get.return_value = {
-            "Default": ["Char1", "Char2", "Char3"]
-        }
+        window.settings_manager.get.return_value = {"Default": ["Char1", "Char2", "Char3"]}
         window.current_cycling_group = "Default"
 
         # Mock finding window
@@ -256,9 +251,7 @@ class TestCycling:
         mock_frame.character_name = "Char2"
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x12345": mock_frame
-        }
+        window.main_tab.window_manager.preview_frames = {"0x12345": mock_frame}
 
         window._activate_window = MagicMock()
 
@@ -271,7 +264,7 @@ class TestCycling:
 class TestActivateWindow:
     """Tests for _activate_window method"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_activate_window_calls_xdotool(self, mock_subprocess):
         """Test that activate_window calls xdotool"""
         window = create_mock_window()
@@ -280,11 +273,11 @@ class TestActivateWindow:
 
         mock_subprocess.assert_called_once()
         call_args = mock_subprocess.call_args[0][0]
-        assert 'xdotool' in call_args
-        assert 'windowactivate' in call_args
-        assert '0x12345' in call_args
+        assert "xdotool" in call_args
+        assert "windowactivate" in call_args
+        assert "0x12345" in call_args
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_activate_window_handles_exception(self, mock_subprocess):
         """Test that activate_window handles exceptions"""
         mock_subprocess.side_effect = Exception("xdotool failed")
@@ -307,10 +300,7 @@ class TestMinimizeRestoreWindows:
 
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x111": MagicMock(),
-            "0x222": MagicMock()
-        }
+        window.main_tab.window_manager.preview_frames = {"0x111": MagicMock(), "0x222": MagicMock()}
 
         window.capture_system = MagicMock()
         window.capture_system.minimize_window.return_value = True
@@ -328,10 +318,7 @@ class TestMinimizeRestoreWindows:
 
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x111": MagicMock(),
-            "0x222": MagicMock()
-        }
+        window.main_tab.window_manager.preview_frames = {"0x111": MagicMock(), "0x222": MagicMock()}
 
         window.capture_system = MagicMock()
         window.capture_system.restore_window.return_value = True
@@ -348,7 +335,7 @@ class TestMinimizeRestoreWindows:
 class TestActivateCharacter:
     """Tests for _activate_character method"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_activate_character_found(self, mock_run):
         """Test activating a found character"""
         window = create_mock_window()
@@ -360,9 +347,7 @@ class TestActivateCharacter:
 
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x12345": mock_frame
-        }
+        window.main_tab.window_manager.preview_frames = {"0x12345": mock_frame}
 
         mock_run.return_value = MagicMock(returncode=0)
 
@@ -370,7 +355,7 @@ class TestActivateCharacter:
 
         # Should call xdotool windowactivate via _activate_window
         calls = [str(c) for c in mock_run.call_args_list]
-        assert any('windowactivate' in c and '0x12345' in c for c in calls)
+        assert any("windowactivate" in c and "0x12345" in c for c in calls)
 
     def test_activate_character_not_found(self):
         """Test activating a character not found"""
@@ -456,7 +441,7 @@ class TestReloadConfig:
 class TestQuitApplication:
     """Tests for _quit_application method"""
 
-    @patch('eve_overview_pro.ui.main_window_v21.QApplication')
+    @patch("eve_overview_pro.ui.main_window_v21.QApplication")
     def test_quit_application_calls_quit(self, mock_app):
         """Test that quit_application calls QApplication.quit"""
         window = create_mock_window()
@@ -584,7 +569,7 @@ class TestCloseEvent:
 class TestAboutDialog:
     """Tests for _show_about_dialog method"""
 
-    @patch('eve_overview_pro.ui.about_dialog.AboutDialog')
+    @patch("eve_overview_pro.ui.about_dialog.AboutDialog")
     def test_show_about_dialog_creates_dialog(self, mock_dialog_class):
         """Test that show_about_dialog creates and shows dialog"""
         window = create_mock_window()
@@ -602,7 +587,7 @@ class TestAboutDialog:
 class TestOpenUrl:
     """Tests for _open_url and _open_donation_link methods"""
 
-    @patch('PySide6.QtGui.QDesktopServices.openUrl')
+    @patch("PySide6.QtGui.QDesktopServices.openUrl")
     def test_open_url(self, mock_open_url):
         """Test opening URL"""
         window = create_mock_window()
@@ -611,7 +596,7 @@ class TestOpenUrl:
 
         mock_open_url.assert_called_once()
 
-    @patch('PySide6.QtGui.QDesktopServices.openUrl')
+    @patch("PySide6.QtGui.QDesktopServices.openUrl")
     def test_open_donation_link(self, mock_open_url):
         """Test opening donation link"""
         window = create_mock_window()
@@ -683,9 +668,7 @@ class TestGetCyclingGroupMembersEdgeCases:
         """Test fallback to Default group when current not found"""
         window = create_mock_window()
         window.settings_manager = MagicMock()
-        window.settings_manager.get.return_value = {
-            "Default": ["Char1", "Char2"]
-        }
+        window.settings_manager.get.return_value = {"Default": ["Char1", "Char2"]}
         window.current_cycling_group = "NonExistent"
 
         members = window._get_cycling_group_members()
@@ -706,10 +689,7 @@ class TestGetCyclingGroupMembersEdgeCases:
 
         window.main_tab = MagicMock()
         window.main_tab.window_manager = MagicMock()
-        window.main_tab.window_manager.preview_frames = {
-            "0x111": mock_frame1,
-            "0x222": mock_frame2
-        }
+        window.main_tab.window_manager.preview_frames = {"0x111": mock_frame1, "0x222": mock_frame2}
 
         members = window._get_cycling_group_members()
 
@@ -778,7 +758,7 @@ class TestReloadConfigEdgeCases:
         # First call returns theme, second call returns False for auto_discovery
         window.settings_manager.get.side_effect = [
             "dark",  # appearance.theme
-            False,   # general.auto_discovery
+            False,  # general.auto_discovery
         ]
 
         window.theme_manager = MagicMock()
@@ -797,8 +777,8 @@ class TestReloadConfigEdgeCases:
         window.settings_manager = MagicMock()
         window.settings_manager.get.side_effect = [
             "dark",  # appearance.theme
-            True,    # general.auto_discovery
-            10,      # general.auto_discovery_interval
+            True,  # general.auto_discovery
+            10,  # general.auto_discovery_interval
         ]
 
         window.theme_manager = MagicMock()
@@ -921,9 +901,7 @@ class TestCyclingRecursion:
         window = create_mock_window()
         window.cycling_index = 0
         window.settings_manager = MagicMock()
-        window.settings_manager.get.return_value = {
-            "Default": ["NotFound", "FoundChar"]
-        }
+        window.settings_manager.get.return_value = {"Default": ["NotFound", "FoundChar"]}
         window.current_cycling_group = "Default"
 
         # First char not found, second char found
@@ -948,9 +926,7 @@ class TestCyclingRecursion:
         window = create_mock_window()
         window.cycling_index = 1
         window.settings_manager = MagicMock()
-        window.settings_manager.get.return_value = {
-            "Default": ["FoundChar", "NotFound"]
-        }
+        window.settings_manager.get.return_value = {"Default": ["FoundChar", "NotFound"]}
         window.current_cycling_group = "Default"
 
         # Second char not found, first char found
@@ -975,7 +951,7 @@ class TestCyclingRecursion:
 class TestSetWindowIcon:
     """Tests for _set_window_icon method"""
 
-    @patch('eve_overview_pro.ui.main_window_v21.Path')
+    @patch("eve_overview_pro.ui.main_window_v21.Path")
     def test_set_window_icon_found(self, mock_path_class):
         """Test setting window icon when icon file found"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -992,14 +968,14 @@ class TestSetWindowIcon:
         mock_path_class.__truediv__ = lambda s, o: mock_path
 
         # Mock Path.home() to return a mock that constructs valid paths
-        with patch.object(mock_path_class, 'home', return_value=mock_path):
-            with patch.object(mock_path_class, '__call__', return_value=mock_path):
+        with patch.object(mock_path_class, "home", return_value=mock_path):
+            with patch.object(mock_path_class, "__call__", return_value=mock_path):
                 MainWindowV21._set_window_icon(window)
 
         # Should have called setWindowIcon (at least once somewhere)
         # The implementation checks multiple paths
 
-    @patch('eve_overview_pro.ui.main_window_v21.Path')
+    @patch("eve_overview_pro.ui.main_window_v21.Path")
     def test_set_window_icon_not_found(self, mock_path_class):
         """Test warning when no icon found"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1042,7 +1018,7 @@ class TestApplyInitialSettings:
         window.alert_detector = MagicMock()
 
         # Patch AlertConfig where it's imported (in alert_detector module)
-        with patch('eve_overview_pro.core.alert_detector.AlertConfig') as mock_config:
+        with patch("eve_overview_pro.core.alert_detector.AlertConfig"):
             MainWindowV21._apply_initial_settings(window)
 
         # Should update capture_system.max_workers
@@ -1276,7 +1252,7 @@ class TestRegisterHotkeys:
 class TestActivateWindow:
     """Tests for _activate_window method"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_activate_window_success(self, mock_run):
         """Test activating window with xdotool"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1291,12 +1267,12 @@ class TestActivateWindow:
         MainWindowV21._activate_window(window, "0x12345")
 
         # Check xdotool windowactivate was called (may have other subprocess calls)
-        calls = [c for c in mock_run.call_args_list if c[0] and 'xdotool' in c[0][0]]
+        calls = [c for c in mock_run.call_args_list if c[0] and "xdotool" in c[0][0]]
         assert len(calls) >= 1
-        assert 'windowactivate' in calls[-1][0][0]
-        assert '0x12345' in calls[-1][0][0]
+        assert "windowactivate" in calls[-1][0][0]
+        assert "0x12345" in calls[-1][0][0]
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_activate_window_failure(self, mock_run):
         """Test activate window handles subprocess failure"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1312,7 +1288,7 @@ class TestActivateWindow:
 
         window.logger.error.assert_called()
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_activate_window_with_auto_minimize(self, mock_run):
         """Test activating window minimizes previous when auto-minimize enabled"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1321,7 +1297,9 @@ class TestActivateWindow:
         window.logger = MagicMock()
         window.settings_manager = MagicMock()
         window.settings_manager.get.return_value = True  # auto_minimize ON
-        window.settings_manager._last_activated_eve_window = "0x99999"  # Previous EVE window (shared)
+        window.settings_manager._last_activated_eve_window = (
+            "0x99999"  # Previous EVE window (shared)
+        )
 
         mock_run.return_value = MagicMock(returncode=0)
 
@@ -1331,16 +1309,16 @@ class TestActivateWindow:
         assert mock_run.call_count == 2
         # Verify minimize was called on previous window
         calls = [str(c) for c in mock_run.call_args_list]
-        assert any('windowminimize' in c and '0x99999' in c for c in calls)
-        assert any('windowactivate' in c and '0x12345' in c for c in calls)
+        assert any("windowminimize" in c and "0x99999" in c for c in calls)
+        assert any("windowactivate" in c and "0x12345" in c for c in calls)
 
 
 # Test _create_menu_bar
 class TestCreateMenuBar:
     """Tests for _create_menu_bar method"""
 
-    @patch('eve_overview_pro.ui.main_window_v21.MenuBuilder')
-    @patch('eve_overview_pro.ui.main_window_v21.ActionRegistry')
+    @patch("eve_overview_pro.ui.main_window_v21.MenuBuilder")
+    @patch("eve_overview_pro.ui.main_window_v21.ActionRegistry")
     def test_create_menu_bar(self, mock_registry_class, mock_builder_class):
         """Test creating menu bar"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1384,10 +1362,12 @@ class TestCyclingCharNotFound:
         # Mock _cycle_next to not recurse (avoid infinite loop in test)
         original_cycle_next = window._cycle_next
         call_count = [0]
+
         def cycle_next_once():
             call_count[0] += 1
             if call_count[0] == 1:
                 original_cycle_next()
+
         window._cycle_next = cycle_next_once
 
         window._cycle_next()
@@ -1411,10 +1391,12 @@ class TestCyclingCharNotFound:
         # Mock _cycle_prev to not recurse (avoid infinite loop in test)
         original_cycle_prev = window._cycle_prev
         call_count = [0]
+
         def cycle_prev_once():
             call_count[0] += 1
             if call_count[0] == 1:
                 original_cycle_prev()
+
         window._cycle_prev = cycle_prev_once
 
         window._cycle_prev()
@@ -1427,7 +1409,7 @@ class TestCyclingCharNotFound:
 class TestCreateSystemTray:
     """Tests for _create_system_tray method"""
 
-    @patch('eve_overview_pro.ui.main_window_v21.SystemTray')
+    @patch("eve_overview_pro.ui.main_window_v21.SystemTray")
     def test_create_system_tray(self, mock_tray_class):
         """Test creating system tray"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1466,7 +1448,7 @@ class TestCreateSystemTray:
 class TestCreateMainTab:
     """Tests for _create_main_tab method"""
 
-    @patch('eve_overview_pro.ui.main_tab.MainTab')
+    @patch("eve_overview_pro.ui.main_tab.MainTab")
     def test_create_main_tab(self, mock_tab_class):
         """Test creating main tab"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1497,7 +1479,7 @@ class TestCreateMainTab:
 class TestCreateCharactersTab:
     """Tests for _create_characters_tab method"""
 
-    @patch('eve_overview_pro.ui.characters_teams_tab.CharactersTeamsTab')
+    @patch("eve_overview_pro.ui.characters_teams_tab.CharactersTeamsTab")
     def test_create_characters_tab(self, mock_tab_class):
         """Test creating characters tab"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1526,7 +1508,7 @@ class TestCreateCharactersTab:
 class TestCreateHotkeysTab:
     """Tests for _create_hotkeys_tab method"""
 
-    @patch('eve_overview_pro.ui.hotkeys_tab.HotkeysTab')
+    @patch("eve_overview_pro.ui.hotkeys_tab.HotkeysTab")
     def test_create_hotkeys_tab(self, mock_tab_class):
         """Test creating hotkeys tab"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1555,7 +1537,7 @@ class TestCreateHotkeysTab:
 class TestCreateSettingsSyncTab:
     """Tests for _create_settings_sync_tab method"""
 
-    @patch('eve_overview_pro.ui.settings_sync_tab.SettingsSyncTab')
+    @patch("eve_overview_pro.ui.settings_sync_tab.SettingsSyncTab")
     def test_create_settings_sync_tab(self, mock_tab_class):
         """Test creating settings sync tab"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1580,7 +1562,7 @@ class TestCreateSettingsSyncTab:
 class TestCreateSettingsTab:
     """Tests for _create_settings_tab method"""
 
-    @patch('eve_overview_pro.ui.settings_tab.SettingsTab')
+    @patch("eve_overview_pro.ui.settings_tab.SettingsTab")
     def test_create_settings_tab(self, mock_tab_class):
         """Test creating settings tab"""
         from eve_overview_pro.ui.main_window_v21 import MainWindowV21
@@ -1640,7 +1622,7 @@ class TestApplyLowPowerMode:
         window.statusBar = MagicMock(return_value=MagicMock())
 
         # Simulate that low power mode was previously enabled
-        window._low_power_previous = {'fps': 30, 'alerts': True}
+        window._low_power_previous = {"fps": 30, "alerts": True}
 
         window._apply_low_power_mode(False)
 
@@ -1662,16 +1644,16 @@ class TestApplyLowPowerMode:
         window.settings_manager = MagicMock()
         window.settings_manager.get.side_effect = lambda k, d=None: {
             "performance.default_refresh_rate": 45,
-            "alerts.enabled": True
+            "alerts.enabled": True,
         }.get(k, d)
         window.statusBar = MagicMock(return_value=MagicMock())
 
         window._apply_low_power_mode(True)
 
         # Should have stored previous values
-        assert hasattr(window, '_low_power_previous')
-        assert window._low_power_previous['fps'] == 45
-        assert window._low_power_previous['alerts'] is True
+        assert hasattr(window, "_low_power_previous")
+        assert window._low_power_previous["fps"] == 45
+        assert window._low_power_previous["alerts"] is True
 
     def test_disable_low_power_mode_without_previous(self):
         """Test disabling when no previous settings stored"""

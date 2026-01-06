@@ -2,6 +2,7 @@
 Layouts Tab - Group-based window arrangement with drag-and-drop tiles
 Supports grid patterns, stacking, and custom positioning
 """
+
 import logging
 import re
 import subprocess
@@ -32,6 +33,7 @@ from eve_overview_pro.core.layout_manager import GridPattern
 @dataclass
 class ScreenGeometry:
     """Screen/monitor geometry"""
+
     x: int
     y: int
     width: int
@@ -51,7 +53,7 @@ def get_all_patterns():
         "Main + Sides",
         "Cascade",
         "Stacked (All Same Position)",
-        "Custom"
+        "Custom",
     ]
 
 
@@ -64,7 +66,7 @@ def pattern_display_to_enum(display_name: str) -> GridPattern:
         "4x1 Row": GridPattern.GRID_4X1,
         "Main + Sides": GridPattern.MAIN_PLUS_SIDES,
         "Cascade": GridPattern.CASCADE,
-        "Custom": GridPattern.CUSTOM
+        "Custom": GridPattern.CUSTOM,
     }
     return mapping.get(display_name, GridPattern.CUSTOM)
 
@@ -235,10 +237,7 @@ class ArrangementGrid(QWidget):
 
     def get_arrangement(self) -> Dict[str, Tuple[int, int]]:
         """Get current arrangement as dict"""
-        return {
-            name: (tile.grid_row, tile.grid_col)
-            for name, tile in self.tiles.items()
-        }
+        return {name: (tile.grid_row, tile.grid_col) for name, tile in self.tiles.items()}
 
     def auto_arrange_grid(self, pattern: str):
         """Auto-arrange tiles based on pattern"""
@@ -305,10 +304,7 @@ class GridApplier:
         """Get screen geometry using xrandr"""
         try:
             result = subprocess.run(
-                ['xrandr', '--query'],
-                capture_output=True,
-                text=True,
-                timeout=5
+                ["xrandr", "--query"], capture_output=True, text=True, timeout=5
             )
 
             if result.returncode != 0:
@@ -316,12 +312,12 @@ class GridApplier:
                 return None
 
             monitors = []
-            for line in result.stdout.split('\n'):
-                if ' connected' in line:
-                    match = re.search(r'(\d+)x(\d+)\+(\d+)\+(\d+)', line)
+            for line in result.stdout.split("\n"):
+                if " connected" in line:
+                    match = re.search(r"(\d+)x(\d+)\+(\d+)\+(\d+)", line)
                     if match:
                         w, h, x, y = map(int, match.groups())
-                        is_primary = 'primary' in line
+                        is_primary = "primary" in line
                         monitors.append(ScreenGeometry(x, y, w, h, is_primary))
 
             if monitor < len(monitors):
@@ -336,12 +332,16 @@ class GridApplier:
             self.logger.error(f"Failed to get screen geometry: {e}")
             return ScreenGeometry(0, 0, 1920, 1080, True)
 
-    def apply_arrangement(self, arrangement: Dict[str, Tuple[int, int]],
-                         window_map: Dict[str, str],
-                         screen: ScreenGeometry,
-                         grid_rows: int, grid_cols: int,
-                         spacing: int = 10,
-                         stacked: bool = False) -> bool:
+    def apply_arrangement(
+        self,
+        arrangement: Dict[str, Tuple[int, int]],
+        window_map: Dict[str, str],
+        screen: ScreenGeometry,
+        grid_rows: int,
+        grid_cols: int,
+        spacing: int = 10,
+        stacked: bool = False,
+    ) -> bool:
         """
         Apply arrangement to windows
 
@@ -393,26 +393,26 @@ class GridApplier:
         # Try with --sync first, fallback to no-sync for Wine/Proton windows
         try:
             subprocess.run(
-                ['xdotool', 'windowmove', '--sync', window_id, str(x), str(y)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowmove", "--sync", window_id, str(x), str(y)],
+                capture_output=True,
+                timeout=2,
             )
         except subprocess.TimeoutExpired:
             # Wine windows don't respond to sync, retry without it
             subprocess.run(
-                ['xdotool', 'windowmove', window_id, str(x), str(y)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowmove", window_id, str(x), str(y)], capture_output=True, timeout=2
             )
             time.sleep(0.1)  # Brief pause for window to settle
 
         try:
             subprocess.run(
-                ['xdotool', 'windowsize', '--sync', window_id, str(w), str(h)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowsize", "--sync", window_id, str(w), str(h)],
+                capture_output=True,
+                timeout=2,
             )
         except subprocess.TimeoutExpired:
             subprocess.run(
-                ['xdotool', 'windowsize', window_id, str(w), str(h)],
-                capture_output=True, timeout=2
+                ["xdotool", "windowsize", window_id, str(w), str(h)], capture_output=True, timeout=2
             )
             time.sleep(0.1)
 
@@ -650,7 +650,7 @@ class LayoutsTab(QWidget):
 
         if group_name == "All Active Windows":
             # Get all active windows from main_tab
-            if hasattr(self.main_tab, 'window_manager'):
+            if hasattr(self.main_tab, "window_manager"):
                 for _window_id, frame in self.main_tab.window_manager.preview_frames.items():
                     self.arrangement_grid.add_character(frame.character_name)
 
@@ -695,7 +695,7 @@ class LayoutsTab(QWidget):
 
     def _apply_to_active_windows(self):
         """Apply layout to active windows"""
-        if not hasattr(self.main_tab, 'window_manager'):
+        if not hasattr(self.main_tab, "window_manager"):
             QMessageBox.warning(self, "Error", "Main tab not initialized")
             return
 
@@ -715,9 +715,10 @@ class LayoutsTab(QWidget):
 
         if not window_map:
             QMessageBox.warning(
-                self, "No Matching Windows",
+                self,
+                "No Matching Windows",
                 "None of the characters in the arrangement have active windows.\n\n"
-                "Make sure the EVE clients are running and detected."
+                "Make sure the EVE clients are running and detected.",
             )
             return
 
@@ -737,20 +738,16 @@ class LayoutsTab(QWidget):
             grid_rows=self.rows_spin.value(),
             grid_cols=self.cols_spin.value(),
             spacing=self.spacing_spin.value(),
-            stacked=self.stack_checkbox.isChecked()
+            stacked=self.stack_checkbox.isChecked(),
         )
 
         if success:
             QMessageBox.information(
-                self, "Success",
-                f"Applied layout to {len(window_map)} windows!"
+                self, "Success", f"Applied layout to {len(window_map)} windows!"
             )
             self.layout_applied.emit(self.pattern_combo.currentText())
         else:
-            QMessageBox.warning(
-                self, "Error",
-                "Failed to apply layout. Check logs for details."
-            )
+            QMessageBox.warning(self, "Error", "Failed to apply layout. Check logs for details.")
 
     def refresh_groups_from_settings(self):
         """Called when groups change in hotkeys tab"""

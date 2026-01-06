@@ -2,6 +2,7 @@
 Character and Team Management System
 Handles EVE character database, account grouping, and activity-based teams
 """
+
 import json
 import logging
 from dataclasses import asdict, dataclass, field
@@ -13,6 +14,7 @@ from typing import Dict, List, Optional
 @dataclass
 class Character:
     """EVE Online character"""
+
     name: str
     account: str = ""  # Account name (each account has 3 chars)
     role: str = "DPS"  # Miner, Scout, DPS, Logi, Hauler, etc.
@@ -26,7 +28,7 @@ class Character:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Character':
+    def from_dict(cls, data: Dict) -> "Character":
         """Create from dictionary"""
         return cls(**data)
 
@@ -34,6 +36,7 @@ class Character:
 @dataclass
 class Team:
     """Activity-based team of characters"""
+
     name: str
     description: str = ""
     characters: List[str] = field(default_factory=list)  # Character names
@@ -46,7 +49,7 @@ class Team:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Team':
+    def from_dict(cls, data: Dict) -> "Team":
         """Create from dictionary"""
         return cls(**data)
 
@@ -58,13 +61,13 @@ class CharacterManager:
         self.logger = logging.getLogger(__name__)
 
         if config_dir is None:
-            config_dir = Path.home() / '.config' / 'eve-overview-pro'
+            config_dir = Path.home() / ".config" / "eve-overview-pro"
 
         self.config_dir = Path(config_dir)
         self.config_dir.mkdir(parents=True, exist_ok=True)
 
-        self.characters_file = self.config_dir / 'characters.json'
-        self.teams_file = self.config_dir / 'teams.json'
+        self.characters_file = self.config_dir / "characters.json"
+        self.teams_file = self.config_dir / "teams.json"
 
         self.characters: Dict[str, Character] = {}
         self.teams: Dict[str, Team] = {}
@@ -79,8 +82,7 @@ class CharacterManager:
                 with open(self.characters_file) as f:
                     data = json.load(f)
                     self.characters = {
-                        name: Character.from_dict(char_data)
-                        for name, char_data in data.items()
+                        name: Character.from_dict(char_data) for name, char_data in data.items()
                     }
                 self.logger.info(f"Loaded {len(self.characters)} characters")
             except Exception as e:
@@ -92,8 +94,7 @@ class CharacterManager:
                 with open(self.teams_file) as f:
                     data = json.load(f)
                     self.teams = {
-                        name: Team.from_dict(team_data)
-                        for name, team_data in data.items()
+                        name: Team.from_dict(team_data) for name, team_data in data.items()
                     }
                 self.logger.info(f"Loaded {len(self.teams)} teams")
             except Exception as e:
@@ -103,12 +104,12 @@ class CharacterManager:
         """Save characters and teams to disk"""
         try:
             # Save characters
-            with open(self.characters_file, 'w') as f:
+            with open(self.characters_file, "w") as f:
                 data = {name: char.to_dict() for name, char in self.characters.items()}
                 json.dump(data, f, indent=2)
 
             # Save teams
-            with open(self.teams_file, 'w') as f:
+            with open(self.teams_file, "w") as f:
                 data = {name: team.to_dict() for name, team in self.teams.items()}
                 json.dump(data, f, indent=2)
 
@@ -310,7 +311,7 @@ class CharacterManager:
                 notes=f"Imported from EVE. ID: {eve_char.character_id}",
                 is_main=False,
                 window_id=None,
-                last_seen=eve_char.last_seen.isoformat() if eve_char.last_seen else None
+                last_seen=eve_char.last_seen.isoformat() if eve_char.last_seen else None,
             )
 
             self.characters[char_name] = character

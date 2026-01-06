@@ -2,6 +2,7 @@
 Config Watcher - Hot reload configuration file changes
 v2.2 Feature: Automatically detect and apply config changes without restart
 """
+
 import logging
 from pathlib import Path
 from typing import Callable, Optional
@@ -11,6 +12,7 @@ from PySide6.QtCore import QObject, QTimer, Signal
 try:
     from watchdog.events import FileModifiedEvent, FileSystemEventHandler
     from watchdog.observers import Observer
+
     WATCHDOG_AVAILABLE = True
 except ImportError:
     WATCHDOG_AVAILABLE = False
@@ -96,11 +98,7 @@ class ConfigWatcher(QObject):
         try:
             handler = ConfigFileHandler(self._on_file_changed)
             self._observer = Observer()
-            self._observer.schedule(
-                handler,
-                str(self.config_path.parent),
-                recursive=False
-            )
+            self._observer.schedule(handler, str(self.config_path.parent), recursive=False)
             self._observer.start()
             self.logger.info("Using watchdog for config monitoring")
         except Exception as e:

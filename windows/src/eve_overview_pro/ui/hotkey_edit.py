@@ -7,8 +7,8 @@ Allows setting any key combination including F13-F20, special keys, etc.
 import logging
 from typing import Optional, Set
 
-from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QPushButton
+from PySide6.QtCore import QTimer, Signal
+from PySide6.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QWidget
 
 # Import pynput for key capture
 try:

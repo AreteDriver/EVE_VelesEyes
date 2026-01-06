@@ -9,6 +9,7 @@ Tests cover:
 - Grid layout calculations
 - Auto-arrange functionality
 """
+
 import json
 import tempfile
 from pathlib import Path
@@ -46,13 +47,7 @@ class TestWindowLayout:
 
     def test_create_minimal_layout(self):
         """WindowLayout can be created with minimal args"""
-        layout = WindowLayout(
-            window_id="0x123",
-            x=100,
-            y=200,
-            width=400,
-            height=300
-        )
+        layout = WindowLayout(window_id="0x123", x=100, y=200, width=400, height=300)
         assert layout.window_id == "0x123"
         assert layout.x == 100
         assert layout.y == 200
@@ -74,7 +69,7 @@ class TestWindowLayout:
             monitor=1,
             opacity=0.8,
             zoom=0.5,
-            always_on_top=False
+            always_on_top=False,
         )
         assert layout.monitor == 1
         assert layout.opacity == 0.8
@@ -102,7 +97,7 @@ class TestLayoutPreset:
             description="Full preset",
             windows=[window],
             refresh_rate=60,
-            grid_pattern="2x2"
+            grid_pattern="2x2",
         )
         assert preset.name == "Full"
         assert len(preset.windows) == 1
@@ -125,14 +120,22 @@ class TestLayoutPreset:
             "name": "Loaded",
             "description": "From dict",
             "windows": [
-                {"window_id": "0x1", "x": 0, "y": 0, "width": 400,
-                 "height": 300, "monitor": 0, "opacity": 1.0,
-                 "zoom": 0.3, "always_on_top": True}
+                {
+                    "window_id": "0x1",
+                    "x": 0,
+                    "y": 0,
+                    "width": 400,
+                    "height": 300,
+                    "monitor": 0,
+                    "opacity": 1.0,
+                    "zoom": 0.3,
+                    "always_on_top": True,
+                }
             ],
             "refresh_rate": 30,
             "grid_pattern": "custom",
             "created_at": "2025-01-01",
-            "modified_at": "2025-01-01"
+            "modified_at": "2025-01-01",
         }
         preset = LayoutPreset.from_dict(data)
         assert preset.name == "Loaded"
@@ -143,10 +146,7 @@ class TestLayoutPreset:
         """LayoutPreset survives to_dict -> from_dict roundtrip"""
         window = WindowLayout("0xABC", 100, 200, 500, 400, monitor=1)
         original = LayoutPreset(
-            name="RoundTrip",
-            description="Test",
-            windows=[window],
-            refresh_rate=45
+            name="RoundTrip", description="Test", windows=[window], refresh_rate=45
         )
         data = original.to_dict()
         restored = LayoutPreset.from_dict(data)
@@ -189,7 +189,7 @@ class TestLayoutManagerInit:
                 "refresh_rate": 30,
                 "grid_pattern": "custom",
                 "created_at": "2025-01-01",
-                "modified_at": "2025-01-01"
+                "modified_at": "2025-01-01",
             }
             (layouts_dir / "Existing.json").write_text(json.dumps(preset_data))
 
@@ -275,9 +275,7 @@ class TestLayoutManagerCRUD:
             "0x222": {"x": 410, "y": 0, "width": 400, "height": 300},
         }
         preset = manager.create_preset_from_current(
-            name="FromCurrent",
-            description="Created from current",
-            current_windows=current_windows
+            name="FromCurrent", description="Created from current", current_windows=current_windows
         )
         assert preset.name == "FromCurrent"
         assert len(preset.windows) == 2
@@ -299,17 +297,13 @@ class TestGridLayoutCalculations:
 
     def test_empty_windows(self, manager, screen):
         """Empty window list returns empty dict"""
-        result = manager.calculate_grid_layout(
-            GridPattern.GRID_2X2, [], screen
-        )
+        result = manager.calculate_grid_layout(GridPattern.GRID_2X2, [], screen)
         assert result == {}
 
     def test_grid_2x2(self, manager, screen):
         """2x2 grid calculates correct positions"""
         windows = ["w1", "w2", "w3", "w4"]
-        result = manager.calculate_grid_layout(
-            GridPattern.GRID_2X2, windows, screen, spacing=10
-        )
+        result = manager.calculate_grid_layout(GridPattern.GRID_2X2, windows, screen, spacing=10)
 
         assert len(result) == 4
         # All windows should have positions
@@ -327,17 +321,13 @@ class TestGridLayoutCalculations:
     def test_grid_2x2_limits_to_4(self, manager, screen):
         """2x2 grid only arranges first 4 windows"""
         windows = ["w1", "w2", "w3", "w4", "w5", "w6"]
-        result = manager.calculate_grid_layout(
-            GridPattern.GRID_2X2, windows, screen
-        )
+        result = manager.calculate_grid_layout(GridPattern.GRID_2X2, windows, screen)
         assert len(result) == 4
 
     def test_grid_3x1(self, manager, screen):
         """3x1 grid calculates correct positions"""
         windows = ["w1", "w2", "w3"]
-        result = manager.calculate_grid_layout(
-            GridPattern.GRID_3X1, windows, screen, spacing=10
-        )
+        result = manager.calculate_grid_layout(GridPattern.GRID_3X1, windows, screen, spacing=10)
 
         assert len(result) == 3
         # All on same row (same y)
@@ -348,9 +338,7 @@ class TestGridLayoutCalculations:
     def test_grid_1x3(self, manager, screen):
         """1x3 grid calculates correct positions"""
         windows = ["w1", "w2", "w3"]
-        result = manager.calculate_grid_layout(
-            GridPattern.GRID_1X3, windows, screen, spacing=10
-        )
+        result = manager.calculate_grid_layout(GridPattern.GRID_1X3, windows, screen, spacing=10)
 
         assert len(result) == 3
         # All on same column (same x)
@@ -361,9 +349,7 @@ class TestGridLayoutCalculations:
     def test_grid_4x1(self, manager, screen):
         """4x1 grid calculates correct positions"""
         windows = ["w1", "w2", "w3", "w4"]
-        result = manager.calculate_grid_layout(
-            GridPattern.GRID_4X1, windows, screen, spacing=10
-        )
+        result = manager.calculate_grid_layout(GridPattern.GRID_4X1, windows, screen, spacing=10)
 
         assert len(result) == 4
         # All on same row
@@ -384,9 +370,7 @@ class TestGridLayoutCalculations:
     def test_cascade(self, manager, screen):
         """Cascade pattern calculates offset positions"""
         windows = ["w1", "w2", "w3"]
-        result = manager.calculate_grid_layout(
-            GridPattern.CASCADE, windows, screen, spacing=10
-        )
+        result = manager.calculate_grid_layout(GridPattern.CASCADE, windows, screen, spacing=10)
 
         assert len(result) == 3
         # Each window offset from previous
@@ -399,9 +383,7 @@ class TestGridLayoutCalculations:
         """Layout respects screen x/y offset"""
         screen = {"x": 1920, "y": 0, "width": 1920, "height": 1080}
         windows = ["w1"]
-        result = manager.calculate_grid_layout(
-            GridPattern.CASCADE, windows, screen, spacing=10
-        )
+        result = manager.calculate_grid_layout(GridPattern.CASCADE, windows, screen, spacing=10)
 
         # Window should be on second monitor (x >= 1920)
         assert result["w1"]["x"] >= 1920
@@ -421,9 +403,7 @@ class TestAutoArrange:
         windows = ["w1", "w2"]
         screen = {"x": 0, "y": 0, "width": 1920, "height": 1080}
 
-        result = manager.auto_arrange(
-            windows, GridPattern.GRID_2X2, screen, spacing=20
-        )
+        result = manager.auto_arrange(windows, GridPattern.GRID_2X2, screen, spacing=20)
 
         assert len(result) == 2
 
@@ -494,14 +474,14 @@ class TestExceptionHandling:
     def test_delete_preset_handles_unlink_error(self):
         """delete_preset handles file deletion errors gracefully"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            from unittest.mock import patch, MagicMock
+            from unittest.mock import patch
 
             manager = LayoutManager(config_dir=Path(tmpdir))
             preset = LayoutPreset(name="ToDelete")
             manager.save_preset(preset)
 
             # Mock unlink to raise an exception
-            with patch.object(Path, 'unlink', side_effect=OSError("Permission denied")):
+            with patch.object(Path, "unlink", side_effect=OSError("Permission denied")):
                 result = manager.delete_preset("ToDelete")
                 assert result is False
 
@@ -517,10 +497,10 @@ class TestDefaultConfigDir:
         with tempfile.TemporaryDirectory() as tmpdir:
             mock_home = Path(tmpdir)
 
-            with patch.object(Path, 'home', return_value=mock_home):
+            with patch.object(Path, "home", return_value=mock_home):
                 manager = LayoutManager(config_dir=None)
 
-                expected_dir = mock_home / '.config' / 'eve-overview-pro'
+                expected_dir = mock_home / ".config" / "eve-overview-pro"
                 assert manager.config_dir == expected_dir
                 assert expected_dir.exists()
 
@@ -536,11 +516,7 @@ class TestDataPersistence:
             # Create and save preset
             m1 = LayoutManager(config_dir=config_dir)
             window = WindowLayout("0x123", 100, 200, 400, 300)
-            preset = LayoutPreset(
-                name="Persistent",
-                description="Should persist",
-                windows=[window]
-            )
+            preset = LayoutPreset(name="Persistent", description="Should persist", windows=[window])
             m1.save_preset(preset)
 
             # New manager should load it

@@ -2,6 +2,7 @@
 Unit tests for the Window Capture Threaded module
 Tests WindowCaptureThreaded class with mocked subprocess and threading
 """
+
 import threading
 import time
 from queue import Queue
@@ -52,7 +53,7 @@ class TestWindowCaptureThreadedInit:
 class TestStartStop:
     """Tests for start/stop functionality"""
 
-    @patch('eve_overview_pro.core.window_capture_threaded.threading.Thread')
+    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
     def test_start_creates_workers(self, mock_thread_class):
         """Test that start creates worker threads"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -68,7 +69,7 @@ class TestStartStop:
         assert mock_thread.start.call_count == 3
         assert len(capture.workers) == 3
 
-    @patch('eve_overview_pro.core.window_capture_threaded.threading.Thread')
+    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
     def test_start_sets_daemon_threads(self, mock_thread_class):
         """Test that worker threads are daemon threads"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -81,9 +82,9 @@ class TestStartStop:
 
         # Verify daemon=True was passed
         for call in mock_thread_class.call_args_list:
-            assert call[1]['daemon'] is True
+            assert call[1]["daemon"] is True
 
-    @patch('eve_overview_pro.core.window_capture_threaded.threading.Thread')
+    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
     def test_stop_sets_running_false(self, mock_thread_class):
         """Test that stop sets running to False"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -97,7 +98,7 @@ class TestStartStop:
 
         assert capture.running is False
 
-    @patch('eve_overview_pro.core.window_capture_threaded.threading.Thread')
+    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
     def test_stop_sends_none_to_queue(self, mock_thread_class):
         """Test that stop sends None to queue for each worker"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -118,7 +119,7 @@ class TestStartStop:
 
         assert none_count == 3
 
-    @patch('eve_overview_pro.core.window_capture_threaded.threading.Thread')
+    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
     def test_stop_joins_workers(self, mock_thread_class):
         """Test that stop joins worker threads"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -132,7 +133,7 @@ class TestStartStop:
 
         assert mock_thread.join.call_count == 2
 
-    @patch('eve_overview_pro.core.window_capture_threaded.threading.Thread')
+    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
     def test_stop_clears_workers(self, mock_thread_class):
         """Test that stop clears the workers list"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -256,8 +257,8 @@ class TestGetResult:
 class TestCaptureWindowSync:
     """Tests for _capture_window_sync method"""
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
-    @patch('eve_overview_pro.core.window_capture_threaded.Image')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("eve_overview_pro.core.window_capture_threaded.Image")
     def test_capture_window_sync_success(self, mock_image_module, mock_subprocess):
         """Test successful synchronous window capture"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -265,7 +266,7 @@ class TestCaptureWindowSync:
         # Mock subprocess result
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = b'fake png data'
+        mock_result.stdout = b"fake png data"
         mock_subprocess.return_value = mock_result
 
         # Mock PIL Image
@@ -281,14 +282,14 @@ class TestCaptureWindowSync:
         mock_subprocess.assert_called_once()
         mock_image_module.open.assert_called_once()
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_failure(self, mock_subprocess):
         """Test capture failure returns None"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
-        mock_result.stdout = b''
+        mock_result.stdout = b""
         mock_subprocess.return_value = mock_result
 
         capture = WindowCaptureThreaded()
@@ -296,15 +297,15 @@ class TestCaptureWindowSync:
 
         assert result is None
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
-    @patch('eve_overview_pro.core.window_capture_threaded.Image')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("eve_overview_pro.core.window_capture_threaded.Image")
     def test_capture_window_sync_with_scaling(self, mock_image_module, mock_subprocess):
         """Test capture with scaling"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = b'fake png data'
+        mock_result.stdout = b"fake png data"
         mock_subprocess.return_value = mock_result
 
         mock_img = MagicMock()
@@ -322,7 +323,7 @@ class TestCaptureWindowSync:
         mock_img.resize.assert_called_once_with((400, 300), "LANCZOS")
         assert result is mock_scaled_img
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_timeout(self, mock_subprocess):
         """Test capture handles timeout"""
         import subprocess as subprocess_module
@@ -336,7 +337,7 @@ class TestCaptureWindowSync:
 
         assert result is None
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_exception(self, mock_subprocess):
         """Test capture handles exceptions"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -348,14 +349,14 @@ class TestCaptureWindowSync:
 
         assert result is None
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_uses_import_command(self, mock_subprocess):
         """Test that capture uses ImageMagick import command"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
-        mock_result.stdout = b''
+        mock_result.stdout = b""
         mock_subprocess.return_value = mock_result
 
         capture = WindowCaptureThreaded()
@@ -364,17 +365,17 @@ class TestCaptureWindowSync:
         # Verify command
         call_args = mock_subprocess.call_args
         cmd = call_args[0][0]
-        assert cmd[0] == 'import'
-        assert '-window' in cmd
-        assert '0xABCD' in cmd
-        assert '-silent' in cmd
-        assert 'png:-' in cmd
+        assert cmd[0] == "import"
+        assert "-window" in cmd
+        assert "0xABCD" in cmd
+        assert "-silent" in cmd
+        assert "png:-" in cmd
 
 
 class TestGetWindowList:
     """Tests for get_window_list method"""
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_success(self, mock_subprocess):
         """Test successful window list retrieval"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -394,7 +395,7 @@ class TestGetWindowList:
         assert windows[1] == ("0x67890", "Window Title 2")
         assert windows[2] == ("0xABCDE", "EVE Online - Character Name")
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_empty(self, mock_subprocess):
         """Test empty window list"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -409,7 +410,7 @@ class TestGetWindowList:
 
         assert windows == []
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_failure(self, mock_subprocess):
         """Test window list retrieval failure"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -424,7 +425,7 @@ class TestGetWindowList:
 
         assert windows == []
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_exception(self, mock_subprocess):
         """Test window list handles exceptions"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -436,7 +437,7 @@ class TestGetWindowList:
 
         assert windows == []
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_uses_wmctrl(self, mock_subprocess):
         """Test that window list uses wmctrl command"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -451,9 +452,9 @@ class TestGetWindowList:
 
         call_args = mock_subprocess.call_args
         cmd = call_args[0][0]
-        assert cmd == ['wmctrl', '-l']
+        assert cmd == ["wmctrl", "-l"]
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_handles_short_lines(self, mock_subprocess):
         """Test handling of malformed/short lines"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -475,7 +476,7 @@ class TestGetWindowList:
 class TestActivateWindow:
     """Tests for activate_window method"""
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_activate_window_success(self, mock_subprocess):
         """Test successful window activation"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -489,7 +490,7 @@ class TestActivateWindow:
 
         assert result is True
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_activate_window_failure(self, mock_subprocess):
         """Test window activation failure"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -503,7 +504,7 @@ class TestActivateWindow:
 
         assert result is False
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_activate_window_exception(self, mock_subprocess):
         """Test window activation handles exceptions"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -515,7 +516,7 @@ class TestActivateWindow:
 
         assert result is False
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_activate_window_uses_wmctrl(self, mock_subprocess):
         """Test that activate uses wmctrl command"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -529,13 +530,13 @@ class TestActivateWindow:
 
         call_args = mock_subprocess.call_args
         cmd = call_args[0][0]
-        assert cmd == ['wmctrl', '-i', '-a', '0xABCD']
+        assert cmd == ["wmctrl", "-i", "-a", "0xABCD"]
 
 
 class TestMinimizeWindow:
     """Tests for minimize_window method"""
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_success(self, mock_subprocess):
         """Test successful window minimization"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -549,7 +550,7 @@ class TestMinimizeWindow:
 
         assert result is True
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_failure(self, mock_subprocess):
         """Test window minimization failure"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -563,7 +564,7 @@ class TestMinimizeWindow:
 
         assert result is False
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_exception(self, mock_subprocess):
         """Test window minimization handles exceptions"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -575,7 +576,7 @@ class TestMinimizeWindow:
 
         assert result is False
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_uses_xdotool(self, mock_subprocess):
         """Test that minimize uses xdotool command"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -589,13 +590,13 @@ class TestMinimizeWindow:
 
         call_args = mock_subprocess.call_args
         cmd = call_args[0][0]
-        assert cmd == ['xdotool', 'windowminimize', '0xABCD']
+        assert cmd == ["xdotool", "windowminimize", "0xABCD"]
 
 
 class TestRestoreWindow:
     """Tests for restore_window method"""
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_restore_window_success(self, mock_subprocess):
         """Test successful window restoration"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -609,7 +610,7 @@ class TestRestoreWindow:
 
         assert result is True
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_restore_window_failure(self, mock_subprocess):
         """Test window restoration failure"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -623,7 +624,7 @@ class TestRestoreWindow:
 
         assert result is False
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_restore_window_exception(self, mock_subprocess):
         """Test window restoration handles exceptions"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -635,7 +636,7 @@ class TestRestoreWindow:
 
         assert result is False
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_restore_window_uses_xdotool(self, mock_subprocess):
         """Test that restore uses xdotool command"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
@@ -649,7 +650,7 @@ class TestRestoreWindow:
 
         call_args = mock_subprocess.call_args
         cmd = call_args[0][0]
-        assert cmd == ['xdotool', 'windowactivate', '0xABCD']
+        assert cmd == ["xdotool", "windowactivate", "0xABCD"]
 
 
 class TestWorkerThread:
@@ -670,15 +671,15 @@ class TestWorkerThread:
 
         assert not worker_thread.is_alive()
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
-    @patch('eve_overview_pro.core.window_capture_threaded.Image')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("eve_overview_pro.core.window_capture_threaded.Image")
     def test_worker_processes_task(self, mock_image, mock_subprocess):
         """Test worker processes capture tasks"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = b'fake png'
+        mock_result.stdout = b"fake png"
         mock_subprocess.return_value = mock_result
 
         mock_img = MagicMock()
@@ -732,7 +733,7 @@ class TestWorkerThread:
         capture.running = True
 
         # Mock _capture_window_sync to raise an exception
-        with patch.object(capture, '_capture_window_sync', side_effect=Exception("Test error")):
+        with patch.object(capture, "_capture_window_sync", side_effect=Exception("Test error")):
             # Queue a task then None to stop
             capture.capture_queue.put(("0x12345", 1.0, "request_123"))
             capture.capture_queue.put(None)
@@ -749,15 +750,15 @@ class TestWorkerThread:
 class TestIntegration:
     """Integration tests for the capture system"""
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
-    @patch('eve_overview_pro.core.window_capture_threaded.Image')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("eve_overview_pro.core.window_capture_threaded.Image")
     def test_full_capture_workflow(self, mock_image, mock_subprocess):
         """Test complete capture workflow: start -> capture -> get result -> stop"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = b'fake png data'
+        mock_result.stdout = b"fake png data"
         mock_subprocess.return_value = mock_result
 
         mock_img = MagicMock()
@@ -822,7 +823,7 @@ class TestEdgeCases:
         """Test calling start multiple times"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
-        with patch('eve_overview_pro.core.window_capture_threaded.threading.Thread') as mock_thread:
+        with patch("eve_overview_pro.core.window_capture_threaded.threading.Thread") as mock_thread:
             mock_thread.return_value = MagicMock()
 
             capture = WindowCaptureThreaded(max_workers=2)
@@ -835,14 +836,14 @@ class TestEdgeCases:
 
             capture.stop()
 
-    @patch('eve_overview_pro.core.window_capture_threaded.subprocess.run')
+    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
     def test_capture_with_empty_stdout(self, mock_subprocess):
         """Test capture handles empty stdout"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = b''  # Empty
+        mock_result.stdout = b""  # Empty
         mock_subprocess.return_value = mock_result
 
         capture = WindowCaptureThreaded()
@@ -874,7 +875,7 @@ class TestEdgeCases:
         """Test window operations with special window IDs"""
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
-        with patch('eve_overview_pro.core.window_capture_threaded.subprocess.run') as mock_run:
+        with patch("eve_overview_pro.core.window_capture_threaded.subprocess.run") as mock_run:
             mock_result = MagicMock()
             mock_result.returncode = 0
             mock_run.return_value = mock_result

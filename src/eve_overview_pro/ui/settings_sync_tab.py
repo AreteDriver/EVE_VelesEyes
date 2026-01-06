@@ -2,6 +2,7 @@
 Settings Sync Tab - EVE Online settings synchronization
 Scan and sync EVE client settings between characters
 """
+
 import logging
 from pathlib import Path
 
@@ -33,6 +34,7 @@ from eve_overview_pro.ui.menu_builder import ToolbarBuilder
 
 class ScanWorker(QThread):
     """Background worker for scanning EVE settings"""
+
     scan_progress = Signal(int, str)  # percentage, current_path
     scan_complete = Signal(list)  # List of EVECharacterSettings
     scan_error = Signal(str)  # error message
@@ -66,6 +68,7 @@ class ScanWorker(QThread):
 
 class SyncWorker(QThread):
     """Background worker for syncing EVE settings"""
+
     sync_progress = Signal(str, int)  # character_name, percentage
     sync_complete = Signal(dict)  # {character_name: success/failure}
     sync_error = Signal(str)  # error message
@@ -92,9 +95,11 @@ class SyncWorker(QThread):
                     success = self.settings_sync.sync_settings(
                         self.source_char.character_name,
                         [target_char.character_name],
-                        backup=self.backup
+                        backup=self.backup,
                     )
-                    results[target_char.character_name] = success.get(target_char.character_name, False)
+                    results[target_char.character_name] = success.get(
+                        target_char.character_name, False
+                    )
 
                     progress = int((idx + 1) / total * 100)
                     self.sync_progress.emit(target_char.character_name, progress)
@@ -139,9 +144,9 @@ class SyncPreviewDialog(QDialog):
         # Preview table
         self.preview_table = QTableWidget()
         self.preview_table.setColumnCount(4)
-        self.preview_table.setHorizontalHeaderLabels([
-            "File", "Source Date", "Target Date", "Action"
-        ])
+        self.preview_table.setHorizontalHeaderLabels(
+            ["File", "Source Date", "Target Date", "Action"]
+        )
         self.preview_table.horizontalHeader().setStretchLastSection(False)
         self.preview_table.setColumnWidth(0, 250)
         self.preview_table.setColumnWidth(1, 150)
@@ -159,8 +164,7 @@ class SyncPreviewDialog(QDialog):
 
         # Buttons
         button_box = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok |
-            QDialogButtonBox.StandardButton.Cancel
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
@@ -220,6 +224,7 @@ class SyncPreviewDialog(QDialog):
         """Get file modification date as string"""
         if file_path.exists():
             from datetime import datetime
+
             mtime = file_path.stat().st_mtime
             dt = datetime.fromtimestamp(mtime)
             return dt.strftime("%Y-%m-%d %H:%M")
@@ -444,7 +449,9 @@ class SettingsSyncTab(QWidget):
             self.target_list.addItem(char.character_name)
 
         if characters:
-            self._log("Select source character and target character(s), then click 'Sync Settings'.")
+            self._log(
+                "Select source character and target character(s), then click 'Sync Settings'."
+            )
 
     def _on_scan_error(self, error_msg: str):
         """Handle scan error"""
@@ -460,9 +467,7 @@ class SettingsSyncTab(QWidget):
             path = Path(source_char.settings_dir)
             file_count = len(list(path.glob("*.dat"))) + len(list(path.glob("*.yaml")))
             self.source_info_label.setText(
-                f"Path: {path}\n"
-                f"Files: {file_count}\n"
-                f"Last modified: {self._get_last_modified(path)}"
+                f"Path: {path}\nFiles: {file_count}\nLast modified: {self._get_last_modified(path)}"
             )
 
         # Update button states
@@ -480,6 +485,7 @@ class SettingsSyncTab(QWidget):
 
             latest = max(f.stat().st_mtime for f in files)
             from datetime import datetime
+
             dt = datetime.fromtimestamp(latest)
             return dt.strftime("%Y-%m-%d %H:%M")
         except (OSError, ValueError) as e:
@@ -495,10 +501,9 @@ class SettingsSyncTab(QWidget):
 
         # Simple dialog to select team
         from PySide6.QtWidgets import QInputDialog
+
         team_names = [team.name for team in teams]
-        team_name, ok = QInputDialog.getItem(
-            self, "Select Team", "Team:", team_names, 0, False
-        )
+        team_name, ok = QInputDialog.getItem(self, "Select Team", "Team:", team_names, 0, False)
 
         if ok and team_name:
             team = next((t for t in teams if t.name == team_name), None)
@@ -543,7 +548,9 @@ class SettingsSyncTab(QWidget):
         # Get selected targets
         target_chars = []
         for item in self.target_list.selectedItems():
-            char = next((c for c in self.scanned_characters if c.character_name == item.text()), None)
+            char = next(
+                (c for c in self.scanned_characters if c.character_name == item.text()), None
+            )
             if char:
                 target_chars.append(char)
 
@@ -565,7 +572,9 @@ class SettingsSyncTab(QWidget):
         # Get selected targets
         target_chars = []
         for item in self.target_list.selectedItems():
-            char = next((c for c in self.scanned_characters if c.character_name == item.text()), None)
+            char = next(
+                (c for c in self.scanned_characters if c.character_name == item.text()), None
+            )
             if char:
                 target_chars.append(char)
 
@@ -579,7 +588,7 @@ class SettingsSyncTab(QWidget):
             "Confirm Sync",
             f"Sync settings from '{source_char.character_name}' to {len(target_chars)} character(s)?\n\n"
             f"Backup: {'Yes' if self.backup_checkbox.isChecked() else 'No'}",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         )
 
         if reply != QMessageBox.StandardButton.Yes:
@@ -591,14 +600,13 @@ class SettingsSyncTab(QWidget):
         self.progress_bar.setVisible(True)
         self.progress_bar.setValue(0)
 
-        self._log(f"Starting sync from '{source_char.character_name}' to {len(target_chars)} character(s)...")
+        self._log(
+            f"Starting sync from '{source_char.character_name}' to {len(target_chars)} character(s)..."
+        )
 
         # Create and start worker
         self.sync_worker = SyncWorker(
-            self.settings_sync,
-            source_char,
-            target_chars,
-            backup=self.backup_checkbox.isChecked()
+            self.settings_sync, source_char, target_chars, backup=self.backup_checkbox.isChecked()
         )
         self.sync_worker.sync_progress.connect(self._on_sync_progress)
         self.sync_worker.sync_complete.connect(self._on_sync_complete)
@@ -629,7 +637,7 @@ class SettingsSyncTab(QWidget):
         QMessageBox.information(
             self,
             "Sync Complete",
-            f"Synced settings to {success_count}/{len(results)} character(s)."
+            f"Synced settings to {success_count}/{len(results)} character(s).",
         )
 
     def _on_sync_error(self, error_msg: str):
@@ -643,9 +651,7 @@ class SettingsSyncTab(QWidget):
     def _add_custom_path(self):
         """Add custom EVE settings path"""
         path = QFileDialog.getExistingDirectory(
-            self,
-            "Select EVE Settings Directory",
-            str(Path.home())
+            self, "Select EVE Settings Directory", str(Path.home())
         )
 
         if path:
@@ -661,7 +667,7 @@ class SettingsSyncTab(QWidget):
                 "Custom Path Added",
                 f"Added: {path}\n\nWould you like to scan for characters now?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.Yes
+                QMessageBox.StandardButton.Yes,
             )
 
             if reply == QMessageBox.StandardButton.Yes:
@@ -670,5 +676,6 @@ class SettingsSyncTab(QWidget):
     def _log(self, message: str):
         """Add message to log"""
         from datetime import datetime
+
         timestamp = datetime.now().strftime("%H:%M:%S")
         self.log_text.append(f"[{timestamp}] {message}")

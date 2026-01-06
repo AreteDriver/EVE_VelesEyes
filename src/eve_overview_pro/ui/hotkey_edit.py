@@ -7,12 +7,13 @@ Allows setting any key combination including F13-F20, special keys, etc.
 import logging
 from typing import Optional, Set
 
-from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QPushButton
+from PySide6.QtCore import QTimer, Signal
+from PySide6.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QWidget
 
 # Import pynput for key capture
 try:
     from pynput import keyboard
+
     PYNPUT_AVAILABLE = True
 except ImportError:
     PYNPUT_AVAILABLE = False
@@ -26,8 +27,8 @@ class HotkeyEdit(QWidget):
     Supports F1-F20, modifiers, and any other keys pynput can detect.
     """
 
-    # Emitted when hotkey changes
-    hotkeyChanged = Signal(str)
+    # Emitted when hotkey changes (Qt convention uses camelCase for signals)
+    hotkeyChanged = Signal(str)  # noqa: N815
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
@@ -98,8 +99,7 @@ class HotkeyEdit(QWidget):
 
         # Start listener
         self._listener = keyboard.Listener(
-            on_press=self._on_key_press,
-            on_release=self._on_key_release
+            on_press=self._on_key_press, on_release=self._on_key_release
         )
         self._listener.start()
 
@@ -156,11 +156,11 @@ class HotkeyEdit(QWidget):
             return "cmd"
 
         # Special keys
-        if hasattr(key, 'name') and key.name:
+        if hasattr(key, "name") and key.name:
             return key.name.lower()
 
         # Character keys
-        if hasattr(key, 'char') and key.char:
+        if hasattr(key, "char") and key.char:
             return key.char.lower()
 
         return None
@@ -171,12 +171,12 @@ class HotkeyEdit(QWidget):
             return
 
         # Sort: modifiers first, then other keys
-        modifiers = {'ctrl', 'alt', 'shift', 'cmd', 'super', 'win'}
+        modifiers = {"ctrl", "alt", "shift", "cmd", "super", "win"}
         mod_keys = sorted([k for k in self._pressed_keys if k in modifiers])
         other_keys = sorted([k for k in self._pressed_keys if k not in modifiers])
 
         parts = mod_keys + other_keys
-        display_str = '+'.join(f"<{p}>" for p in parts)
+        display_str = "+".join(f"<{p}>" for p in parts)
         self.display.setText(display_str)
 
     def _finalize_hotkey(self):
@@ -186,12 +186,12 @@ class HotkeyEdit(QWidget):
             return
 
         # Sort: modifiers first, then other keys
-        modifiers = {'ctrl', 'alt', 'shift', 'cmd', 'super', 'win'}
+        modifiers = {"ctrl", "alt", "shift", "cmd", "super", "win"}
         mod_keys = sorted([k for k in self._pressed_keys if k in modifiers])
         other_keys = sorted([k for k in self._pressed_keys if k not in modifiers])
 
         parts = mod_keys + other_keys
-        self._hotkey = '+'.join(f"<{p}>" for p in parts)
+        self._hotkey = "+".join(f"<{p}>" for p in parts)
 
         self.display.setText(self._hotkey)
         self.hotkeyChanged.emit(self._hotkey)

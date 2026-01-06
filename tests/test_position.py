@@ -10,6 +10,7 @@ Tests cover:
 - Next position calculation
 - Grid layout calculation
 """
+
 from unittest.mock import patch
 
 import pytest
@@ -256,7 +257,7 @@ class TestGetNextPosition:
     @pytest.fixture
     def mock_screen(self):
         """Mock screen geometry"""
-        with patch.object(PositionManager, '_get_primary_screen') as mock:
+        with patch.object(PositionManager, "_get_primary_screen") as mock:
             mock.return_value = QRect(0, 0, 1920, 1080)
             yield mock
 
@@ -399,9 +400,9 @@ class TestCalculateGridPositions:
         windows = ["w1", "w2"]
         result = manager.calculate_grid_positions(windows, columns=2)
 
-        expected_x2 = (PositionManager.MARGIN +
-                       PositionManager.DEFAULT_WIDTH +
-                       PositionManager.SPACING)
+        expected_x2 = (
+            PositionManager.MARGIN + PositionManager.DEFAULT_WIDTH + PositionManager.SPACING
+        )
         assert result["w2"].x == expected_x2
 
 
@@ -418,7 +419,7 @@ class TestCascadeFallback:
     def test_cascade_when_no_space_right_or_below(self, manager):
         """Falls back to cascade when no space right or below"""
         # Mock a very small screen
-        with patch.object(PositionManager, '_get_primary_screen') as mock_screen:
+        with patch.object(PositionManager, "_get_primary_screen") as mock_screen:
             mock_screen.return_value = QRect(0, 0, 400, 400)
 
             # Register a position that takes up most of the screen
@@ -436,7 +437,7 @@ class TestCascadeFallback:
 
     def test_cascade_offset_increases_with_windows(self, manager):
         """Cascade offset increases with more windows"""
-        with patch.object(PositionManager, '_get_primary_screen') as mock_screen:
+        with patch.object(PositionManager, "_get_primary_screen") as mock_screen:
             mock_screen.return_value = QRect(0, 0, 400, 400)
 
             # Register multiple positions
@@ -470,8 +471,7 @@ class TestGetPrimaryScreen:
         mock_app = MagicMock()
         mock_app.primaryScreen.return_value = mock_screen
 
-        with patch('eve_overview_pro.core.position.QApplication.instance',
-                   return_value=mock_app):
+        with patch("eve_overview_pro.core.position.QApplication.instance", return_value=mock_app):
             result = manager._get_primary_screen()
 
             assert result == QRect(0, 0, 2560, 1440)
@@ -485,8 +485,7 @@ class TestGetPrimaryScreen:
         mock_app = MagicMock()
         mock_app.primaryScreen.return_value = None
 
-        with patch('eve_overview_pro.core.position.QApplication.instance',
-                   return_value=mock_app):
+        with patch("eve_overview_pro.core.position.QApplication.instance", return_value=mock_app):
             result = manager._get_primary_screen()
 
             # Should return fallback 1920x1080
@@ -496,8 +495,7 @@ class TestGetPrimaryScreen:
         """Falls back when no QApplication instance"""
         manager = PositionManager()
 
-        with patch('eve_overview_pro.core.position.QApplication.instance',
-                   return_value=None):
+        with patch("eve_overview_pro.core.position.QApplication.instance", return_value=None):
             result = manager._get_primary_screen()
 
             # Should return fallback 1920x1080

@@ -2,6 +2,7 @@
 Settings Manager - JSON-based configuration persistence
 Handles all application settings with nested key support and auto-save
 """
+
 import json
 import logging
 from datetime import datetime
@@ -24,7 +25,7 @@ class SettingsManager:
             "auto_save_interval": 5,  # minutes
             "auto_discovery": True,
             "auto_discovery_interval": 5,  # seconds
-            "hot_reload": True
+            "hot_reload": True,
         },
         "performance": {
             "low_power_mode": False,  # FPS=5, alerts off - for running with EVE clients
@@ -34,7 +35,7 @@ class SettingsManager:
             "capture_workers": 1,  # Single worker to reduce overhead
             "enable_caching": True,
             "cache_size_mb": 50,
-            "capture_quality": "low"  # low, medium, high
+            "capture_quality": "low",  # low, medium, high
         },
         "thumbnails": {
             "opacity_on_hover": 0.3,
@@ -44,7 +45,7 @@ class SettingsManager:
             "show_session_timer": False,
             "show_activity_indicator": True,
             "default_width": 280,
-            "default_height": 200
+            "default_height": 200,
         },
         "alerts": {
             "enabled": True,
@@ -52,13 +53,9 @@ class SettingsManager:
                 "threshold": 0.7,
                 "visual_border": True,
                 "sound_alert": False,
-                "cooldown": 5  # seconds
+                "cooldown": 5,  # seconds
             },
-            "screen_change": {
-                "threshold": 0.3,
-                "visual_border": True,
-                "sound_alert": False
-            }
+            "screen_change": {"threshold": 0.3, "visual_border": True, "sound_alert": False},
         },
         "hotkeys": {
             "activate_window_1": "<ctrl>+<alt>+1",
@@ -80,7 +77,7 @@ class SettingsManager:
             "toggle_thumbnails": "<ctrl>+<shift>+t",
             "toggle_lock": "<ctrl>+<shift>+l",
             "cycle_next": "<ctrl>+<shift>+<]>",
-            "cycle_prev": "<ctrl>+<shift>+<[>"
+            "cycle_prev": "<ctrl>+<shift>+<[>",
         },
         "character_hotkeys": {},
         "character_labels": {},
@@ -88,13 +85,13 @@ class SettingsManager:
             "theme": "dark",
             "font_size": 10,
             "compact_mode": False,
-            "accent_color": "#4287f5"
+            "accent_color": "#4287f5",
         },
         "advanced": {
             "log_level": "INFO",
             "config_directory": "~/.config/argus-overview",
-            "enable_debug": False
-        }
+            "enable_debug": False,
+        },
     }
 
     def __init__(self, config_dir: Optional[Path] = None):
@@ -107,12 +104,12 @@ class SettingsManager:
         self.logger = logging.getLogger(__name__)
 
         if config_dir is None:
-            config_dir = Path.home() / '.config' / 'argus-overview'
+            config_dir = Path.home() / ".config" / "argus-overview"
 
         self.config_dir = Path(config_dir)
         self.config_dir.mkdir(parents=True, exist_ok=True)
 
-        self.settings_file = self.config_dir / 'settings.json'
+        self.settings_file = self.config_dir / "settings.json"
         self.settings: Dict = {}
 
         # Load settings or create defaults
@@ -160,9 +157,9 @@ class SettingsManager:
 
         try:
             # Atomic write: write to temp file, then rename
-            temp_file = self.settings_file.with_suffix('.json.tmp')
+            temp_file = self.settings_file.with_suffix(".json.tmp")
 
-            with open(temp_file, 'w') as f:
+            with open(temp_file, "w") as f:
                 json.dump(self.settings, f, indent=2)
 
             # Rename (atomic on POSIX systems)
@@ -186,7 +183,7 @@ class SettingsManager:
         Returns:
             Setting value or default
         """
-        keys = key.split('.')
+        keys = key.split(".")
         value = self.settings
 
         for k in keys:
@@ -209,7 +206,7 @@ class SettingsManager:
         Returns:
             bool: True if successful
         """
-        keys = key.split('.')
+        keys = key.split(".")
 
         # Navigate to parent dict
         current = self.settings
@@ -254,10 +251,10 @@ class SettingsManager:
             export_data = {
                 "exported_at": datetime.now().isoformat(),
                 "version": "2.1.0",
-                "settings": self.settings
+                "settings": self.settings,
             }
 
-            with open(export_path, 'w') as f:
+            with open(export_path, "w") as f:
                 json.dump(export_data, f, indent=2)
 
             self.logger.info(f"Settings exported to {export_path}")
@@ -355,12 +352,16 @@ class SettingsManager:
             # Check thresholds are 0-1
             red_flash_threshold = self.get("alerts.red_flash.threshold", 0.7)
             if not (0.0 <= red_flash_threshold <= 1.0):
-                self.logger.warning(f"Invalid red flash threshold: {red_flash_threshold}, resetting to 0.7")
+                self.logger.warning(
+                    f"Invalid red flash threshold: {red_flash_threshold}, resetting to 0.7"
+                )
                 self.set("alerts.red_flash.threshold", 0.7)
 
             screen_change_threshold = self.get("alerts.screen_change.threshold", 0.3)
             if not (0.0 <= screen_change_threshold <= 1.0):
-                self.logger.warning(f"Invalid screen change threshold: {screen_change_threshold}, resetting to 0.3")
+                self.logger.warning(
+                    f"Invalid screen change threshold: {screen_change_threshold}, resetting to 0.3"
+                )
                 self.set("alerts.screen_change.threshold", 0.3)
 
             return True

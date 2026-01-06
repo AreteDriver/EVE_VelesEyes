@@ -9,6 +9,7 @@ Tests cover:
 - Polling fallback
 - File change detection
 """
+
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -34,7 +35,7 @@ class TestConfigFileHandler:
         handler = ConfigFileHandler(callback)
 
         # Create a real FileModifiedEvent
-        event = FileModifiedEvent('/path/to/config.json')
+        event = FileModifiedEvent("/path/to/config.json")
         handler.on_modified(event)
 
         callback.assert_called_once()
@@ -104,8 +105,8 @@ class TestStartStop:
 
     def test_start_sets_running(self, watcher):
         """Start sets running flag"""
-        with patch.object(watcher, '_start_watchdog'):
-            with patch.object(watcher, '_start_polling'):
+        with patch.object(watcher, "_start_watchdog"):
+            with patch.object(watcher, "_start_polling"):
                 watcher.start()
                 assert watcher._running is True
 
@@ -113,8 +114,8 @@ class TestStartStop:
         """Start does nothing if already running"""
         watcher._running = True
 
-        with patch.object(watcher, '_start_watchdog') as mock_watchdog:
-            with patch.object(watcher, '_start_polling') as mock_polling:
+        with patch.object(watcher, "_start_watchdog") as mock_watchdog:
+            with patch.object(watcher, "_start_polling") as mock_polling:
                 watcher.start()
 
                 mock_watchdog.assert_not_called()
@@ -147,15 +148,15 @@ class TestDebounce:
 
     def test_on_file_changed_starts_debounce(self, watcher):
         """File change starts debounce timer"""
-        with patch.object(watcher._debounce_timer, 'start') as mock_start:
-            with patch.object(watcher._debounce_timer, 'stop'):
+        with patch.object(watcher._debounce_timer, "start") as mock_start:
+            with patch.object(watcher._debounce_timer, "stop"):
                 watcher._on_file_changed()
                 mock_start.assert_called_with(100)
 
     def test_on_file_changed_stops_existing_timer(self, watcher):
         """File change stops existing timer first"""
-        with patch.object(watcher._debounce_timer, 'stop') as mock_stop:
-            with patch.object(watcher._debounce_timer, 'start'):
+        with patch.object(watcher._debounce_timer, "stop") as mock_stop:
+            with patch.object(watcher._debounce_timer, "start"):
                 watcher._on_file_changed()
                 mock_stop.assert_called()
 
@@ -184,7 +185,7 @@ class TestPollingFallback:
 
     def test_start_polling_starts_timer(self, watcher):
         """Polling starts timer"""
-        with patch.object(watcher._poll_timer, 'start') as mock_start:
+        with patch.object(watcher._poll_timer, "start") as mock_start:
             watcher._start_polling()
             mock_start.assert_called_with(2000)
 
@@ -202,7 +203,7 @@ class TestPollingFallback:
         # Set old mtime to something less than current
         watcher._last_mtime = current_mtime - 1
 
-        with patch.object(watcher, '_on_file_changed') as mock_change:
+        with patch.object(watcher, "_on_file_changed") as mock_change:
             watcher._check_file()
             mock_change.assert_called_once()
 
@@ -210,7 +211,7 @@ class TestPollingFallback:
         """Check file ignores if not changed"""
         watcher._update_mtime()
 
-        with patch.object(watcher, '_on_file_changed') as mock_change:
+        with patch.object(watcher, "_on_file_changed") as mock_change:
             watcher._check_file()
             mock_change.assert_not_called()
 
@@ -238,7 +239,7 @@ class TestWatchdogIntegration:
             config_path.write_text("{}")
             watcher = ConfigWatcher(config_path)
 
-            with patch.object(watcher, '_start_watchdog') as mock_watchdog:
+            with patch.object(watcher, "_start_watchdog") as mock_watchdog:
                 watcher.start()
                 mock_watchdog.assert_called_once()
 
@@ -258,14 +259,15 @@ class TestWatchdogFallback:
 
             # Mock Observer to avoid actual file watching
             mock_observer_instance = MagicMock()
-            with patch('eve_overview_pro.core.config_watcher.Observer',
-                       return_value=mock_observer_instance):
+            with patch(
+                "eve_overview_pro.core.config_watcher.Observer", return_value=mock_observer_instance
+            ):
                 watcher._start_watchdog()
 
                 # Verify schedule was called with correct args
                 mock_observer_instance.schedule.assert_called_once()
                 call_args = mock_observer_instance.schedule.call_args
-                assert call_args[1]['recursive'] is False
+                assert call_args[1]["recursive"] is False
 
                 # Verify start was called
                 mock_observer_instance.start.assert_called_once()
@@ -281,10 +283,10 @@ class TestWatchdogFallback:
             watcher = ConfigWatcher(config_path)
 
             # Make Observer raise an exception
-            with patch('eve_overview_pro.core.config_watcher.Observer') as mock_observer:
+            with patch("eve_overview_pro.core.config_watcher.Observer") as mock_observer:
                 mock_observer.side_effect = Exception("Observer failed")
 
-                with patch.object(watcher, '_start_polling') as mock_polling:
+                with patch.object(watcher, "_start_polling") as mock_polling:
                     watcher._start_watchdog()
                     # Should fall back to polling
                     mock_polling.assert_called_once()
@@ -296,8 +298,8 @@ class TestWatchdogFallback:
             config_path.write_text("{}")
             watcher = ConfigWatcher(config_path)
 
-            with patch('eve_overview_pro.core.config_watcher.WATCHDOG_AVAILABLE', False):
-                with patch.object(watcher, '_start_polling') as mock_polling:
+            with patch("eve_overview_pro.core.config_watcher.WATCHDOG_AVAILABLE", False):
+                with patch.object(watcher, "_start_polling") as mock_polling:
                     watcher.start()
                     mock_polling.assert_called_once()
 
@@ -390,7 +392,7 @@ class TestStopCleansUp:
             watcher = ConfigWatcher(config_path)
             watcher._running = True
 
-            with patch.object(watcher._poll_timer, 'stop') as mock_stop:
+            with patch.object(watcher._poll_timer, "stop") as mock_stop:
                 watcher.stop()
                 mock_stop.assert_called()
 
@@ -401,6 +403,6 @@ class TestStopCleansUp:
             watcher = ConfigWatcher(config_path)
             watcher._running = True
 
-            with patch.object(watcher._debounce_timer, 'stop') as mock_stop:
+            with patch.object(watcher._debounce_timer, "stop") as mock_stop:
                 watcher.stop()
                 mock_stop.assert_called()

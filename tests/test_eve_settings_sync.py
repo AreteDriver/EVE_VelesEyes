@@ -2,6 +2,7 @@
 Unit tests for the EVE Settings Sync module
 Tests EVECharacterSettings, EVECharacterInfo, EVESettingsSync class
 """
+
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -19,7 +20,7 @@ class TestEVECharacterSettings:
             character_name="TestPilot",
             character_id="12345678",
             settings_dir=Path("/tmp/settings"),
-            core_char_file=Path("/tmp/settings/core_char_12345678.dat")
+            core_char_file=Path("/tmp/settings/core_char_12345678.dat"),
         )
 
         assert settings.character_name == "TestPilot"
@@ -35,7 +36,7 @@ class TestEVECharacterSettings:
             character_name="TestPilot",
             character_id="12345678",
             settings_dir=Path("/tmp/settings"),
-            core_char_file=Path("/tmp/settings/core_char_12345678.dat")
+            core_char_file=Path("/tmp/settings/core_char_12345678.dat"),
         )
 
         assert settings.core_user_file is None
@@ -56,7 +57,7 @@ class TestEVECharacterSettings:
             core_user_file=Path("/tmp/full/core_user_123.dat"),
             user_id="123",
             has_settings=True,
-            last_login=now
+            last_login=now,
         )
 
         assert settings.character_name == "FullPilot"
@@ -74,10 +75,7 @@ class TestEVECharacterInfo:
         """Test creating with required fields only"""
         from eve_overview_pro.core.eve_settings_sync import EVECharacterInfo
 
-        info = EVECharacterInfo(
-            character_id="12345678",
-            character_name="TestPilot"
-        )
+        info = EVECharacterInfo(character_id="12345678", character_name="TestPilot")
 
         assert info.character_id == "12345678"
         assert info.character_name == "TestPilot"
@@ -86,10 +84,7 @@ class TestEVECharacterInfo:
         """Test that optional fields have correct defaults"""
         from eve_overview_pro.core.eve_settings_sync import EVECharacterInfo
 
-        info = EVECharacterInfo(
-            character_id="12345678",
-            character_name="TestPilot"
-        )
+        info = EVECharacterInfo(character_id="12345678", character_name="TestPilot")
 
         assert info.user_id is None
         assert info.settings_path is None
@@ -107,7 +102,7 @@ class TestEVECharacterInfo:
             user_id="456",
             settings_path=Path("/tmp/settings"),
             last_seen=now,
-            has_settings=True
+            has_settings=True,
         )
 
         assert info.character_id == "12345678"
@@ -141,7 +136,7 @@ class TestEVESettingsSync:
         sync = EVESettingsSync()
 
         # Check for Steam-related path components
-        steam_paths = [p for p in sync.eve_paths if '8500' in str(p)]
+        steam_paths = [p for p in sync.eve_paths if "8500" in str(p)]
         assert len(steam_paths) > 0
 
     def test_eve_logs_paths_exist(self):
@@ -150,7 +145,7 @@ class TestEVESettingsSync:
 
         sync = EVESettingsSync()
 
-        assert hasattr(sync, 'eve_logs_paths')
+        assert hasattr(sync, "eve_logs_paths")
         assert len(sync.eve_logs_paths) > 0
 
     def test_add_custom_path_valid(self):
@@ -232,21 +227,21 @@ class TestEVESettingsSync:
             character_id="111",
             settings_dir=Path("/tmp/1"),
             core_char_file=Path("/tmp/1/core_char_111.dat"),
-            has_settings=True
+            has_settings=True,
         )
         sync.character_settings["Pilot2"] = EVECharacterSettings(
             character_name="Pilot2",
             character_id="222",
             settings_dir=Path("/tmp/2"),
             core_char_file=Path("/tmp/2/core_char_222.dat"),
-            has_settings=False  # No settings
+            has_settings=False,  # No settings
         )
         sync.character_settings["Pilot3"] = EVECharacterSettings(
             character_name="Pilot3",
             character_id="333",
             settings_dir=Path("/tmp/3"),
             core_char_file=Path("/tmp/3/core_char_333.dat"),
-            has_settings=True
+            has_settings=True,
         )
 
         characters = sync.list_available_characters()
@@ -283,7 +278,7 @@ class TestEVESettingsSync:
                 character_id="123",
                 settings_dir=settings_dir,
                 core_char_file=settings_dir / "core_char_123.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             summary = sync.get_settings_summary("TestPilot")
@@ -318,7 +313,7 @@ class TestEVESettingsSync:
                 character_id="123",
                 settings_dir=settings_dir,
                 core_char_file=settings_dir / "core_char_123.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             results = sync.sync_settings("Source", ["NonexistentTarget"])
@@ -337,7 +332,7 @@ class TestEVESettingsSync:
             character_id="123",
             settings_dir=Path("/tmp"),
             core_char_file=Path("/tmp/core_char_123.dat"),
-            has_settings=False
+            has_settings=False,
         )
 
         results = sync.sync_settings("Source", ["Target1"])
@@ -570,7 +565,7 @@ class TestSettingsBackupCopy:
                 character_id="123",
                 settings_dir=settings_dir,
                 core_char_file=settings_dir / "core_char_123.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             sync._backup_settings(char_settings)
@@ -604,7 +599,7 @@ class TestSettingsBackupCopy:
                 character_id="111",
                 settings_dir=source_dir,
                 core_char_file=source_dir / "core_char_111.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             target = EVECharacterSettings(
@@ -612,7 +607,7 @@ class TestSettingsBackupCopy:
                 character_id="222",
                 settings_dir=target_dir,
                 core_char_file=target_dir / "core_char_222.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             result = sync._copy_settings(source, target)
@@ -642,7 +637,7 @@ class TestSettingsBackupCopy:
                 character_id="111",
                 settings_dir=source_dir,
                 core_char_file=source_dir / "core_char_111.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             target = EVECharacterSettings(
@@ -650,7 +645,7 @@ class TestSettingsBackupCopy:
                 character_id="222",
                 settings_dir=target_dir,
                 core_char_file=target_dir / "core_char_222.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             result = sync._copy_settings(source, target)
@@ -688,7 +683,7 @@ class TestSyncIntegration:
                 character_id="111",
                 settings_dir=source_dir,
                 core_char_file=source_dir / "core_char_111.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             sync.character_settings["TargetPilot"] = EVECharacterSettings(
@@ -696,7 +691,7 @@ class TestSyncIntegration:
                 character_id="222",
                 settings_dir=target_dir,
                 core_char_file=target_dir / "core_char_222.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             results = sync.sync_settings("SourcePilot", ["TargetPilot"], backup=True)
@@ -733,7 +728,7 @@ class TestSyncIntegration:
                     character_id=str(i) * 3,
                     settings_dir=target_dir,
                     core_char_file=target_dir / f"core_char_{i}{i}{i}.dat",
-                    has_settings=True
+                    has_settings=True,
                 )
 
             sync.character_settings["Source"] = EVECharacterSettings(
@@ -741,7 +736,7 @@ class TestSyncIntegration:
                 character_id="111",
                 settings_dir=source_dir,
                 core_char_file=source_dir / "core_char_111.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             results = sync.sync_settings("Source", ["Target1", "Target2", "Target3"], backup=False)
@@ -776,7 +771,7 @@ class TestExceptionHandling:
 
     def test_load_logs_handles_read_exception(self):
         """Test that log parsing handles file read exceptions"""
-        from unittest.mock import patch, mock_open
+        from unittest.mock import patch
 
         from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
 
@@ -790,7 +785,7 @@ class TestExceptionHandling:
             sync.character_id_to_name.clear()
 
             # Patch open to raise exception
-            with patch("builtins.open", side_effect=IOError("Read error")):
+            with patch("builtins.open", side_effect=OSError("Read error")):
                 sync._load_character_names_from_logs()
 
             # Should not crash, just skip
@@ -904,7 +899,7 @@ class TestExceptionHandling:
                     raise OSError("Permission denied")
                 return original_stat(self, **kwargs)
 
-            with patch.object(Path, 'stat', mock_stat):
+            with patch.object(Path, "stat", mock_stat):
                 characters = sync.get_all_known_characters()
 
             # Should find character but with None last_seen
@@ -928,7 +923,7 @@ class TestExceptionHandling:
             sync.custom_paths = []
 
             # Patch iterdir to raise exception
-            with patch.object(Path, 'iterdir', side_effect=PermissionError("Access denied")):
+            with patch.object(Path, "iterdir", side_effect=PermissionError("Access denied")):
                 characters = sync.scan_for_characters()
 
             # Should return empty list, not crash
@@ -990,18 +985,18 @@ class TestExceptionHandling:
                 character_id="111",
                 settings_dir=source_dir,
                 core_char_file=source_dir / "core_char_111.dat",
-                has_settings=True
+                has_settings=True,
             )
             sync.character_settings["Target"] = EVECharacterSettings(
                 character_name="Target",
                 character_id="222",
                 settings_dir=target_dir,
                 core_char_file=target_dir / "core_char_222.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             # Make _copy_settings return False (failure)
-            with patch.object(sync, '_copy_settings', return_value=False):
+            with patch.object(sync, "_copy_settings", return_value=False):
                 results = sync.sync_settings("Source", ["Target"], backup=False)
 
             # Should record failure
@@ -1021,7 +1016,7 @@ class TestExceptionHandling:
             sync = EVESettingsSync()
 
             # Patch glob to raise exception during user file search
-            with patch.object(Path, 'glob', side_effect=Exception("Glob error")):
+            with patch.object(Path, "glob", side_effect=Exception("Glob error")):
                 result = sync._parse_char_file(char_file, settings_dir)
 
             assert result is None
@@ -1048,18 +1043,18 @@ class TestExceptionHandling:
                 character_id="111",
                 settings_dir=source_dir,
                 core_char_file=source_dir / "core_char_111.dat",
-                has_settings=True
+                has_settings=True,
             )
             sync.character_settings["Target"] = EVECharacterSettings(
                 character_name="Target",
                 character_id="222",
                 settings_dir=target_dir,
                 core_char_file=target_dir / "core_char_222.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             # Patch _copy_settings to raise exception
-            with patch.object(sync, '_copy_settings', side_effect=Exception("Copy failed")):
+            with patch.object(sync, "_copy_settings", side_effect=Exception("Copy failed")):
                 results = sync.sync_settings("Source", ["Target"], backup=False)
 
             assert results["Target"] is False
@@ -1080,7 +1075,7 @@ class TestExceptionHandling:
                 character_id="123",
                 settings_dir=settings_dir,
                 core_char_file=settings_dir / "core_char_123.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             sync = EVESettingsSync()
@@ -1113,7 +1108,7 @@ class TestExceptionHandling:
                 character_id="111",
                 settings_dir=source_dir,
                 core_char_file=source_dir / "core_char_111.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             target = EVECharacterSettings(
@@ -1121,7 +1116,7 @@ class TestExceptionHandling:
                 character_id="222",
                 settings_dir=target_dir,
                 core_char_file=target_dir / "core_char_222.dat",
-                has_settings=True
+                has_settings=True,
             )
 
             sync = EVESettingsSync()
@@ -1152,7 +1147,7 @@ class TestEdgeCases:
         ]
 
         for filename, expected_id in test_cases:
-            match = re.search(r'core_char_(\d+)\.dat$', filename)
+            match = re.search(r"core_char_(\d+)\.dat$", filename)
             assert match is not None, f"Failed to match: {filename}"
             assert match.group(1) == expected_id
 
@@ -1169,7 +1164,7 @@ class TestEdgeCases:
         ]
 
         for filename in invalid_names:
-            match = re.search(r'core_char_(\d+)\.dat$', filename)
+            match = re.search(r"core_char_(\d+)\.dat$", filename)
             # Some may match (like core_char_123.txt won't), verify carefully
             if "core_char_" in filename and filename.endswith(".dat"):
                 # Check if digits are present

@@ -10,6 +10,7 @@ Tests cover:
 - Known/active character tracking
 - Serialization
 """
+
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
@@ -28,9 +29,7 @@ class TestDiscoveredCharacter:
     def test_create_character(self):
         """DiscoveredCharacter can be created"""
         char = DiscoveredCharacter(
-            name="TestPilot",
-            window_id="0x123",
-            window_title="EVE - TestPilot"
+            name="TestPilot", window_id="0x123", window_title="EVE - TestPilot"
         )
 
         assert char.name == "TestPilot"
@@ -40,11 +39,7 @@ class TestDiscoveredCharacter:
     def test_default_timestamps(self):
         """Timestamps default to now"""
         before = datetime.now()
-        char = DiscoveredCharacter(
-            name="Test",
-            window_id="0x1",
-            window_title="EVE - Test"
-        )
+        char = DiscoveredCharacter(name="Test", window_id="0x1", window_title="EVE - Test")
         after = datetime.now()
 
         assert before <= char.first_seen <= after
@@ -58,7 +53,7 @@ class TestDiscoveredCharacter:
             window_id="0x1",
             window_title="EVE - Test",
             first_seen=custom_time,
-            last_seen=custom_time
+            last_seen=custom_time,
         )
 
         assert char.first_seen == custom_time
@@ -232,7 +227,7 @@ class TestSerialization:
             window_id="0x1",
             window_title="EVE - Pilot1",
             first_seen=datetime(2025, 1, 1, 10, 0, 0),
-            last_seen=datetime(2025, 1, 1, 12, 0, 0)
+            last_seen=datetime(2025, 1, 1, 12, 0, 0),
         )
         return d
 
@@ -254,7 +249,7 @@ class TestSerialization:
                     "name": "LoadedPilot",
                     "window_id": "0x999",
                     "first_seen": "2025-01-01T10:00:00",
-                    "last_seen": "2025-01-01T12:00:00"
+                    "last_seen": "2025-01-01T12:00:00",
                 }
             ]
         }
@@ -288,7 +283,7 @@ class TestScanCycle:
 
     def test_scan_empty_result(self, discovery):
         """Handles empty scan result"""
-        with patch.object(discovery, '_get_eve_windows', return_value=[]):
+        with patch.object(discovery, "_get_eve_windows", return_value=[]):
             discovery._scan_cycle()
             assert len(discovery.active_window_ids) == 0
 
@@ -297,8 +292,9 @@ class TestScanCycle:
         callback = MagicMock()
         discovery.set_on_new_callback(callback)
 
-        with patch.object(discovery, '_get_eve_windows',
-                         return_value=[("0x123", "EVE - NewPilot")]):
+        with patch.object(
+            discovery, "_get_eve_windows", return_value=[("0x123", "EVE - NewPilot")]
+        ):
             discovery._scan_cycle()
 
             assert "0x123" in discovery.known_characters
@@ -310,15 +306,11 @@ class TestScanCycle:
         # Add existing character
         old_time = datetime(2025, 1, 1, 10, 0, 0)
         discovery.known_characters["0x1"] = DiscoveredCharacter(
-            name="Existing",
-            window_id="0x1",
-            window_title="EVE - Existing",
-            last_seen=old_time
+            name="Existing", window_id="0x1", window_title="EVE - Existing", last_seen=old_time
         )
         discovery.active_window_ids.add("0x1")
 
-        with patch.object(discovery, '_get_eve_windows',
-                         return_value=[("0x1", "EVE - Existing")]):
+        with patch.object(discovery, "_get_eve_windows", return_value=[("0x1", "EVE - Existing")]):
             discovery._scan_cycle()
 
             # last_seen should be updated
@@ -329,8 +321,7 @@ class TestScanCycle:
         callback = MagicMock(side_effect=Exception("Test error"))
         discovery.set_on_new_callback(callback)
 
-        with patch.object(discovery, '_get_eve_windows',
-                         return_value=[("0x1", "EVE - Test")]):
+        with patch.object(discovery, "_get_eve_windows", return_value=[("0x1", "EVE - Test")]):
             # Should not raise
             discovery._scan_cycle()
             assert "0x1" in discovery.known_characters
@@ -343,8 +334,8 @@ class TestSetEnabled:
         """Disabling stops the scan timer"""
         discovery = AutoDiscovery()
 
-        with patch.object(discovery.scan_timer, 'isActive', return_value=True):
-            with patch.object(discovery, 'stop') as mock_stop:
+        with patch.object(discovery.scan_timer, "isActive", return_value=True):
+            with patch.object(discovery, "stop") as mock_stop:
                 discovery.set_enabled(False)
                 mock_stop.assert_called_once()
 
@@ -353,8 +344,8 @@ class TestSetEnabled:
         discovery = AutoDiscovery()
         discovery.enabled = False
 
-        with patch.object(discovery.scan_timer, 'isActive', return_value=False):
-            with patch.object(discovery, 'start') as mock_start:
+        with patch.object(discovery.scan_timer, "isActive", return_value=False):
+            with patch.object(discovery, "start") as mock_start:
                 discovery.set_enabled(True)
                 mock_start.assert_called_once()
 
@@ -364,10 +355,9 @@ class TestScanEveWindowsFunction:
 
     def test_returns_list(self):
         """Returns list of tuples"""
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
-                returncode=0,
-                stdout="0x123  0 host EVE - Pilot1\n0x456  0 host EVE - Pilot2\n"
+                returncode=0, stdout="0x123  0 host EVE - Pilot1\n0x456  0 host EVE - Pilot2\n"
             )
 
             result = scan_eve_windows()
@@ -378,7 +368,7 @@ class TestScanEveWindowsFunction:
 
     def test_handles_empty_output(self):
         """Handles empty wmctrl output"""
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="")
 
             result = scan_eve_windows()
@@ -386,7 +376,7 @@ class TestScanEveWindowsFunction:
 
     def test_handles_subprocess_error(self):
         """Handles subprocess failure"""
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.side_effect = Exception("wmctrl failed")
 
             result = scan_eve_windows()
@@ -394,10 +384,10 @@ class TestScanEveWindowsFunction:
 
     def test_filters_non_eve_windows(self):
         """Only returns EVE windows"""
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
                 returncode=0,
-                stdout="0x1  0 host Firefox\n0x2  0 host EVE - Test\n0x3  0 host Terminal\n"
+                stdout="0x1  0 host Firefox\n0x2  0 host EVE - Test\n0x3  0 host Terminal\n",
             )
 
             result = scan_eve_windows()
@@ -413,8 +403,8 @@ class TestStartStop:
         discovery = AutoDiscovery()
         discovery.enabled = False
 
-        with patch.object(discovery, '_scan_cycle') as mock_scan:
-            with patch.object(discovery.scan_timer, 'start') as mock_start:
+        with patch.object(discovery, "_scan_cycle") as mock_scan:
+            with patch.object(discovery.scan_timer, "start") as mock_start:
                 discovery.start()
 
                 mock_scan.assert_not_called()
@@ -425,8 +415,8 @@ class TestStartStop:
         discovery = AutoDiscovery()
         discovery.enabled = True
 
-        with patch.object(discovery, '_scan_cycle') as mock_scan:
-            with patch.object(discovery.scan_timer, 'start') as mock_start:
+        with patch.object(discovery, "_scan_cycle") as mock_scan:
+            with patch.object(discovery.scan_timer, "start") as mock_start:
                 discovery.start()
 
                 mock_scan.assert_called_once()
@@ -436,7 +426,7 @@ class TestStartStop:
         """Stop stops the timer"""
         discovery = AutoDiscovery()
 
-        with patch.object(discovery.scan_timer, 'stop') as mock_stop:
+        with patch.object(discovery.scan_timer, "stop") as mock_stop:
             discovery.stop()
 
             mock_stop.assert_called_once()
@@ -449,8 +439,8 @@ class TestSetIntervalActive:
         """Updates interval on active timer"""
         discovery = AutoDiscovery()
 
-        with patch.object(discovery.scan_timer, 'isActive', return_value=True):
-            with patch.object(discovery.scan_timer, 'setInterval') as mock_set:
+        with patch.object(discovery.scan_timer, "isActive", return_value=True):
+            with patch.object(discovery.scan_timer, "setInterval") as mock_set:
                 discovery.set_interval(20)
 
                 mock_set.assert_called_once_with(20000)
@@ -464,8 +454,7 @@ class TestScanCycleEdgeCases:
         discovery = AutoDiscovery()
 
         # Window title that won't extract a character name
-        with patch.object(discovery, '_get_eve_windows',
-                         return_value=[("0x1", "Firefox")]):
+        with patch.object(discovery, "_get_eve_windows", return_value=[("0x1", "Firefox")]):
             discovery._scan_cycle()
 
             # Should not add to known characters
@@ -477,14 +466,12 @@ class TestScanCycleEdgeCases:
 
         # Add existing active character
         discovery.known_characters["0x1"] = DiscoveredCharacter(
-            name="LeavingPilot",
-            window_id="0x1",
-            window_title="EVE - LeavingPilot"
+            name="LeavingPilot", window_id="0x1", window_title="EVE - LeavingPilot"
         )
         discovery.active_window_ids.add("0x1")
 
         # Scan returns empty - character window closed
-        with patch.object(discovery, '_get_eve_windows', return_value=[]):
+        with patch.object(discovery, "_get_eve_windows", return_value=[]):
             discovery._scan_cycle()
 
             # Character should no longer be active
@@ -494,8 +481,7 @@ class TestScanCycleEdgeCases:
         """Handles exceptions during scan gracefully"""
         discovery = AutoDiscovery()
 
-        with patch.object(discovery, '_get_eve_windows',
-                         side_effect=Exception("Scan failed")):
+        with patch.object(discovery, "_get_eve_windows", side_effect=Exception("Scan failed")):
             # Should not raise
             discovery._scan_cycle()
 
@@ -507,10 +493,9 @@ class TestGetEVEWindows:
         """Returns EVE windows from wmctrl"""
         discovery = AutoDiscovery()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
-                returncode=0,
-                stdout="0x123  0 host EVE - Pilot1\n0x456  0 host Firefox\n"
+                returncode=0, stdout="0x123  0 host EVE - Pilot1\n0x456  0 host Firefox\n"
             )
 
             result = discovery._get_eve_windows()
@@ -521,9 +506,10 @@ class TestGetEVEWindows:
     def test_get_eve_windows_timeout(self):
         """Handles wmctrl timeout"""
         import subprocess
+
         discovery = AutoDiscovery()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.side_effect = subprocess.TimeoutExpired("wmctrl", 2)
 
             result = discovery._get_eve_windows()
@@ -534,7 +520,7 @@ class TestGetEVEWindows:
         """Handles wmctrl failure"""
         discovery = AutoDiscovery()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=1, stdout="")
 
             result = discovery._get_eve_windows()
@@ -545,7 +531,7 @@ class TestGetEVEWindows:
         """Handles general exceptions"""
         discovery = AutoDiscovery()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.side_effect = Exception("wmctrl not found")
 
             result = discovery._get_eve_windows()
@@ -556,11 +542,10 @@ class TestGetEVEWindows:
         """Skips empty lines in wmctrl output"""
         discovery = AutoDiscovery()
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             # Output with empty lines interspersed
             mock_run.return_value = MagicMock(
-                returncode=0,
-                stdout="0x123  0 host EVE - Pilot1\n\n0x456  0 host EVE - Pilot2\n\n"
+                returncode=0, stdout="0x123  0 host EVE - Pilot1\n\n0x456  0 host EVE - Pilot2\n\n"
             )
 
             result = discovery._get_eve_windows()
@@ -577,8 +562,11 @@ class TestForceScan:
         """force_scan returns number of active windows"""
         discovery = AutoDiscovery()
 
-        with patch.object(discovery, '_get_eve_windows',
-                         return_value=[("0x1", "EVE - Pilot1"), ("0x2", "EVE - Pilot2")]):
+        with patch.object(
+            discovery,
+            "_get_eve_windows",
+            return_value=[("0x1", "EVE - Pilot1"), ("0x2", "EVE - Pilot2")],
+        ):
             count = discovery.force_scan()
 
             assert count == 2

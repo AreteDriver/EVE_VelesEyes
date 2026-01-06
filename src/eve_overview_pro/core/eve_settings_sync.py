@@ -3,6 +3,7 @@ EVE Settings Synchronization
 Copies EVE Online client settings between characters
 Scans local EVE installation for ALL character data (even logged off)
 """
+
 import logging
 import re
 import shutil
@@ -15,6 +16,7 @@ from typing import Dict, List, Optional
 @dataclass
 class EVECharacterSettings:
     """EVE character settings location"""
+
     character_name: str
     character_id: str
     settings_dir: Path
@@ -28,6 +30,7 @@ class EVECharacterSettings:
 @dataclass
 class EVECharacterInfo:
     """Basic character info extracted from EVE files"""
+
     character_id: str
     character_name: str
     user_id: Optional[str] = None
@@ -43,38 +46,89 @@ class EVESettingsSync:
         self.logger = logging.getLogger(__name__)
 
         # Steam/Proton paths (most common on Linux)
-        steam_base = Path.home() / '.steam' / 'debian-installation' / 'steamapps' / 'compatdata'
-        steam_alt = Path.home() / '.local' / 'share' / 'Steam' / 'steamapps' / 'compatdata'
+        steam_base = Path.home() / ".steam" / "debian-installation" / "steamapps" / "compatdata"
+        steam_alt = Path.home() / ".local" / "share" / "Steam" / "steamapps" / "compatdata"
 
         # EVE Online Steam App ID is 8500
         eve_steam_paths = [
-            steam_base / '8500' / 'pfx' / 'drive_c' / 'users' / 'steamuser' /
-            'AppData' / 'Local' / 'CCP' / 'EVE',
-            steam_alt / '8500' / 'pfx' / 'drive_c' / 'users' / 'steamuser' /
-            'AppData' / 'Local' / 'CCP' / 'EVE',
+            steam_base
+            / "8500"
+            / "pfx"
+            / "drive_c"
+            / "users"
+            / "steamuser"
+            / "AppData"
+            / "Local"
+            / "CCP"
+            / "EVE",
+            steam_alt
+            / "8500"
+            / "pfx"
+            / "drive_c"
+            / "users"
+            / "steamuser"
+            / "AppData"
+            / "Local"
+            / "CCP"
+            / "EVE",
         ]
 
         # Steam game logs paths
         self.eve_logs_paths = [
-            steam_base / '8500' / 'pfx' / 'drive_c' / 'users' / 'steamuser' /
-            'Documents' / 'EVE' / 'logs' / 'Gamelogs',
-            steam_alt / '8500' / 'pfx' / 'drive_c' / 'users' / 'steamuser' /
-            'Documents' / 'EVE' / 'logs' / 'Gamelogs',
+            steam_base
+            / "8500"
+            / "pfx"
+            / "drive_c"
+            / "users"
+            / "steamuser"
+            / "Documents"
+            / "EVE"
+            / "logs"
+            / "Gamelogs",
+            steam_alt
+            / "8500"
+            / "pfx"
+            / "drive_c"
+            / "users"
+            / "steamuser"
+            / "Documents"
+            / "EVE"
+            / "logs"
+            / "Gamelogs",
         ]
 
         # Common EVE installation paths (Wine, CrossOver, native)
         legacy_paths = [
-            Path.home() / '.eve' / 'wineenv' / 'drive_c' / 'users' / 'crossover' /
-            'Local Settings' / 'Application Data' / 'CCP' / 'EVE',
-
-            Path.home() / '.wine' / 'drive_c' / 'users' / Path.home().name /
-            'Local Settings' / 'Application Data' / 'CCP' / 'EVE',
-
-            Path.home() / '.wine' / 'drive_c' / 'users' / Path.home().name /
-            'AppData' / 'Local' / 'CCP' / 'EVE',
-
-            Path.home() / 'EVE' / 'settings',
-            Path.home() / '.local' / 'share' / 'CCP' / 'EVE',
+            Path.home()
+            / ".eve"
+            / "wineenv"
+            / "drive_c"
+            / "users"
+            / "crossover"
+            / "Local Settings"
+            / "Application Data"
+            / "CCP"
+            / "EVE",
+            Path.home()
+            / ".wine"
+            / "drive_c"
+            / "users"
+            / Path.home().name
+            / "Local Settings"
+            / "Application Data"
+            / "CCP"
+            / "EVE",
+            Path.home()
+            / ".wine"
+            / "drive_c"
+            / "users"
+            / Path.home().name
+            / "AppData"
+            / "Local"
+            / "CCP"
+            / "EVE",
+            Path.home() / "EVE" / "settings",
+            Path.home() / ".local" / "share" / "CCP" / "EVE",
         ]
 
         self.eve_paths = eve_steam_paths + legacy_paths
@@ -100,7 +154,7 @@ class EVESettingsSync:
 
             for log_file in logs_dir.glob("*.txt"):
                 # Extract character ID from filename like 20251208_053612_94468033.txt
-                match = re.search(r'_(\d{7,})\.txt$', log_file.name)
+                match = re.search(r"_(\d{7,})\.txt$", log_file.name)
                 if match:
                     char_id = match.group(1)
                     if char_id in self.character_id_to_name:
@@ -108,12 +162,12 @@ class EVESettingsSync:
 
                     # Read first few lines to find Listener name
                     try:
-                        with open(log_file, encoding='utf-8', errors='ignore') as f:
+                        with open(log_file, encoding="utf-8", errors="ignore") as f:
                             for i, line in enumerate(f):
                                 if i > 10:  # Only check first 10 lines
                                     break
-                                if 'Listener:' in line:
-                                    char_name = line.split('Listener:')[1].strip()
+                                if "Listener:" in line:
+                                    char_name = line.split("Listener:")[1].strip()
                                     self.character_id_to_name[char_id] = char_name
                                     break
                     except Exception as e:
@@ -152,13 +206,13 @@ class EVESettingsSync:
                 for settings_dir in server_dir.iterdir():
                     if not settings_dir.is_dir():
                         continue
-                    if not settings_dir.name.startswith('settings'):
+                    if not settings_dir.name.startswith("settings"):
                         continue
 
                     # Scan for core_char_*.dat files
                     for char_file in settings_dir.glob("core_char_*.dat"):
                         # Extract character ID from filename
-                        match = re.search(r'core_char_(\d+)\.dat$', char_file.name)
+                        match = re.search(r"core_char_(\d+)\.dat$", char_file.name)
                         if not match:
                             continue
 
@@ -177,7 +231,7 @@ class EVESettingsSync:
                             character_name=char_name,
                             settings_path=settings_dir,
                             last_seen=last_seen,
-                            has_settings=True
+                            has_settings=True,
                         )
                         characters.append(char_info)
 
@@ -212,15 +266,17 @@ class EVESettingsSync:
                     for settings_dir in server_dir.iterdir():
                         if not settings_dir.is_dir():
                             continue
-                        if not settings_dir.name.startswith('settings'):
+                        if not settings_dir.name.startswith("settings"):
                             continue
 
                         # Scan for core_char_*.dat files inside settings directory
-                        for char_file in settings_dir.glob('core_char_*.dat'):
+                        for char_file in settings_dir.glob("core_char_*.dat"):
                             char_settings = self._parse_char_file(char_file, settings_dir)
                             if char_settings:
                                 found_characters.append(char_settings)
-                                self.character_settings[char_settings.character_name] = char_settings
+                                self.character_settings[char_settings.character_name] = (
+                                    char_settings
+                                )
 
             except Exception as e:
                 self.logger.error(f"Error scanning {base_path}: {e}")
@@ -228,7 +284,9 @@ class EVESettingsSync:
         self.logger.info(f"Found {len(found_characters)} character settings")
         return found_characters
 
-    def _parse_char_file(self, char_file: Path, settings_dir: Path) -> Optional[EVECharacterSettings]:
+    def _parse_char_file(
+        self, char_file: Path, settings_dir: Path
+    ) -> Optional[EVECharacterSettings]:
         """Parse a core_char_*.dat file to extract character settings
 
         Args:
@@ -240,7 +298,7 @@ class EVESettingsSync:
         """
         try:
             # Extract character ID from filename (core_char_12345678.dat)
-            match = re.search(r'core_char_(\d+)\.dat$', char_file.name)
+            match = re.search(r"core_char_(\d+)\.dat$", char_file.name)
             if not match:
                 return None
 
@@ -248,7 +306,7 @@ class EVESettingsSync:
             char_name = self.get_character_name(char_id)
 
             # Find corresponding user file if exists
-            user_files = list(settings_dir.glob('core_user_*.dat'))
+            user_files = list(settings_dir.glob("core_user_*.dat"))
             core_user_file = user_files[0] if user_files else None
 
             char_settings = EVECharacterSettings(
@@ -257,7 +315,7 @@ class EVESettingsSync:
                 settings_dir=settings_dir,
                 core_char_file=char_file,
                 core_user_file=core_user_file,
-                has_settings=True
+                has_settings=True,
             )
 
             return char_settings
@@ -266,8 +324,9 @@ class EVESettingsSync:
             self.logger.error(f"Error parsing char file {char_file}: {e}")
             return None
 
-    def sync_settings(self, source_char: str, target_chars: List[str],
-                     backup: bool = True) -> Dict[str, bool]:
+    def sync_settings(
+        self, source_char: str, target_chars: List[str], backup: bool = True
+    ) -> Dict[str, bool]:
         """Synchronize settings from source to target characters
 
         Args:
@@ -324,7 +383,7 @@ class EVESettingsSync:
         Args:
             char_settings: Character settings to backup
         """
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # Backup the specific character's .dat file, not the whole directory
         source_file = char_settings.core_char_file
@@ -337,8 +396,7 @@ class EVESettingsSync:
             self.logger.error(f"Backup failed: {e}")
             raise
 
-    def _copy_settings(self, source: EVECharacterSettings,
-                      target: EVECharacterSettings) -> bool:
+    def _copy_settings(self, source: EVECharacterSettings, target: EVECharacterSettings) -> bool:
         """Copy settings from source character to target character
 
         Since all characters share the same settings directory, this copies
@@ -387,19 +445,18 @@ class EVESettingsSync:
         char_settings = self.character_settings[char_name]
 
         # Count settings files
-        settings_files = list(char_settings.settings_dir.glob('*.dat'))
-        settings_files += list(char_settings.settings_dir.glob('*.ini'))
-        settings_files += list(char_settings.settings_dir.glob('*.yaml'))
+        settings_files = list(char_settings.settings_dir.glob("*.dat"))
+        settings_files += list(char_settings.settings_dir.glob("*.ini"))
+        settings_files += list(char_settings.settings_dir.glob("*.yaml"))
 
         return {
-            'character': char_name,
-            'settings_dir': str(char_settings.settings_dir),
-            'has_settings': char_settings.has_settings,
-            'total_files': len(settings_files),
-            'last_modified': max(
-                (f.stat().st_mtime for f in settings_files),
-                default=0
-            ) if settings_files else 0
+            "character": char_name,
+            "settings_dir": str(char_settings.settings_dir),
+            "has_settings": char_settings.has_settings,
+            "total_files": len(settings_files),
+            "last_modified": max((f.stat().st_mtime for f in settings_files), default=0)
+            if settings_files
+            else 0,
         }
 
     def list_available_characters(self) -> List[str]:
@@ -408,5 +465,4 @@ class EVESettingsSync:
         Returns:
             List of character names
         """
-        return [name for name, settings in self.character_settings.items()
-                if settings.has_settings]
+        return [name for name, settings in self.character_settings.items() if settings.has_settings]

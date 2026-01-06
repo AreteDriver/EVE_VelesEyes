@@ -24,6 +24,7 @@ v2.2 Features:
 - Position lock for thumbnails
 - Single instance enforcement
 """
+
 import fcntl
 import logging
 import os
@@ -50,7 +51,7 @@ class SingleInstance:
     def __init__(self, app_name: str = "argus-overview"):
         self.app_name = app_name
         self.lock_file = None
-        self.lock_path = Path.home() / '.config' / 'argus-overview' / f'{app_name}.lock'
+        self.lock_path = Path.home() / ".config" / "argus-overview" / f"{app_name}.lock"
 
         # Ensure directory exists
         self.lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -61,7 +62,7 @@ class SingleInstance:
         Returns True if successful (first instance), False if already running.
         """
         try:
-            self.lock_file = open(self.lock_path, 'w')
+            self.lock_file = open(self.lock_path, "w")
             fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
             # Write PID to lock file
             self.lock_file.write(str(os.getpid()))
@@ -93,22 +94,19 @@ class SingleInstance:
 
 def setup_logging():
     """Setup logging configuration"""
-    log_dir = Path.home() / '.config' / 'argus-overview'
+    log_dir = Path.home() / ".config" / "argus-overview"
     log_dir.mkdir(parents=True, exist_ok=True)
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.StreamHandler(),
-            logging.FileHandler(log_dir / 'argus-overview.log')
-        ]
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.StreamHandler(), logging.FileHandler(log_dir / "argus-overview.log")],
     )
 
 
 def setup_dark_theme(app):
     """Setup professional dark theme"""
-    app.setStyle('Fusion')
+    app.setStyle("Fusion")
 
     palette = QPalette()
     palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
@@ -145,7 +143,7 @@ def main():
             None,
             "Already Running",
             "Argus Overview is already running.\n\n"
-            "Check your system tray for the existing instance."
+            "Check your system tray for the existing instance.",
         )
         sys.exit(1)
 
@@ -175,5 +173,5 @@ def main():
     sys.exit(exit_code)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

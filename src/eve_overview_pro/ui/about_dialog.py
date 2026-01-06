@@ -1,6 +1,7 @@
 """
 About Dialog with donation link
 """
+
 import sys
 
 from PySide6.QtCore import Qt, QUrl
@@ -50,10 +51,7 @@ class AboutDialog(QDialog):
         layout.addSpacing(20)
 
         # Description
-        description = QLabel(
-            "The Complete Professional Multi-Boxing Solution\n"
-            "for EVE Online"
-        )
+        description = QLabel("The Complete Professional Multi-Boxing Solution\nfor EVE Online")
         description.setAlignment(Qt.AlignmentFlag.AlignCenter)
         description.setWordWrap(True)
         layout.addWidget(description)
@@ -84,8 +82,7 @@ class AboutDialog(QDialog):
         layout.addWidget(donation_label)
 
         donation_text = QLabel(
-            "If you find Argus Overview useful,\n"
-            "consider supporting its development:"
+            "If you find Argus Overview useful,\nconsider supporting its development:"
         )
         donation_text.setAlignment(Qt.AlignmentFlag.AlignCenter)
         donation_text.setStyleSheet("color: #888;")
@@ -124,12 +121,16 @@ class AboutDialog(QDialog):
         # Links
         links_layout = QVBoxLayout()
 
-        github_link = QLabel('<a href="https://github.com/AreteDriver/Argus_Overview">GitHub Repository</a>')
+        github_link = QLabel(
+            '<a href="https://github.com/AreteDriver/Argus_Overview">GitHub Repository</a>'
+        )
         github_link.setOpenExternalLinks(True)
         github_link.setAlignment(Qt.AlignmentFlag.AlignCenter)
         links_layout.addWidget(github_link)
 
-        issues_link = QLabel('<a href="https://github.com/AreteDriver/Argus_Overview/issues">Report Issues</a>')
+        issues_link = QLabel(
+            '<a href="https://github.com/AreteDriver/Argus_Overview/issues">Report Issues</a>'
+        )
         issues_link.setOpenExternalLinks(True)
         issues_link.setAlignment(Qt.AlignmentFlag.AlignCenter)
         links_layout.addWidget(issues_link)
@@ -139,10 +140,7 @@ class AboutDialog(QDialog):
         layout.addStretch()
 
         # Credits
-        credits = QLabel(
-            "Made with ❤️ by AreteDriver\n"
-            "For the EVE Online community"
-        )
+        credits = QLabel("Made with ❤️ by AreteDriver\nFor the EVE Online community")
         credits.setAlignment(Qt.AlignmentFlag.AlignCenter)
         credits.setStyleSheet("color: #666; font-size: 9pt;")
         layout.addWidget(credits)

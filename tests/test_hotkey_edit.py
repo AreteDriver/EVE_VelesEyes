@@ -1,8 +1,8 @@
 """Tests for HotkeyEdit widget."""
 
-import pytest
 from unittest.mock import MagicMock, patch
 
+import pytest
 from PySide6.QtWidgets import QApplication
 
 from eve_overview_pro.ui.hotkey_edit import HotkeyEdit
@@ -104,6 +104,7 @@ class TestHotkeyEditKeyConversion:
         widget = HotkeyEdit()
         try:
             from pynput import keyboard
+
             result = widget._key_to_string(keyboard.Key.ctrl)
             assert result == "ctrl"
         except ImportError:
@@ -114,6 +115,7 @@ class TestHotkeyEditKeyConversion:
         widget = HotkeyEdit()
         try:
             from pynput import keyboard
+
             result = widget._key_to_string(keyboard.Key.shift)
             assert result == "shift"
         except ImportError:
@@ -124,6 +126,7 @@ class TestHotkeyEditKeyConversion:
         widget = HotkeyEdit()
         try:
             from pynput import keyboard
+
             result = widget._key_to_string(keyboard.Key.f13)
             assert result == "f13"
         except ImportError:
@@ -255,6 +258,7 @@ class TestHotkeyEditKeyToString:
         widget = HotkeyEdit()
         try:
             from pynput import keyboard
+
             result = widget._key_to_string(keyboard.Key.alt)
             assert result == "alt"
         except ImportError:
@@ -265,6 +269,7 @@ class TestHotkeyEditKeyToString:
         widget = HotkeyEdit()
         try:
             from pynput import keyboard
+
             result = widget._key_to_string(keyboard.Key.alt_gr)
             assert result == "alt"
         except ImportError:
@@ -275,6 +280,7 @@ class TestHotkeyEditKeyToString:
         widget = HotkeyEdit()
         try:
             from pynput import keyboard
+
             result = widget._key_to_string(keyboard.Key.cmd)
             assert result == "cmd"
         except ImportError:
@@ -337,7 +343,7 @@ class TestHotkeyEditPynputUnavailable:
         """Test start recording when pynput unavailable."""
         widget = HotkeyEdit()
 
-        with patch('eve_overview_pro.ui.hotkey_edit.PYNPUT_AVAILABLE', False):
+        with patch("eve_overview_pro.ui.hotkey_edit.PYNPUT_AVAILABLE", False):
             widget._start_recording()
 
             assert "not available" in widget.display.text()

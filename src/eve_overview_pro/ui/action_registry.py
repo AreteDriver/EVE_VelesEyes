@@ -14,6 +14,7 @@ Tier Rules:
 Exceptions: Keyboard shortcuts may exist in addition to canonical home,
 but must not create duplicate clickable UI.
 """
+
 import logging
 from dataclasses import dataclass
 from enum import Enum, auto
@@ -22,13 +23,15 @@ from typing import Callable, Dict, List, Optional, Set
 
 class ActionScope(Enum):
     """Scope of an action - where it can be triggered from"""
-    GLOBAL = auto()    # Available anywhere (quit, show/hide, reload config, profile switch)
-    TAB = auto()       # Primary workflow for specific tab
-    OBJECT = auto()    # Operates on selected item/window/character
+
+    GLOBAL = auto()  # Available anywhere (quit, show/hide, reload config, profile switch)
+    TAB = auto()  # Primary workflow for specific tab
+    OBJECT = auto()  # Operates on selected item/window/character
 
 
 class PrimaryHome(Enum):
     """Primary canonical location for an action's UI element"""
+
     # Global actions (Tier 1)
     TRAY_MENU = "tray_menu"
     APP_MENU = "app_menu"
@@ -84,6 +87,7 @@ class ActionSpec:
         enabled_when: Optional condition function for enabling/disabling
         checkable: Whether action has a checked state
     """
+
     id: str
     label: str
     scope: ActionScope
@@ -105,6 +109,7 @@ class ActionRegistry:
         action = registry.get("quit")
         actions_for_tray = registry.get_by_home(PrimaryHome.TRAY_MENU)
     """
+
     _instance = None
 
     def __init__(self):
@@ -136,427 +141,515 @@ class ActionRegistry:
         # =====================================================================
 
         # Tray Menu Actions
-        self.register(ActionSpec(
-            id="show_hide",
-            label="Show/Hide Argus Overview",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.TRAY_MENU,
-            tooltip="Toggle main window visibility",
-            handler_name="_toggle_visibility",
-        ))
+        self.register(
+            ActionSpec(
+                id="show_hide",
+                label="Show/Hide Argus Overview",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.TRAY_MENU,
+                tooltip="Toggle main window visibility",
+                handler_name="_toggle_visibility",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="toggle_thumbnails",
-            label="Toggle Thumbnails",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.TRAY_MENU,
-            tooltip="Toggle thumbnail visibility (Ctrl+Shift+T)",
-            shortcut="<ctrl>+<shift>+t",
-            handler_name="_toggle_thumbnails",
-        ))
+        self.register(
+            ActionSpec(
+                id="toggle_thumbnails",
+                label="Toggle Thumbnails",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.TRAY_MENU,
+                tooltip="Toggle thumbnail visibility (Ctrl+Shift+T)",
+                shortcut="<ctrl>+<shift>+t",
+                handler_name="_toggle_thumbnails",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="reload_config",
-            label="Reload Config",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.TRAY_MENU,
-            tooltip="Hot reload configuration",
-            handler_name="_reload_config",
-        ))
+        self.register(
+            ActionSpec(
+                id="reload_config",
+                label="Reload Config",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.TRAY_MENU,
+                tooltip="Hot reload configuration",
+                handler_name="_reload_config",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="settings",
-            label="Settings",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.TRAY_MENU,
-            tooltip="Open settings",
-            handler_name="_show_settings",
-        ))
+        self.register(
+            ActionSpec(
+                id="settings",
+                label="Settings",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.TRAY_MENU,
+                tooltip="Open settings",
+                handler_name="_show_settings",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="quit",
-            label="Quit",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.TRAY_MENU,
-            tooltip="Quit application",
-            handler_name="_quit_application",
-        ))
+        self.register(
+            ActionSpec(
+                id="quit",
+                label="Quit",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.TRAY_MENU,
+                tooltip="Quit application",
+                handler_name="_quit_application",
+            )
+        )
 
         # App Menu / Help Menu Actions
-        self.register(ActionSpec(
-            id="about",
-            label="About Argus Overview",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.HELP_MENU,
-            tooltip="Show about dialog",
-            handler_name="_show_about_dialog",
-        ))
+        self.register(
+            ActionSpec(
+                id="about",
+                label="About Argus Overview",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.HELP_MENU,
+                tooltip="Show about dialog",
+                handler_name="_show_about_dialog",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="donate",
-            label="Support Development (Buy Me a Coffee)",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.HELP_MENU,
-            tooltip="Support development",
-            icon="coffee",
-            handler_name="_open_donation_link",
-        ))
+        self.register(
+            ActionSpec(
+                id="donate",
+                label="Support Development (Buy Me a Coffee)",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.HELP_MENU,
+                tooltip="Support development",
+                icon="coffee",
+                handler_name="_open_donation_link",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="documentation",
-            label="Documentation",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.HELP_MENU,
-            tooltip="Open documentation",
-            handler_name="_open_documentation",
-        ))
+        self.register(
+            ActionSpec(
+                id="documentation",
+                label="Documentation",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.HELP_MENU,
+                tooltip="Open documentation",
+                handler_name="_open_documentation",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="report_issue",
-            label="Report Issue",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.HELP_MENU,
-            tooltip="Report an issue on GitHub",
-            handler_name="_open_issue_tracker",
-        ))
+        self.register(
+            ActionSpec(
+                id="report_issue",
+                label="Report Issue",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.HELP_MENU,
+                tooltip="Report an issue on GitHub",
+                handler_name="_open_issue_tracker",
+            )
+        )
 
         # =====================================================================
         # TIER 2: TAB ACTIONS (Tab Toolbars)
         # =====================================================================
 
         # --- Overview Tab (formerly Main) ---
-        self.register(ActionSpec(
-            id="import_windows",
-            label="Import All EVE Windows",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
-            tooltip="Scan and import all EVE windows with one click",
-            handler_name="one_click_import",
-        ))
+        self.register(
+            ActionSpec(
+                id="import_windows",
+                label="Import All EVE Windows",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+                tooltip="Scan and import all EVE windows with one click",
+                handler_name="one_click_import",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="add_window",
-            label="Add Window",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
-            tooltip="Manually select EVE windows to add",
-            handler_name="show_add_window_dialog",
-        ))
+        self.register(
+            ActionSpec(
+                id="add_window",
+                label="Add Window",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+                tooltip="Manually select EVE windows to add",
+                handler_name="show_add_window_dialog",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="remove_all_windows",
-            label="Remove All",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
-            tooltip="Remove all windows from preview",
-            handler_name="_remove_all_windows",
-        ))
+        self.register(
+            ActionSpec(
+                id="remove_all_windows",
+                label="Remove All",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+                tooltip="Remove all windows from preview",
+                handler_name="_remove_all_windows",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="lock_positions",
-            label="Lock",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
-            tooltip="Lock thumbnail positions (Ctrl+Shift+L)",
-            shortcut="<ctrl>+<shift>+l",
-            handler_name="_toggle_lock",
-            checkable=True,
-        ))
+        self.register(
+            ActionSpec(
+                id="lock_positions",
+                label="Lock",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+                tooltip="Lock thumbnail positions (Ctrl+Shift+L)",
+                shortcut="<ctrl>+<shift>+l",
+                handler_name="_toggle_lock",
+                checkable=True,
+            )
+        )
 
-        self.register(ActionSpec(
-            id="minimize_inactive",
-            label="Minimize Inactive",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
-            tooltip="Minimize all windows except the currently focused one",
-            handler_name="minimize_inactive_windows",
-        ))
+        self.register(
+            ActionSpec(
+                id="minimize_inactive",
+                label="Minimize Inactive",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+                tooltip="Minimize all windows except the currently focused one",
+                handler_name="minimize_inactive_windows",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="refresh_capture",
-            label="Refresh",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
-            tooltip="Restart capture for all windows",
-            handler_name="_refresh_all",
-        ))
+        self.register(
+            ActionSpec(
+                id="refresh_capture",
+                label="Refresh",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.OVERVIEW_TOOLBAR,
+                tooltip="Restart capture for all windows",
+                handler_name="_refresh_all",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="minimize_all",
-            label="Minimize All",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.TRAY_MENU,
-            tooltip="Minimize all EVE windows (Ctrl+Shift+M)",
-            shortcut="<ctrl>+<shift>+m",
-            handler_name="_minimize_all_windows",
-        ))
+        self.register(
+            ActionSpec(
+                id="minimize_all",
+                label="Minimize All",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.TRAY_MENU,
+                tooltip="Minimize all EVE windows (Ctrl+Shift+M)",
+                shortcut="<ctrl>+<shift>+m",
+                handler_name="_minimize_all_windows",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="restore_all",
-            label="Restore All",
-            scope=ActionScope.GLOBAL,
-            primary_home=PrimaryHome.TRAY_MENU,
-            tooltip="Restore all EVE windows (Ctrl+Shift+R)",
-            shortcut="<ctrl>+<shift>+r",
-            handler_name="_restore_all_windows",
-        ))
+        self.register(
+            ActionSpec(
+                id="restore_all",
+                label="Restore All",
+                scope=ActionScope.GLOBAL,
+                primary_home=PrimaryHome.TRAY_MENU,
+                tooltip="Restore all EVE windows (Ctrl+Shift+R)",
+                shortcut="<ctrl>+<shift>+r",
+                handler_name="_restore_all_windows",
+            )
+        )
 
         # --- Roster Tab (Characters & Teams) ---
-        self.register(ActionSpec(
-            id="add_character",
-            label="Add Character",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.ROSTER_TOOLBAR,
-            tooltip="Add new character",
-            handler_name="_add_character",
-        ))
+        self.register(
+            ActionSpec(
+                id="add_character",
+                label="Add Character",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.ROSTER_TOOLBAR,
+                tooltip="Add new character",
+                handler_name="_add_character",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="scan_eve_folder",
-            label="Scan EVE Folder",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.ROSTER_TOOLBAR,
-            tooltip="Import ALL characters from EVE installation",
-            icon="folder",
-            handler_name="_scan_eve_folder",
-        ))
+        self.register(
+            ActionSpec(
+                id="scan_eve_folder",
+                label="Scan EVE Folder",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.ROSTER_TOOLBAR,
+                tooltip="Import ALL characters from EVE installation",
+                icon="folder",
+                handler_name="_scan_eve_folder",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="new_team",
-            label="New Team",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.ROSTER_TOOLBAR,
-            tooltip="Create new team",
-            handler_name="_new_team",
-        ))
+        self.register(
+            ActionSpec(
+                id="new_team",
+                label="New Team",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.ROSTER_TOOLBAR,
+                tooltip="Create new team",
+                handler_name="_new_team",
+            )
+        )
 
         # --- Layouts Tab ---
-        self.register(ActionSpec(
-            id="apply_layout",
-            label="Apply to Windows",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
-            tooltip="Apply current arrangement to EVE windows",
-            handler_name="_apply_to_active_windows",
-        ))
+        self.register(
+            ActionSpec(
+                id="apply_layout",
+                label="Apply to Windows",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
+                tooltip="Apply current arrangement to EVE windows",
+                handler_name="_apply_to_active_windows",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="auto_arrange",
-            label="Auto-Arrange",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
-            tooltip="Arrange tiles based on selected pattern",
-            handler_name="_auto_arrange",
-        ))
+        self.register(
+            ActionSpec(
+                id="auto_arrange",
+                label="Auto-Arrange",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
+                tooltip="Arrange tiles based on selected pattern",
+                handler_name="_auto_arrange",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="save_layout_preset",
-            label="Save Preset",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
-            tooltip="Save current arrangement as a preset",
-            handler_name="_save_preset",
-        ))
+        self.register(
+            ActionSpec(
+                id="save_layout_preset",
+                label="Save Preset",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
+                tooltip="Save current arrangement as a preset",
+                handler_name="_save_preset",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="refresh_layout_groups",
-            label="Refresh Groups",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
-            tooltip="Reload cycling groups from Automation tab",
-            handler_name="_refresh_groups",
-        ))
+        self.register(
+            ActionSpec(
+                id="refresh_layout_groups",
+                label="Refresh Groups",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.LAYOUTS_TOOLBAR,
+                tooltip="Reload cycling groups from Automation tab",
+                handler_name="_refresh_groups",
+            )
+        )
 
         # --- Automation Tab (Hotkeys + Alerts) ---
-        self.register(ActionSpec(
-            id="new_group",
-            label="New Group",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.AUTOMATION_TOOLBAR,
-            tooltip="Create new cycling group",
-            handler_name="_create_new_group",
-        ))
+        self.register(
+            ActionSpec(
+                id="new_group",
+                label="New Group",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.AUTOMATION_TOOLBAR,
+                tooltip="Create new cycling group",
+                handler_name="_create_new_group",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="load_active_windows",
-            label="Load Active Windows",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.AUTOMATION_TOOLBAR,
-            tooltip="Load all currently active EVE windows into this group",
-            handler_name="_load_active_windows",
-        ))
+        self.register(
+            ActionSpec(
+                id="load_active_windows",
+                label="Load Active Windows",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.AUTOMATION_TOOLBAR,
+                tooltip="Load all currently active EVE windows into this group",
+                handler_name="_load_active_windows",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="save_hotkeys",
-            label="Save Hotkeys",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.AUTOMATION_TOOLBAR,
-            tooltip="Save hotkey settings",
-            handler_name="_save_hotkeys",
-        ))
+        self.register(
+            ActionSpec(
+                id="save_hotkeys",
+                label="Save Hotkeys",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.AUTOMATION_TOOLBAR,
+                tooltip="Save hotkey settings",
+                handler_name="_save_hotkeys",
+            )
+        )
 
         # --- Sync Tab ---
-        self.register(ActionSpec(
-            id="scan_eve_settings",
-            label="Scan for EVE Settings",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.SYNC_TOOLBAR,
-            tooltip="Scan EVE Online directory for character settings",
-            handler_name="_scan_settings",
-        ))
+        self.register(
+            ActionSpec(
+                id="scan_eve_settings",
+                label="Scan for EVE Settings",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.SYNC_TOOLBAR,
+                tooltip="Scan EVE Online directory for character settings",
+                handler_name="_scan_settings",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="preview_sync",
-            label="Preview Sync",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.SYNC_TOOLBAR,
-            tooltip="Preview what will be synced",
-            handler_name="_preview_sync",
-        ))
+        self.register(
+            ActionSpec(
+                id="preview_sync",
+                label="Preview Sync",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.SYNC_TOOLBAR,
+                tooltip="Preview what will be synced",
+                handler_name="_preview_sync",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="sync_settings",
-            label="Sync Settings",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.SYNC_TOOLBAR,
-            tooltip="Sync settings from source to targets",
-            handler_name="_sync_settings",
-        ))
+        self.register(
+            ActionSpec(
+                id="sync_settings",
+                label="Sync Settings",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.SYNC_TOOLBAR,
+                tooltip="Sync settings from source to targets",
+                handler_name="_sync_settings",
+            )
+        )
 
         # --- Settings Panel ---
-        self.register(ActionSpec(
-            id="reset_all_settings",
-            label="Reset All to Defaults",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.SETTINGS_PANEL,
-            tooltip="Reset all settings to defaults",
-            handler_name="_reset_all",
-        ))
+        self.register(
+            ActionSpec(
+                id="reset_all_settings",
+                label="Reset All to Defaults",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.SETTINGS_PANEL,
+                tooltip="Reset all settings to defaults",
+                handler_name="_reset_all",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="export_settings",
-            label="Export Settings",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.SETTINGS_PANEL,
-            tooltip="Export settings to file",
-            handler_name="_export_settings",
-        ))
+        self.register(
+            ActionSpec(
+                id="export_settings",
+                label="Export Settings",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.SETTINGS_PANEL,
+                tooltip="Export settings to file",
+                handler_name="_export_settings",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="import_settings",
-            label="Import Settings",
-            scope=ActionScope.TAB,
-            primary_home=PrimaryHome.SETTINGS_PANEL,
-            tooltip="Import settings from file",
-            handler_name="_import_settings",
-        ))
+        self.register(
+            ActionSpec(
+                id="import_settings",
+                label="Import Settings",
+                scope=ActionScope.TAB,
+                primary_home=PrimaryHome.SETTINGS_PANEL,
+                tooltip="Import settings from file",
+                handler_name="_import_settings",
+            )
+        )
 
         # =====================================================================
         # TIER 3: OBJECT ACTIONS (Context Menus)
         # =====================================================================
 
         # Window Preview Context Menu
-        self.register(ActionSpec(
-            id="focus_window",
-            label="Focus Window",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.WINDOW_CONTEXT,
-            tooltip="Activate this window",
-            handler_name="_focus_window",
-        ))
+        self.register(
+            ActionSpec(
+                id="focus_window",
+                label="Focus Window",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.WINDOW_CONTEXT,
+                tooltip="Activate this window",
+                handler_name="_focus_window",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="minimize_window",
-            label="Minimize",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.WINDOW_CONTEXT,
-            tooltip="Minimize this window",
-            handler_name="_minimize_window",
-        ))
+        self.register(
+            ActionSpec(
+                id="minimize_window",
+                label="Minimize",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.WINDOW_CONTEXT,
+                tooltip="Minimize this window",
+                handler_name="_minimize_window",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="close_window",
-            label="Close",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.WINDOW_CONTEXT,
-            tooltip="Close this window",
-            handler_name="_close_window",
-        ))
+        self.register(
+            ActionSpec(
+                id="close_window",
+                label="Close",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.WINDOW_CONTEXT,
+                tooltip="Close this window",
+                handler_name="_close_window",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="set_label",
-            label="Set Label...",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.WINDOW_CONTEXT,
-            tooltip="Set custom label for this window",
-            handler_name="_show_label_dialog",
-        ))
+        self.register(
+            ActionSpec(
+                id="set_label",
+                label="Set Label...",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.WINDOW_CONTEXT,
+                tooltip="Set custom label for this window",
+                handler_name="_show_label_dialog",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="remove_from_preview",
-            label="Remove from Preview",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.WINDOW_CONTEXT,
-            tooltip="Remove from preview (keeps window open)",
-            handler_name="_remove_from_preview",
-        ))
+        self.register(
+            ActionSpec(
+                id="remove_from_preview",
+                label="Remove from Preview",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.WINDOW_CONTEXT,
+                tooltip="Remove from preview (keeps window open)",
+                handler_name="_remove_from_preview",
+            )
+        )
 
         # Character Context Menu
-        self.register(ActionSpec(
-            id="edit_character",
-            label="Edit",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.CHARACTER_CONTEXT,
-            tooltip="Edit character details",
-            handler_name="_edit_character",
-        ))
+        self.register(
+            ActionSpec(
+                id="edit_character",
+                label="Edit",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.CHARACTER_CONTEXT,
+                tooltip="Edit character details",
+                handler_name="_edit_character",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="delete_character",
-            label="Delete",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.CHARACTER_CONTEXT,
-            tooltip="Delete character",
-            handler_name="_delete_character",
-        ))
+        self.register(
+            ActionSpec(
+                id="delete_character",
+                label="Delete",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.CHARACTER_CONTEXT,
+                tooltip="Delete character",
+                handler_name="_delete_character",
+            )
+        )
 
         # Team Context Menu
-        self.register(ActionSpec(
-            id="save_team",
-            label="Save Team",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.TEAM_CONTEXT,
-            tooltip="Save team changes",
-            handler_name="_save_team",
-        ))
+        self.register(
+            ActionSpec(
+                id="save_team",
+                label="Save Team",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.TEAM_CONTEXT,
+                tooltip="Save team changes",
+                handler_name="_save_team",
+            )
+        )
 
         # Group Context Menu
-        self.register(ActionSpec(
-            id="delete_group",
-            label="Delete Group",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.GROUP_CONTEXT,
-            tooltip="Delete cycling group",
-            handler_name="_delete_current_group",
-        ))
+        self.register(
+            ActionSpec(
+                id="delete_group",
+                label="Delete Group",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.GROUP_CONTEXT,
+                tooltip="Delete cycling group",
+                handler_name="_delete_current_group",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="remove_group_member",
-            label="Remove Selected",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.GROUP_CONTEXT,
-            tooltip="Remove selected member from group",
-            handler_name="_remove_selected_member",
-        ))
+        self.register(
+            ActionSpec(
+                id="remove_group_member",
+                label="Remove Selected",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.GROUP_CONTEXT,
+                tooltip="Remove selected member from group",
+                handler_name="_remove_selected_member",
+            )
+        )
 
-        self.register(ActionSpec(
-            id="clear_group",
-            label="Clear All",
-            scope=ActionScope.OBJECT,
-            primary_home=PrimaryHome.GROUP_CONTEXT,
-            tooltip="Clear all members from group",
-            handler_name="_clear_group_members",
-        ))
+        self.register(
+            ActionSpec(
+                id="clear_group",
+                label="Clear All",
+                scope=ActionScope.OBJECT,
+                primary_home=PrimaryHome.GROUP_CONTEXT,
+                tooltip="Clear all members from group",
+                handler_name="_clear_group_members",
+            )
+        )
 
     def register(self, action: ActionSpec):
         """Register an action"""
@@ -647,10 +740,12 @@ def audit_actions(registry: Optional[ActionRegistry] = None) -> Dict:
 
     for action_id, homes in action_homes.items():
         if len(homes) > 1:
-            results["duplicates"].append({
-                "action_id": action_id,
-                "homes": list(homes),
-            })
+            results["duplicates"].append(
+                {
+                    "action_id": action_id,
+                    "homes": list(homes),
+                }
+            )
             results["passed"] = False
 
     # Check for missing handlers (warning, not failure)
@@ -704,6 +799,7 @@ def print_audit_report(results: Optional[Dict] = None):
 if __name__ == "__main__":
     # Run audit when executed directly
     import sys
+
     registry = ActionRegistry.get_instance()
     passed = print_audit_report()
     sys.exit(0 if passed else 1)
