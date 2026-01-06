@@ -1,4 +1,4 @@
-# Argus Overview v2.5
+# Argus Overview v2.6
 
 **The Complete Professional Multi-Boxing Solution for EVE Online**
 
@@ -56,9 +56,42 @@ Your support helps keep this project maintained and improving! o7
 
 ---
 
+## 🌟 **v2.6 Performance & Layout Edition**
+
+This release focuses on **performance optimization and layout management** for running multiple EVE clients smoothly!
+
+### ✅ **NEW in v2.6:**
+
+#### 1. **Low Power Mode** ⭐⭐⭐⭐⭐
+- Reduces FPS to 5 and disables alerts
+- Perfect for running with EVE clients open
+- Minimizes GPU/CPU usage while maintaining functionality
+
+#### 2. **Auto-Minimize Inactive** ⭐⭐⭐⭐⭐
+- Automatically minimizes previous window when cycling
+- Works with preview clicks, F13/F14 hotkeys, and per-character hotkeys
+- Persistent toggle in Settings > Performance
+
+#### 3. **Disable Previews** ⭐⭐⭐⭐
+- Option to stop capture loop entirely
+- Maximum GPU savings - window cycling still works
+- Enable when you only need hotkey switching
+
+#### 4. **Drag-Drop Layout** ⭐⭐⭐⭐
+- Drag windows from preview area to arrangement grid
+- Visual placement before applying layout
+- Works with all grid patterns (2x2, 3x1, etc.)
+
+#### 5. **HotkeyEdit Widget** ⭐⭐⭐
+- Click "Record" then press any key to set hotkeys
+- Supports F13/F14 for G13 integration
+- No more manual text entry
+
+---
+
 ## 🌟 **v2.2 Ultimate Edition - Major UX Overhaul!**
 
-This release focuses on **usability, automation, and polish** with 14 new features!
+This release focused on **usability, automation, and polish** with 14 new features!
 
 ### ✅ **NEW in v2.2:**
 
@@ -344,5 +377,5 @@ MIT License - See LICENSE file
 
 **Fly safe, capsuleers! o7**
 
-*Argus Overview v2.5*
+*Argus Overview v2.6*
 *The Complete Professional Solution for Linux Multi-Boxing*
