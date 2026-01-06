@@ -37,7 +37,8 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+# NOTE: MainWindowV21 is imported INSIDE main() AFTER single-instance check
+# to prevent race conditions from early imports starting background threads
 
 
 class SingleInstance:
@@ -147,6 +148,10 @@ def main():
             "Check your system tray for the existing instance."
         )
         sys.exit(1)
+
+    # Import main window AFTER lock acquired to avoid race conditions
+    # (importing can start background threads/X11 hooks)
+    from eve_overview_pro.ui.main_window_v21 import MainWindowV21
 
     # Create application
     app = QApplication(sys.argv)
