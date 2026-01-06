@@ -268,9 +268,32 @@ class MainWindowV21(QMainWindow):
             self._cycle_prev()
 
     def _activate_window(self, window_id: str):
-        """Activate a window by ID using xdotool"""
+        """Activate a window by ID using xdotool, optionally minimizing previous"""
         import subprocess
         try:
+            # Check if auto-minimize is enabled
+            auto_minimize = self.settings_manager.get("performance.auto_minimize_inactive", False)
+
+            if auto_minimize:
+                # Get currently focused window before switching
+                result = subprocess.run(
+                    ['xdotool', 'getwindowfocus'],
+                    capture_output=True,
+                    text=True,
+                    timeout=1
+                )
+                if result.returncode == 0:
+                    previous_window = result.stdout.strip()
+                    # Minimize it if it's different from target
+                    if previous_window and previous_window != window_id:
+                        subprocess.run(
+                            ['xdotool', 'windowminimize', previous_window],
+                            capture_output=True,
+                            timeout=1
+                        )
+                        self.logger.debug(f"Auto-minimized previous window: {previous_window}")
+
+            # Activate the new window
             subprocess.run(
                 ['xdotool', 'windowactivate', '--sync', window_id],
                 capture_output=True,
@@ -539,7 +562,10 @@ class MainWindowV21(QMainWindow):
 
         # Route to appropriate component
         if key.startswith("performance"):
-            if key == "performance.capture_workers":
+            if key == "performance.low_power_mode":
+                # Low power mode: FPS=5, alerts off
+                self._apply_low_power_mode(value)
+            elif key == "performance.capture_workers":
                 # This requires restart of capture system
                 self.logger.warning("Capture worker count change requires restart")
             elif key == "performance.default_refresh_rate":
@@ -559,6 +585,64 @@ class MainWindowV21(QMainWindow):
             # Update hotkey manager
             # Will be implemented with hotkey functionality
             pass
+
+    def _apply_low_power_mode(self, enabled: bool):
+        """
+        Apply low power mode settings.
+        When enabled: FPS=5, alerts disabled.
+        When disabled: restore previous settings.
+
+        Args:
+            enabled: True to enable low power mode
+        """
+        if enabled:
+            self.logger.info("Enabling Low Power Mode (FPS=5, alerts off)")
+
+            # Store previous values for restoration
+            if not hasattr(self, '_low_power_previous'):
+                self._low_power_previous = {
+                    'fps': self.settings_manager.get("performance.default_refresh_rate", 30),
+                    'alerts': self.settings_manager.get("alerts.enabled", True),
+                }
+
+            # Set FPS to 5
+            if hasattr(self, 'main_tab'):
+                self.main_tab.window_manager.set_refresh_rate(5)
+                # Also update the spinner in main tab toolbar
+                if hasattr(self.main_tab, 'refresh_rate_spin'):
+                    self.main_tab.refresh_rate_spin.blockSignals(True)
+                    self.main_tab.refresh_rate_spin.setValue(5)
+                    self.main_tab.refresh_rate_spin.blockSignals(False)
+
+            # Disable alerts
+            self.settings_manager.set("alerts.enabled", False)
+            self._apply_initial_settings()
+
+            # Update status bar
+            self.statusBar().showMessage("⚡ Low Power Mode active (FPS=5, alerts off)", 5000)
+
+        else:
+            self.logger.info("Disabling Low Power Mode (restoring previous settings)")
+
+            # Restore previous values
+            if hasattr(self, '_low_power_previous'):
+                prev = self._low_power_previous
+
+                # Restore FPS
+                if hasattr(self, 'main_tab'):
+                    self.main_tab.window_manager.set_refresh_rate(prev['fps'])
+                    if hasattr(self.main_tab, 'refresh_rate_spin'):
+                        self.main_tab.refresh_rate_spin.blockSignals(True)
+                        self.main_tab.refresh_rate_spin.setValue(prev['fps'])
+                        self.main_tab.refresh_rate_spin.blockSignals(False)
+
+                # Restore alerts
+                self.settings_manager.set("alerts.enabled", prev['alerts'])
+                self._apply_initial_settings()
+
+                del self._low_power_previous
+
+            self.statusBar().showMessage("Low Power Mode disabled", 3000)
 
     @Slot(str, str)
     def _on_character_detected(self, window_id: str, char_name: str):

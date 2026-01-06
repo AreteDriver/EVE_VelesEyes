@@ -235,7 +235,7 @@ class DraggableTile(QFrame):
 
 
 class ArrangementGrid(QWidget):
-    """Compact grid for arranging character tiles"""
+    """Compact grid for arranging character tiles - accepts drops from window previews"""
 
     arrangement_changed = Signal(dict)
 
@@ -246,6 +246,7 @@ class ArrangementGrid(QWidget):
         self.grid_rows = 2
         self.grid_cols = 3
 
+        self.setAcceptDrops(True)  # Enable drop support
         self._setup_ui()
 
     def _setup_ui(self):
@@ -372,6 +373,50 @@ class ArrangementGrid(QWidget):
 
         self.arrangement_changed.emit(self.get_arrangement())
 
+    def dragEnterEvent(self, event):
+        """Accept drags with EVE character data"""
+        if event.mimeData().hasFormat("application/x-eve-character"):
+            event.acceptProposedAction()
+        elif event.mimeData().hasText():
+            event.acceptProposedAction()
+
+    def dragMoveEvent(self, event):
+        """Show drop indicator while dragging"""
+        event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        """Handle drop - add character to grid at drop position"""
+        # Get character name from drag data
+        if event.mimeData().hasFormat("application/x-eve-character"):
+            char_name = event.mimeData().data("application/x-eve-character").data().decode()
+        elif event.mimeData().hasText():
+            char_name = event.mimeData().text()
+        else:
+            return
+
+        # Calculate which grid cell was dropped on
+        pos = event.position().toPoint()
+        cell_width = self.width() // max(1, self.grid_cols)
+        cell_height = self.height() // max(1, self.grid_rows)
+
+        col = min(pos.x() // cell_width, self.grid_cols - 1)
+        row = min(pos.y() // cell_height, self.grid_rows - 1)
+
+        self.logger.info(f"Dropped {char_name} at grid position ({row}, {col})")
+
+        # Remove existing tile if same character
+        if char_name in self.tiles:
+            old_tile = self.tiles[char_name]
+            self.grid_layout.removeWidget(old_tile)
+            old_tile.deleteLater()
+            del self.tiles[char_name]
+
+        # Add character at drop position
+        self.add_character(char_name, row, col)
+        self.arrangement_changed.emit(self.get_arrangement())
+
+        event.acceptProposedAction()
+
 
 class GridApplier:
     """Applies grid patterns to actual windows using xdotool"""
@@ -414,19 +459,26 @@ class GridApplier:
                          screen: ScreenGeometry,
                          grid_rows: int, grid_cols: int,
                          spacing: int = 10,
-                         stacked: bool = False) -> bool:
+                         stacked: bool = False,
+                         stacked_use_grid_size: bool = True) -> bool:
         try:
-            if stacked:
-                for _char_name, window_id in window_map.items():
-                    x = screen.x + spacing
-                    y = screen.y + spacing
-                    w = screen.width - spacing * 2
-                    h = screen.height - spacing * 2
-                    self._move_window(window_id, x, y, w, h)
-            else:
-                cell_width = (screen.width - spacing * (grid_cols + 1)) // grid_cols
-                cell_height = (screen.height - spacing * (grid_rows + 1)) // grid_rows
+            # Calculate grid cell size (used for both grid and optionally stacked)
+            cell_width = (screen.width - spacing * (grid_cols + 1)) // grid_cols
+            cell_height = (screen.height - spacing * (grid_rows + 1)) // grid_rows
 
+            if stacked:
+                # Stack all windows at same position
+                x = screen.x + spacing
+                y = screen.y + spacing
+
+                for _char_name, window_id in window_map.items():
+                    if stacked_use_grid_size:
+                        # Use grid cell size for stacked windows
+                        self._move_window(window_id, x, y, cell_width, cell_height)
+                    else:
+                        # Keep current size, just move to stack position
+                        self._move_window_position_only(window_id, x, y)
+            else:
                 for char_name, (row, col) in arrangement.items():
                     if char_name not in window_map:
                         continue
@@ -469,6 +521,22 @@ class GridApplier:
         except subprocess.TimeoutExpired:
             subprocess.run(
                 ['xdotool', 'windowsize', window_id, str(w), str(h)],
+                capture_output=True, timeout=2
+            )
+            time.sleep(0.1)
+
+    def _move_window_position_only(self, window_id: str, x: int, y: int):
+        """Move a window without resizing (keeps current size)"""
+        import time
+
+        try:
+            subprocess.run(
+                ['xdotool', 'windowmove', '--sync', window_id, str(x), str(y)],
+                capture_output=True, timeout=2
+            )
+        except subprocess.TimeoutExpired:
+            subprocess.run(
+                ['xdotool', 'windowmove', window_id, str(x), str(y)],
                 capture_output=True, timeout=2
             )
             time.sleep(0.1)
@@ -817,11 +885,45 @@ class WindowPreviewWidget(QWidget):
         painter.end()
 
     def mousePressEvent(self, event):
-        """Handle mouse click"""
+        """Handle mouse click - start drag or activate"""
         if event.button() == Qt.MouseButton.LeftButton:
-            # Activate window
-            self.window_activated.emit(self.window_id)
-            self.logger.info(f"Activating window: {self.window_id}")
+            self._drag_start_pos = event.pos()
+
+    def mouseMoveEvent(self, event):
+        """Handle mouse move - initiate drag if moved far enough"""
+        if not hasattr(self, '_drag_start_pos') or self._drag_start_pos is None:
+            return
+
+        # Check if moved far enough to start drag
+        if (event.pos() - self._drag_start_pos).manhattanLength() < 10:
+            return
+
+        # Start drag operation
+        from PySide6.QtGui import QDrag
+        from PySide6.QtCore import QMimeData
+
+        drag = QDrag(self)
+        mime_data = QMimeData()
+        mime_data.setText(self.character_name)  # Pass character name
+        mime_data.setData("application/x-eve-character", self.character_name.encode())
+        drag.setMimeData(mime_data)
+
+        # Create a small preview for the drag
+        pixmap = self.grab().scaled(80, 50, Qt.AspectRatioMode.KeepAspectRatio)
+        drag.setPixmap(pixmap)
+        drag.setHotSpot(pixmap.rect().center())
+
+        self._drag_start_pos = None
+        drag.exec(Qt.DropAction.MoveAction)
+
+    def mouseReleaseEvent(self, event):
+        """Handle mouse release - activate window if not dragging"""
+        if event.button() == Qt.MouseButton.LeftButton:
+            if hasattr(self, '_drag_start_pos') and self._drag_start_pos is not None:
+                # Didn't drag far enough, treat as click
+                self.window_activated.emit(self.window_id)
+                self.logger.info(f"Activating window: {self.window_id}")
+            self._drag_start_pos = None
 
     def contextMenuEvent(self, event):
         """Handle right-click context menu (v2.3 - uses ActionRegistry)"""
@@ -1080,7 +1182,8 @@ class MainTab(QWidget):
         # v2.2 State
         self._thumbnails_visible = True
         self._positions_locked = False
-        self._windows_minimized = False  # Track if windows are minimized
+        # Load auto-minimize state from settings
+        self._windows_minimized = settings_manager.get("performance.auto_minimize_inactive", False) if settings_manager else False
 
         # v2.3: Layout controls
         self.grid_applier = GridApplier()
@@ -1192,6 +1295,7 @@ class MainTab(QWidget):
         self.minimize_inactive_btn = toolbar_builder.create_button("minimize_inactive", self.minimize_inactive_windows)
         if self.minimize_inactive_btn:
             self.minimize_inactive_btn.setCheckable(True)
+            self._update_minimize_button_style()  # Apply saved state
             toolbar_layout.addWidget(self.minimize_inactive_btn)
 
         # Add refresh button
@@ -1272,7 +1376,19 @@ class MainTab(QWidget):
         # Stack checkbox
         self.stack_checkbox = QCheckBox("Stack")
         self.stack_checkbox.setToolTip("Place all windows at the same position")
+        self.stack_checkbox.stateChanged.connect(self._on_stack_changed)
         controls_row.addWidget(self.stack_checkbox)
+
+        # Resize stacked windows checkbox
+        self.stack_resize_checkbox = QCheckBox("Resize")
+        self.stack_resize_checkbox.setChecked(True)
+        self.stack_resize_checkbox.setToolTip(
+            "When stacking:\n"
+            "• Checked: Resize windows to grid cell size\n"
+            "• Unchecked: Keep current window sizes"
+        )
+        self.stack_resize_checkbox.setEnabled(False)  # Only enabled when stacking
+        controls_row.addWidget(self.stack_resize_checkbox)
 
         controls_row.addStretch()
 
@@ -1357,8 +1473,15 @@ class MainTab(QWidget):
     def _on_pattern_changed(self):
         """Handle pattern change"""
         pattern = self.pattern_combo.currentText()
-        self.stack_checkbox.setChecked(pattern == "Stacked (All Same Position)")
+        is_stacked = pattern == "Stacked (All Same Position)"
+        self.stack_checkbox.setChecked(is_stacked)
+        self.stack_resize_checkbox.setEnabled(is_stacked)
         self._auto_arrange_tiles()
+
+    def _on_stack_changed(self):
+        """Handle stack checkbox change"""
+        is_stacked = self.stack_checkbox.isChecked()
+        self.stack_resize_checkbox.setEnabled(is_stacked)
 
     def _update_arrangement_grid_size(self):
         """Update arrangement grid dimensions"""
@@ -1407,7 +1530,8 @@ class MainTab(QWidget):
             grid_rows=self.grid_rows_spin.value(),
             grid_cols=self.grid_cols_spin.value(),
             spacing=self.spacing_spin.value(),
-            stacked=self.stack_checkbox.isChecked()
+            stacked=self.stack_checkbox.isChecked(),
+            stacked_use_grid_size=self.stack_resize_checkbox.isChecked()
         )
 
         if success:
@@ -1659,55 +1783,56 @@ class MainTab(QWidget):
             self._update_status()
 
     def minimize_inactive_windows(self):
-        """Toggle minimize/restore all windows except focused one"""
+        """Toggle auto-minimize mode - when enabled, cycling minimizes previous window"""
         try:
-            if self._windows_minimized:
-                # Restore all windows
-                restored_count = 0
-                for window_id in self.window_manager.preview_frames.keys():
-                    if self.capture_system.restore_window(window_id):
-                        restored_count += 1
+            # Toggle the setting
+            current = self.settings_manager.get("performance.auto_minimize_inactive", False) if self.settings_manager else False
+            new_value = not current
 
-                self._windows_minimized = False
-                self._update_minimize_button_style()
-                self.logger.info(f"Restored {restored_count} windows")
-                self.status_label.setText(f"Restored {restored_count} windows")
-            else:
-                # Minimize inactive windows
+            if self.settings_manager:
+                self.settings_manager.set("performance.auto_minimize_inactive", new_value)
+
+            self._windows_minimized = new_value
+            self._update_minimize_button_style()
+
+            if new_value:
+                # Mode enabled - also minimize inactive windows now
                 result = subprocess.run(['xdotool', 'getwindowfocus'], capture_output=True, text=True, timeout=1)
                 if result.returncode == 0:
                     focused_id = result.stdout.strip()
-
                     minimized_count = 0
                     for window_id in self.window_manager.preview_frames.keys():
                         if window_id != focused_id:
                             if self.capture_system.minimize_window(window_id):
                                 minimized_count += 1
-
-                    if minimized_count > 0:
-                        self._windows_minimized = True
-                        self._update_minimize_button_style()
-
-                    self.logger.info(f"Minimized {minimized_count} inactive windows")
-                    self.status_label.setText(f"Minimized {minimized_count} windows (GPU savings!)")
+                    self.logger.info(f"Auto-minimize enabled, minimized {minimized_count} windows")
+                    self.status_label.setText(f"Auto-minimize ON ({minimized_count} minimized)")
                 else:
-                    self.logger.warning("Failed to get focused window")
+                    self.status_label.setText("Auto-minimize ON")
+            else:
+                # Mode disabled - restore all windows
+                restored_count = 0
+                for window_id in self.window_manager.preview_frames.keys():
+                    if self.capture_system.restore_window(window_id):
+                        restored_count += 1
+                self.logger.info(f"Auto-minimize disabled, restored {restored_count} windows")
+                self.status_label.setText(f"Auto-minimize OFF ({restored_count} restored)")
 
         except Exception as e:
-            self.logger.error(f"Error minimizing/restoring windows: {e}")
+            self.logger.error(f"Error toggling auto-minimize: {e}")
 
     def _update_minimize_button_style(self):
         """Update minimize button visual state"""
         if hasattr(self, 'minimize_inactive_btn') and self.minimize_inactive_btn:
             self.minimize_inactive_btn.setChecked(self._windows_minimized)
             if self._windows_minimized:
-                self.minimize_inactive_btn.setText("Restore")
+                self.minimize_inactive_btn.setText("⚡ Auto-Min ON")
                 self.minimize_inactive_btn.setStyleSheet(
-                    "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }"
-                    "QPushButton:hover { background-color: #66BB6A; }"
+                    "QPushButton { background-color: #e67e22; color: white; font-weight: bold; }"
+                    "QPushButton:hover { background-color: #f39c12; }"
                 )
             else:
-                self.minimize_inactive_btn.setText("Minimize Inactive")
+                self.minimize_inactive_btn.setText("Auto-Minimize")
                 self.minimize_inactive_btn.setStyleSheet("")
 
     def _refresh_all(self):

@@ -27,6 +27,8 @@ class SettingsManager:
             "hot_reload": True
         },
         "performance": {
+            "low_power_mode": False,  # FPS=5, alerts off - for running with EVE clients
+            "auto_minimize_inactive": False,  # Auto-minimize previous window when cycling
             "disable_previews": False,  # Disable all window captures (saves GPU/CPU)
             "default_refresh_rate": 1,  # FPS - 1 is efficient, increase if needed
             "capture_workers": 1,  # Single worker to reduce overhead

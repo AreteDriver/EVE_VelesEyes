@@ -1277,15 +1277,18 @@ class TestActivateWindow:
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = False  # auto_minimize off
 
         mock_run.return_value = MagicMock(returncode=0)
 
         MainWindowV21._activate_window(window, "0x12345")
 
-        mock_run.assert_called_once()
-        args = mock_run.call_args[0][0]
-        assert "xdotool" in args
-        assert "0x12345" in args
+        # Check xdotool windowactivate was called (may have other subprocess calls)
+        calls = [c for c in mock_run.call_args_list if c[0] and 'xdotool' in c[0][0]]
+        assert len(calls) >= 1
+        assert 'windowactivate' in calls[-1][0][0]
+        assert '0x12345' in calls[-1][0][0]
 
     @patch('subprocess.run')
     def test_activate_window_failure(self, mock_run):
@@ -1294,12 +1297,32 @@ class TestActivateWindow:
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = False  # auto_minimize off
 
         mock_run.side_effect = Exception("xdotool not found")
 
         MainWindowV21._activate_window(window, "0x12345")
 
         window.logger.error.assert_called()
+
+    @patch('subprocess.run')
+    def test_activate_window_with_auto_minimize(self, mock_run):
+        """Test activating window minimizes previous when auto-minimize enabled"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = True  # auto_minimize ON
+
+        # First call returns focused window, subsequent calls succeed
+        mock_run.return_value = MagicMock(returncode=0, stdout="0x99999")
+
+        MainWindowV21._activate_window(window, "0x12345")
+
+        # Should have 3 calls: getwindowfocus, windowminimize, windowactivate
+        assert mock_run.call_count == 3
 
 
 # Test _create_menu_bar

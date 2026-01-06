@@ -212,6 +212,24 @@ class PerformancePanel(QWidget):
         group = QGroupBox("Performance Settings")
         form = QFormLayout()
 
+        # Low Power Mode (master toggle)
+        self.low_power_check = QCheckBox()
+        self.low_power_check.setChecked(
+            self.settings_manager.get("performance.low_power_mode", False)
+        )
+        self.low_power_check.stateChanged.connect(self._on_low_power_changed)
+        self.low_power_check.setToolTip(
+            "LOW POWER MODE\n"
+            "• Sets FPS to 5\n"
+            "• Disables alert detection\n"
+            "• Reduces CPU/GPU load significantly\n\n"
+            "Use when running multiple EVE clients."
+        )
+        self.low_power_check.setStyleSheet(
+            "QCheckBox { font-weight: bold; color: #e67e22; }"
+        )
+        form.addRow("⚡ Low Power Mode:", self.low_power_check)
+
         # Disable previews (GPU/CPU saver)
         self.disable_previews_check = QCheckBox()
         self.disable_previews_check.setChecked(
@@ -286,6 +304,11 @@ class PerformancePanel(QWidget):
         layout.addWidget(group)
         layout.addStretch()
         self.setLayout(layout)
+
+    def _on_low_power_changed(self):
+        """Handle low power mode toggle - emits setting change"""
+        enabled = self.low_power_check.isChecked()
+        self.setting_changed.emit("performance.low_power_mode", enabled)
 
 
 class AlertsPanel(QWidget):

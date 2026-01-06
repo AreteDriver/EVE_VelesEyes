@@ -838,8 +838,8 @@ class TestWindowPreviewWidget:
             assert widget._is_hovered is False
             widget.opacity_effect.setOpacity.assert_called_once_with(1.0)
 
-    def test_mouse_press_left_button(self):
-        """Test mousePressEvent emits signal on left click"""
+    def test_mouse_click_activates_window(self):
+        """Test left click (press + release) emits window_activated signal"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, '__init__', return_value=None):
@@ -850,9 +850,14 @@ class TestWindowPreviewWidget:
 
             mock_event = MagicMock()
             mock_event.button.return_value = Qt.MouseButton.LeftButton
+            mock_event.pos.return_value = MagicMock()
 
+            # Press sets drag start position
             widget.mousePressEvent(mock_event)
+            assert hasattr(widget, '_drag_start_pos')
 
+            # Release (without drag) emits window_activated
+            widget.mouseReleaseEvent(mock_event)
             widget.window_activated.emit.assert_called_once_with("12345")
 
 
