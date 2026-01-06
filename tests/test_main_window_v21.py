@@ -1315,14 +1315,18 @@ class TestActivateWindow:
         window.logger = MagicMock()
         window.settings_manager = MagicMock()
         window.settings_manager.get.return_value = True  # auto_minimize ON
+        window._last_activated_eve_window = "0x99999"  # Previous EVE window
 
-        # First call returns focused window, subsequent calls succeed
-        mock_run.return_value = MagicMock(returncode=0, stdout="0x99999")
+        mock_run.return_value = MagicMock(returncode=0)
 
         MainWindowV21._activate_window(window, "0x12345")
 
-        # Should have 3 calls: getwindowfocus, windowminimize, windowactivate
-        assert mock_run.call_count == 3
+        # Should have 2 calls: windowminimize (previous), windowactivate (new)
+        assert mock_run.call_count == 2
+        # Verify minimize was called on previous window
+        calls = [str(c) for c in mock_run.call_args_list]
+        assert any('windowminimize' in c and '0x99999' in c for c in calls)
+        assert any('windowactivate' in c and '0x12345' in c for c in calls)
 
 
 # Test _create_menu_bar

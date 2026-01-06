@@ -268,30 +268,27 @@ class MainWindowV21(QMainWindow):
             self._cycle_prev()
 
     def _activate_window(self, window_id: str):
-        """Activate a window by ID using xdotool, optionally minimizing previous"""
+        """Activate a window by ID using xdotool, optionally minimizing previous EVE window"""
         import subprocess
         try:
             # Check if auto-minimize is enabled
             auto_minimize = self.settings_manager.get("performance.auto_minimize_inactive", False)
 
             if auto_minimize:
-                # Get currently focused window before switching
-                result = subprocess.run(
-                    ['xdotool', 'getwindowfocus'],
-                    capture_output=True,
-                    text=True,
-                    timeout=1
-                )
-                if result.returncode == 0:
-                    previous_window = result.stdout.strip()
-                    # Minimize it if it's different from target
-                    if previous_window and previous_window != window_id:
-                        subprocess.run(
-                            ['xdotool', 'windowminimize', previous_window],
-                            capture_output=True,
-                            timeout=1
-                        )
-                        self.logger.debug(f"Auto-minimized previous window: {previous_window}")
+                # Get the last activated EVE window (tracked internally)
+                last_eve_window = getattr(self, '_last_activated_eve_window', None)
+
+                if last_eve_window and last_eve_window != window_id:
+                    # Minimize the previous EVE window
+                    subprocess.run(
+                        ['xdotool', 'windowminimize', last_eve_window],
+                        capture_output=True,
+                        timeout=1
+                    )
+                    self.logger.info(f"Auto-minimized previous EVE window: {last_eve_window}")
+
+            # Track this as the last activated EVE window
+            self._last_activated_eve_window = window_id
 
             # Activate the new window
             subprocess.run(

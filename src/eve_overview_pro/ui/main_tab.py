@@ -293,11 +293,15 @@ class ArrangementGrid(QWidget):
                 """)
                 self.grid_layout.addWidget(cell, row, col)
 
-        for _char_name, tile in self.tiles.items():
-            row = min(tile.grid_row, rows - 1)
-            col = min(tile.grid_col, cols - 1)
-            tile.set_position(row, col)
-            self.grid_layout.addWidget(tile, row, col)
+        for _char_name, tile in list(self.tiles.items()):
+            try:
+                row = min(tile.grid_row, rows - 1)
+                col = min(tile.grid_col, cols - 1)
+                tile.set_position(row, col)
+                self.grid_layout.addWidget(tile, row, col)
+            except RuntimeError:
+                # Tile was deleted, remove from tracking
+                del self.tiles[_char_name]
 
     def clear_tiles(self):
         for tile in list(self.tiles.values()):
@@ -407,8 +411,11 @@ class ArrangementGrid(QWidget):
         # Remove existing tile if same character
         if char_name in self.tiles:
             old_tile = self.tiles[char_name]
-            self.grid_layout.removeWidget(old_tile)
-            old_tile.deleteLater()
+            try:
+                self.grid_layout.removeWidget(old_tile)
+                old_tile.deleteLater()
+            except RuntimeError:
+                pass  # Already deleted
             del self.tiles[char_name]
 
         # Add character at drop position
@@ -1747,8 +1754,27 @@ class MainTab(QWidget):
             self._update_status()
 
     def _on_window_activated(self, window_id: str):
-        """Handle window activation"""
+        """Handle window activation with optional auto-minimize of previous window"""
+        import subprocess
         try:
+            # Check if auto-minimize is enabled
+            auto_minimize = self.settings_manager.get("performance.auto_minimize_inactive", False) if self.settings_manager else False
+
+            if auto_minimize:
+                # Get the last activated EVE window
+                last_window = getattr(self, '_last_activated_eve_window', None)
+                if last_window and last_window != window_id:
+                    # Minimize the previous EVE window
+                    subprocess.run(
+                        ['xdotool', 'windowminimize', last_window],
+                        capture_output=True,
+                        timeout=1
+                    )
+                    self.logger.info(f"Auto-minimized previous EVE window: {last_window}")
+
+            # Track this as the last activated EVE window
+            self._last_activated_eve_window = window_id
+
             result = self.capture_system.activate_window(window_id)
             if result:
                 self.logger.info(f"Activated window: {window_id}")
