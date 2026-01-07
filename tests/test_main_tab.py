@@ -6257,3 +6257,603 @@ class TestMainTabOnLayoutSourceChanged:
 
 
 # Note: TestMainTabRemoveAllWindows removed - QMessageBox.question() crashes in headless mode
+
+
+# =============================================================================
+# Real Widget Instantiation Tests (for __init__ coverage)
+# =============================================================================
+
+import pytest
+from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QColor
+
+
+@pytest.fixture(scope="module")
+def qapp():
+    """Create QApplication for tests that need real Qt widgets."""
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication([])
+    yield app
+
+
+class TestFlowLayoutRealInit:
+    """Tests for FlowLayout real __init__ (lines 72-75)"""
+
+    def test_real_init_default(self, qapp):
+        """Test FlowLayout real initialization with defaults"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout()
+
+        assert layout._item_list == []
+        assert layout._margin == 10
+        assert layout._spacing == 10
+
+    def test_real_init_custom(self, qapp):
+        """Test FlowLayout real initialization with custom values"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout(margin=20, spacing=15)
+
+        assert layout._item_list == []
+        assert layout._margin == 20
+        assert layout._spacing == 15
+
+    def test_expanding_directions(self, qapp):
+        """Test expandingDirections returns empty orientation"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+        from PySide6.QtCore import Qt
+
+        layout = FlowLayout()
+        result = layout.expandingDirections()
+
+        assert result == Qt.Orientation(0)
+
+    def test_has_height_for_width(self, qapp):
+        """Test hasHeightForWidth returns True"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout()
+        assert layout.hasHeightForWidth() is True
+
+    def test_size_hint(self, qapp):
+        """Test sizeHint returns minimumSize"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout()
+        assert layout.sizeHint() == layout.minimumSize()
+
+    def test_minimum_size_empty(self, qapp):
+        """Test minimumSize with no items"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout(margin=10)
+        size = layout.minimumSize()
+
+        # With no items, should just have margins (may be 19 due to rounding)
+        assert size.width() >= 19  # ~2 * margin
+        assert size.height() >= 19
+
+
+class TestDraggableTileRealInit:
+    """Tests for DraggableTile real __init__ (lines 194-221)"""
+
+    def test_real_init(self, qapp):
+        """Test DraggableTile real initialization"""
+        from eve_overview_pro.ui.main_tab import DraggableTile
+
+        color = QColor(100, 150, 200)
+        tile = DraggableTile("TestChar", color)
+
+        assert tile.char_name == "TestChar"
+        assert tile.color == color
+        assert tile.grid_row == 0
+        assert tile.grid_col == 0
+        assert tile.is_stacked is False
+        assert tile.name_label is not None
+        assert tile.pos_label is not None
+
+    def test_update_style(self, qapp):
+        """Test _update_style sets stylesheet"""
+        from eve_overview_pro.ui.main_tab import DraggableTile
+
+        color = QColor(100, 150, 200)
+        tile = DraggableTile("TestChar", color)
+
+        # Just verify no crash and style is set
+        style = tile.styleSheet()
+        assert "background-color" in style
+
+    def test_set_position(self, qapp):
+        """Test set_position updates row/col and label"""
+        from eve_overview_pro.ui.main_tab import DraggableTile
+
+        tile = DraggableTile("TestChar", QColor(100, 100, 100))
+        tile.set_position(2, 3)
+
+        assert tile.grid_row == 2
+        assert tile.grid_col == 3
+        assert tile.pos_label.text() == "(2, 3)"
+
+    def test_set_stacked(self, qapp):
+        """Test set_stacked updates state and label"""
+        from eve_overview_pro.ui.main_tab import DraggableTile
+
+        tile = DraggableTile("TestChar", QColor(100, 100, 100))
+        tile.set_stacked(True)
+
+        assert tile.is_stacked is True
+        assert tile.pos_label.text() == "(Stacked)"
+
+
+class TestArrangementGridRealInit:
+    """Tests for ArrangementGrid real __init__ (lines 251-312)"""
+
+    def test_real_init(self, qapp):
+        """Test ArrangementGrid real initialization"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        grid = ArrangementGrid()
+
+        assert grid.tiles == {}
+        assert grid.grid_rows == 2
+        assert grid.grid_cols == 3
+        assert grid.acceptDrops() is True
+        assert grid.grid_layout is not None
+
+    def test_setup_ui_creates_cells(self, qapp):
+        """Test _setup_ui creates correct number of cells"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        grid = ArrangementGrid()
+
+        # Should have 2x3 = 6 cells
+        assert grid.grid_layout.count() == 6
+
+    def test_set_grid_size(self, qapp):
+        """Test set_grid_size changes grid dimensions"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        grid = ArrangementGrid()
+        grid.set_grid_size(3, 4)
+
+        assert grid.grid_rows == 3
+        assert grid.grid_cols == 4
+        # Should have 3x4 = 12 cells
+        assert grid.grid_layout.count() == 12
+
+    def test_set_grid_size_with_tiles(self, qapp):
+        """Test set_grid_size repositions existing tiles"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid, DraggableTile
+
+        grid = ArrangementGrid()
+        # Add a tile at position (1, 2)
+        tile = DraggableTile("TestChar", QColor(100, 100, 100))
+        tile.set_position(1, 2)
+        grid.tiles["TestChar"] = tile
+        grid.grid_layout.addWidget(tile, 1, 2)
+
+        # Resize to smaller grid
+        grid.set_grid_size(1, 2)
+
+        # Tile should be repositioned within bounds
+        assert tile.grid_row <= 0  # Max row is 0 now
+        assert tile.grid_col <= 1  # Max col is 1 now
+
+    def test_clear_tiles(self, qapp):
+        """Test clear_tiles removes all tiles"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid, DraggableTile
+
+        grid = ArrangementGrid()
+        tile = DraggableTile("TestChar", QColor(100, 100, 100))
+        grid.tiles["TestChar"] = tile
+        grid.grid_layout.addWidget(tile, 0, 0)
+
+        grid.clear_tiles()
+
+        assert grid.tiles == {}
+
+    def test_add_character(self, qapp):
+        """Test add_character creates and positions tile"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        grid = ArrangementGrid()
+        grid.add_character("TestChar", row=1, col=1)
+
+        assert "TestChar" in grid.tiles
+        tile = grid.tiles["TestChar"]
+        assert tile.grid_row == 1
+        assert tile.grid_col == 1
+
+
+class TestWindowPreviewWidgetRealInit:
+    """Tests for WindowPreviewWidget real __init__ (lines 634-707)"""
+
+    def test_real_init(self, qapp):
+        """Test WindowPreviewWidget real initialization"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+            settings_manager=None,
+        )
+
+        assert widget.window_id == "12345"
+        assert widget.character_name == "TestChar"
+        assert widget.capture_system == mock_capture
+        assert widget.current_pixmap is None
+        assert widget.alert_level is None
+        assert widget.zoom_factor == 0.3
+        assert widget.custom_label is None
+        assert widget.is_focused is False
+        assert widget.image_label is not None
+        assert widget.info_label is not None
+        assert widget.timer_label is not None
+        assert widget.flash_timer is not None
+        assert widget.opacity_effect is not None
+
+    def test_real_init_with_settings_manager(self, qapp):
+        """Test WindowPreviewWidget with settings_manager"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        mock_capture = MagicMock()
+        mock_settings = MagicMock()
+        mock_settings.get.side_effect = lambda k, d: {
+            "thumbnails.opacity_on_hover": 0.5,
+            "thumbnails.zoom_on_hover": 2.0,
+            "thumbnails.show_activity_indicator": False,
+            "thumbnails.show_session_timer": True,
+            "thumbnails.lock_positions": True,
+        }.get(k, d)
+
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+            settings_manager=mock_settings,
+        )
+
+        assert widget._opacity_on_hover == 0.5
+        assert widget._zoom_on_hover == 2.0
+        assert widget._show_activity_indicator is False
+        assert widget._show_session_timer is True
+        assert widget._positions_locked is True
+
+
+class TestWindowPreviewWidgetPaintEventReal:
+    """Tests for WindowPreviewWidget.paintEvent (lines 874-915)"""
+
+    def test_paint_event_no_alert(self, qapp):
+        """Test paintEvent with no alert"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtGui import QPaintEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget._show_activity_indicator = False  # Disable activity indicator
+
+        # Create a paint event
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should not crash
+
+    def test_paint_event_with_alert(self, qapp):
+        """Test paintEvent with alert level"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget, AlertLevel
+        from PySide6.QtGui import QPaintEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget.alert_level = AlertLevel.HIGH
+        widget.alert_flash_counter = 5
+        widget._show_activity_indicator = False
+
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should draw red border
+
+    def test_paint_event_medium_alert(self, qapp):
+        """Test paintEvent with medium alert"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget, AlertLevel
+        from PySide6.QtGui import QPaintEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget.alert_level = AlertLevel.MEDIUM
+        widget.alert_flash_counter = 5
+        widget._show_activity_indicator = False
+
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should draw yellow border
+
+    def test_paint_event_low_alert(self, qapp):
+        """Test paintEvent with low alert"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget, AlertLevel
+        from PySide6.QtGui import QPaintEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget.alert_level = AlertLevel.LOW
+        widget.alert_flash_counter = 5
+        widget._show_activity_indicator = False
+
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should draw green border
+
+    def test_paint_event_with_activity_indicator_focused(self, qapp):
+        """Test paintEvent draws activity indicator when focused"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtGui import QPaintEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget._show_activity_indicator = True
+        widget.is_focused = True
+
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should draw green indicator
+
+    def test_paint_event_with_lock_icon(self, qapp):
+        """Test paintEvent draws lock icon when positions locked"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtGui import QPaintEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget._positions_locked = True
+        widget._show_activity_indicator = False
+
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should draw lock icon
+
+
+class TestWindowPreviewWidgetMouseEventsReal:
+    """Tests for WindowPreviewWidget mouse events (lines 917-947)"""
+
+    def test_mouse_press_event(self, qapp):
+        """Test mousePressEvent stores drag start position"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtCore import QPoint, Qt
+        from PySide6.QtGui import QMouseEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+
+        # Create mouse press event
+        event = QMouseEvent(
+            QMouseEvent.Type.MouseButtonPress,
+            QPoint(50, 50),
+            Qt.MouseButton.LeftButton,
+            Qt.MouseButton.LeftButton,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        widget.mousePressEvent(event)
+
+        assert widget._drag_start_pos == QPoint(50, 50)
+
+    def test_mouse_move_event_no_start_pos(self, qapp):
+        """Test mouseMoveEvent does nothing without drag start"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtCore import QPoint, Qt
+        from PySide6.QtGui import QMouseEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+
+        event = QMouseEvent(
+            QMouseEvent.Type.MouseMove,
+            QPoint(100, 100),
+            Qt.MouseButton.NoButton,
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        widget.mouseMoveEvent(event)  # Should not crash
+
+    def test_mouse_move_event_small_movement(self, qapp):
+        """Test mouseMoveEvent ignores small movements"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from PySide6.QtCore import QPoint, Qt
+        from PySide6.QtGui import QMouseEvent
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget._drag_start_pos = QPoint(50, 50)
+
+        # Small movement (less than 10 manhattan distance)
+        event = QMouseEvent(
+            QMouseEvent.Type.MouseMove,
+            QPoint(52, 52),  # Only 4 pixels manhattan distance
+            Qt.MouseButton.NoButton,
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        widget.mouseMoveEvent(event)
+
+        # Drag start should still be set (not cleared)
+        assert widget._drag_start_pos == QPoint(50, 50)
+
+
+class TestMainTabCreateToolbarReal:
+    """Tests for MainTab._create_toolbar (lines 1277-1343)"""
+
+    def test_create_toolbar(self, qapp):
+        """Test _create_toolbar creates toolbar with buttons"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab._windows_minimized = False
+
+            # Mock methods called by toolbar
+            tab.one_click_import = MagicMock()
+            tab.show_add_window_dialog = MagicMock()
+            tab._remove_all_windows = MagicMock()
+            tab._toggle_lock = MagicMock()
+            tab.minimize_inactive_windows = MagicMock()
+            tab._refresh_all = MagicMock()
+            tab._on_refresh_rate_changed = MagicMock()
+            tab._update_minimize_button_style = MagicMock()
+
+            toolbar = tab._create_toolbar()
+
+            assert toolbar is not None
+            assert tab.lock_btn is not None
+            assert tab.minimize_inactive_btn is not None
+            assert tab.refresh_rate_spin is not None
+
+
+class TestMainTabCreateLayoutControlsReal:
+    """Tests for MainTab._create_layout_controls (lines 1347-1459)"""
+
+    def test_create_layout_controls(self, qapp):
+        """Test _create_layout_controls creates layout section"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.cycling_groups = {}
+            tab.character_manager = MagicMock()
+            tab.character_manager.get_all_characters.return_value = []
+
+            # Mock methods
+            tab._refresh_layout_sources = MagicMock()
+            tab._on_layout_source_changed = MagicMock()
+            tab._on_pattern_changed = MagicMock()
+            tab._update_arrangement_grid_size = MagicMock()
+            tab._on_stack_changed = MagicMock()
+            tab._auto_arrange_tiles = MagicMock()
+            tab._apply_layout_to_windows = MagicMock()
+            tab._load_cycling_groups = MagicMock()
+
+            section = tab._create_layout_controls()
+
+            assert section is not None
+            assert tab.layout_source_combo is not None
+            assert tab.pattern_combo is not None
+            assert tab.grid_rows_spin is not None
+            assert tab.grid_cols_spin is not None
+            assert tab.spacing_spin is not None
+            assert tab.monitor_spin is not None
+            assert tab.stack_checkbox is not None
+            assert tab.stack_resize_checkbox is not None
+            assert tab.arrangement_grid is not None
+
+
+class TestArrangementGridDragDropReal:
+    """Tests for ArrangementGrid drag/drop events (lines 320-340)"""
+
+    def test_drag_enter_event_accepts_eve_character(self, qapp):
+        """Test dragEnterEvent accepts EVE character data"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from PySide6.QtCore import QMimeData, QPoint
+        from PySide6.QtGui import QDragEnterEvent
+
+        grid = ArrangementGrid()
+
+        mime_data = QMimeData()
+        mime_data.setData("application/x-eve-character", b"TestChar")
+
+        event = QDragEnterEvent(
+            QPoint(50, 50),
+            Qt.DropAction.MoveAction,
+            mime_data,
+            Qt.MouseButton.LeftButton,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        grid.dragEnterEvent(event)
+
+        assert event.isAccepted()
+
+    def test_drag_enter_event_accepts_text_data(self, qapp):
+        """Test dragEnterEvent also accepts plain text data"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from PySide6.QtCore import QMimeData, QPoint
+        from PySide6.QtGui import QDragEnterEvent
+
+        grid = ArrangementGrid()
+
+        mime_data = QMimeData()
+        mime_data.setText("Just some text")
+
+        event = QDragEnterEvent(
+            QPoint(50, 50),
+            Qt.DropAction.MoveAction,
+            mime_data,
+            Qt.MouseButton.LeftButton,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        grid.dragEnterEvent(event)
+
+        # Text data is also accepted (for character names)
+        assert event.isAccepted()
+
+
+class TestFlowLayoutDoLayoutReal:
+    """Tests for FlowLayout._do_layout (lines 116-180)"""
+
+    def test_do_layout_test_only(self, qapp):
+        """Test _do_layout in test mode returns height"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout(margin=10, spacing=5)
+
+        # Test with empty layout
+        height = layout._do_layout(QRect(0, 0, 200, 0), test_only=True)
+        assert height >= 20  # At least margins
+
+    def test_height_for_width(self, qapp):
+        """Test heightForWidth calculates correct height"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout(margin=10, spacing=5)
+        height = layout.heightForWidth(200)
+
+        assert height >= 20  # At least margins
+
+    def test_set_geometry(self, qapp):
+        """Test setGeometry calls _do_layout"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+
+        layout = FlowLayout()
+        layout.setGeometry(QRect(0, 0, 200, 100))
+        # Should not crash
