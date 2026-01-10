@@ -3,6 +3,7 @@ Settings Manager - JSON-based configuration persistence
 Handles all application settings with nested key support and auto-save
 """
 
+import copy
 import json
 import logging
 from datetime import datetime
@@ -128,7 +129,7 @@ class SettingsManager:
                     loaded = json.load(f)
 
                 # Merge with defaults (add any new keys from updates)
-                self.settings = self._merge_settings(self.DEFAULT_SETTINGS.copy(), loaded)
+                self.settings = self._merge_settings(copy.deepcopy(self.DEFAULT_SETTINGS), loaded)
 
                 self.logger.info(f"Loaded settings from {self.settings_file}")
                 return self.settings
@@ -138,7 +139,7 @@ class SettingsManager:
                 self.logger.info("Using default settings")
 
         # Use defaults if file doesn't exist or load failed
-        self.settings = self.DEFAULT_SETTINGS.copy()
+        self.settings = copy.deepcopy(self.DEFAULT_SETTINGS)
         self.save_settings(self.settings)
         return self.settings
 
@@ -231,7 +232,7 @@ class SettingsManager:
             bool: True if successful
         """
         self.logger.info("Resetting settings to defaults")
-        self.settings = self.DEFAULT_SETTINGS.copy()
+        self.settings = copy.deepcopy(self.DEFAULT_SETTINGS)
         return self.save_settings()
 
     def export_config(self, export_path: Path) -> bool:
@@ -287,7 +288,7 @@ class SettingsManager:
                 imported_settings = import_data
 
             # Merge with defaults (preserve structure)
-            self.settings = self._merge_settings(self.DEFAULT_SETTINGS.copy(), imported_settings)
+            self.settings = self._merge_settings(copy.deepcopy(self.DEFAULT_SETTINGS), imported_settings)
 
             # Save
             if self.save_settings():

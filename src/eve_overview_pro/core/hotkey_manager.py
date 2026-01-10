@@ -113,15 +113,15 @@ class HotkeyManager(QObject):
         if self.combo_listener:
             try:
                 self.combo_listener.stop()
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug(f"Error stopping combo listener: {e}")
             self.combo_listener = None
 
         if self.key_listener:
             try:
                 self.key_listener.stop()
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug(f"Error stopping key listener: {e}")
             self.key_listener = None
 
         # Start combo listener if we have combo hotkeys
@@ -213,8 +213,8 @@ class HotkeyManager(QObject):
                     self.pressed_modifiers.discard("alt")
                 elif key.name in ("shift", "shift_l", "shift_r"):
                     self.pressed_modifiers.discard("shift")
-        except Exception:
-            pass
+        except Exception as e:
+            self.logger.debug(f"Key release handling error: {e}")
 
     def start(self):
         """Start listening"""
@@ -226,15 +226,15 @@ class HotkeyManager(QObject):
         if self.combo_listener:
             try:
                 self.combo_listener.stop()
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug(f"Error stopping combo listener: {e}")
             self.combo_listener = None
 
         if self.key_listener:
             try:
                 self.key_listener.stop()
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug(f"Error stopping key listener: {e}")
             self.key_listener = None
 
     def resume(self):
