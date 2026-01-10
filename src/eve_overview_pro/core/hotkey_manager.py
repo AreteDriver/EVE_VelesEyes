@@ -220,6 +220,28 @@ class HotkeyManager(QObject):
         """Start listening"""
         self._restart_listeners()
 
+    def pause(self):
+        """Temporarily pause listeners (for key recording)"""
+        self.logger.debug("Pausing hotkey listeners")
+        if self.combo_listener:
+            try:
+                self.combo_listener.stop()
+            except Exception:
+                pass
+            self.combo_listener = None
+
+        if self.key_listener:
+            try:
+                self.key_listener.stop()
+            except Exception:
+                pass
+            self.key_listener = None
+
+    def resume(self):
+        """Resume listeners after pause"""
+        self.logger.debug("Resuming hotkey listeners")
+        self._restart_listeners()
+
     def stop(self):
         """Stop listening"""
         if self.combo_listener:

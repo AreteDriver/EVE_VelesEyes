@@ -541,6 +541,12 @@ class MainWindowV21(QMainWindow):
         # Connect group changes to refresh layout sources in overview tab
         self.hotkeys_tab.group_changed.connect(lambda: self.main_tab.refresh_layout_groups())
 
+        # Pause/resume hotkey listeners during key recording to avoid X11 conflicts
+        self.hotkeys_tab.cycle_forward_edit.recordingStarted.connect(self.hotkey_manager.pause)
+        self.hotkeys_tab.cycle_forward_edit.recordingStopped.connect(self.hotkey_manager.resume)
+        self.hotkeys_tab.cycle_backward_edit.recordingStarted.connect(self.hotkey_manager.pause)
+        self.hotkeys_tab.cycle_backward_edit.recordingStopped.connect(self.hotkey_manager.resume)
+
     def _create_settings_sync_tab(self):
         """Create Sync tab (EVE settings sync) - formerly 'Settings Sync'"""
         from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab

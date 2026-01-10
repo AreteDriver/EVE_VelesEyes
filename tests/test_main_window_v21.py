@@ -1519,6 +1519,7 @@ class TestCreateHotkeysTab:
         window.settings_manager = MagicMock()
         window.main_tab = MagicMock()
         window.tabs = MagicMock()
+        window.hotkey_manager = MagicMock()
 
         mock_tab = MagicMock()
         mock_tab_class.return_value = mock_tab
@@ -1531,6 +1532,10 @@ class TestCreateHotkeysTab:
 
         # Should connect group_changed signal
         assert mock_tab.group_changed.connect.called
+
+        # Should connect recording signals for pause/resume
+        assert mock_tab.cycle_forward_edit.recordingStarted.connect.called
+        assert mock_tab.cycle_backward_edit.recordingStopped.connect.called
 
 
 # Test _create_settings_sync_tab

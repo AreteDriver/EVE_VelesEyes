@@ -29,6 +29,8 @@ class HotkeyEdit(QWidget):
 
     # Emitted when hotkey changes (Qt convention uses camelCase for signals)
     hotkeyChanged = Signal(str)  # noqa: N815
+    recordingStarted = Signal()  # noqa: N815
+    recordingStopped = Signal()  # noqa: N815
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
@@ -91,6 +93,9 @@ class HotkeyEdit(QWidget):
             self.display.setText("pynput not available")
             return
 
+        # Signal to pause other listeners (avoid X11 conflicts)
+        self.recordingStarted.emit()
+
         self._recording = True
         self._pressed_keys.clear()
         self.record_btn.setText("Press key...")
@@ -116,6 +121,9 @@ class HotkeyEdit(QWidget):
         if self._listener:
             self._listener.stop()
             self._listener = None
+
+        # Signal to resume other listeners
+        self.recordingStopped.emit()
 
         # If no key was captured, restore previous
         if not self._hotkey:
