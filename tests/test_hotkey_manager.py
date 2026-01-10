@@ -716,3 +716,73 @@ class TestParseKeyComboEdgeCases:
         """Parses cmd key"""
         result = manager.parse_key_combo("cmd+a")
         assert result == "<cmd>+a"
+
+
+class TestPauseResume:
+    """Tests for pause/resume functionality"""
+
+    def test_pause_stops_combo_listener(self):
+        """Pause stops combo listener"""
+        manager = HotkeyManager()
+        mock_combo = MagicMock()
+        manager.combo_listener = mock_combo
+
+        manager.pause()
+
+        mock_combo.stop.assert_called_once()
+        assert manager.combo_listener is None
+
+    def test_pause_stops_key_listener(self):
+        """Pause stops key listener"""
+        manager = HotkeyManager()
+        mock_key = MagicMock()
+        manager.key_listener = mock_key
+
+        manager.pause()
+
+        mock_key.stop.assert_called_once()
+        assert manager.key_listener is None
+
+    def test_pause_handles_listener_exception(self):
+        """Pause handles exception when stopping listeners"""
+        manager = HotkeyManager()
+        mock_combo = MagicMock()
+        mock_combo.stop.side_effect = RuntimeError("Stop failed")
+        manager.combo_listener = mock_combo
+
+        # Should not raise
+        manager.pause()
+        assert manager.combo_listener is None
+
+    def test_pause_with_no_listeners(self):
+        """Pause works when no listeners active"""
+        manager = HotkeyManager()
+        # Should not raise
+        manager.pause()
+
+    def test_resume_restarts_listeners(self):
+        """Resume restarts listeners"""
+        manager = HotkeyManager()
+        manager._restart_listeners = MagicMock()
+
+        manager.resume()
+
+        manager._restart_listeners.assert_called_once()
+
+    def test_pause_resume_cycle(self):
+        """Full pause/resume cycle works"""
+        manager = HotkeyManager()
+        mock_combo = MagicMock()
+        mock_key = MagicMock()
+        manager.combo_listener = mock_combo
+        manager.key_listener = mock_key
+        manager._restart_listeners = MagicMock()
+
+        # Pause
+        manager.pause()
+        assert manager.combo_listener is None
+        assert manager.key_listener is None
+
+        # Resume
+        manager.resume()
+        manager._restart_listeners.assert_called_once()

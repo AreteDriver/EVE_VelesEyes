@@ -1312,6 +1312,58 @@ class TestActivateWindow:
         assert any("windowminimize" in c and "0x99999" in c for c in calls)
         assert any("windowactivate" in c and "0x12345" in c for c in calls)
 
+    @patch("subprocess.run")
+    def test_activate_window_invalid_id_none(self, mock_run):
+        """Test activate window rejects None window ID"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+
+        MainWindowV21._activate_window(window, None)
+
+        window.logger.warning.assert_called()
+        mock_run.assert_not_called()
+
+    @patch("subprocess.run")
+    def test_activate_window_invalid_id_format(self, mock_run):
+        """Test activate window rejects invalid window ID format"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+
+        # Test various invalid formats
+        for invalid_id in ["12345", "abc", "0xGGGG", "", "window123"]:
+            mock_run.reset_mock()
+            window.logger.reset_mock()
+
+            MainWindowV21._activate_window(window, invalid_id)
+
+            window.logger.warning.assert_called()
+            mock_run.assert_not_called()
+
+    @patch("subprocess.run")
+    def test_activate_window_valid_id_formats(self, mock_run):
+        """Test activate window accepts valid window ID formats"""
+        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+
+        window = MagicMock(spec=MainWindowV21)
+        window.logger = MagicMock()
+        window.settings_manager = MagicMock()
+        window.settings_manager.get.return_value = False
+
+        mock_run.return_value = MagicMock(returncode=0)
+
+        # Test various valid formats
+        for valid_id in ["0x12345", "0xABCDEF", "0x0", "0xFFFFFFFF"]:
+            mock_run.reset_mock()
+
+            MainWindowV21._activate_window(window, valid_id)
+
+            # Should have called subprocess
+            assert mock_run.called
+
 
 # Test _create_menu_bar
 class TestCreateMenuBar:
