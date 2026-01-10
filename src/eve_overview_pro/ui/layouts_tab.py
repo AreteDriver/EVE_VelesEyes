@@ -6,8 +6,7 @@ Supports grid patterns, stacking, and custom positioning
 import logging
 import re
 import subprocess
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor
@@ -28,17 +27,8 @@ from PySide6.QtWidgets import (
 )
 
 from eve_overview_pro.core.layout_manager import GridPattern
-
-
-@dataclass
-class ScreenGeometry:
-    """Screen/monitor geometry"""
-
-    x: int
-    y: int
-    width: int
-    height: int
-    is_primary: bool = False
+from eve_overview_pro.ui.main_tab import get_pattern_positions
+from eve_overview_pro.utils.screen import ScreenGeometry, get_screen_geometry
 
 
 def get_all_patterns():
@@ -245,48 +235,21 @@ class ArrangementGrid(QWidget):
         if not chars:
             return
 
-        # Calculate positions based on pattern
-        if pattern == "2x2 Grid":
-            positions = [(0, 0), (0, 1), (1, 0), (1, 1)]
-        elif pattern == "3x1 Row":
-            positions = [(0, 0), (0, 1), (0, 2)]
-        elif pattern == "1x3 Column":
-            positions = [(0, 0), (1, 0), (2, 0)]
-        elif pattern == "4x1 Row":
-            positions = [(0, 0), (0, 1), (0, 2), (0, 3)]
-        elif pattern == "2x3 Grid":
-            positions = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
-        elif pattern == "3x2 Grid":
-            positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
-        elif pattern == "Main + Sides":
-            # First window is main (full height), rest are stacked on right
-            positions = [(0, 0)]
-            for i in range(1, len(chars)):
-                positions.append((i - 1, 1))
-        elif pattern == "Cascade":
-            positions = [(i, i) for i in range(len(chars))]
-        elif pattern == "Stacked (All Same Position)":
-            positions = [(0, 0)] * len(chars)
+        # Get positions from shared function
+        grid_cols = getattr(self, "grid_cols", 4)
+        positions = get_pattern_positions(pattern, len(chars), grid_cols)
+
+        # Handle stacked pattern special case
+        if pattern == "Stacked (All Same Position)":
             for tile in self.tiles.values():
                 tile.set_stacked(True)
-        else:
-            # Default: sequential grid fill
-            positions = []
-            for i in range(len(chars)):
-                row = i // self.grid_cols
-                col = i % self.grid_cols
-                positions.append((row, col))
 
-        # Apply positions
+        # Apply positions to tiles
         for idx, char_name in enumerate(chars):
             if idx < len(positions):
                 row, col = positions[idx]
                 tile = self.tiles[char_name]
-
-                # Remove from old position
                 self.grid_layout.removeWidget(tile)
-
-                # Add to new position
                 tile.set_position(row, col)
                 self.grid_layout.addWidget(tile, row, col)
 
@@ -300,37 +263,9 @@ class GridApplier:
         self.layout_manager = layout_manager
         self.logger = logging.getLogger(__name__)
 
-    def get_screen_geometry(self, monitor: int = 0) -> Optional[ScreenGeometry]:
-        """Get screen geometry using xrandr"""
-        try:
-            result = subprocess.run(
-                ["xrandr", "--query"], capture_output=True, text=True, timeout=5
-            )
-
-            if result.returncode != 0:
-                self.logger.error("xrandr failed")
-                return None
-
-            monitors = []
-            for line in result.stdout.split("\n"):
-                if " connected" in line:
-                    match = re.search(r"(\d+)x(\d+)\+(\d+)\+(\d+)", line)
-                    if match:
-                        w, h, x, y = map(int, match.groups())
-                        is_primary = "primary" in line
-                        monitors.append(ScreenGeometry(x, y, w, h, is_primary))
-
-            if monitor < len(monitors):
-                return monitors[monitor]
-            elif monitors:
-                return monitors[0]
-
-            self.logger.warning("Could not parse xrandr output, using default geometry")
-            return ScreenGeometry(0, 0, 1920, 1080, True)
-
-        except Exception as e:
-            self.logger.error(f"Failed to get screen geometry: {e}")
-            return ScreenGeometry(0, 0, 1920, 1080, True)
+    def get_screen_geometry(self, monitor: int = 0) -> ScreenGeometry:
+        """Get screen geometry for a monitor (delegates to shared utility)"""
+        return get_screen_geometry(monitor)
 
     def apply_arrangement(
         self,

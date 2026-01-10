@@ -6,10 +6,8 @@ v2.3: Merged layouts functionality - group-based window arrangement
 """
 
 import logging
-import re
 import subprocess
 import threading
-from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
@@ -22,7 +20,7 @@ from PySide6.QtCore import (
     QTimer,
     Signal,
 )
-from PySide6.QtGui import QBrush, QColor, QImage, QPainter, QPen, QPixmap
+from PySide6.QtGui import QBrush, QColor, QImage, QKeyEvent, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -36,6 +34,7 @@ from PySide6.QtWidgets import (
     QInputDialog,
     QLabel,
     QLayout,
+    QLineEdit,
     QListWidget,
     QListWidgetItem,
     QMessageBox,
@@ -50,17 +49,7 @@ from eve_overview_pro.core.alert_detector import AlertLevel
 from eve_overview_pro.core.discovery import scan_eve_windows
 from eve_overview_pro.ui.action_registry import PrimaryHome
 from eve_overview_pro.ui.menu_builder import ContextMenuBuilder, ToolbarBuilder
-
-
-@dataclass
-class ScreenGeometry:
-    """Screen/monitor geometry"""
-
-    x: int
-    y: int
-    width: int
-    height: int
-    is_primary: bool = False
+from eve_overview_pro.utils.screen import ScreenGeometry, get_screen_geometry
 
 
 class FlowLayout(QLayout):
@@ -184,6 +173,42 @@ def get_all_layout_patterns():
         "Cascade",
         "Stacked (All Same Position)",
     ]
+
+
+# Pattern position mappings - shared between ArrangementGrid implementations
+PATTERN_POSITIONS = {
+    "2x2 Grid": [(0, 0), (0, 1), (1, 0), (1, 1)],
+    "3x1 Row": [(0, 0), (0, 1), (0, 2)],
+    "1x3 Column": [(0, 0), (1, 0), (2, 0)],
+    "4x1 Row": [(0, 0), (0, 1), (0, 2), (0, 3)],
+    "2x3 Grid": [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)],
+    "3x2 Grid": [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)],
+}
+
+
+def get_pattern_positions(pattern: str, count: int, grid_cols: int = 4) -> List[Tuple[int, int]]:
+    """Get grid positions for a layout pattern.
+
+    Args:
+        pattern: Layout pattern name
+        count: Number of items to arrange
+        grid_cols: Number of columns for default grid (used for fallback)
+
+    Returns:
+        List of (row, col) tuples for each item position
+    """
+    if pattern in PATTERN_POSITIONS:
+        return PATTERN_POSITIONS[pattern]
+    elif pattern == "Main + Sides":
+        # First window is main (full height), rest stacked on right
+        return [(0, 0)] + [(i - 1, 1) for i in range(1, count)]
+    elif pattern == "Cascade":
+        return [(i, i) for i in range(count)]
+    elif pattern == "Stacked (All Same Position)":
+        return [(0, 0)] * count
+    else:
+        # Default: sequential grid fill
+        return [(i // grid_cols, i % grid_cols) for i in range(count)]
 
 
 class DraggableTile(QFrame):
@@ -344,39 +369,21 @@ class ArrangementGrid(QWidget):
         return {name: (tile.grid_row, tile.grid_col) for name, tile in self.tiles.items()}
 
     def auto_arrange_grid(self, pattern: str):
+        """Auto-arrange tiles based on pattern"""
         chars = list(self.tiles.keys())
         if not chars:
             return
 
-        if pattern == "2x2 Grid":
-            positions = [(0, 0), (0, 1), (1, 0), (1, 1)]
-        elif pattern == "3x1 Row":
-            positions = [(0, 0), (0, 1), (0, 2)]
-        elif pattern == "1x3 Column":
-            positions = [(0, 0), (1, 0), (2, 0)]
-        elif pattern == "4x1 Row":
-            positions = [(0, 0), (0, 1), (0, 2), (0, 3)]
-        elif pattern == "2x3 Grid":
-            positions = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
-        elif pattern == "3x2 Grid":
-            positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
-        elif pattern == "Main + Sides":
-            positions = [(0, 0)]
-            for i in range(1, len(chars)):
-                positions.append((i - 1, 1))
-        elif pattern == "Cascade":
-            positions = [(i, i) for i in range(len(chars))]
-        elif pattern == "Stacked (All Same Position)":
-            positions = [(0, 0)] * len(chars)
+        # Get positions from shared function
+        grid_cols = getattr(self, "grid_cols", 4)
+        positions = get_pattern_positions(pattern, len(chars), grid_cols)
+
+        # Handle stacked pattern special case
+        if pattern == "Stacked (All Same Position)":
             for tile in self.tiles.values():
                 tile.set_stacked(True)
-        else:
-            positions = []
-            for i in range(len(chars)):
-                row = i // self.grid_cols
-                col = i % self.grid_cols
-                positions.append((row, col))
 
+        # Apply positions to tiles
         for idx, char_name in enumerate(chars):
             if idx < len(positions):
                 row, col = positions[idx]
@@ -441,34 +448,9 @@ class GridApplier:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def get_screen_geometry(self, monitor: int = 0) -> Optional[ScreenGeometry]:
-        try:
-            result = subprocess.run(
-                ["xrandr", "--query"], capture_output=True, text=True, timeout=5
-            )
-
-            if result.returncode != 0:
-                return ScreenGeometry(0, 0, 1920, 1080, True)
-
-            monitors = []
-            for line in result.stdout.split("\n"):
-                if " connected" in line:
-                    match = re.search(r"(\d+)x(\d+)\+(\d+)\+(\d+)", line)
-                    if match:
-                        w, h, x, y = map(int, match.groups())
-                        is_primary = "primary" in line
-                        monitors.append(ScreenGeometry(x, y, w, h, is_primary))
-
-            if monitor < len(monitors):
-                return monitors[monitor]
-            elif monitors:
-                return monitors[0]
-
-            return ScreenGeometry(0, 0, 1920, 1080, True)
-
-        except Exception as e:
-            self.logger.error(f"Failed to get screen geometry: {e}")
-            return ScreenGeometry(0, 0, 1920, 1080, True)
+    def get_screen_geometry(self, monitor: int = 0) -> ScreenGeometry:
+        """Get screen geometry for a monitor (delegates to shared utility)"""
+        return get_screen_geometry(monitor)
 
     def apply_arrangement(
         self,
@@ -1229,6 +1211,9 @@ class MainTab(QWidget):
 
         self._setup_ui()
 
+        # Enable keyboard focus for number key shortcuts
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
         # Start capture loop (unless disabled for GPU/CPU savings)
         if not (settings_manager and settings_manager.get("performance.disable_previews", False)):
             self.window_manager.start_capture_loop()
@@ -1345,6 +1330,16 @@ class MainTab(QWidget):
         self.refresh_rate_spin.setToolTip("Capture framerate (higher = smoother but more CPU)")
         self.refresh_rate_spin.valueChanged.connect(self._on_refresh_rate_changed)
         toolbar_layout.addWidget(self.refresh_rate_spin)
+
+        # Search/filter field
+        toolbar_layout.addSpacing(10)
+        self.search_field = QLineEdit()
+        self.search_field.setPlaceholderText("Filter...")
+        self.search_field.setMaximumWidth(150)
+        self.search_field.setClearButtonEnabled(True)
+        self.search_field.setToolTip("Filter windows by character name")
+        self.search_field.textChanged.connect(self._filter_previews)
+        toolbar_layout.addWidget(self.search_field)
 
         return toolbar
 
@@ -1699,17 +1694,52 @@ class MainTab(QWidget):
 
         return status_bar
 
-    def show_add_window_dialog(self):
-        """Show dialog to add windows"""
-        # Get window list
+    def _get_available_windows(self) -> list:
+        """Get windows not already in preview. Returns list of (window_id, title) tuples."""
         try:
             windows = self.capture_system.get_window_list()
         except Exception as e:
             self.logger.error(f"Failed to get window list: {e}")
+            raise
+
+        return [
+            (wid, title) for wid, title in windows if wid not in self.window_manager.preview_frames
+        ]
+
+    def _add_window_to_preview(self, window_id: str, window_title: str) -> bool:
+        """Add a single window to preview. Returns True if successful."""
+        # Extract character name from window title
+        char_name = window_title.replace("EVE -", "").replace("EVE Online -", "").strip()
+        if not char_name:
+            char_name = f"Unknown ({window_id})"
+
+        # Try auto-assign to character
+        assignments = self.character_manager.auto_assign_windows([(window_id, window_title)])
+        if assignments:
+            for detected_name, wid in assignments.items():
+                if wid == window_id:
+                    char_name = detected_name
+                    self.character_detected.emit(window_id, char_name)
+                    break
+
+        # Add to window manager
+        frame = self.window_manager.add_window(window_id, char_name)
+        if frame:
+            frame.window_activated.connect(self._on_window_activated)
+            frame.window_removed.connect(self._on_window_removed)
+            self.preview_layout.addWidget(frame)
+            return True
+        return False
+
+    def show_add_window_dialog(self):
+        """Show dialog to add windows"""
+        try:
+            available = self._get_available_windows()
+        except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to get window list:\n{e}")
             return
 
-        if not windows:
+        if not available:
             QMessageBox.information(
                 self, "No Windows", "No windows found.\n\nMake sure EVE Online clients are running."
             )
@@ -1723,23 +1753,15 @@ class MainTab(QWidget):
 
         layout = QVBoxLayout()
         dialog.setLayout(layout)
-
         layout.addWidget(QLabel("Select EVE Online windows to add to preview:"))
 
-        # List widget
+        # List widget with available windows
         list_widget = QListWidget()
         list_widget.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-
-        for window_id, window_title in windows:
-            # Skip if already in preview
-            if window_id in self.window_manager.preview_frames:
-                continue
-
-            # Add to list
+        for window_id, window_title in available:
             item = QListWidgetItem(f"{window_title} ({window_id})")
             item.setData(Qt.ItemDataRole.UserRole, (window_id, window_title))
             list_widget.addItem(item)
-
         layout.addWidget(list_widget)
 
         # Buttons
@@ -1750,50 +1772,16 @@ class MainTab(QWidget):
         button_box.rejected.connect(dialog.reject)
         layout.addWidget(button_box)
 
-        # Show dialog
+        # Process selection
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            # Get selected items
-            selected_items = list_widget.selectedItems()
-
-            if not selected_items:
-                return
-
-            # Add selected windows
-            added_count = 0
-            for item in selected_items:
-                window_id, window_title = item.data(Qt.ItemDataRole.UserRole)
-
-                # Extract character name from window title
-                char_name = window_title.replace("EVE -", "").replace("EVE Online -", "").strip()
-                if not char_name:
-                    char_name = f"Unknown ({window_id})"
-
-                # Try auto-assign to character
-                assignments = self.character_manager.auto_assign_windows(
-                    [(window_id, window_title)]
-                )
-
-                if assignments:
-                    # Use detected character name
-                    for detected_name, wid in assignments.items():
-                        if wid == window_id:
-                            char_name = detected_name
-                            self.character_detected.emit(window_id, char_name)
-                            break
-
-                # Add to window manager
-                frame = self.window_manager.add_window(window_id, char_name)
-                if frame:
-                    # Connect signals
-                    frame.window_activated.connect(self._on_window_activated)
-                    frame.window_removed.connect(self._on_window_removed)
-
-                    # Add to layout
-                    self.preview_layout.addWidget(frame)
-                    added_count += 1
-
-            self.logger.info(f"Added {added_count} windows to preview")
-            self._update_status()
+            added = sum(
+                1
+                for item in list_widget.selectedItems()
+                if self._add_window_to_preview(*item.data(Qt.ItemDataRole.UserRole))
+            )
+            if added:
+                self.logger.info(f"Added {added} windows to preview")
+                self._update_status()
 
     def _on_window_activated(self, window_id: str):
         """Handle window activation with optional auto-minimize of previous window"""
@@ -1923,6 +1911,26 @@ class MainTab(QWidget):
         self.window_manager.set_refresh_rate(value)
         self.logger.info(f"Refresh rate changed to {value} FPS")
 
+    def _filter_previews(self, text: str):
+        """Filter preview windows by character name"""
+        search_text = text.lower().strip()
+
+        visible_count = 0
+        for _window_id, frame in self.window_manager.preview_frames.items():
+            char_name = frame.character_name.lower()
+            # Show if search is empty or character name contains search text
+            matches = not search_text or search_text in char_name
+            frame.setVisible(matches)
+            if matches:
+                visible_count += 1
+
+        # Update status to show filtered count
+        total = len(self.window_manager.preview_frames)
+        if search_text and visible_count < total:
+            self.status_label.setText(f"Showing {visible_count}/{total} windows (filtered)")
+        else:
+            self._update_status()
+
     def _update_status(self):
         """Update status bar"""
         count = self.window_manager.get_active_window_count()
@@ -1953,3 +1961,33 @@ class MainTab(QWidget):
                 self.window_manager.stop_capture_loop()
                 self.status_label.setText("Previews disabled (GPU/CPU savings)")
                 self.logger.info("Preview captures disabled - GPU/CPU savings active")
+
+    def keyPressEvent(self, event: QKeyEvent):
+        """Handle keyboard shortcuts for window navigation"""
+        key = event.key()
+
+        # Number keys 1-9 to activate window by index
+        if Qt.Key.Key_1 <= key <= Qt.Key.Key_9:
+            index = key - Qt.Key.Key_1  # 0-8
+            self._activate_window_by_index(index)
+            event.accept()
+            return
+
+        # Pass unhandled keys to parent
+        super().keyPressEvent(event)
+
+    def _activate_window_by_index(self, index: int):
+        """Activate a window by its index in the preview list"""
+        windows = list(self.window_manager.preview_frames.items())
+        if 0 <= index < len(windows):
+            window_id, frame = windows[index]
+            # Activate the window
+            if self.capture_system.activate_window(window_id):
+                self.logger.info(f"Activated window {index + 1}: {frame.character_name}")
+                self.status_label.setText(f"Activated: {frame.character_name}")
+            else:
+                self.logger.warning(f"Failed to activate window {index + 1}")
+        else:
+            self.logger.debug(
+                f"Window index {index + 1} out of range (have {len(windows)} windows)"
+            )

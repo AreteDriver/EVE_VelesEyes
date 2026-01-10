@@ -39,6 +39,7 @@ dev = [
     "isort",
     "pytest",
     "pytest-cov",
+    "bandit[toml]",
 ]
 
 [project.urls]
@@ -88,3 +89,12 @@ py-modules = ["main"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.bandit]
+exclude_dirs = ["tests", "windows", ".venv", "build", "dist", "benchmarks"]
+skips = [
+    "B101",  # assert used (tests)
+    "B404",  # subprocess import (required for X11 tools)
+    "B603",  # subprocess without shell=True (this is the safe way)
+    "B607",  # partial path (system tools: wmctrl, xdotool, xrandr)
+]

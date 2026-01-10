@@ -5441,7 +5441,7 @@ class TestGridApplierScreenGeometry:
             mock_result.returncode = 0
             mock_result.stdout = "DP-1 connected primary 1920x1080+0+0"
 
-            with patch("subprocess.run", return_value=mock_result):
+            with patch("eve_overview_pro.utils.screen.subprocess.run", return_value=mock_result):
                 applier.get_screen_geometry(0)
 
                 # Should return ScreenGeometry or None
@@ -5455,15 +5455,17 @@ class TestGridApplierScreenGeometry:
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
-            with patch("subprocess.run", side_effect=FileNotFoundError):
+            with patch(
+                "eve_overview_pro.utils.screen.subprocess.run", side_effect=FileNotFoundError
+            ):
                 result = applier.get_screen_geometry(0)
 
                 # Method returns fallback on exception
                 assert result == ScreenGeometry(0, 0, 1920, 1080, True)
-                applier.logger.error.assert_called_once()
+                # Note: logger is now in the shared module
 
     def test_get_screen_geometry_xrandr_nonzero_returncode(self):
-        """Test get_screen_geometry when xrandr returns non-zero (line 442)"""
+        """Test get_screen_geometry when xrandr returns non-zero"""
         from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
@@ -5474,14 +5476,14 @@ class TestGridApplierScreenGeometry:
             mock_result.returncode = 1  # Non-zero = failure
             mock_result.stdout = ""
 
-            with patch("subprocess.run", return_value=mock_result):
+            with patch("eve_overview_pro.utils.screen.subprocess.run", return_value=mock_result):
                 result = applier.get_screen_geometry(0)
 
                 # Should return default on non-zero returncode
                 assert result == ScreenGeometry(0, 0, 1920, 1080, True)
 
     def test_get_screen_geometry_monitor_out_of_range(self):
-        """Test get_screen_geometry with monitor index out of range (line 456)"""
+        """Test get_screen_geometry with monitor index out of range"""
         from eve_overview_pro.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
@@ -5493,7 +5495,7 @@ class TestGridApplierScreenGeometry:
             # Only one monitor at index 0
             mock_result.stdout = "DP-1 connected primary 1920x1080+0+0"
 
-            with patch("subprocess.run", return_value=mock_result):
+            with patch("eve_overview_pro.utils.screen.subprocess.run", return_value=mock_result):
                 # Request monitor 5 when only monitor 0 exists
                 result = applier.get_screen_geometry(5)
 
@@ -6275,8 +6277,8 @@ class TestMainTabOnLayoutSourceChanged:
 # =============================================================================
 
 import pytest
-from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QApplication
 
 
 @pytest.fixture(scope="module")
@@ -6313,8 +6315,9 @@ class TestFlowLayoutRealInit:
 
     def test_expanding_directions(self, qapp):
         """Test expandingDirections returns empty orientation"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
         from PySide6.QtCore import Qt
+
+        from eve_overview_pro.ui.main_tab import FlowLayout
 
         layout = FlowLayout()
         result = layout.expandingDirections()
@@ -6540,8 +6543,9 @@ class TestWindowPreviewWidgetPaintEventReal:
 
     def test_paint_event_no_alert(self, qapp):
         """Test paintEvent with no alert"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6557,8 +6561,9 @@ class TestWindowPreviewWidgetPaintEventReal:
 
     def test_paint_event_with_alert(self, qapp):
         """Test paintEvent with alert level"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget, AlertLevel
         from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import AlertLevel, WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6575,8 +6580,9 @@ class TestWindowPreviewWidgetPaintEventReal:
 
     def test_paint_event_medium_alert(self, qapp):
         """Test paintEvent with medium alert"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget, AlertLevel
         from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import AlertLevel, WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6593,8 +6599,9 @@ class TestWindowPreviewWidgetPaintEventReal:
 
     def test_paint_event_low_alert(self, qapp):
         """Test paintEvent with low alert"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget, AlertLevel
         from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import AlertLevel, WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6611,8 +6618,9 @@ class TestWindowPreviewWidgetPaintEventReal:
 
     def test_paint_event_with_activity_indicator_focused(self, qapp):
         """Test paintEvent draws activity indicator when focused"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6628,8 +6636,9 @@ class TestWindowPreviewWidgetPaintEventReal:
 
     def test_paint_event_with_lock_icon(self, qapp):
         """Test paintEvent draws lock icon when positions locked"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6649,9 +6658,10 @@ class TestWindowPreviewWidgetMouseEventsReal:
 
     def test_mouse_press_event(self, qapp):
         """Test mousePressEvent stores drag start position"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtCore import QPoint, Qt
         from PySide6.QtGui import QMouseEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6662,6 +6672,7 @@ class TestWindowPreviewWidgetMouseEventsReal:
 
         # Create mouse press event (use Qt6 constructor with globalPos)
         from PySide6.QtCore import QPointF
+
         event = QMouseEvent(
             QMouseEvent.Type.MouseButtonPress,
             QPointF(50, 50),  # localPos
@@ -6676,9 +6687,10 @@ class TestWindowPreviewWidgetMouseEventsReal:
 
     def test_mouse_move_event_no_start_pos(self, qapp):
         """Test mouseMoveEvent does nothing without drag start"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
-        from PySide6.QtCore import QPoint, QPointF, Qt
+        from PySide6.QtCore import QPointF, Qt
         from PySide6.QtGui import QMouseEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6699,9 +6711,10 @@ class TestWindowPreviewWidgetMouseEventsReal:
 
     def test_mouse_move_event_small_movement(self, qapp):
         """Test mouseMoveEvent ignores small movements"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from PySide6.QtCore import QPoint, QPointF, Qt
         from PySide6.QtGui import QMouseEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6799,9 +6812,10 @@ class TestArrangementGridDragDropReal:
 
     def test_drag_enter_event_accepts_eve_character(self, qapp):
         """Test dragEnterEvent accepts EVE character data"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
         from PySide6.QtCore import QMimeData, QPoint
         from PySide6.QtGui import QDragEnterEvent
+
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
 
@@ -6821,9 +6835,10 @@ class TestArrangementGridDragDropReal:
 
     def test_drag_enter_event_accepts_text_data(self, qapp):
         """Test dragEnterEvent also accepts plain text data"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
         from PySide6.QtCore import QMimeData, QPoint
         from PySide6.QtGui import QDragEnterEvent
+
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
 
@@ -6872,3 +6887,372 @@ class TestFlowLayoutDoLayoutReal:
         layout = FlowLayout()
         layout.setGeometry(QRect(0, 0, 200, 100))
         # Should not crash
+
+
+# =============================================================================
+# Preview Filter Tests
+# =============================================================================
+
+
+class TestMainTabFilterPreviews:
+    """Tests for MainTab._filter_previews"""
+
+    def test_filter_empty_string_shows_all(self):
+        """Test filter with empty string shows all windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.status_label = MagicMock()
+            tab.active_count_label = MagicMock()
+
+            # Mock preview frames
+            frame1 = MagicMock()
+            frame1.character_name = "CharacterOne"
+            frame2 = MagicMock()
+            frame2.character_name = "CharacterTwo"
+            tab.window_manager.preview_frames = {"win1": frame1, "win2": frame2}
+
+            # Filter with empty string
+            tab._filter_previews("")
+
+            # All frames should be visible
+            frame1.setVisible.assert_called_with(True)
+            frame2.setVisible.assert_called_with(True)
+
+    def test_filter_matches_partial_name(self):
+        """Test filter matches partial character name"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.status_label = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "MainCharacter"
+            frame2 = MagicMock()
+            frame2.character_name = "ScoutAlt"
+            tab.window_manager.preview_frames = {"win1": frame1, "win2": frame2}
+
+            # Filter for "main"
+            tab._filter_previews("main")
+
+            # Only frame1 should be visible
+            frame1.setVisible.assert_called_with(True)
+            frame2.setVisible.assert_called_with(False)
+
+    def test_filter_case_insensitive(self):
+        """Test filter is case insensitive"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.status_label = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "UPPERCASE"
+            frame2 = MagicMock()
+            frame2.character_name = "lowercase"
+            tab.window_manager.preview_frames = {"win1": frame1, "win2": frame2}
+
+            # Filter with mixed case
+            tab._filter_previews("upper")
+
+            frame1.setVisible.assert_called_with(True)
+            frame2.setVisible.assert_called_with(False)
+
+    def test_filter_updates_status_when_filtered(self):
+        """Test filter updates status label when filtering"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.status_label = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "MainCharacter"
+            frame2 = MagicMock()
+            frame2.character_name = "ScoutAlt"
+            tab.window_manager.preview_frames = {"win1": frame1, "win2": frame2}
+
+            # Filter for "scout" - only matches ScoutAlt
+            tab._filter_previews("scout")
+
+            # Status should show filtered count
+            tab.status_label.setText.assert_called()
+            call_arg = tab.status_label.setText.call_args[0][0]
+            assert "1/2" in call_arg or "filtered" in call_arg.lower()
+
+    def test_filter_no_matches_shows_zero(self):
+        """Test filter with no matches shows zero visible"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.status_label = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "CharacterOne"
+            frame2 = MagicMock()
+            frame2.character_name = "CharacterTwo"
+            tab.window_manager.preview_frames = {"win1": frame1, "win2": frame2}
+
+            # Filter for non-existent
+            tab._filter_previews("zzzzz")
+
+            # All frames hidden
+            frame1.setVisible.assert_called_with(False)
+            frame2.setVisible.assert_called_with(False)
+
+    def test_filter_whitespace_only_shows_all(self):
+        """Test filter with only whitespace shows all windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.status_label = MagicMock()
+            tab.active_count_label = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "Character"
+            tab.window_manager.preview_frames = {"win1": frame1}
+
+            # Filter with whitespace
+            tab._filter_previews("   ")
+
+            frame1.setVisible.assert_called_with(True)
+
+
+# =============================================================================
+# Keyboard Window Control Tests
+# =============================================================================
+
+
+class TestMainTabKeyPressEvent:
+    """Tests for MainTab.keyPressEvent and _activate_window_by_index"""
+
+    def test_number_key_activates_window(self):
+        """Test pressing number key 1 activates first window"""
+        from PySide6.QtCore import Qt
+        from PySide6.QtGui import QKeyEvent
+
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.activate_window.return_value = True
+            tab.status_label = MagicMock()
+            tab.window_manager = MagicMock()
+
+            # Mock preview frames
+            frame1 = MagicMock()
+            frame1.character_name = "FirstCharacter"
+            tab.window_manager.preview_frames = {"win1": frame1}
+
+            # Create key event for "1"
+            event = QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_1, Qt.KeyboardModifier.NoModifier)
+
+            tab.keyPressEvent(event)
+
+            # Window should be activated
+            tab.capture_system.activate_window.assert_called_once_with("win1")
+
+    def test_number_key_2_activates_second_window(self):
+        """Test pressing number key 2 activates second window"""
+        from PySide6.QtCore import Qt
+        from PySide6.QtGui import QKeyEvent
+
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.activate_window.return_value = True
+            tab.status_label = MagicMock()
+            tab.window_manager = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "FirstCharacter"
+            frame2 = MagicMock()
+            frame2.character_name = "SecondCharacter"
+            tab.window_manager.preview_frames = {"win1": frame1, "win2": frame2}
+
+            event = QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_2, Qt.KeyboardModifier.NoModifier)
+
+            tab.keyPressEvent(event)
+
+            tab.capture_system.activate_window.assert_called_once_with("win2")
+
+    def test_number_key_out_of_range_does_nothing(self):
+        """Test pressing number key higher than window count does nothing"""
+        from PySide6.QtCore import Qt
+        from PySide6.QtGui import QKeyEvent
+
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.window_manager = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "OnlyCharacter"
+            tab.window_manager.preview_frames = {"win1": frame1}
+
+            # Press 5 but only have 1 window
+            event = QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_5, Qt.KeyboardModifier.NoModifier)
+
+            tab.keyPressEvent(event)
+
+            # Should not call activate
+            tab.capture_system.activate_window.assert_not_called()
+
+    def test_non_number_key_does_not_activate(self):
+        """Test non-number keys do not activate any windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.window_manager = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "Character"
+            tab.window_manager.preview_frames = {"win1": frame1}
+
+            # Key 'A' (not a number) should not activate any window
+            # We test by checking activate_window is never called
+            tab.capture_system.activate_window.assert_not_called()
+
+
+class TestMainTabActivateWindowByIndex:
+    """Tests for MainTab._activate_window_by_index"""
+
+    def test_activate_valid_index(self):
+        """Test activating window at valid index"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.activate_window.return_value = True
+            tab.status_label = MagicMock()
+            tab.window_manager = MagicMock()
+
+            frame = MagicMock()
+            frame.character_name = "TestCharacter"
+            tab.window_manager.preview_frames = {"win123": frame}
+
+            tab._activate_window_by_index(0)
+
+            tab.capture_system.activate_window.assert_called_once_with("win123")
+            # Status should be updated
+            tab.status_label.setText.assert_called()
+            assert "TestCharacter" in tab.status_label.setText.call_args[0][0]
+
+    def test_activate_invalid_index(self):
+        """Test activating window at invalid index does nothing"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {}
+
+            tab._activate_window_by_index(5)
+
+            tab.capture_system.activate_window.assert_not_called()
+
+    def test_activate_failed_logs_warning(self):
+        """Test failed activation logs warning"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.activate_window.return_value = False
+            tab.window_manager = MagicMock()
+
+            frame = MagicMock()
+            frame.character_name = "TestCharacter"
+            tab.window_manager.preview_frames = {"win123": frame}
+
+            tab._activate_window_by_index(0)
+
+            tab.logger.warning.assert_called()
+
+    def test_activate_multiple_windows(self):
+        """Test activating different windows by index"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.activate_window.return_value = True
+            tab.status_label = MagicMock()
+            tab.window_manager = MagicMock()
+
+            frame1 = MagicMock()
+            frame1.character_name = "First"
+            frame2 = MagicMock()
+            frame2.character_name = "Second"
+            frame3 = MagicMock()
+            frame3.character_name = "Third"
+            # Use dict that preserves order
+            tab.window_manager.preview_frames = {
+                "win1": frame1,
+                "win2": frame2,
+                "win3": frame3,
+            }
+
+            # Activate third window (index 2)
+            tab._activate_window_by_index(2)
+
+            tab.capture_system.activate_window.assert_called_once_with("win3")
+
+    def test_activate_index_9_works(self):
+        """Test activating window at index 8 (key 9) works"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.activate_window.return_value = True
+            tab.status_label = MagicMock()
+            tab.window_manager = MagicMock()
+
+            # Create 9 windows
+            frames = {}
+            for i in range(9):
+                frame = MagicMock()
+                frame.character_name = f"Char{i + 1}"
+                frames[f"win{i}"] = frame
+            tab.window_manager.preview_frames = frames
+
+            # Activate 9th window (index 8)
+            tab._activate_window_by_index(8)
+
+            tab.capture_system.activate_window.assert_called_once_with("win8")

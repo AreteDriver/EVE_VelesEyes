@@ -45,7 +45,9 @@ def create_mock_window():
     window._cycle_next = lambda: MainWindowV21._cycle_next(window)
     window._cycle_prev = lambda: MainWindowV21._cycle_prev(window)
     window._activate_window = lambda wid: MainWindowV21._activate_window(window, wid)
-    window._apply_to_all_windows = lambda action: MainWindowV21._apply_to_all_windows(window, action)
+    window._apply_to_all_windows = lambda action: MainWindowV21._apply_to_all_windows(
+        window, action
+    )
     window._minimize_all_windows = lambda: MainWindowV21._minimize_all_windows(window)
     window._restore_all_windows = lambda: MainWindowV21._restore_all_windows(window)
     window._activate_character = lambda char: MainWindowV21._activate_character(window, char)

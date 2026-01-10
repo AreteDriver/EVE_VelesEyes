@@ -696,6 +696,35 @@ class ActionRegistry:
             self.logger.warning(f"No handler bound for action: {action_id}")
 
 
+def _count_actions_by_home_and_scope(actions, results: Dict[str, Any]):
+    """Count actions by their primary home and scope."""
+    for action in actions:
+        home = action.primary_home.value
+        scope = action.scope.name
+
+        if home not in results["by_home"]:
+            results["by_home"][home] = []
+        results["by_home"][home].append(action.id)
+
+        if scope not in results["by_scope"]:
+            results["by_scope"][scope] = []
+        results["by_scope"][scope].append(action.id)
+
+
+def _find_duplicate_homes(actions, results: Dict[str, Any]):
+    """Find actions that appear in multiple primary homes."""
+    action_homes: Dict[str, Set[str]] = {}
+    for action in actions:
+        if action.id not in action_homes:
+            action_homes[action.id] = set()
+        action_homes[action.id].add(action.primary_home.value)
+
+    for action_id, homes in action_homes.items():
+        if len(homes) > 1:
+            results["duplicates"].append({"action_id": action_id, "homes": list(homes)})
+            results["passed"] = False
+
+
 def audit_actions(registry: Optional[ActionRegistry] = None) -> Dict[str, Any]:
     """
     Audit the action registry for duplicates and issues.
@@ -718,35 +747,8 @@ def audit_actions(registry: Optional[ActionRegistry] = None) -> Dict[str, Any]:
     actions = registry.all_actions()
     results["total_actions"] = len(actions)
 
-    # Count by home and scope
-    for action in actions:
-        home = action.primary_home.value
-        scope = action.scope.name
-
-        if home not in results["by_home"]:
-            results["by_home"][home] = []
-        results["by_home"][home].append(action.id)
-
-        if scope not in results["by_scope"]:
-            results["by_scope"][scope] = []
-        results["by_scope"][scope].append(action.id)
-
-    # Check for actions that appear in multiple primary homes (should be impossible with current design)
-    action_homes: Dict[str, Set[str]] = {}
-    for action in actions:
-        if action.id not in action_homes:
-            action_homes[action.id] = set()
-        action_homes[action.id].add(action.primary_home.value)
-
-    for action_id, homes in action_homes.items():
-        if len(homes) > 1:
-            results["duplicates"].append(
-                {
-                    "action_id": action_id,
-                    "homes": list(homes),
-                }
-            )
-            results["passed"] = False
+    _count_actions_by_home_and_scope(actions, results)
+    _find_duplicate_homes(actions, results)
 
     # Check for missing handlers (warning, not failure)
     for action in actions:

@@ -235,7 +235,7 @@ class TestGridApplier:
 
         assert applier.layout_manager is mock_layout_manager
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("eve_overview_pro.utils.screen.subprocess.run")
     def test_get_screen_geometry_success(self, mock_subprocess):
         """Test get_screen_geometry with successful xrandr"""
         from eve_overview_pro.ui.layouts_tab import GridApplier
@@ -255,7 +255,7 @@ class TestGridApplier:
         assert result.height == 1080
         assert result.is_primary is True
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("eve_overview_pro.utils.screen.subprocess.run")
     def test_get_screen_geometry_failure(self, mock_subprocess):
         """Test get_screen_geometry with xrandr failure"""
         from eve_overview_pro.ui.layouts_tab import GridApplier
@@ -270,9 +270,10 @@ class TestGridApplier:
         result = applier.get_screen_geometry()
 
         # Should return default geometry on failure
-        assert result is None
+        assert result is not None
+        assert result.width == 1920
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("eve_overview_pro.utils.screen.subprocess.run")
     def test_get_screen_geometry_exception(self, mock_subprocess):
         """Test get_screen_geometry with exception"""
         from eve_overview_pro.ui.layouts_tab import GridApplier
@@ -971,7 +972,7 @@ class TestLayoutsTabMethods:
 class TestGridApplierMore:
     """More tests for GridApplier"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("eve_overview_pro.utils.screen.subprocess.run")
     def test_get_screen_geometry_with_monitor(self, mock_subprocess):
         """Test get_screen_geometry with specific monitor"""
         from eve_overview_pro.ui.layouts_tab import GridApplier
@@ -1259,7 +1260,7 @@ class TestArrangementGridSetGridSizeWithTiles:
 class TestGridApplierScreenGeometryEdgeCases:
     """Tests for GridApplier.get_screen_geometry edge cases"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("eve_overview_pro.utils.screen.subprocess.run")
     def test_get_screen_geometry_monitor_out_of_range(self, mock_subprocess):
         """Test get_screen_geometry falls back to first monitor when index out of range"""
         from eve_overview_pro.ui.layouts_tab import GridApplier
@@ -1279,8 +1280,9 @@ class TestGridApplierScreenGeometryEdgeCases:
         assert result.width == 1920
         assert result.height == 1080
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
-    def test_get_screen_geometry_no_monitors_parsed(self, mock_subprocess):
+    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("eve_overview_pro.utils.screen.logger")
+    def test_get_screen_geometry_no_monitors_parsed(self, mock_logger, mock_subprocess):
         """Test get_screen_geometry returns default when no monitors parsed"""
         from eve_overview_pro.ui.layouts_tab import GridApplier
 
@@ -1291,7 +1293,6 @@ class TestGridApplierScreenGeometryEdgeCases:
 
         mock_layout_manager = MagicMock()
         applier = GridApplier(mock_layout_manager)
-        applier.logger = MagicMock()
 
         result = applier.get_screen_geometry(monitor=0)
 
@@ -1299,7 +1300,8 @@ class TestGridApplierScreenGeometryEdgeCases:
         assert result is not None
         assert result.width == 1920
         assert result.height == 1080
-        applier.logger.warning.assert_called()
+        # Now logger is the module-level logger in utils.screen
+        mock_logger.warning.assert_called()
 
 
 class TestGridApplierApplyArrangementEdgeCases:

@@ -206,7 +206,79 @@ class LayoutManager:
 
         return preset
 
-    # Grid Pattern Calculations
+    # Grid Pattern Calculations - Helper methods
+    def _calc_uniform_grid(
+        self,
+        windows: List[str],
+        cols: int,
+        rows: int,
+        max_windows: int,
+        screen_x: int,
+        screen_y: int,
+        screen_width: int,
+        screen_height: int,
+        spacing: int,
+    ) -> Dict[str, Dict]:
+        """Calculate uniform grid layout (2x2, etc.)"""
+        win_width = (screen_width - spacing * (cols + 1)) // cols
+        win_height = (screen_height - spacing * (rows + 1)) // rows
+        layouts = {}
+        for i, window_id in enumerate(windows[:max_windows]):
+            col, row = i % cols, i // cols
+            layouts[window_id] = {
+                "x": screen_x + spacing + col * (win_width + spacing),
+                "y": screen_y + spacing + row * (win_height + spacing),
+                "width": win_width,
+                "height": win_height,
+            }
+        return layouts
+
+    def _calc_horizontal_row(
+        self,
+        windows: List[str],
+        count: int,
+        screen_x: int,
+        screen_y: int,
+        screen_width: int,
+        screen_height: int,
+        spacing: int,
+    ) -> Dict[str, Dict]:
+        """Calculate horizontal row layout (3x1, 4x1)"""
+        win_width = (screen_width - spacing * (count + 1)) // count
+        win_height = screen_height - spacing * 2
+        return {
+            window_id: {
+                "x": screen_x + spacing + i * (win_width + spacing),
+                "y": screen_y + spacing,
+                "width": win_width,
+                "height": win_height,
+            }
+            for i, window_id in enumerate(windows[:count])
+        }
+
+    def _calc_vertical_column(
+        self,
+        windows: List[str],
+        count: int,
+        screen_x: int,
+        screen_y: int,
+        screen_width: int,
+        screen_height: int,
+        spacing: int,
+    ) -> Dict[str, Dict]:
+        """Calculate vertical column layout (1x3)"""
+        win_width = screen_width - spacing * 2
+        win_height = (screen_height - spacing * (count + 1)) // count
+        return {
+            window_id: {
+                "x": screen_x + spacing,
+                "y": screen_y + spacing + i * (win_height + spacing),
+                "width": win_width,
+                "height": win_height,
+            }
+            for i, window_id in enumerate(windows[:count])
+        }
+
     def calculate_grid_layout(
         self, pattern: GridPattern, windows: List[str], screen_geometry: Dict, spacing: int = 10
     ) -> Dict[str, Dict]:
@@ -221,90 +293,52 @@ class LayoutManager:
         Returns:
             Dict mapping window_id to geometry dict {x, y, width, height}
         """
-        num_windows = len(windows)
-        if num_windows == 0:
+        if not windows:
             return {}
 
-        screen_x = screen_geometry.get("x", 0)
-        screen_y = screen_geometry.get("y", 0)
-        screen_width = screen_geometry.get("width", 1920)
-        screen_height = screen_geometry.get("height", 1080)
-
-        layouts = {}
+        sx = screen_geometry.get("x", 0)
+        sy = screen_geometry.get("y", 0)
+        sw = screen_geometry.get("width", 1920)
+        sh = screen_geometry.get("height", 1080)
 
         if pattern == GridPattern.GRID_2X2:
-            # 2x2 grid
-            cols, rows = 2, 2
-            win_width = (screen_width - spacing * 3) // cols
-            win_height = (screen_height - spacing * 3) // rows
-
-            for i, window_id in enumerate(windows[:4]):
-                col = i % cols
-                row = i // cols
-                layouts[window_id] = {
-                    "x": screen_x + spacing + col * (win_width + spacing),
-                    "y": screen_y + spacing + row * (win_height + spacing),
-                    "width": win_width,
-                    "height": win_height,
-                }
-
+            return self._calc_uniform_grid(windows, 2, 2, 4, sx, sy, sw, sh, spacing)
         elif pattern == GridPattern.GRID_3X1:
-            # 3 windows horizontally
-            win_width = (screen_width - spacing * 4) // 3
-            win_height = screen_height - spacing * 2
-
-            for i, window_id in enumerate(windows[:3]):
-                layouts[window_id] = {
-                    "x": screen_x + spacing + i * (win_width + spacing),
-                    "y": screen_y + spacing,
-                    "width": win_width,
-                    "height": win_height,
-                }
-
+            return self._calc_horizontal_row(windows, 3, sx, sy, sw, sh, spacing)
         elif pattern == GridPattern.GRID_1X3:
-            # 3 windows vertically
-            win_width = screen_width - spacing * 2
-            win_height = (screen_height - spacing * 4) // 3
-
-            for i, window_id in enumerate(windows[:3]):
-                layouts[window_id] = {
-                    "x": screen_x + spacing,
-                    "y": screen_y + spacing + i * (win_height + spacing),
-                    "width": win_width,
-                    "height": win_height,
-                }
-
+            return self._calc_vertical_column(windows, 3, sx, sy, sw, sh, spacing)
         elif pattern == GridPattern.GRID_4X1:
-            # 4 windows horizontally
-            win_width = (screen_width - spacing * 5) // 4
-            win_height = screen_height - spacing * 2
-
-            for i, window_id in enumerate(windows[:4]):
-                layouts[window_id] = {
-                    "x": screen_x + spacing + i * (win_width + spacing),
-                    "y": screen_y + spacing,
-                    "width": win_width,
-                    "height": win_height,
-                }
-
+            return self._calc_horizontal_row(windows, 4, sx, sy, sw, sh, spacing)
         elif pattern == GridPattern.MAIN_PLUS_SIDES:
-            # One large main window + 3 smaller sides
-            if num_windows >= 1:
-                # Main window (left 60%)
-                main_width = int(screen_width * 0.6) - spacing * 2
-                layouts[windows[0]] = {
-                    "x": screen_x + spacing,
-                    "y": screen_y + spacing,
-                    "width": main_width,
-                    "height": screen_height - spacing * 2,
-                }
+            return self._calc_main_plus_sides(windows, sx, sy, sw, sh, spacing)
+        elif pattern == GridPattern.CASCADE:
+            return self._calc_cascade(windows, sx, sy, spacing)
+        return {}
 
-            # Side windows (right 40%, stacked vertically)
+    def _calc_main_plus_sides(
+        self,
+        windows: List[str],
+        screen_x: int,
+        screen_y: int,
+        screen_width: int,
+        screen_height: int,
+        spacing: int,
+    ) -> Dict[str, Dict]:
+        """Calculate main + sides layout"""
+        layouts = {}
+        num_windows = len(windows)
+        if num_windows >= 1:
+            main_width = int(screen_width * 0.6) - spacing * 2
+            layouts[windows[0]] = {
+                "x": screen_x + spacing,
+                "y": screen_y + spacing,
+                "width": main_width,
+                "height": screen_height - spacing * 2,
+            }
             if num_windows > 1:
                 side_width = screen_width - main_width - spacing * 3
-                side_height = (screen_height - spacing * (num_windows)) // (num_windows - 1)
+                side_height = (screen_height - spacing * num_windows) // (num_windows - 1)
                 side_x = screen_x + main_width + spacing * 2
-
                 for i, window_id in enumerate(windows[1:4]):
                     layouts[window_id] = {
                         "x": side_x,
@@ -312,22 +346,21 @@ class LayoutManager:
                         "width": side_width,
                         "height": side_height,
                     }
-
-        elif pattern == GridPattern.CASCADE:
-            # Cascading windows
-            base_width = 600
-            base_height = 400
-            offset = 30
-
-            for i, window_id in enumerate(windows):
-                layouts[window_id] = {
-                    "x": screen_x + spacing + i * offset,
-                    "y": screen_y + spacing + i * offset,
-                    "width": base_width,
-                    "height": base_height,
-                }
-
         return layouts
+
+    def _calc_cascade(
+        self, windows: List[str], screen_x: int, screen_y: int, spacing: int
+    ) -> Dict[str, Dict]:
+        """Calculate cascade layout"""
+        return {
+            window_id: {
+                "x": screen_x + spacing + i * 30,
+                "y": screen_y + spacing + i * 30,
+                "width": 600,
+                "height": 400,
+            }
+            for i, window_id in enumerate(windows)
+        }
 
     def auto_arrange(
         self, windows: List[str], pattern: GridPattern, screen_geometry: Dict, spacing: int = 10

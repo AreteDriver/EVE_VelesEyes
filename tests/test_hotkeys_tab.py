@@ -1076,6 +1076,8 @@ class TestHotkeysTabInteraction:
             tab.cycle_forward_edit.text.return_value = "<ctrl>+<shift>+]"
             tab.cycle_backward_edit = MagicMock()
             tab.cycle_backward_edit.text.return_value = "<ctrl>+<shift>+["
+            # Mock the broadcast_hotkeys_changed signal since Qt signals don't work with mocked QWidget
+            tab.broadcast_hotkeys_changed = MagicMock()
 
             tab._save_hotkeys()
 
@@ -1083,8 +1085,10 @@ class TestHotkeysTabInteraction:
                 "hotkeys.cycle_next", "<ctrl>+<shift>+]", auto_save=False
             )
             mock_settings_manager.set.assert_any_call(
-                "hotkeys.cycle_prev", "<ctrl>+<shift>+[", auto_save=True
+                "hotkeys.cycle_prev", "<ctrl>+<shift>+[", auto_save=False
             )
+            # Verify broadcast signal was emitted
+            tab.broadcast_hotkeys_changed.emit.assert_called_once()
             mock_msgbox.information.assert_called_once()
 
     @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
@@ -1450,3 +1454,206 @@ class TestHotkeysTabSetupUI:
 
             tab.group_member_list.clear.assert_called_once()
             tab.group_member_list.addItem.assert_not_called()
+
+
+# =============================================================================
+# Broadcast Hotkeys Tests
+# =============================================================================
+
+
+class TestBroadcastHotkeysLoad:
+    """Tests for broadcast hotkeys loading"""
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_load_broadcast_hotkeys_empty(self, mock_widget):
+        """Test _load_broadcast_hotkeys with no saved hotkeys"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = []
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+            tab.broadcast_container_layout = MagicMock()
+
+            tab._load_broadcast_hotkeys()
+
+            # No entries should be added
+            assert len(tab.broadcast_entries) == 0
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_load_broadcast_hotkeys_with_entries(self, mock_widget):
+        """Test _load_broadcast_hotkeys with saved hotkeys"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+
+        def settings_get(key, default=None):
+            if key == "broadcast_hotkeys":
+                return [
+                    {"trigger": "<ctrl>+<f1>", "key_to_send": "<f1>"},
+                    {"trigger": "<ctrl>+<f2>", "key_to_send": "<f2>"},
+                ]
+            return default
+
+        mock_settings_manager.get.side_effect = settings_get
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            with patch.object(HotkeysTab, "_add_broadcast_entry") as mock_add:
+                tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+                tab.broadcast_container_layout = MagicMock()
+
+                tab._load_broadcast_hotkeys()
+
+                # Should add 2 entries
+                assert mock_add.call_count == 2
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_load_broadcast_hotkeys_invalid_data(self, mock_widget):
+        """Test _load_broadcast_hotkeys with invalid data"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        # Return non-list data
+        mock_settings_manager.get.return_value = "invalid"
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+            tab.broadcast_container_layout = MagicMock()
+
+            # Should not raise
+            tab._load_broadcast_hotkeys()
+            assert len(tab.broadcast_entries) == 0
+
+
+class TestBroadcastHotkeysSave:
+    """Tests for broadcast hotkeys saving"""
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_save_broadcast_hotkeys_empty(self, mock_widget):
+        """Test _save_broadcast_hotkeys with no entries"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+            tab.broadcast_entries = []
+
+            result = tab._save_broadcast_hotkeys()
+
+            assert result == []
+            mock_settings_manager.set.assert_called_with("broadcast_hotkeys", [], auto_save=True)
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_save_broadcast_hotkeys_with_entries(self, mock_widget):
+        """Test _save_broadcast_hotkeys with entries"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+
+            # Mock entries
+            mock_trigger = MagicMock()
+            mock_trigger.text.return_value = "<ctrl>+<f1>"
+            mock_key = MagicMock()
+            mock_key.text.return_value = "<f1>"
+
+            tab.broadcast_entries = [{"trigger_edit": mock_trigger, "key_to_send_edit": mock_key}]
+
+            result = tab._save_broadcast_hotkeys()
+
+            assert len(result) == 1
+            assert result[0] == {"trigger": "<ctrl>+<f1>", "key_to_send": "<f1>"}
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_save_broadcast_hotkeys_skips_empty(self, mock_widget):
+        """Test _save_broadcast_hotkeys skips empty entries"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+
+            # Mock entries with empty values
+            mock_trigger_empty = MagicMock()
+            mock_trigger_empty.text.return_value = ""
+            mock_key_empty = MagicMock()
+            mock_key_empty.text.return_value = ""
+
+            mock_trigger_valid = MagicMock()
+            mock_trigger_valid.text.return_value = "<ctrl>+<f1>"
+            mock_key_valid = MagicMock()
+            mock_key_valid.text.return_value = "<f1>"
+
+            tab.broadcast_entries = [
+                {"trigger_edit": mock_trigger_empty, "key_to_send_edit": mock_key_empty},
+                {"trigger_edit": mock_trigger_valid, "key_to_send_edit": mock_key_valid},
+            ]
+
+            result = tab._save_broadcast_hotkeys()
+
+            # Only valid entry should be saved
+            assert len(result) == 1
+
+
+class TestBroadcastHotkeysGetAll:
+    """Tests for get_broadcast_hotkeys method"""
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_get_broadcast_hotkeys(self, mock_widget):
+        """Test get_broadcast_hotkeys returns current entries"""
+        mock_widget.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+
+            mock_trigger = MagicMock()
+            mock_trigger.text.return_value = "<ctrl>+<f1>"
+            mock_key = MagicMock()
+            mock_key.text.return_value = "<f1>"
+
+            tab.broadcast_entries = [{"trigger_edit": mock_trigger, "key_to_send_edit": mock_key}]
+
+            result = tab.get_broadcast_hotkeys()
+
+            assert len(result) == 1
+            assert result[0]["trigger"] == "<ctrl>+<f1>"
+            assert result[0]["key_to_send"] == "<f1>"

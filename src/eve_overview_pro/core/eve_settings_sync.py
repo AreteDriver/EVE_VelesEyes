@@ -151,30 +151,24 @@ class EVESettingsSync:
                 continue
 
             self.logger.info(f"Scanning logs at: {logs_dir}")
-
-            for log_file in logs_dir.glob("*.txt"):
-                # Extract character ID from filename like 20251208_053612_94468033.txt
-                match = re.search(r"_(\d{7,})\.txt$", log_file.name)
-                if match:
-                    char_id = match.group(1)
-                    if char_id in self.character_id_to_name:
-                        continue  # Already have this one
-
-                    # Read first few lines to find Listener name
-                    try:
-                        with open(log_file, encoding="utf-8", errors="replace") as f:
-                            for i, line in enumerate(f):
-                                if i > 10:  # Only check first 10 lines
-                                    break
-                                if "Listener:" in line:
-                                    char_name = line.split("Listener:")[1].strip()
-                                    if char_name:  # Skip empty character names
-                                        self.character_id_to_name[char_id] = char_name
-                                    break
-                    except OSError as e:
-                        self.logger.debug(f"Error reading log {log_file}: {e}")
+            self._process_log_files(logs_dir)
 
         self.logger.info(f"Loaded {len(self.character_id_to_name)} character names from logs")
+
+    def _process_log_files(self, logs_dir: Path):
+        """Process all log files in directory to extract character names."""
+        for log_file in logs_dir.glob("*.txt"):
+            # Extract character ID from filename like 20251208_053612_94468033.txt
+            match = re.search(r"_(\d{7,})\.txt$", log_file.name)
+            if not match:
+                continue
+            char_id = match.group(1)
+            if char_id in self.character_id_to_name:
+                continue  # Already have this one
+
+            char_name = self._parse_log_for_char_name(log_file)
+            if char_name:
+                self.character_id_to_name[char_id] = char_name
 
     def get_character_name(self, char_id: str) -> str:
         """Get character name from ID, returns ID if not found"""
@@ -195,6 +189,63 @@ class EVESettingsSync:
             self.logger.debug(f"Path not accessible {path}: {e}")
             return False
 
+    def _iter_settings_dirs(self):
+        """Yield all valid EVE settings directories.
+
+        Iterates through EVE paths, server directories, and settings directories.
+        Yields (settings_dir, base_path) tuples.
+        """
+        all_paths = self.eve_paths + self.custom_paths
+        for base_path in all_paths:
+            if not self._is_path_accessible(base_path):
+                continue
+            try:
+                for server_dir in base_path.iterdir():
+                    if not server_dir.is_dir():
+                        continue
+                    for settings_dir in server_dir.iterdir():
+                        if settings_dir.is_dir() and settings_dir.name.startswith("settings"):
+                            yield settings_dir, base_path
+            except OSError as e:
+                self.logger.debug(f"Error iterating {base_path}: {e}")
+
+    def _parse_log_for_char_name(self, log_file: Path) -> Optional[str]:
+        """Parse a log file to extract the character name from Listener line."""
+        try:
+            with open(log_file, encoding="utf-8", errors="replace") as f:
+                for i, line in enumerate(f):
+                    if i > 10:  # Only check first 10 lines
+                        break
+                    if "Listener:" in line:
+                        char_name = line.split("Listener:")[1].strip()
+                        return char_name if char_name else None
+        except OSError as e:
+            self.logger.debug(f"Error reading log {log_file}: {e}")
+        return None
+
+    def _create_char_info(self, char_file: Path, settings_dir: Path) -> Optional[EVECharacterInfo]:
+        """Create EVECharacterInfo from a core_char_*.dat file."""
+        match = re.search(r"core_char_(\d+)\.dat$", char_file.name)
+        if not match:
+            return None
+
+        char_id = match.group(1)
+        char_name = self.get_character_name(char_id)
+
+        try:
+            mtime = char_file.stat().st_mtime
+            last_seen = datetime.fromtimestamp(mtime)
+        except OSError:
+            last_seen = None
+
+        return EVECharacterInfo(
+            character_id=char_id,
+            character_name=char_name,
+            settings_path=settings_dir,
+            last_seen=last_seen,
+            has_settings=True,
+        )
+
     def get_all_known_characters(self) -> List[EVECharacterInfo]:
         """Get all known characters from EVE installation (even logged off ones)
 
@@ -205,53 +256,20 @@ class EVESettingsSync:
             List of EVECharacterInfo for all found characters
         """
         characters = []
-        all_paths = self.eve_paths + self.custom_paths
+        logged_paths = set()
 
-        for base_path in all_paths:
-            if not self._is_path_accessible(base_path):
-                continue
+        for settings_dir, base_path in self._iter_settings_dirs():
+            if base_path not in logged_paths:
+                self.logger.info(f"Scanning for characters at: {base_path}")
+                logged_paths.add(base_path)
 
-            self.logger.info(f"Scanning for characters at: {base_path}")
-
-            # Look for tranquility (main server) settings
-            for server_dir in base_path.iterdir():
-                if not server_dir.is_dir():
-                    continue
-
-                # Look for settings_Default or similar
-                for settings_dir in server_dir.iterdir():
-                    if not settings_dir.is_dir():
-                        continue
-                    if not settings_dir.name.startswith("settings"):
-                        continue
-
-                    # Scan for core_char_*.dat files
-                    for char_file in settings_dir.glob("core_char_*.dat"):
-                        # Extract character ID from filename
-                        match = re.search(r"core_char_(\d+)\.dat$", char_file.name)
-                        if not match:
-                            continue
-
-                        char_id = match.group(1)
-                        char_name = self.get_character_name(char_id)
-
-                        # Get file modification time as last seen
-                        try:
-                            mtime = char_file.stat().st_mtime
-                            last_seen = datetime.fromtimestamp(mtime)
-                        except OSError:
-                            last_seen = None
-
-                        char_info = EVECharacterInfo(
-                            character_id=char_id,
-                            character_name=char_name,
-                            settings_path=settings_dir,
-                            last_seen=last_seen,
-                            has_settings=True,
-                        )
-                        characters.append(char_info)
-
-                        self.logger.debug(f"Found character: {char_name} (ID: {char_id})")
+            for char_file in settings_dir.glob("core_char_*.dat"):
+                char_info = self._create_char_info(char_file, settings_dir)
+                if char_info:
+                    characters.append(char_info)
+                    self.logger.debug(
+                        f"Found character: {char_info.character_name} (ID: {char_info.character_id})"
+                    )
 
         self.logger.info(f"Found {len(characters)} characters in EVE settings")
         return characters
@@ -266,36 +284,18 @@ class EVESettingsSync:
             List of found character settings
         """
         found_characters = []
-        all_paths = self.eve_paths + self.custom_paths
+        logged_paths = set()
 
-        for base_path in all_paths:
-            if not self._is_path_accessible(base_path):
-                continue
+        for settings_dir, base_path in self._iter_settings_dirs():
+            if base_path not in logged_paths:
+                self.logger.info(f"Scanning EVE path: {base_path}")
+                logged_paths.add(base_path)
 
-            self.logger.info(f"Scanning EVE path: {base_path}")
-
-            try:
-                for server_dir in base_path.iterdir():
-                    if not server_dir.is_dir():
-                        continue
-
-                    for settings_dir in server_dir.iterdir():
-                        if not settings_dir.is_dir():
-                            continue
-                        if not settings_dir.name.startswith("settings"):
-                            continue
-
-                        # Scan for core_char_*.dat files inside settings directory
-                        for char_file in settings_dir.glob("core_char_*.dat"):
-                            char_settings = self._parse_char_file(char_file, settings_dir)
-                            if char_settings:
-                                found_characters.append(char_settings)
-                                self.character_settings[char_settings.character_name] = (
-                                    char_settings
-                                )
-
-            except OSError as e:
-                self.logger.error(f"Error scanning {base_path}: {e}")
+            for char_file in settings_dir.glob("core_char_*.dat"):
+                char_settings = self._parse_char_file(char_file, settings_dir)
+                if char_settings:
+                    found_characters.append(char_settings)
+                    self.character_settings[char_settings.character_name] = char_settings
 
         self.logger.info(f"Found {len(found_characters)} character settings")
         return found_characters

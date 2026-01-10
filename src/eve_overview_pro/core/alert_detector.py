@@ -81,18 +81,23 @@ class AlertDetector:
 
         alert_level = None
 
-        # Check for red flash (damage indicator)
-        if self._detect_red_flash(image):
+        # Resize once for both checks - use slightly larger size for accuracy
+        # then downsample for comparison. This avoids two expensive resize ops.
+        small_rgb = image.resize(self.RED_FLASH_SIZE, Image.Resampling.NEAREST)
+
+        # Check for red flash (damage indicator) using pre-resized image
+        if self._detect_red_flash_fast(small_rgb):
             alert_level = AlertLevel.HIGH
             self.logger.info(f"RED FLASH detected in window {window_id}")
 
         # Check for significant screen change
-        # Create small grayscale version for comparison (saves memory)
-        small_frame = image.resize(self.COMPARISON_SIZE).convert("L")
+        # Convert to grayscale for comparison (reuse resized image)
+        small_frame = small_rgb.convert("L")
 
         if window_id in self.previous_frames:
             if self._detect_screen_change_fast(small_frame, self.previous_frames[window_id]):
-                alert_level = AlertLevel.MEDIUM
+                if alert_level is None:  # Don't downgrade from HIGH
+                    alert_level = AlertLevel.MEDIUM
                 self.logger.debug(f"Screen change detected in window {window_id}")
 
         # Store small frame for next comparison (~10KB vs ~6MB)
@@ -107,6 +112,43 @@ class AlertDetector:
 
         return alert_level
 
+    # Size for red flash detection (balance between accuracy and speed)
+    RED_FLASH_SIZE = (160, 90)  # 16:9 aspect, ~14K pixels vs 2M pixels
+
+    def _detect_red_flash_fast(self, small_rgb: Image.Image) -> bool:
+        """Detect red flash in pre-resized RGB image
+
+        Args:
+            small_rgb: Pre-resized RGB image (RED_FLASH_SIZE)
+
+        Returns:
+            True if red flash detected
+        """
+        try:
+            # Convert to RGB array (already small)
+            img_array = np.array(small_rgb)
+
+            # Extract color channels
+            r = img_array[:, :, 0].astype(np.int16)
+            g = img_array[:, :, 1].astype(np.int16)
+            b = img_array[:, :, 2].astype(np.int16)
+
+            # Calculate red dominance
+            # Red flash: R > G+B and R > threshold
+            red_dominant = (r > (g + b)) & (r > 200)
+
+            # Calculate percentage of red pixels
+            total_pixels = r.size
+            red_pixels = np.sum(red_dominant)
+            red_percentage = red_pixels / total_pixels
+
+            # Alert if significant portion is red
+            return red_percentage > self.config.red_flash_threshold
+
+        except Exception as e:
+            self.logger.error(f"Red flash detection error: {e}")
+            return False
+
     def _detect_red_flash(self, image: Image.Image) -> bool:
         """Detect red flash in image (damage indicator)
 
@@ -117,13 +159,17 @@ class AlertDetector:
             True if red flash detected
         """
         try:
+            # Resize for faster processing - red flash is a global effect
+            # so we don't need full resolution
+            small = image.resize(self.RED_FLASH_SIZE, Image.Resampling.NEAREST)
+
             # Convert to RGB array
-            img_array = np.array(image.convert("RGB"))
+            img_array = np.array(small.convert("RGB"))
 
             # Extract color channels
-            r = img_array[:, :, 0].astype(float)
-            g = img_array[:, :, 1].astype(float)
-            b = img_array[:, :, 2].astype(float)
+            r = img_array[:, :, 0].astype(np.int16)
+            g = img_array[:, :, 1].astype(np.int16)
+            b = img_array[:, :, 2].astype(np.int16)
 
             # Calculate red dominance
             # Red flash: R > G+B and R > threshold

@@ -114,7 +114,7 @@ jobs:
 
       - name: Run bandit security scan
         run: |
-          bandit -r . -x ./tests,./venv,./.venv,./node_modules -f sarif -o bandit-results.sarif || true
+          bandit -r src/ -c pyproject.toml -f sarif -o bandit-results.sarif || true
 
       - name: Upload bandit results
         uses: github/codeql-action/upload-sarif@v4

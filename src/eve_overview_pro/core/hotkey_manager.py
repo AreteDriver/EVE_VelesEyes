@@ -164,35 +164,45 @@ class HotkeyManager(QObject):
         except Exception as e:
             self.logger.error(f"Failed to start key listener: {e}")
 
+    # Modifier key name mappings
+    _MODIFIER_KEYS = {
+        "ctrl": ("ctrl", "ctrl_l", "ctrl_r"),
+        "alt": ("alt", "alt_l", "alt_r", "alt_gr"),
+        "shift": ("shift", "shift_l", "shift_r"),
+    }
+
+    def _track_modifier_press(self, key) -> bool:
+        """Track modifier key press. Returns True if key was a modifier."""
+        if not hasattr(key, "name"):
+            return False
+        for mod_name, key_names in self._MODIFIER_KEYS.items():
+            if key.name in key_names:
+                self.pressed_modifiers.add(mod_name)
+                return True
+        return False
+
+    def _get_key_char(self, key) -> str | None:
+        """Extract key character from key event."""
+        if hasattr(key, "char") and key.char:
+            return key.char.lower()
+        if hasattr(key, "name") and key.name:
+            return key.name.lower()
+        return None
+
     def _on_key_press(self, key):
         """Handle key press for single-key hotkeys"""
         try:
-            # Track modifiers
-            if hasattr(key, "name"):
-                if key.name in ("ctrl", "ctrl_l", "ctrl_r"):
-                    self.pressed_modifiers.add("ctrl")
-                    return
-                elif key.name in ("alt", "alt_l", "alt_r", "alt_gr"):
-                    self.pressed_modifiers.add("alt")
-                    return
-                elif key.name in ("shift", "shift_l", "shift_r"):
-                    self.pressed_modifiers.add("shift")
-                    return
+            # Track modifiers - don't process further if it was a modifier
+            if self._track_modifier_press(key):
+                return
 
             # Only trigger single-key hotkeys when NO modifiers are pressed
             if self.pressed_modifiers:
                 return
 
-            # Get the key character
-            if hasattr(key, "char") and key.char:
-                key_char = key.char.lower()
-            elif hasattr(key, "name") and key.name:
-                key_char = key.name.lower()
-            else:
-                return
-
-            # Check if this key has a hotkey registered
-            if key_char in self.single_key_hotkeys:
+            # Get key character and check for registered hotkey
+            key_char = self._get_key_char(key)
+            if key_char and key_char in self.single_key_hotkeys:
                 info = self.single_key_hotkeys[key_char]
                 try:
                     info["callback"]()

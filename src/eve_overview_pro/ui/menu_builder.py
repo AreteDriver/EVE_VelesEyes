@@ -289,6 +289,37 @@ class ContextMenuBuilder:
         self.logger = logging.getLogger(__name__)
         self.registry = registry or ActionRegistry.get_instance()
 
+    def _build_zoom_submenu(
+        self, menu: QMenu, zoom_handler: Optional[Callable], current_zoom: float
+    ):
+        """Build the zoom level submenu with checkmark for current level."""
+        zoom_menu = menu.addMenu("Zoom Level")
+        for zoom in [0.2, 0.3, 0.4, 0.5]:
+            zoom_action = QAction(f"{int(zoom * 100)}%", menu)
+            if zoom == current_zoom:
+                zoom_action.setCheckable(True)
+                zoom_action.setChecked(True)
+            if zoom_handler:
+
+                def make_zoom_callback(z=zoom):
+                    return lambda: zoom_handler(z)
+
+                zoom_action.triggered.connect(make_zoom_callback())
+            zoom_menu.addAction(zoom_action)
+
+    def _add_registry_action(self, menu: QMenu, action_id: str, handlers: Dict[str, Callable]):
+        """Add an action from registry to the menu."""
+        spec = self.registry.get(action_id)
+        if spec:
+            action = QAction(spec.label, menu)
+            tooltip = format_tooltip_with_shortcut(spec)
+            if tooltip:
+                action.setToolTip(tooltip)
+            handler = handlers.get(action_id)
+            if handler:
+                action.triggered.connect(handler)
+            menu.addAction(action)
+
     def build_window_context_menu(
         self,
         handlers: Dict[str, Callable],
@@ -310,16 +341,15 @@ class ContextMenuBuilder:
         """
         menu = QMenu(parent)
 
-        # Window actions from registry
         action_order = [
             "focus_window",
             "minimize_window",
             "close_window",
-            None,  # separator
+            None,
             "set_label",
-            None,  # separator
-            "zoom",  # special: submenu
-            None,  # separator
+            None,
+            "zoom",
+            None,
             "remove_from_preview",
         ]
 
@@ -327,31 +357,9 @@ class ContextMenuBuilder:
             if item is None:
                 menu.addSeparator()
             elif item == "zoom":
-                # Zoom submenu (not from registry - dynamic state)
-                zoom_menu = menu.addMenu("Zoom Level")
-                for zoom in [0.2, 0.3, 0.4, 0.5]:
-                    zoom_action = QAction(f"{int(zoom * 100)}%", menu)
-                    if zoom == current_zoom:
-                        zoom_action.setCheckable(True)
-                        zoom_action.setChecked(True)
-                    if zoom_handler:
-                        # Create closure to capture zoom value
-                        def make_zoom_callback(z=zoom):
-                            return lambda: zoom_handler(z)
-
-                        zoom_action.triggered.connect(make_zoom_callback())
-                    zoom_menu.addAction(zoom_action)
+                self._build_zoom_submenu(menu, zoom_handler, current_zoom)
             else:
-                spec = self.registry.get(item)
-                if spec:
-                    action = QAction(spec.label, menu)
-                    tooltip = format_tooltip_with_shortcut(spec)
-                    if tooltip:
-                        action.setToolTip(tooltip)
-                    handler = handlers.get(item)
-                    if handler:
-                        action.triggered.connect(handler)
-                    menu.addAction(action)
+                self._add_registry_action(menu, item, handlers)
 
         return menu
 

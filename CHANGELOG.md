@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Broadcast Hotkeys** - Send keystrokes to all EVE windows simultaneously
+  - Configure trigger key (e.g., Ctrl+F1) and key to send (e.g., F1)
+  - Useful for fleet broadcasts (F1-F9), jump commands, etc.
+  - UI in Automation tab with add/remove entries
+  - Supports multiple broadcast hotkey mappings
+- **Preview Filter** - Quick filter in Overview toolbar to search windows by character name
+  - Type to filter visible previews
+  - Status bar shows filtered count
+- **Keyboard Window Control** - Number keys 1-9 activate windows by position when Overview tab is focused
+- **Performance Benchmarks** - New `benchmarks/benchmark_core.py` for profiling hot paths
+
+### Changed
+- Consolidated duplicate `ScreenGeometry` class and `get_screen_geometry()` function into shared `utils/screen.py` module (DRY refactoring)
+- Refactored `auto_arrange_grid` into shared `get_pattern_positions()` function (complexity 16 → 6)
+- Refactored `calculate_grid_layout` into helper methods (complexity 16 → 7)
+- Refactored `_on_key_press` by extracting `_MODIFIER_KEYS`, `_track_modifier_press()`, `_get_key_char()` helpers
+- Refactored EVE settings sync functions by extracting `_iter_settings_dirs()`, `_process_log_files()`, `_create_char_info()` helpers
+- Refactored `audit_actions` by extracting `_count_actions_by_home_and_scope()`, `_find_duplicate_homes()` helpers
+- Refactored `build_window_context_menu` by extracting `_build_zoom_submenu()`, `_add_registry_action()` helpers
+- All functions now pass cyclomatic complexity threshold (C901 ≤ 10)
+
+### Security
+- Added Bandit security scanner to dev dependencies and CI
+- Configured pyproject.toml with appropriate skips for X11 tool usage
+
+### Performance
+- **Alert detection 400x faster** - Optimized red flash detection from 42ms to 0.1ms per frame
+  - Downsample images before analysis (160x90 vs 1920x1080)
+  - Single resize operation shared between red flash and screen change detection
+  - Now well under 1ms target, enabling higher frame rates
+
+### Testing
+- Added 22 new tests for v2.7 features (broadcast hotkeys, preview filter, keyboard control)
+- Total test count: 1497
+
 ## [2.7.0] - 2026-01-10
 
 ### Performance
