@@ -79,8 +79,11 @@ class WindowCaptureThreaded:
         """Request async window capture
 
         Returns:
-            request_id to retrieve result later
+            request_id to retrieve result later (empty string if invalid window_id)
         """
+        if not _is_valid_window_id(window_id):
+            self.logger.warning(f"Invalid window ID format for capture: {window_id}")
+            return ""
         request_id = str(uuid.uuid4())
         self.capture_queue.put((window_id, scale, request_id))
         return request_id
