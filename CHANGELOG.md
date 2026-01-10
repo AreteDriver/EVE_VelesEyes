@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Performance
+- Fixed CPU busy loop in capture result processing (15-20% CPU reduction)
+- Fixed memory leak storing full-resolution frames (~600x memory reduction per window)
+- Added wmctrl result caching (1-second TTL) to reduce subprocess overhead
+- Fixed O(n²) duplicate detection in hotkey group drag-drop
+- Moved uuid import from hot path to module level
+- Increased config watcher fallback polling from 2s to 5s
+- Increased status timer from 1s to 2s
+
+### Security
+- Added window ID validation to all subprocess calls (defense-in-depth)
+- Path traversal prevention in layout manager
+- Narrowed exception handlers to specific types
+
+### Fixed
+- Thread safety improvements using threading.Event()
+- Lock file resource leak on exit
+- Unicode errors handling (replace instead of ignore)
+
+### Testing
+- Improved test coverage from 94% to 96%
+- Added SingleInstance class tests
+- Added pause/resume tests for hotkey manager
+
 ## [2.4.2] - 2025-12-29
 
 ### Changed
