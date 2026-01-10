@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2026-01-10
+
 ### Performance
 - Fixed CPU busy loop in capture result processing (15-20% CPU reduction)
 - Fixed memory leak storing full-resolution frames (~600x memory reduction per window)
