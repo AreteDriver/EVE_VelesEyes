@@ -61,7 +61,7 @@ class WindowCaptureThreaded:
         """Worker thread for capturing windows"""
         while self.running:
             try:
-                task = self.capture_queue.get(timeout=0.1)
+                task = self.capture_queue.get(timeout=0.5)
                 if task is None:
                     break
 

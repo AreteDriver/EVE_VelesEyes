@@ -86,7 +86,7 @@ class SingleInstance:
                 fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_UN)
                 self.lock_file.close()
             except OSError:
-                pass
+                pass  # File already closed or released, safe to ignore
             self.lock_file = None
 
     def __enter__(self):
