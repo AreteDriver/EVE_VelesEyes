@@ -8,6 +8,7 @@ v2.3: Merged layouts functionality - group-based window arrangement
 import logging
 import re
 import subprocess
+import threading
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
@@ -1040,6 +1041,7 @@ class WindowManager:
         # State
         self.preview_frames: Dict[str, WindowPreviewWidget] = {}
         self.pending_requests: Dict[str, str] = {}  # request_id -> window_id
+        self._pending_lock = threading.Lock()  # Protect pending_requests access
         # Read refresh rate from settings (default 5 FPS for efficiency)
         if settings_manager:
             self.refresh_rate = settings_manager.get("performance.default_refresh_rate", 5)
@@ -1136,7 +1138,8 @@ class WindowManager:
                     request_id = self.capture_system.capture_window_async(
                         window_id, scale=frame.zoom_factor
                     )
-                    self.pending_requests[request_id] = window_id
+                    with self._pending_lock:
+                        self.pending_requests[request_id] = window_id
                 except Exception as e:
                     self.logger.error(f"Failed to request capture for {window_id}: {e}")
 
@@ -1170,7 +1173,8 @@ class WindowManager:
                     self.logger.error(f"Failed to process frame for {window_id}: {e}")
 
             # Remove from pending
-            self.pending_requests.pop(request_id, None)
+            with self._pending_lock:
+                self.pending_requests.pop(request_id, None)
 
         if processed > 0:
             self.logger.debug(f"Processed {processed} capture results")

@@ -58,11 +58,10 @@ class AlertDetector:
         self.alert_callbacks[window_id] = callback
 
     def unregister_callback(self, window_id: str):
-        """Unregister alert callback"""
-        if window_id in self.alert_callbacks:
-            del self.alert_callbacks[window_id]
-        if window_id in self.previous_frames:
-            del self.previous_frames[window_id]
+        """Unregister alert callback and clean up all window data"""
+        self.alert_callbacks.pop(window_id, None)
+        self.previous_frames.pop(window_id, None)
+        self.last_alert_times.pop(window_id, None)
 
     def analyze_frame(self, window_id: str, image: Image.Image) -> Optional[AlertLevel]:
         """Analyze a frame for alert conditions
@@ -172,13 +171,14 @@ class AlertDetector:
             return False
 
     def clear_history(self, window_id: Optional[str] = None):
-        """Clear frame history
+        """Clear frame history and alert times
 
         Args:
             window_id: Specific window to clear, or None for all
         """
         if window_id:
-            if window_id in self.previous_frames:
-                del self.previous_frames[window_id]
+            self.previous_frames.pop(window_id, None)
+            self.last_alert_times.pop(window_id, None)
         else:
             self.previous_frames.clear()
+            self.last_alert_times.clear()

@@ -1814,6 +1814,8 @@ class TestWindowManagerCaptureCycle:
 
     def test_capture_cycle_requests_captures(self):
         """Test _capture_cycle requests captures for visible frames"""
+        import threading
+
         from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
@@ -1822,6 +1824,7 @@ class TestWindowManagerCaptureCycle:
             manager.capture_system = MagicMock()
             manager.capture_system.capture_window_async.return_value = "req-1"
             manager.pending_requests = {}
+            manager._pending_lock = threading.Lock()
             manager._process_capture_results = MagicMock()
 
             mock_frame = MagicMock()
@@ -1879,6 +1882,8 @@ class TestWindowManagerProcessResults:
 
     def test_process_capture_results_updates_frame(self):
         """Test _process_capture_results updates preview frames"""
+        import threading
+
         from PIL import Image
 
         from eve_overview_pro.ui.main_tab import WindowManager
@@ -1887,6 +1892,7 @@ class TestWindowManagerProcessResults:
             manager = WindowManager.__new__(WindowManager)
             manager.logger = MagicMock()
             manager.pending_requests = {"req-1": "0x123"}
+            manager._pending_lock = threading.Lock()
 
             mock_frame = MagicMock()
             manager.preview_frames = {"0x123": mock_frame}
@@ -6059,6 +6065,8 @@ class TestWindowManagerCaptureCycle:
 
     def test_capture_cycle_requests_captures(self):
         """Test _capture_cycle requests captures"""
+        import threading
+
         from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
@@ -6068,6 +6076,7 @@ class TestWindowManagerCaptureCycle:
             frame1.zoom_factor = 0.3
             manager.preview_frames = {"0x12345": frame1}
             manager.pending_requests = {}
+            manager._pending_lock = threading.Lock()
             manager.capture_system = MagicMock()
             manager.capture_system.capture_window_async.return_value = "req1"
             manager.logger = MagicMock()
@@ -6084,6 +6093,8 @@ class TestWindowManagerProcessResults:
 
     def test_process_capture_results(self):
         """Test _process_capture_results updates frames"""
+        import threading
+
         from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
@@ -6091,6 +6102,7 @@ class TestWindowManagerProcessResults:
             frame = MagicMock()
             manager.preview_frames = {"0x12345": frame}
             manager.pending_requests = {"req1": "0x12345"}
+            manager._pending_lock = threading.Lock()
             manager.capture_system = MagicMock()
             manager.alert_detector = MagicMock()
             manager.logger = MagicMock()
