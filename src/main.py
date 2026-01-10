@@ -64,16 +64,19 @@ class SingleInstance:
         """
         try:
             self.lock_file = open(self.lock_path, "w")
-            fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-            # Write PID to lock file
-            self.lock_file.write(str(os.getpid()))
-            self.lock_file.flush()
-            return True
-        except OSError:
-            # Lock is held by another instance
-            if self.lock_file:
+            try:
+                fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                # Write PID to lock file
+                self.lock_file.write(str(os.getpid()))
+                self.lock_file.flush()
+                return True
+            except Exception:
+                # Lock failed or other error - clean up file handle
                 self.lock_file.close()
                 self.lock_file = None
+                raise
+        except OSError:
+            # Lock is held by another instance or file operation failed
             return False
 
     def release(self):

@@ -390,6 +390,11 @@ class GridApplier:
         """Move and resize a single window, with fallback for Wine/Proton windows"""
         import time
 
+        # Validate window ID format (X11: 0x followed by hex digits)
+        if not window_id or not re.match(r"^0x[0-9a-fA-F]+$", window_id):
+            self.logger.warning(f"Invalid window ID format: {window_id}")
+            return
+
         # Try with --sync first, fallback to no-sync for Wine/Proton windows
         try:
             subprocess.run(

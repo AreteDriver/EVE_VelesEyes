@@ -5,11 +5,31 @@ Handles saving/loading window layouts and auto-tiling patterns
 
 import json
 import logging
+import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional
+
+
+def sanitize_filename(name: str) -> str:
+    """Sanitize a name for safe use as a filename.
+
+    Removes path separators, null bytes, and other dangerous characters.
+    Returns a safe filename or raises ValueError if result is empty.
+    """
+    # Remove path separators and null bytes
+    sanitized = re.sub(r'[/\\:\x00]', '', name)
+    # Remove leading/trailing dots and spaces
+    sanitized = sanitized.strip('. ')
+    # Limit length
+    sanitized = sanitized[:100]
+
+    if not sanitized:
+        raise ValueError(f"Invalid name: '{name}' produces empty filename")
+
+    return sanitized
 
 
 class GridPattern(Enum):
@@ -101,8 +121,14 @@ class LayoutManager:
     def save_preset(self, preset: LayoutPreset) -> bool:
         """Save a layout preset"""
         try:
+            safe_name = sanitize_filename(preset.name)
             preset.modified_at = datetime.now().isoformat()
-            preset_file = self.layouts_dir / f"{preset.name}.json"
+            preset_file = self.layouts_dir / f"{safe_name}.json"
+
+            # Verify path is within layouts_dir (defense in depth)
+            if not preset_file.resolve().is_relative_to(self.layouts_dir.resolve()):
+                self.logger.error(f"Path traversal attempt blocked: {preset.name}")
+                return False
 
             with open(preset_file, "w") as f:
                 json.dump(preset.to_dict(), f, indent=2)
@@ -110,6 +136,9 @@ class LayoutManager:
             self.presets[preset.name] = preset
             self.logger.info(f"Saved layout preset '{preset.name}'")
             return True
+        except ValueError as e:
+            self.logger.error(f"Invalid preset name '{preset.name}': {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Failed to save preset '{preset.name}': {e}")
             return False
@@ -119,8 +148,15 @@ class LayoutManager:
         if preset_name not in self.presets:
             return False
 
-        preset_file = self.layouts_dir / f"{preset_name}.json"
         try:
+            safe_name = sanitize_filename(preset_name)
+            preset_file = self.layouts_dir / f"{safe_name}.json"
+
+            # Verify path is within layouts_dir
+            if not preset_file.resolve().is_relative_to(self.layouts_dir.resolve()):
+                self.logger.error(f"Path traversal attempt blocked: {preset_name}")
+                return False
+
             if preset_file.exists():
                 preset_file.unlink()
             del self.presets[preset_name]

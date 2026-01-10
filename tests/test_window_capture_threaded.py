@@ -661,7 +661,7 @@ class TestWorkerThread:
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=1)
-        capture.running = True
+        capture._stop_event.clear()  # Set running state
         capture.capture_queue.put(None)
 
         # Run worker in thread
@@ -688,7 +688,7 @@ class TestWorkerThread:
         mock_image.open.return_value = mock_img
 
         capture = WindowCaptureThreaded(max_workers=1)
-        capture.running = True
+        capture._stop_event.clear()  # Set running state
 
         # Queue a task then None to stop
         capture.capture_queue.put(("0x12345", 1.0, "request_123"))
@@ -709,7 +709,7 @@ class TestWorkerThread:
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=1)
-        capture.running = True
+        capture._stop_event.clear()  # Set running state
 
         # Start worker, let it timeout on empty queue, then stop
         worker_thread = threading.Thread(target=capture._worker)
@@ -719,7 +719,7 @@ class TestWorkerThread:
         time.sleep(0.2)
 
         # Stop it
-        capture.running = False
+        capture._stop_event.set()  # Stop running
         capture.capture_queue.put(None)
         worker_thread.join(timeout=1.0)
 
@@ -730,7 +730,7 @@ class TestWorkerThread:
         from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=1)
-        capture.running = True
+        capture._stop_event.clear()  # Set running state
 
         # Mock _capture_window_sync to raise an exception
         with patch.object(capture, "_capture_window_sync", side_effect=Exception("Test error")):

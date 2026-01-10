@@ -39,3 +39,8 @@ build_venv/
 # Coverage
 .coverage
 htmlcov/
+
+# Environment files
+.env
+.env.*
+.env.local

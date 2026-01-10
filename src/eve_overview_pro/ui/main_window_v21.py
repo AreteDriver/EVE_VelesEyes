@@ -281,7 +281,13 @@ class MainWindowV21(QMainWindow):
 
     def _activate_window(self, window_id: str):
         """Activate a window by ID using xdotool, optionally minimizing previous EVE window"""
+        import re
         import subprocess
+
+        # Validate window ID format (X11: 0x followed by hex digits)
+        if not window_id or not re.match(r"^0x[0-9a-fA-F]+$", window_id):
+            self.logger.warning(f"Invalid window ID format: {window_id}")
+            return
 
         try:
             # Check if auto-minimize is enabled
@@ -291,7 +297,11 @@ class MainWindowV21(QMainWindow):
                 # Get the last activated EVE window
                 last_eve_window = self.settings_manager.get_last_activated_window()
 
-                if last_eve_window and last_eve_window != window_id:
+                if (
+                    last_eve_window
+                    and last_eve_window != window_id
+                    and re.match(r"^0x[0-9a-fA-F]+$", last_eve_window)
+                ):
                     # Minimize the previous EVE window
                     subprocess.run(
                         ["xdotool", "windowminimize", last_eve_window],

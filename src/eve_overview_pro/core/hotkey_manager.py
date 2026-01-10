@@ -248,15 +248,17 @@ class HotkeyManager(QObject):
             try:
                 self.combo_listener.stop()
                 self.combo_listener = None
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug(f"Error stopping combo listener: {e}")
+                self.combo_listener = None
 
         if self.key_listener:
             try:
                 self.key_listener.stop()
                 self.key_listener = None
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug(f"Error stopping key listener: {e}")
+                self.key_listener = None
 
     def parse_key_combo(self, combo_string: str) -> str:
         """Parse human-readable key combo"""

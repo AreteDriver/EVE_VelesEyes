@@ -5,12 +5,21 @@ High-performance capture with background threading
 
 import io
 import logging
+import re
 import subprocess
 import threading
 from queue import Empty, Queue
 from typing import Any, List, Optional, Tuple
 
 from PIL import Image
+
+# X11 window ID pattern: 0x followed by hex digits
+_WINDOW_ID_PATTERN = re.compile(r"^0x[0-9a-fA-F]+$")
+
+
+def _is_valid_window_id(window_id: str) -> bool:
+    """Validate X11 window ID format."""
+    return bool(window_id and isinstance(window_id, str) and _WINDOW_ID_PATTERN.match(window_id))
 
 
 class WindowCaptureThreaded:
@@ -22,11 +31,17 @@ class WindowCaptureThreaded:
         self.capture_queue: Queue[Any] = Queue()
         self.result_queue: Queue[Any] = Queue()
         self.workers: List[threading.Thread] = []
-        self.running = False
+        self._stop_event = threading.Event()
+        self._stop_event.set()  # Start in stopped state
+
+    @property
+    def running(self) -> bool:
+        """Thread-safe check if workers are running"""
+        return not self._stop_event.is_set()
 
     def start(self):
         """Start capture worker threads"""
-        self.running = True
+        self._stop_event.clear()
         for _i in range(self.max_workers):
             worker = threading.Thread(target=self._worker, daemon=True)
             worker.start()
@@ -35,7 +50,7 @@ class WindowCaptureThreaded:
 
     def stop(self):
         """Stop worker threads"""
-        self.running = False
+        self._stop_event.set()
         for _ in self.workers:
             self.capture_queue.put(None)
         for worker in self.workers:
@@ -124,30 +139,42 @@ class WindowCaptureThreaded:
 
     def activate_window(self, window_id: str) -> bool:
         """Activate/focus a window"""
+        if not _is_valid_window_id(window_id):
+            self.logger.warning(f"Invalid window ID format: {window_id}")
+            return False
         try:
             result = subprocess.run(
                 ["wmctrl", "-i", "-a", window_id], capture_output=True, timeout=1
             )
             return result.returncode == 0
-        except Exception:
+        except Exception as e:
+            self.logger.debug(f"Failed to activate window {window_id}: {e}")
             return False
 
     def minimize_window(self, window_id: str) -> bool:
         """Minimize a window"""
+        if not _is_valid_window_id(window_id):
+            self.logger.warning(f"Invalid window ID format: {window_id}")
+            return False
         try:
             result = subprocess.run(
                 ["xdotool", "windowminimize", window_id], capture_output=True, timeout=1
             )
             return result.returncode == 0
-        except Exception:
+        except Exception as e:
+            self.logger.debug(f"Failed to minimize window {window_id}: {e}")
             return False
 
     def restore_window(self, window_id: str) -> bool:
         """Restore a minimized window"""
+        if not _is_valid_window_id(window_id):
+            self.logger.warning(f"Invalid window ID format: {window_id}")
+            return False
         try:
             result = subprocess.run(
                 ["xdotool", "windowactivate", window_id], capture_output=True, timeout=1
             )
             return result.returncode == 0
-        except Exception:
+        except Exception as e:
+            self.logger.debug(f"Failed to restore window {window_id}: {e}")
             return False
