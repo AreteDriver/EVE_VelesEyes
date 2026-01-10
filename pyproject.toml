@@ -1,6 +1,6 @@
 [project]
 name = "argus-overview"
-version = "2.6.20"
+version = "2.6.21"
 description = "Professional multi-boxing tool for EVE Online on Linux"
 readme = "README.md"
 license = {text = "MIT"}

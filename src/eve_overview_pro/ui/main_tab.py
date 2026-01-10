@@ -1692,10 +1692,10 @@ class MainTab(QWidget):
         self.active_count_label = QLabel("Active: 0")
         status_layout.addWidget(self.active_count_label)
 
-        # Update status every second
+        # Update status periodically
         self.status_timer = QTimer()
         self.status_timer.timeout.connect(self._update_status)
-        self.status_timer.start(1000)
+        self.status_timer.start(2000)  # Every 2 seconds (status display doesn't need 1s updates)
 
         return status_bar
 

@@ -8,6 +8,7 @@ import logging
 import re
 import subprocess
 import threading
+import uuid
 from queue import Empty, Queue
 from typing import Any, List, Optional, Tuple
 
@@ -80,8 +81,6 @@ class WindowCaptureThreaded:
         Returns:
             request_id to retrieve result later
         """
-        import uuid
-
         request_id = str(uuid.uuid4())
         self.capture_queue.put((window_id, scale, request_id))
         return request_id

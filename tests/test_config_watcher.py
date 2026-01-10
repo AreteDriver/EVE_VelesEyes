@@ -187,7 +187,7 @@ class TestPollingFallback:
         """Polling starts timer"""
         with patch.object(watcher._poll_timer, "start") as mock_start:
             watcher._start_polling()
-            mock_start.assert_called_with(2000)
+            mock_start.assert_called_with(5000)  # 5 second fallback polling
 
     def test_update_mtime_stores_mtime(self, watcher):
         """Updates stored modification time"""

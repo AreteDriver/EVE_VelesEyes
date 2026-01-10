@@ -111,7 +111,7 @@ class ConfigWatcher(QObject):
     def _start_polling(self):
         """Start fallback polling for config changes"""
         self._update_mtime()
-        self._poll_timer.start(2000)  # Check every 2 seconds
+        self._poll_timer.start(5000)  # Check every 5 seconds (fallback mode)
         self.logger.info("Using polling for config monitoring")
 
     def _update_mtime(self):

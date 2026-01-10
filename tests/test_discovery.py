@@ -19,8 +19,17 @@ import pytest
 from eve_overview_pro.core.discovery import (
     AutoDiscovery,
     DiscoveredCharacter,
+    _clear_wmctrl_cache,
     scan_eve_windows,
 )
+
+
+@pytest.fixture(autouse=True)
+def clear_wmctrl_cache():
+    """Clear wmctrl cache before each test"""
+    _clear_wmctrl_cache()
+    yield
+    _clear_wmctrl_cache()
 
 
 class TestDiscoveredCharacter:
@@ -355,7 +364,7 @@ class TestScanEveWindowsFunction:
 
     def test_returns_list(self):
         """Returns list of tuples"""
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
                 returncode=0, stdout="0x123  0 host EVE - Pilot1\n0x456  0 host EVE - Pilot2\n"
             )
@@ -368,7 +377,7 @@ class TestScanEveWindowsFunction:
 
     def test_handles_empty_output(self):
         """Handles empty wmctrl output"""
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="")
 
             result = scan_eve_windows()
@@ -376,7 +385,7 @@ class TestScanEveWindowsFunction:
 
     def test_handles_subprocess_error(self):
         """Handles subprocess failure"""
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.side_effect = Exception("wmctrl failed")
 
             result = scan_eve_windows()
@@ -384,7 +393,7 @@ class TestScanEveWindowsFunction:
 
     def test_filters_non_eve_windows(self):
         """Only returns EVE windows"""
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
                 returncode=0,
                 stdout="0x1  0 host Firefox\n0x2  0 host EVE - Test\n0x3  0 host Terminal\n",
@@ -493,7 +502,7 @@ class TestGetEVEWindows:
         """Returns EVE windows from wmctrl"""
         discovery = AutoDiscovery()
 
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
                 returncode=0, stdout="0x123  0 host EVE - Pilot1\n0x456  0 host Firefox\n"
             )
@@ -509,7 +518,7 @@ class TestGetEVEWindows:
 
         discovery = AutoDiscovery()
 
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.side_effect = subprocess.TimeoutExpired("wmctrl", 2)
 
             result = discovery._get_eve_windows()
@@ -520,7 +529,7 @@ class TestGetEVEWindows:
         """Handles wmctrl failure"""
         discovery = AutoDiscovery()
 
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=1, stdout="")
 
             result = discovery._get_eve_windows()
@@ -531,7 +540,7 @@ class TestGetEVEWindows:
         """Handles general exceptions"""
         discovery = AutoDiscovery()
 
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             mock_run.side_effect = Exception("wmctrl not found")
 
             result = discovery._get_eve_windows()
@@ -542,7 +551,7 @@ class TestGetEVEWindows:
         """Skips empty lines in wmctrl output"""
         discovery = AutoDiscovery()
 
-        with patch("subprocess.run") as mock_run:
+        with patch("eve_overview_pro.core.discovery.subprocess.run") as mock_run:
             # Output with empty lines interspersed
             mock_run.return_value = MagicMock(
                 returncode=0, stdout="0x123  0 host EVE - Pilot1\n\n0x456  0 host EVE - Pilot2\n\n"

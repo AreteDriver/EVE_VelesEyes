@@ -93,14 +93,15 @@ class CyclingGroupList(QListWidget):
             self.members_changed.emit()
         elif isinstance(source, DraggableCharacterList):
             # Add from character list
+            # Build existing set once (O(n) instead of O(n²))
+            existing = {self.item(i).text() for i in range(self.count())}
             for item in source.selectedItems():
                 char_name = item.text()
-                # Check for duplicates
-                existing = [self.item(i).text() for i in range(self.count())]
                 if char_name not in existing:
                     new_item = QListWidgetItem(char_name)
                     new_item.setData(Qt.ItemDataRole.UserRole, char_name)
                     self.addItem(new_item)
+                    existing.add(char_name)  # Track newly added
             self.members_changed.emit()
             event.acceptProposedAction()
         else:
