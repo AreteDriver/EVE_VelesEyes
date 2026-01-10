@@ -233,9 +233,12 @@ class MainWindowV21(QMainWindow):
                     return window_id
         return None
 
-    @Slot()
-    def _cycle_next(self):
-        """Cycle to next window in group"""
+    def _cycle_window(self, direction: int = 1):
+        """Cycle to next/previous window in group
+
+        Args:
+            direction: 1 for next, -1 for previous
+        """
         members = self._get_cycling_group_members()
         if not members:
             self.logger.warning("No members in cycling group")
@@ -243,7 +246,7 @@ class MainWindowV21(QMainWindow):
 
         # Try each member at most once to avoid infinite loop
         for _ in range(len(members)):
-            self.cycling_index = (self.cycling_index + 1) % len(members)
+            self.cycling_index = (self.cycling_index + direction) % len(members)
             char_name = members[self.cycling_index]
 
             window_id = self._get_window_id_for_character(char_name)
@@ -257,31 +260,16 @@ class MainWindowV21(QMainWindow):
             self.logger.warning(f"Character '{char_name}' not found in active windows, skipping")
 
         self.logger.warning("No active windows found in cycling group")
+
+    @Slot()
+    def _cycle_next(self):
+        """Cycle to next window in group"""
+        self._cycle_window(direction=1)
 
     @Slot()
     def _cycle_prev(self):
         """Cycle to previous window in group"""
-        members = self._get_cycling_group_members()
-        if not members:
-            self.logger.warning("No members in cycling group")
-            return
-
-        # Try each member at most once to avoid infinite loop
-        for _ in range(len(members)):
-            self.cycling_index = (self.cycling_index - 1) % len(members)
-            char_name = members[self.cycling_index]
-
-            window_id = self._get_window_id_for_character(char_name)
-            if window_id:
-                self._activate_window(window_id)
-                self.logger.info(
-                    f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})"
-                )
-                return
-
-            self.logger.warning(f"Character '{char_name}' not found in active windows, skipping")
-
-        self.logger.warning("No active windows found in cycling group")
+        self._cycle_window(direction=-1)
 
     def _activate_window(self, window_id: str):
         """Activate a window by ID using xdotool, optionally minimizing previous EVE window"""
@@ -372,27 +360,35 @@ class MainWindowV21(QMainWindow):
         self.logger.info("Quit requested from tray")
         QApplication.quit()
 
+    def _apply_to_all_windows(self, action: str):
+        """Apply action to all EVE windows
+
+        Args:
+            action: 'minimize' or 'restore'
+        """
+        if not hasattr(self, "main_tab"):
+            return
+
+        method = getattr(self.capture_system, f"{action}_window", None)
+        if not method:
+            return
+
+        count = sum(1 for wid in self.main_tab.window_manager.preview_frames.keys() if method(wid))
+        action_past = "Minimized" if action == "minimize" else "Restored"
+        self.logger.info(f"{action_past} {count} EVE windows")
+        self.system_tray.show_notification(
+            f"Windows {action_past}", f"{action_past} {count} windows"
+        )
+
     @Slot()
     def _minimize_all_windows(self):
         """Minimize all EVE windows (v2.2)"""
-        if hasattr(self, "main_tab"):
-            count = 0
-            for window_id in self.main_tab.window_manager.preview_frames.keys():
-                if self.capture_system.minimize_window(window_id):
-                    count += 1
-            self.logger.info(f"Minimized {count} EVE windows")
-            self.system_tray.show_notification("Windows Minimized", f"Minimized {count} windows")
+        self._apply_to_all_windows("minimize")
 
     @Slot()
     def _restore_all_windows(self):
         """Restore all EVE windows (v2.2)"""
-        if hasattr(self, "main_tab"):
-            count = 0
-            for window_id in self.main_tab.window_manager.preview_frames.keys():
-                if self.capture_system.restore_window(window_id):
-                    count += 1
-            self.logger.info(f"Restored {count} EVE windows")
-            self.system_tray.show_notification("Windows Restored", f"Restored {count} windows")
+        self._apply_to_all_windows("restore")
 
     def _activate_character(self, char_name: str):
         """Activate window for a specific character (v2.2 per-character hotkeys)"""
