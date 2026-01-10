@@ -1490,7 +1490,7 @@ class TestMainTabAutoMinimize:
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = True
-            tab.settings_manager._last_activated_eve_window = "0x111"
+            tab.settings_manager.get_last_activated_window.return_value = "0x111"
             tab.capture_system = MagicMock()
             tab.capture_system.activate_window.return_value = True
             tab.logger = MagicMock()
@@ -1513,7 +1513,7 @@ class TestMainTabAutoMinimize:
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = True
-            tab.settings_manager._last_activated_eve_window = "0x123"
+            tab.settings_manager.get_last_activated_window.return_value = "0x123"
             tab.capture_system = MagicMock()
             tab.capture_system.activate_window.return_value = True
             tab.logger = MagicMock()
@@ -1538,7 +1538,7 @@ class TestMainTabAutoMinimize:
 
             tab._on_window_activated("0x456")
 
-            assert tab.settings_manager._last_activated_eve_window == "0x456"
+            tab.settings_manager.set_last_activated_window.assert_called_with("0x456")
 
     def test_on_window_activated_no_previous(self):
         """Test _on_window_activated with no previous window"""
@@ -1548,8 +1548,7 @@ class TestMainTabAutoMinimize:
             tab = MainTab.__new__(MainTab)
             tab.settings_manager = MagicMock()
             tab.settings_manager.get.return_value = True
-            # No _last_activated_eve_window attribute
-            del tab.settings_manager._last_activated_eve_window
+            tab.settings_manager.get_last_activated_window.return_value = None
             tab.capture_system = MagicMock()
             tab.capture_system.activate_window.return_value = True
             tab.logger = MagicMock()
@@ -4272,7 +4271,7 @@ class TestMainTabWindowMethods:
             tab._on_window_activated("12345")
 
             # Should set the last activated window on settings_manager
-            assert tab.settings_manager._last_activated_eve_window == "12345"
+            tab.settings_manager.set_last_activated_window.assert_called_with("12345")
 
     def test_on_window_removed(self):
         """Test _on_window_removed removes frame"""

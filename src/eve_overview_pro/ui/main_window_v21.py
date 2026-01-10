@@ -288,8 +288,8 @@ class MainWindowV21(QMainWindow):
             auto_minimize = self.settings_manager.get("performance.auto_minimize_inactive", False)
 
             if auto_minimize:
-                # Get the last activated EVE window (shared via settings_manager)
-                last_eve_window = getattr(self.settings_manager, "_last_activated_eve_window", None)
+                # Get the last activated EVE window
+                last_eve_window = self.settings_manager.get_last_activated_window()
 
                 if last_eve_window and last_eve_window != window_id:
                     # Minimize the previous EVE window
@@ -300,8 +300,8 @@ class MainWindowV21(QMainWindow):
                     )
                     self.logger.info(f"Auto-minimized previous EVE window: {last_eve_window}")
 
-            # Track this as the last activated EVE window (shared via settings_manager)
-            self.settings_manager._last_activated_eve_window = window_id
+            # Track this as the last activated EVE window
+            self.settings_manager.set_last_activated_window(window_id)
 
             # Activate the new window
             subprocess.run(

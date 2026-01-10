@@ -113,6 +113,9 @@ class SettingsManager:
         self.settings_file = self.config_dir / "settings.json"
         self.settings: Dict = {}
 
+        # Runtime state (not persisted)
+        self._last_activated_window: Optional[str] = None
+
         # Load settings or create defaults
         self.load_settings()
 
@@ -370,3 +373,11 @@ class SettingsManager:
         except Exception as e:
             self.logger.error(f"Settings validation failed: {e}")
             return False
+
+    def get_last_activated_window(self) -> Optional[str]:
+        """Get the last activated EVE window ID (runtime state, not persisted)"""
+        return self._last_activated_window
+
+    def set_last_activated_window(self, window_id: Optional[str]) -> None:
+        """Set the last activated EVE window ID (runtime state, not persisted)"""
+        self._last_activated_window = window_id

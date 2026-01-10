@@ -1297,7 +1297,7 @@ class TestActivateWindow:
         window.logger = MagicMock()
         window.settings_manager = MagicMock()
         window.settings_manager.get.return_value = True  # auto_minimize ON
-        window.settings_manager._last_activated_eve_window = (
+        window.settings_manager.get_last_activated_window.return_value = (
             "0x99999"  # Previous EVE window (shared)
         )
 

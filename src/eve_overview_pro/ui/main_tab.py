@@ -1805,13 +1805,9 @@ class MainTab(QWidget):
                 else False
             )
 
-            if auto_minimize:
-                # Get the last activated EVE window (shared via settings_manager)
-                last_window = (
-                    getattr(self.settings_manager, "_last_activated_eve_window", None)
-                    if self.settings_manager
-                    else None
-                )
+            if auto_minimize and self.settings_manager:
+                # Get the last activated EVE window
+                last_window = self.settings_manager.get_last_activated_window()
                 if last_window and last_window != window_id:
                     # Minimize the previous EVE window
                     subprocess.run(
@@ -1819,9 +1815,9 @@ class MainTab(QWidget):
                     )
                     self.logger.info(f"Auto-minimized previous EVE window: {last_window}")
 
-            # Track this as the last activated EVE window (shared via settings_manager)
+            # Track this as the last activated EVE window
             if self.settings_manager:
-                self.settings_manager._last_activated_eve_window = window_id
+                self.settings_manager.set_last_activated_window(window_id)
 
             result = self.capture_system.activate_window(window_id)
             if result:
