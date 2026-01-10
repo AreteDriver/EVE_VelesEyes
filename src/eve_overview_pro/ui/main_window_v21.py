@@ -241,19 +241,20 @@ class MainWindowV21(QMainWindow):
             self.logger.warning("No members in cycling group")
             return
 
-        # Advance index
-        self.cycling_index = (self.cycling_index + 1) % len(members)
-        char_name = members[self.cycling_index]
+        # Try each member at most once to avoid infinite loop
+        for _ in range(len(members)):
+            self.cycling_index = (self.cycling_index + 1) % len(members)
+            char_name = members[self.cycling_index]
 
-        # Activate the window
-        window_id = self._get_window_id_for_character(char_name)
-        if window_id:
-            self._activate_window(window_id)
-            self.logger.info(f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})")
-        else:
-            self.logger.warning(f"Character '{char_name}' not found in active windows")
-            # Try next one
-            self._cycle_next()
+            window_id = self._get_window_id_for_character(char_name)
+            if window_id:
+                self._activate_window(window_id)
+                self.logger.info(f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})")
+                return
+
+            self.logger.warning(f"Character '{char_name}' not found in active windows, skipping")
+
+        self.logger.warning("No active windows found in cycling group")
 
     @Slot()
     def _cycle_prev(self):
@@ -263,19 +264,20 @@ class MainWindowV21(QMainWindow):
             self.logger.warning("No members in cycling group")
             return
 
-        # Go back in index
-        self.cycling_index = (self.cycling_index - 1) % len(members)
-        char_name = members[self.cycling_index]
+        # Try each member at most once to avoid infinite loop
+        for _ in range(len(members)):
+            self.cycling_index = (self.cycling_index - 1) % len(members)
+            char_name = members[self.cycling_index]
 
-        # Activate the window
-        window_id = self._get_window_id_for_character(char_name)
-        if window_id:
-            self._activate_window(window_id)
-            self.logger.info(f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})")
-        else:
-            self.logger.warning(f"Character '{char_name}' not found in active windows")
-            # Try previous one
-            self._cycle_prev()
+            window_id = self._get_window_id_for_character(char_name)
+            if window_id:
+                self._activate_window(window_id)
+                self.logger.info(f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})")
+                return
+
+            self.logger.warning(f"Character '{char_name}' not found in active windows, skipping")
+
+        self.logger.warning("No active windows found in cycling group")
 
     def _activate_window(self, window_id: str):
         """Activate a window by ID using xdotool, optionally minimizing previous EVE window"""
