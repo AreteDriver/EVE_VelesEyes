@@ -249,7 +249,9 @@ class MainWindowV21(QMainWindow):
             window_id = self._get_window_id_for_character(char_name)
             if window_id:
                 self._activate_window(window_id)
-                self.logger.info(f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})")
+                self.logger.info(
+                    f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})"
+                )
                 return
 
             self.logger.warning(f"Character '{char_name}' not found in active windows, skipping")
@@ -272,7 +274,9 @@ class MainWindowV21(QMainWindow):
             window_id = self._get_window_id_for_character(char_name)
             if window_id:
                 self._activate_window(window_id)
-                self.logger.info(f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})")
+                self.logger.info(
+                    f"Cycled to: {char_name} ({self.cycling_index + 1}/{len(members)})"
+                )
                 return
 
             self.logger.warning(f"Character '{char_name}' not found in active windows, skipping")

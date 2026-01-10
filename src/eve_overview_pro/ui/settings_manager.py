@@ -291,7 +291,9 @@ class SettingsManager:
                 imported_settings = import_data
 
             # Merge with defaults (preserve structure)
-            self.settings = self._merge_settings(copy.deepcopy(self.DEFAULT_SETTINGS), imported_settings)
+            self.settings = self._merge_settings(
+                copy.deepcopy(self.DEFAULT_SETTINGS), imported_settings
+            )
 
             # Save
             if self.save_settings():

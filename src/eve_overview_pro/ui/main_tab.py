@@ -1148,15 +1148,17 @@ class WindowManager:
 
     def _process_capture_results(self):
         """Poll and process capture results from worker threads"""
+        # Process up to 10 results per cycle to avoid blocking UI
+        max_per_cycle = 10
         processed = 0
 
-        while True:
-            result = self.capture_system.get_result(timeout=0.001)
+        for _ in range(max_per_cycle):
+            result = self.capture_system.get_result(timeout=0.0)  # Non-blocking
             if not result:
                 break
 
-            request_id, window_id, image = result
             processed += 1
+            request_id, window_id, image = result
 
             # Update preview
             if window_id in self.preview_frames:

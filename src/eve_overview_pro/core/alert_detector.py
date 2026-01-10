@@ -37,10 +37,13 @@ class AlertConfig:
 class AlertDetector:
     """Detects visual activity in window captures"""
 
+    # Size for storing comparison frames (small to save memory)
+    COMPARISON_SIZE = (100, 100)
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.config = AlertConfig()
-        self.previous_frames = {}  # window_id -> previous image
+        self.previous_frames = {}  # window_id -> small grayscale image for comparison
         self.last_alert_times = {}  # window_id -> timestamp
         self.alert_callbacks = {}  # window_id -> callback function
 
@@ -84,13 +87,16 @@ class AlertDetector:
             self.logger.info(f"RED FLASH detected in window {window_id}")
 
         # Check for significant screen change
-        elif window_id in self.previous_frames:
-            if self._detect_screen_change(image, self.previous_frames[window_id]):
+        # Create small grayscale version for comparison (saves memory)
+        small_frame = image.resize(self.COMPARISON_SIZE).convert("L")
+
+        if window_id in self.previous_frames:
+            if self._detect_screen_change_fast(small_frame, self.previous_frames[window_id]):
                 alert_level = AlertLevel.MEDIUM
                 self.logger.debug(f"Screen change detected in window {window_id}")
 
-        # Store frame for next comparison
-        self.previous_frames[window_id] = image.copy()
+        # Store small frame for next comparison (~10KB vs ~6MB)
+        self.previous_frames[window_id] = small_frame
 
         # Trigger callback if alert detected
         if alert_level and window_id in self.alert_callbacks:
@@ -135,25 +141,22 @@ class AlertDetector:
             self.logger.error(f"Red flash detection error: {e}")
             return False
 
-    def _detect_screen_change(self, current: Image.Image, previous: Image.Image) -> bool:
-        """Detect significant change between frames
+    def _detect_screen_change_fast(
+        self, current_small: Image.Image, previous_small: Image.Image
+    ) -> bool:
+        """Detect significant change between pre-resized frames
 
         Args:
-            current: Current frame
-            previous: Previous frame
+            current_small: Current frame (already resized to COMPARISON_SIZE, grayscale)
+            previous_small: Previous frame (already resized to COMPARISON_SIZE, grayscale)
 
         Returns:
             True if significant change detected
         """
         try:
-            # Resize to common size for comparison
-            size = (100, 100)
-            current_resized = current.resize(size).convert("L")
-            previous_resized = previous.resize(size).convert("L")
-
-            # Convert to arrays
-            current_array = np.array(current_resized).astype(float)
-            previous_array = np.array(previous_resized).astype(float)
+            # Convert to arrays (already correct size and grayscale)
+            current_array = np.array(current_small).astype(np.int16)
+            previous_array = np.array(previous_small).astype(np.int16)
 
             # Calculate difference
             diff = np.abs(current_array - previous_array)
@@ -166,6 +169,25 @@ class AlertDetector:
             # Alert if significant change
             return change_percentage > self.config.change_threshold
 
+        except Exception as e:
+            self.logger.error(f"Screen change detection error: {e}")
+            return False
+
+    def _detect_screen_change(self, current: Image.Image, previous: Image.Image) -> bool:
+        """Detect significant change between frames (legacy method)
+
+        Args:
+            current: Current frame
+            previous: Previous frame
+
+        Returns:
+            True if significant change detected
+        """
+        try:
+            # Resize and convert for comparison
+            current_small = current.resize(self.COMPARISON_SIZE).convert("L")
+            previous_small = previous.resize(self.COMPARISON_SIZE).convert("L")
+            return self._detect_screen_change_fast(current_small, previous_small)
         except Exception as e:
             self.logger.error(f"Screen change detection error: {e}")
             return False

@@ -20,9 +20,9 @@ def sanitize_filename(name: str) -> str:
     Returns a safe filename or raises ValueError if result is empty.
     """
     # Remove path separators and null bytes
-    sanitized = re.sub(r'[/\\:\x00]', '', name)
+    sanitized = re.sub(r"[/\\:\x00]", "", name)
     # Remove leading/trailing dots and spaces
-    sanitized = sanitized.strip('. ')
+    sanitized = sanitized.strip(". ")
     # Limit length
     sanitized = sanitized[:100]
 
