@@ -86,6 +86,9 @@ class ConfigWatcher(QObject):
         if self._observer:
             self._observer.stop()
             self._observer.join(timeout=1.0)
+            # Force cleanup if observer didn't stop gracefully
+            if self._observer.is_alive():
+                self.logger.warning("Observer thread did not stop gracefully, forcing cleanup")
             self._observer = None
 
         self._poll_timer.stop()
@@ -116,8 +119,8 @@ class ConfigWatcher(QObject):
         try:
             if self.config_path.exists():
                 self._last_mtime = self.config_path.stat().st_mtime
-        except Exception:
-            pass
+        except OSError as e:
+            self.logger.debug(f"Failed to get mtime for {self.config_path}: {e}")
 
     def _check_file(self):
         """Polling check for file changes"""

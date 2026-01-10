@@ -162,7 +162,7 @@ class EVESettingsSync:
 
                     # Read first few lines to find Listener name
                     try:
-                        with open(log_file, encoding="utf-8", errors="ignore") as f:
+                        with open(log_file, encoding="utf-8", errors="replace") as f:
                             for i, line in enumerate(f):
                                 if i > 10:  # Only check first 10 lines
                                     break
@@ -171,7 +171,7 @@ class EVESettingsSync:
                                     if char_name:  # Skip empty character names
                                         self.character_id_to_name[char_id] = char_name
                                     break
-                    except Exception as e:
+                    except OSError as e:
                         self.logger.debug(f"Error reading log {log_file}: {e}")
 
         self.logger.info(f"Loaded {len(self.character_id_to_name)} character names from logs")
@@ -179,6 +179,21 @@ class EVESettingsSync:
     def get_character_name(self, char_id: str) -> str:
         """Get character name from ID, returns ID if not found"""
         return self.character_id_to_name.get(char_id, f"Character_{char_id}")
+
+    def _is_path_accessible(self, path: Path) -> bool:
+        """Check if a path exists and is readable.
+
+        Args:
+            path: Path to check
+
+        Returns:
+            True if path exists and is accessible
+        """
+        try:
+            return path.exists() and path.is_dir() and any(path.iterdir())
+        except (OSError, PermissionError) as e:
+            self.logger.debug(f"Path not accessible {path}: {e}")
+            return False
 
     def get_all_known_characters(self) -> List[EVECharacterInfo]:
         """Get all known characters from EVE installation (even logged off ones)
@@ -193,7 +208,7 @@ class EVESettingsSync:
         all_paths = self.eve_paths + self.custom_paths
 
         for base_path in all_paths:
-            if not base_path.exists():
+            if not self._is_path_accessible(base_path):
                 continue
 
             self.logger.info(f"Scanning for characters at: {base_path}")
@@ -254,7 +269,7 @@ class EVESettingsSync:
         all_paths = self.eve_paths + self.custom_paths
 
         for base_path in all_paths:
-            if not base_path.exists():
+            if not self._is_path_accessible(base_path):
                 continue
 
             self.logger.info(f"Scanning EVE path: {base_path}")
@@ -279,7 +294,7 @@ class EVESettingsSync:
                                     char_settings
                                 )
 
-            except Exception as e:
+            except OSError as e:
                 self.logger.error(f"Error scanning {base_path}: {e}")
 
         self.logger.info(f"Found {len(found_characters)} character settings")
@@ -321,7 +336,7 @@ class EVESettingsSync:
 
             return char_settings
 
-        except Exception as e:
+        except (OSError, ValueError) as e:
             self.logger.error(f"Error parsing char file {char_file}: {e}")
             return None
 
@@ -372,7 +387,7 @@ class EVESettingsSync:
                 else:
                     self.logger.error(f"Failed to sync settings to '{target_char}'")
 
-            except Exception as e:
+            except OSError as e:
                 self.logger.error(f"Error syncing to '{target_char}': {e}")
                 results[target_char] = False
 
@@ -393,7 +408,7 @@ class EVESettingsSync:
         try:
             shutil.copy2(source_file, backup_file)
             self.logger.info(f"Created backup: {backup_file}")
-        except Exception as e:
+        except OSError as e:
             self.logger.error(f"Backup failed: {e}")
             raise
 
@@ -427,7 +442,7 @@ class EVESettingsSync:
 
             return True
 
-        except Exception as e:
+        except OSError as e:
             self.logger.error(f"Settings copy error: {e}")
             return False
 

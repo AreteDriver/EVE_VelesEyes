@@ -1015,8 +1015,8 @@ class TestExceptionHandling:
 
             sync = EVESettingsSync()
 
-            # Patch glob to raise exception during user file search
-            with patch.object(Path, "glob", side_effect=Exception("Glob error")):
+            # Patch glob to raise OSError during user file search
+            with patch.object(Path, "glob", side_effect=OSError("Glob error")):
                 result = sync._parse_char_file(char_file, settings_dir)
 
             assert result is None
@@ -1053,8 +1053,8 @@ class TestExceptionHandling:
                 has_settings=True,
             )
 
-            # Patch _copy_settings to raise exception
-            with patch.object(sync, "_copy_settings", side_effect=Exception("Copy failed")):
+            # Patch _copy_settings to raise OSError
+            with patch.object(sync, "_copy_settings", side_effect=OSError("Copy failed")):
                 results = sync.sync_settings("Source", ["Target"], backup=False)
 
             assert results["Target"] is False
