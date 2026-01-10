@@ -4033,7 +4033,7 @@ class TestWindowPreviewWidgetMethods:
             mock_event = MagicMock()
             mock_event.button.return_value = Qt.MouseButton.LeftButton
             mock_pos = MagicMock()
-            mock_event.pos.return_value = mock_pos
+            mock_event.position.return_value.toPoint.return_value = mock_pos
 
             widget.mousePressEvent(mock_event)
 
@@ -6649,10 +6649,12 @@ class TestWindowPreviewWidgetMouseEventsReal:
             capture_system=mock_capture,
         )
 
-        # Create mouse press event
+        # Create mouse press event (use Qt6 constructor with globalPos)
+        from PySide6.QtCore import QPointF
         event = QMouseEvent(
             QMouseEvent.Type.MouseButtonPress,
-            QPoint(50, 50),
+            QPointF(50, 50),  # localPos
+            QPointF(50, 50),  # globalPos
             Qt.MouseButton.LeftButton,
             Qt.MouseButton.LeftButton,
             Qt.KeyboardModifier.NoModifier,
@@ -6664,7 +6666,7 @@ class TestWindowPreviewWidgetMouseEventsReal:
     def test_mouse_move_event_no_start_pos(self, qapp):
         """Test mouseMoveEvent does nothing without drag start"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
-        from PySide6.QtCore import QPoint, Qt
+        from PySide6.QtCore import QPoint, QPointF, Qt
         from PySide6.QtGui import QMouseEvent
 
         mock_capture = MagicMock()
@@ -6676,7 +6678,8 @@ class TestWindowPreviewWidgetMouseEventsReal:
 
         event = QMouseEvent(
             QMouseEvent.Type.MouseMove,
-            QPoint(100, 100),
+            QPointF(100, 100),  # localPos
+            QPointF(100, 100),  # globalPos
             Qt.MouseButton.NoButton,
             Qt.MouseButton.NoButton,
             Qt.KeyboardModifier.NoModifier,
@@ -6686,7 +6689,7 @@ class TestWindowPreviewWidgetMouseEventsReal:
     def test_mouse_move_event_small_movement(self, qapp):
         """Test mouseMoveEvent ignores small movements"""
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
-        from PySide6.QtCore import QPoint, Qt
+        from PySide6.QtCore import QPoint, QPointF, Qt
         from PySide6.QtGui import QMouseEvent
 
         mock_capture = MagicMock()
@@ -6700,7 +6703,8 @@ class TestWindowPreviewWidgetMouseEventsReal:
         # Small movement (less than 10 manhattan distance)
         event = QMouseEvent(
             QMouseEvent.Type.MouseMove,
-            QPoint(52, 52),  # Only 4 pixels manhattan distance
+            QPointF(52, 52),  # localPos - Only 4 pixels manhattan distance
+            QPointF(52, 52),  # globalPos
             Qt.MouseButton.NoButton,
             Qt.MouseButton.NoButton,
             Qt.KeyboardModifier.NoModifier,

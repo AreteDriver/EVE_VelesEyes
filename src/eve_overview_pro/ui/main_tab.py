@@ -917,7 +917,7 @@ class WindowPreviewWidget(QWidget):
     def mousePressEvent(self, event):
         """Handle mouse click - start drag or activate"""
         if event.button() == Qt.MouseButton.LeftButton:
-            self._drag_start_pos = event.pos()
+            self._drag_start_pos = event.position().toPoint()
 
     def mouseMoveEvent(self, event):
         """Handle mouse move - initiate drag if moved far enough"""
@@ -925,7 +925,7 @@ class WindowPreviewWidget(QWidget):
             return
 
         # Check if moved far enough to start drag
-        if (event.pos() - self._drag_start_pos).manhattanLength() < 10:
+        if (event.position().toPoint() - self._drag_start_pos).manhattanLength() < 10:
             return
 
         # Start drag operation
