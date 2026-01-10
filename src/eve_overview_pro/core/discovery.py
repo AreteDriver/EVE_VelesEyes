@@ -362,7 +362,8 @@ def scan_eve_windows() -> List[Tuple[str, str, str]]:
                         match = re.match(pattern, window_title)
                         if match:
                             char_name = match.group(1).strip()
-                            results.append((window_id, window_title, char_name))
+                            if char_name:  # Skip empty character names
+                                results.append((window_id, window_title, char_name))
                             break
 
     except Exception as e:

@@ -168,7 +168,8 @@ class EVESettingsSync:
                                     break
                                 if "Listener:" in line:
                                     char_name = line.split("Listener:")[1].strip()
-                                    self.character_id_to_name[char_id] = char_name
+                                    if char_name:  # Skip empty character names
+                                        self.character_id_to_name[char_id] = char_name
                                     break
                     except Exception as e:
                         self.logger.debug(f"Error reading log {log_file}: {e}")

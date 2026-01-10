@@ -1759,6 +1759,8 @@ class MainTab(QWidget):
 
                 # Extract character name from window title
                 char_name = window_title.replace("EVE -", "").replace("EVE Online -", "").strip()
+                if not char_name:
+                    char_name = f"Unknown ({window_id})"
 
                 # Try auto-assign to character
                 assignments = self.character_manager.auto_assign_windows(

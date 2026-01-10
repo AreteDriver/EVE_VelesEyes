@@ -340,6 +340,8 @@ class CharacterManager:
             # Try to extract character name from EVE window title
             # Format: "EVE - CharacterName" or just "CharacterName"
             char_name = window_title.replace("EVE -", "").strip()
+            if not char_name:
+                continue
 
             # Check if this character exists
             if char_name in self.characters:
