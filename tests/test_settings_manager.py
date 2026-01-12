@@ -897,3 +897,43 @@ class TestEdgeCases:
             with open(manager.settings_file, encoding="utf-8") as f:
                 saved = json.load(f)
             assert saved["unicode_test"] == unicode_value
+
+
+class TestLastActivatedWindow:
+    """Tests for get_last_activated_window and set_last_activated_window"""
+
+    def test_get_last_activated_window_initial_none(self):
+        """Test get_last_activated_window returns None initially"""
+        from eve_overview_pro.ui.settings_manager import SettingsManager
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manager = SettingsManager(config_dir=Path(tmpdir))
+
+            result = manager.get_last_activated_window()
+
+            assert result is None
+
+    def test_set_and_get_last_activated_window(self):
+        """Test set_last_activated_window stores window ID"""
+        from eve_overview_pro.ui.settings_manager import SettingsManager
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manager = SettingsManager(config_dir=Path(tmpdir))
+
+            manager.set_last_activated_window("0x12345")
+
+            result = manager.get_last_activated_window()
+            assert result == "0x12345"
+
+    def test_set_last_activated_window_to_none(self):
+        """Test set_last_activated_window can clear the value"""
+        from eve_overview_pro.ui.settings_manager import SettingsManager
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manager = SettingsManager(config_dir=Path(tmpdir))
+
+            manager.set_last_activated_window("0x12345")
+            manager.set_last_activated_window(None)
+
+            result = manager.get_last_activated_window()
+            assert result is None
