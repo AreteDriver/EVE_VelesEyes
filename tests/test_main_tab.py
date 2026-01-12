@@ -6554,6 +6554,27 @@ class TestArrangementGridRealInit:
         assert tile.grid_row == 1
         assert tile.grid_col == 1
 
+    def test_set_grid_size_removes_deleted_tiles(self, qapp):
+        """Test set_grid_size handles deleted tiles gracefully"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        grid = ArrangementGrid()
+
+        # Create a mock tile that raises RuntimeError when accessed
+        # (simulating a deleted Qt widget)
+        mock_tile = MagicMock()
+        mock_tile.grid_row = 0
+        mock_tile.grid_col = 0
+        mock_tile.set_position.side_effect = RuntimeError("wrapped C/C++ object has been deleted")
+
+        grid.tiles["TestChar"] = mock_tile
+
+        # Now set_grid_size should handle the RuntimeError
+        grid.set_grid_size(2, 2)
+
+        # Tile should be removed from tracking
+        assert "TestChar" not in grid.tiles
+
 
 class TestWindowPreviewWidgetRealInit:
     """Tests for WindowPreviewWidget real __init__ (lines 634-707)"""
