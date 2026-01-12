@@ -5920,6 +5920,42 @@ class TestArrangementGridAddCharacter:
             assert len(grid.tiles) == 1
 
 
+class TestArrangementGridSetGridSizeRuntimeError:
+    """Tests for ArrangementGrid set_grid_size RuntimeError handling"""
+
+    def test_set_grid_size_removes_deleted_tiles(self):
+        """Test set_grid_size removes tiles that raise RuntimeError (deleted widgets)"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
+            grid = ArrangementGrid.__new__(ArrangementGrid)
+            grid.logger = MagicMock()
+            grid.grid_layout = MagicMock()
+            grid.rows = 2
+            grid.cols = 2
+
+            # Create a tile that will raise RuntimeError when accessed
+            deleted_tile = MagicMock()
+            deleted_tile.grid_row = 0
+            deleted_tile.grid_col = 0
+            deleted_tile.set_position.side_effect = RuntimeError("Widget deleted")
+
+            # Create a normal tile
+            normal_tile = MagicMock()
+            normal_tile.grid_row = 1
+            normal_tile.grid_col = 1
+
+            grid.tiles = {"deleted_char": deleted_tile, "normal_char": normal_tile}
+
+            with patch("eve_overview_pro.ui.main_tab.QFrame"):
+                grid.set_grid_size(2, 2)
+
+            # Deleted tile should be removed from tiles dict
+            assert "deleted_char" not in grid.tiles
+            # Normal tile should still exist
+            assert "normal_char" in grid.tiles
+
+
 # =============================================================================
 # WindowPreviewWidget Init Tests (lines 615-688)
 # =============================================================================
@@ -7333,7 +7369,9 @@ class TestMinimizeInactiveWindows:
             with patch("eve_overview_pro.ui.main_tab.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(returncode=0, stdout="win1\n")
                 tab.minimize_inactive_windows()
-                tab.settings_manager.set.assert_called_with("performance.auto_minimize_inactive", True)
+                tab.settings_manager.set.assert_called_with(
+                    "performance.auto_minimize_inactive", True
+                )
                 assert tab._windows_minimized is True
 
     def test_minimize_inactive_windows_disable(self):
@@ -7652,3 +7690,87 @@ class TestAddWindowToPreview:
             tab._add_window_to_preview("0x123", "EVE - SomeTitle")
 
             tab.character_detected.emit.assert_called_once_with("0x123", "DetectedChar")
+
+
+class TestShowAddWindowDialog:
+    """Tests for show_add_window_dialog method"""
+
+    def test_show_add_window_dialog_exception_shows_error(self):
+        """Test show_add_window_dialog shows error when _get_available_windows raises"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab._get_available_windows = MagicMock(side_effect=Exception("Test error"))
+
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+                tab.show_add_window_dialog()
+                mock_msgbox.critical.assert_called_once()
+                args = mock_msgbox.critical.call_args[0]
+                assert "Error" in args[1]
+                assert "Test error" in args[2]
+
+    def test_show_add_window_dialog_no_windows_shows_info(self):
+        """Test show_add_window_dialog shows info when no windows available"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab._get_available_windows = MagicMock(return_value=[])
+
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+                tab.show_add_window_dialog()
+                mock_msgbox.information.assert_called_once()
+                args = mock_msgbox.information.call_args[0]
+                assert "No Windows" in args[1]
+
+
+class TestCreateStatusBar:
+    """Tests for _create_status_bar method"""
+
+    def test_create_status_bar_returns_widget(self):
+        """Test _create_status_bar returns a QWidget with timer started"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab._update_status = MagicMock()
+
+            mock_timer = MagicMock()
+            mock_widget = MagicMock()
+            mock_layout = MagicMock()
+            mock_label = MagicMock()
+
+            with patch("eve_overview_pro.ui.main_tab.QTimer", return_value=mock_timer), patch(
+                "eve_overview_pro.ui.main_tab.QWidget", return_value=mock_widget
+            ), patch("eve_overview_pro.ui.main_tab.QHBoxLayout", return_value=mock_layout), patch(
+                "eve_overview_pro.ui.main_tab.QLabel", return_value=mock_label
+            ):
+                result = tab._create_status_bar()
+
+                assert result is mock_widget
+                assert tab.status_timer is mock_timer
+                mock_timer.start.assert_called_once_with(2000)
+
+    def test_create_status_bar_timer_connects_update_status(self):
+        """Test _create_status_bar connects timer to _update_status"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab._update_status = MagicMock()
+
+            mock_timer = MagicMock()
+
+            with patch("eve_overview_pro.ui.main_tab.QTimer", return_value=mock_timer), patch(
+                "eve_overview_pro.ui.main_tab.QWidget"
+            ), patch("eve_overview_pro.ui.main_tab.QHBoxLayout"), patch(
+                "eve_overview_pro.ui.main_tab.QLabel"
+            ):
+                tab._create_status_bar()
+
+                mock_timer.timeout.connect.assert_called_once_with(tab._update_status)
