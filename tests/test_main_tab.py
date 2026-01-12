@@ -7812,3 +7812,178 @@ class TestCreateStatusBar:
                 tab._create_status_bar()
 
                 mock_timer.timeout.connect.assert_called_once_with(tab._update_status)
+
+
+class TestArrangementGridDragMoveEvent:
+    """Tests for ArrangementGrid dragMoveEvent"""
+
+    def test_drag_move_accepts_proposed_action(self):
+        """Test dragMoveEvent accepts the proposed action"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
+            grid = ArrangementGrid.__new__(ArrangementGrid)
+
+            mock_event = MagicMock()
+            grid.dragMoveEvent(mock_event)
+
+            mock_event.acceptProposedAction.assert_called_once()
+
+
+class TestArrangementGridDropEventRuntimeError:
+    """Tests for ArrangementGrid dropEvent RuntimeError handling"""
+
+    def test_drop_event_handles_deleted_tile(self):
+        """Test dropEvent handles RuntimeError when removing deleted tile"""
+        from eve_overview_pro.ui.main_tab import ArrangementGrid
+
+        with patch.object(ArrangementGrid, "__init__", return_value=None):
+            grid = ArrangementGrid.__new__(ArrangementGrid)
+            grid.logger = MagicMock()
+            grid.grid_cols = 2
+            grid.grid_rows = 2
+            grid.grid_layout = MagicMock()
+            grid.grid_layout.removeWidget.side_effect = RuntimeError("Widget deleted")
+            grid.arrangement_changed = MagicMock()
+            grid.get_arrangement = MagicMock(return_value={})
+
+            # Create a tile that will fail during removal
+            old_tile = MagicMock()
+            grid.tiles = {"TestChar": old_tile}
+
+            # Mock event with character data
+            mock_event = MagicMock()
+            mock_event.mimeData().hasFormat.return_value = True
+            mock_event.mimeData().data.return_value.data.return_value.decode.return_value = "TestChar"
+            mock_event.position().toPoint().x.return_value = 50
+            mock_event.position().toPoint().y.return_value = 50
+
+            # Mock width/height
+            grid.width = MagicMock(return_value=200)
+            grid.height = MagicMock(return_value=200)
+
+            # Mock add_character
+            grid.add_character = MagicMock()
+
+            grid.dropEvent(mock_event)
+
+            # Should not raise, tile should be removed from dict
+            assert "TestChar" not in grid.tiles
+            grid.add_character.assert_called_once()
+
+
+class TestMainTabRefreshLayoutSourcesRestore:
+    """Tests for MainTab _refresh_layout_sources index restoration"""
+
+    def test_refresh_layout_sources_restores_selection(self):
+        """Test _refresh_layout_sources restores previous selection"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.settings_manager = None  # Skip _load_cycling_groups
+            tab.cycling_groups = {"Default": [], "Fleet": ["char1", "char2"]}
+            tab.layout_source_combo = MagicMock()
+            tab.layout_source_combo.count.return_value = 3
+            tab.layout_source_combo.currentText.return_value = "Fleet"
+            tab.layout_source_combo.findText.return_value = 2
+
+            tab._refresh_layout_sources()
+
+            tab.layout_source_combo.setCurrentIndex.assert_called_with(2)
+
+    def test_refresh_layout_sources_handles_missing_selection(self):
+        """Test _refresh_layout_sources handles missing previous selection"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.settings_manager = None  # Skip _load_cycling_groups
+            tab.cycling_groups = {"Default": []}
+            tab.layout_source_combo = MagicMock()
+            tab.layout_source_combo.count.return_value = 2
+            tab.layout_source_combo.currentText.return_value = "DeletedGroup"
+            tab.layout_source_combo.findText.return_value = -1
+
+            tab._refresh_layout_sources()
+
+            # setCurrentIndex should not be called when idx is -1
+            tab.layout_source_combo.setCurrentIndex.assert_not_called()
+
+
+class TestMainTabApplyLayoutScreenFallback:
+    """Tests for MainTab _apply_layout screen fallback"""
+
+    def test_apply_layout_uses_fallback_screen(self):
+        """Test _apply_layout uses fallback screen geometry when get_screen_geometry returns None"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.arrangement_grid = MagicMock()
+            tab.arrangement_grid.get_arrangement.return_value = {"char1": (0, 0)}
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"0x123": MagicMock(character_name="char1")}
+            tab.monitor_spin = MagicMock()
+            tab.monitor_spin.value.return_value = 0
+            tab.grid_applier = MagicMock()
+            tab.grid_applier.get_screen_geometry.return_value = None  # Trigger fallback
+            tab.grid_applier.apply_arrangement.return_value = True
+            tab.grid_rows_spin = MagicMock(value=MagicMock(return_value=2))
+            tab.grid_cols_spin = MagicMock(value=MagicMock(return_value=2))
+            tab.spacing_spin = MagicMock(value=MagicMock(return_value=10))
+            tab.stack_checkbox = MagicMock()
+            tab.stack_checkbox.isChecked.return_value = False
+            tab.stack_resize_checkbox = MagicMock()
+            tab.stack_resize_checkbox.isChecked.return_value = False
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Grid"
+            tab.status_label = MagicMock()
+            tab.layout_applied = MagicMock()
+
+            tab._apply_layout_to_windows()
+
+            # Verify apply_arrangement was called with fallback screen
+            call_args = tab.grid_applier.apply_arrangement.call_args
+            screen = call_args.kwargs.get("screen") or call_args[1].get("screen")
+            assert screen.width == 1920
+            assert screen.height == 1080
+
+
+class TestMainTabApplyLayoutFailure:
+    """Tests for MainTab _apply_layout failure warning"""
+
+    def test_apply_layout_shows_warning_on_failure(self):
+        """Test _apply_layout shows warning when apply_arrangement fails"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.arrangement_grid = MagicMock()
+            tab.arrangement_grid.get_arrangement.return_value = {"char1": (0, 0)}
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"0x123": MagicMock(character_name="char1")}
+            tab.monitor_spin = MagicMock()
+            tab.monitor_spin.value.return_value = 0
+            tab.grid_applier = MagicMock()
+            tab.grid_applier.get_screen_geometry.return_value = MagicMock()
+            tab.grid_applier.apply_arrangement.return_value = False  # Trigger failure
+            tab.grid_rows_spin = MagicMock(value=MagicMock(return_value=2))
+            tab.grid_cols_spin = MagicMock(value=MagicMock(return_value=2))
+            tab.spacing_spin = MagicMock(value=MagicMock(return_value=10))
+            tab.stack_checkbox = MagicMock()
+            tab.stack_checkbox.isChecked.return_value = False
+            tab.stack_resize_checkbox = MagicMock()
+            tab.stack_resize_checkbox.isChecked.return_value = False
+
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+                tab._apply_layout_to_windows()
+
+                mock_msgbox.warning.assert_called_once()
+                args = mock_msgbox.warning.call_args[0]
+                assert "Error" in args[1]
+                assert "Failed to apply layout" in args[2]
