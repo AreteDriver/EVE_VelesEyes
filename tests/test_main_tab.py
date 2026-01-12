@@ -5925,8 +5925,8 @@ class TestWindowManagerAlertCallback:
 
     def test_alert_callback_sets_alert_on_frame(self):
         """Test alert callback sets alert on frame when window exists"""
-        from eve_overview_pro.ui.main_tab import WindowManager
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -5947,8 +5947,8 @@ class TestWindowManagerAlertCallback:
 
     def test_alert_callback_ignores_removed_window(self):
         """Test alert callback ignores removed windows"""
-        from eve_overview_pro.ui.main_tab import WindowManager
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -5970,8 +5970,9 @@ class TestWindowManagerCaptureCycleException:
 
     def test_capture_cycle_handles_capture_exception(self):
         """Test _capture_cycle logs exception when capture_window_async fails"""
-        from eve_overview_pro.ui.main_tab import WindowManager
         import threading
+
+        from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
