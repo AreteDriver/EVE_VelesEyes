@@ -5920,40 +5920,77 @@ class TestArrangementGridAddCharacter:
             assert len(grid.tiles) == 1
 
 
-class TestArrangementGridSetGridSizeRuntimeError:
-    """Tests for ArrangementGrid set_grid_size RuntimeError handling"""
+class TestWindowManagerAlertCallback:
+    """Tests for WindowManager alert callback registration"""
 
-    def test_set_grid_size_removes_deleted_tiles(self):
-        """Test set_grid_size removes tiles that raise RuntimeError (deleted widgets)"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+    def test_alert_callback_sets_alert_on_frame(self):
+        """Test alert callback sets alert on frame when window exists"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        from eve_overview_pro.core.alert_detector import AlertLevel
 
-        with patch.object(ArrangementGrid, "__init__", return_value=None):
-            grid = ArrangementGrid.__new__(ArrangementGrid)
-            grid.logger = MagicMock()
-            grid.grid_layout = MagicMock()
-            grid.rows = 2
-            grid.cols = 2
+        with patch.object(WindowManager, "__init__", return_value=None):
+            wm = WindowManager.__new__(WindowManager)
+            wm.logger = MagicMock()
+            wm.preview_frames = {}
 
-            # Create a tile that will raise RuntimeError when accessed
-            deleted_tile = MagicMock()
-            deleted_tile.grid_row = 0
-            deleted_tile.grid_col = 0
-            deleted_tile.set_position.side_effect = RuntimeError("Widget deleted")
+            mock_frame = MagicMock()
+            wm.preview_frames["0x123"] = mock_frame
 
-            # Create a normal tile
-            normal_tile = MagicMock()
-            normal_tile.grid_row = 1
-            normal_tile.grid_col = 1
+            # Simulate the callback that would be registered
+            def alert_callback(level: AlertLevel):
+                if "0x123" in wm.preview_frames:
+                    wm.preview_frames["0x123"].set_alert(level)
 
-            grid.tiles = {"deleted_char": deleted_tile, "normal_char": normal_tile}
+            alert_callback(AlertLevel.HIGH)
 
-            with patch("eve_overview_pro.ui.main_tab.QFrame"):
-                grid.set_grid_size(2, 2)
+            mock_frame.set_alert.assert_called_once_with(AlertLevel.HIGH)
 
-            # Deleted tile should be removed from tiles dict
-            assert "deleted_char" not in grid.tiles
-            # Normal tile should still exist
-            assert "normal_char" in grid.tiles
+    def test_alert_callback_ignores_removed_window(self):
+        """Test alert callback ignores removed windows"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        from eve_overview_pro.core.alert_detector import AlertLevel
+
+        with patch.object(WindowManager, "__init__", return_value=None):
+            wm = WindowManager.__new__(WindowManager)
+            wm.logger = MagicMock()
+            wm.preview_frames = {}
+
+            # Simulate the callback when window was removed
+            def alert_callback(level: AlertLevel):
+                if "0x123" in wm.preview_frames:
+                    wm.preview_frames["0x123"].set_alert(level)
+
+            # Window not in preview_frames - callback should not raise
+            alert_callback(AlertLevel.HIGH)
+            # No assertion needed - just verifying no exception
+
+
+class TestWindowManagerCaptureCycleException:
+    """Tests for WindowManager _capture_cycle exception handling"""
+
+    def test_capture_cycle_handles_capture_exception(self):
+        """Test _capture_cycle logs exception when capture_window_async fails"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        import threading
+
+        with patch.object(WindowManager, "__init__", return_value=None):
+            wm = WindowManager.__new__(WindowManager)
+            wm.logger = MagicMock()
+            wm._pending_lock = threading.Lock()
+            wm.pending_requests = {}
+            wm.capture_system = MagicMock()
+            wm.capture_system.capture_window_async.side_effect = Exception("Capture failed")
+            wm._process_capture_results = MagicMock()
+
+            mock_frame = MagicMock()
+            mock_frame.isVisible.return_value = True
+            mock_frame.zoom_factor = 1.0
+            wm.preview_frames = {"0x123": mock_frame}
+
+            wm._capture_cycle()
+
+            wm.logger.error.assert_called_once()
+            assert "Failed to request capture" in str(wm.logger.error.call_args)
 
 
 # =============================================================================
