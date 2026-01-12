@@ -7468,3 +7468,187 @@ class TestOnLayoutSourceChanged:
             tab._on_layout_source_changed()
             tab.arrangement_grid.clear_tiles.assert_called_once()
             assert tab.arrangement_grid.add_character.call_count == 3
+
+
+# =============================================================================
+# Get Available Windows Tests
+# =============================================================================
+
+
+class TestGetAvailableWindows:
+    """Tests for _get_available_windows method"""
+
+    def test_get_available_windows_filters_existing(self):
+        """Test _get_available_windows excludes already tracked windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.get_window_list.return_value = [
+                ("0x111", "EVE - Char1"),
+                ("0x222", "EVE - Char2"),
+                ("0x333", "EVE - Char3"),
+            ]
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"0x111": MagicMock()}
+
+            result = tab._get_available_windows()
+
+            assert len(result) == 2
+            assert ("0x222", "EVE - Char2") in result
+            assert ("0x333", "EVE - Char3") in result
+
+    def test_get_available_windows_all_new(self):
+        """Test _get_available_windows with no existing windows"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.get_window_list.return_value = [
+                ("0x111", "EVE - Char1"),
+                ("0x222", "EVE - Char2"),
+            ]
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {}
+
+            result = tab._get_available_windows()
+
+            assert len(result) == 2
+
+    def test_get_available_windows_exception(self):
+        """Test _get_available_windows raises on error"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.get_window_list.side_effect = Exception("X11 error")
+
+            with pytest.raises(Exception):
+                tab._get_available_windows()
+
+            tab.logger.error.assert_called()
+
+
+# =============================================================================
+# Add Window To Preview Tests
+# =============================================================================
+
+
+class TestAddWindowToPreview:
+    """Tests for _add_window_to_preview method"""
+
+    def test_add_window_success(self):
+        """Test _add_window_to_preview adds window successfully"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.character_manager = MagicMock()
+            tab.character_manager.auto_assign_windows.return_value = {"TestChar": "0x123"}
+            tab.character_detected = MagicMock()
+            tab.window_manager = MagicMock()
+            mock_frame = MagicMock()
+            tab.window_manager.add_window.return_value = mock_frame
+            tab.preview_layout = MagicMock()
+
+            result = tab._add_window_to_preview("0x123", "EVE - TestChar")
+
+            assert result is True
+            tab.window_manager.add_window.assert_called_once()
+            tab.preview_layout.addWidget.assert_called_once_with(mock_frame)
+
+    def test_add_window_extracts_char_name(self):
+        """Test _add_window_to_preview extracts character name"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.character_manager = MagicMock()
+            tab.character_manager.auto_assign_windows.return_value = {}
+            tab.window_manager = MagicMock()
+            mock_frame = MagicMock()
+            tab.window_manager.add_window.return_value = mock_frame
+            tab.preview_layout = MagicMock()
+
+            tab._add_window_to_preview("0x123", "EVE - My Character")
+
+            tab.window_manager.add_window.assert_called_with("0x123", "My Character")
+
+    def test_add_window_eve_online_prefix(self):
+        """Test _add_window_to_preview handles 'EVE Online -' prefix"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.character_manager = MagicMock()
+            tab.character_manager.auto_assign_windows.return_value = {}
+            tab.window_manager = MagicMock()
+            mock_frame = MagicMock()
+            tab.window_manager.add_window.return_value = mock_frame
+            tab.preview_layout = MagicMock()
+
+            tab._add_window_to_preview("0x123", "EVE Online - Another Char")
+
+            tab.window_manager.add_window.assert_called_with("0x123", "Another Char")
+
+    def test_add_window_empty_name_uses_unknown(self):
+        """Test _add_window_to_preview uses Unknown for empty names"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.character_manager = MagicMock()
+            tab.character_manager.auto_assign_windows.return_value = {}
+            tab.window_manager = MagicMock()
+            mock_frame = MagicMock()
+            tab.window_manager.add_window.return_value = mock_frame
+            tab.preview_layout = MagicMock()
+
+            tab._add_window_to_preview("0x123", "EVE -")
+
+            tab.window_manager.add_window.assert_called_with("0x123", "Unknown (0x123)")
+
+    def test_add_window_frame_none(self):
+        """Test _add_window_to_preview returns False when frame is None"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.character_manager = MagicMock()
+            tab.character_manager.auto_assign_windows.return_value = {}
+            tab.window_manager = MagicMock()
+            tab.window_manager.add_window.return_value = None
+
+            result = tab._add_window_to_preview("0x123", "EVE - Test")
+
+            assert result is False
+
+    def test_add_window_emits_character_detected(self):
+        """Test _add_window_to_preview emits character_detected signal"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.character_manager = MagicMock()
+            tab.character_manager.auto_assign_windows.return_value = {"DetectedChar": "0x123"}
+            tab.character_detected = MagicMock()
+            tab.window_manager = MagicMock()
+            mock_frame = MagicMock()
+            tab.window_manager.add_window.return_value = mock_frame
+            tab.preview_layout = MagicMock()
+
+            tab._add_window_to_preview("0x123", "EVE - SomeTitle")
+
+            tab.character_detected.emit.assert_called_once_with("0x123", "DetectedChar")
