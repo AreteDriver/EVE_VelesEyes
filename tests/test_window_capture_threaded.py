@@ -1068,3 +1068,51 @@ class TestEdgeCases:
             capture.activate_window("0xFFFFFFFF")
 
             assert mock_run.call_count == 2
+
+
+class TestWindowCaptureInvalidWindowId:
+    """Tests for invalid window ID handling"""
+
+    def test_capture_window_async_invalid_id(self):
+        """Test capture_window_async returns empty string for invalid window ID"""
+        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+
+        capture = WindowCaptureThreaded()
+
+        # Invalid window ID (no 0x prefix)
+        result = capture.capture_window_async("invalid_id")
+
+        assert result == ""
+
+    def test_activate_window_invalid_id(self):
+        """Test activate_window returns False for invalid window ID"""
+        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+
+        capture = WindowCaptureThreaded()
+
+        # Invalid window ID
+        result = capture.activate_window("not_a_window")
+
+        assert result is False
+
+    def test_minimize_window_invalid_id(self):
+        """Test minimize_window returns False for invalid window ID"""
+        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+
+        capture = WindowCaptureThreaded()
+
+        # Invalid window ID
+        result = capture.minimize_window("bad_id")
+
+        assert result is False
+
+    def test_restore_window_invalid_id(self):
+        """Test restore_window returns False for invalid window ID"""
+        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+
+        capture = WindowCaptureThreaded()
+
+        # Invalid window ID
+        result = capture.restore_window("not_valid")
+
+        assert result is False
