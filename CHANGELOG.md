@@ -5,6 +5,20 @@ All notable changes to Argus Overview will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.1] - 2026-01-12
+
+### Added
+- **Coverage enforcement** - CI now fails if test coverage drops below 90%
+- **Auto-tag workflow** - Automatically creates version tags when `pyproject.toml` version changes
+- **Dependabot auto-merge** - Automatically merges patch/minor dependency updates
+
+### Changed
+- Test coverage improved from 94% to 96%
+- `hotkeys_tab.py` now at 100% coverage (was 92%)
+- `screen.py` now at 100% coverage (was 70%)
+- `main_window_v21.py` improved to 90% coverage (was 81%)
+- Total tests: 1536 (up from 1497)
+
 ## [2.8.0] - 2026-01-10
 
 ### Added
