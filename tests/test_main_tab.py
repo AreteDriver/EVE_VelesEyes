@@ -8111,3 +8111,140 @@ class TestKeyPressEventNonNumber:
                 tab.keyPressEvent(mock_event)
 
                 mock_super.assert_called_once_with(mock_event)
+
+
+class TestOneClickImportAllFail:
+    """Tests for one_click_import when all windows fail to add"""
+
+    def test_one_click_import_all_fail_to_add(self):
+        """Test one_click_import when windows found but all fail to create frames"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {}  # Empty - no duplicates
+            tab.window_manager.add_window.return_value = None  # Frame creation fails
+            tab.preview_layout = MagicMock()
+            tab.character_detected = MagicMock()
+            tab.status_label = MagicMock()
+            tab._update_status = MagicMock()
+
+            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows") as mock_scan:
+                # Return a window that's not a duplicate
+                mock_scan.return_value = [("0x456", "EVE - NewChar", "NewChar")]
+
+                tab.one_click_import()
+
+                # Should set status to "No new EVE windows found" (added=0, skipped=0)
+                tab.status_label.setText.assert_called_with("No new EVE windows found")
+
+
+class TestProcessCaptureResultsAlert:
+    """Tests for _process_capture_results alert detection"""
+
+    def test_process_capture_results_sets_alert(self):
+        """Test _process_capture_results sets alert level on frame"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        from eve_overview_pro.core.alert_detector import AlertLevel
+        import threading
+
+        with patch.object(WindowManager, "__init__", return_value=None):
+            wm = WindowManager.__new__(WindowManager)
+            wm.logger = MagicMock()
+            wm._pending_lock = threading.Lock()
+            wm.pending_requests = {"req1": "0x123"}
+            wm.capture_system = MagicMock()
+
+            # Mock capture result as tuple (request_id, window_id, image)
+            mock_image = MagicMock()
+            # Return result once, then None to exit loop
+            wm.capture_system.get_result.side_effect = [
+                ("req1", "0x123", mock_image),
+                None
+            ]
+
+            # Mock preview frame
+            mock_frame = MagicMock()
+            wm.preview_frames = {"0x123": mock_frame}
+
+            # Mock alert detector returning an alert
+            wm.alert_detector = MagicMock()
+            wm.alert_detector.analyze_frame.return_value = AlertLevel.HIGH
+
+            wm._process_capture_results()
+
+            # Should set alert on frame
+            mock_frame.set_alert.assert_called_with(AlertLevel.HIGH)
+
+    def test_process_capture_results_handles_exception(self):
+        """Test _process_capture_results handles exception during processing"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        import threading
+
+        with patch.object(WindowManager, "__init__", return_value=None):
+            wm = WindowManager.__new__(WindowManager)
+            wm.logger = MagicMock()
+            wm._pending_lock = threading.Lock()
+            wm.pending_requests = {"req1": "0x123"}
+            wm.capture_system = MagicMock()
+
+            # Mock capture result as tuple
+            mock_image = MagicMock()
+            wm.capture_system.get_result.side_effect = [
+                ("req1", "0x123", mock_image),
+                None
+            ]
+
+            # Mock preview frame that raises exception
+            mock_frame = MagicMock()
+            mock_frame.update_frame.side_effect = Exception("Frame error")
+            wm.preview_frames = {"0x123": mock_frame}
+
+            wm.alert_detector = MagicMock()
+
+            wm._process_capture_results()
+
+            # Should log error
+            wm.logger.error.assert_called_once()
+            assert "Failed to process frame" in str(wm.logger.error.call_args)
+
+
+class TestFlowLayoutRowWrap:
+    """Tests for FlowLayout row wrapping"""
+
+    def test_flow_layout_wraps_to_next_row(self):
+        """Test FlowLayout wraps items to next row when width exceeded"""
+        from eve_overview_pro.ui.main_tab import FlowLayout
+        from PySide6.QtCore import QRect, QSize
+
+        with patch.object(FlowLayout, "__init__", return_value=None):
+            layout = FlowLayout.__new__(FlowLayout)
+            layout._margin = 10
+            layout._spacing = 5
+            layout._center_row = MagicMock()
+
+            # Create mock items that will need to wrap
+            mock_item1 = MagicMock()
+            mock_item1.isEmpty.return_value = False
+            mock_item1.sizeHint.return_value = QSize(100, 50)
+
+            mock_item2 = MagicMock()
+            mock_item2.isEmpty.return_value = False
+            mock_item2.sizeHint.return_value = QSize(100, 50)
+
+            mock_item3 = MagicMock()
+            mock_item3.isEmpty.return_value = False
+            mock_item3.sizeHint.return_value = QSize(100, 50)
+
+            # Set _item_list which is used by _do_layout
+            layout._item_list = [mock_item1, mock_item2, mock_item3]
+
+            # Small rect that forces wrapping after 2 items
+            rect = QRect(0, 0, 220, 200)  # Only fits ~2 items per row
+
+            layout._do_layout(rect, test_only=False)
+
+            # Should have called _center_row at least once for row wrap
+            assert layout._center_row.call_count >= 1
