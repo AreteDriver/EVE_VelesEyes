@@ -6729,6 +6729,48 @@ class TestWindowPreviewWidgetPaintEventReal:
         event = QPaintEvent(widget.rect())
         widget.paintEvent(event)  # Should draw green indicator
 
+    def test_paint_event_with_activity_indicator_recent(self, qapp):
+        """Test paintEvent draws yellow activity indicator for recent activity"""
+        from datetime import datetime, timedelta
+
+        from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget._show_activity_indicator = True
+        widget.is_focused = False
+        widget.last_activity = datetime.now() - timedelta(seconds=2)  # Within 5s
+
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should draw yellow indicator
+
+    def test_paint_event_with_activity_indicator_inactive(self, qapp):
+        """Test paintEvent draws gray activity indicator for inactive window"""
+        from datetime import datetime, timedelta
+
+        from PySide6.QtGui import QPaintEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget._show_activity_indicator = True
+        widget.is_focused = False
+        widget.last_activity = datetime.now() - timedelta(seconds=60)  # Old activity
+
+        event = QPaintEvent(widget.rect())
+        widget.paintEvent(event)  # Should draw gray indicator
+
     def test_paint_event_with_lock_icon(self, qapp):
         """Test paintEvent draws lock icon when positions locked"""
         from PySide6.QtGui import QPaintEvent
