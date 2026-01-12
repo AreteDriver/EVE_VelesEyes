@@ -1871,3 +1871,36 @@ class TestLayoutsTabCreateBottomSection:
                 # Verify label created
                 mock_label_cls.assert_called_with("Select a group to begin")
                 mock_layout.addStretch.assert_called_once()
+
+
+class TestMoveWindowInvalidId:
+    """Tests for _move_window with invalid window IDs"""
+
+    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    def test_move_window_invalid_id_returns_early(self, mock_subprocess):
+        """Test _move_window returns early for invalid window ID"""
+        from eve_overview_pro.ui.layouts_tab import GridApplier
+
+        mock_layout_manager = MagicMock()
+        applier = GridApplier(mock_layout_manager)
+
+        # Call with various invalid IDs
+        applier._move_window("invalid", 100, 200, 800, 600)
+        applier._move_window("", 100, 200, 800, 600)
+        applier._move_window("12345", 100, 200, 800, 600)  # Missing 0x prefix
+
+        # subprocess should never be called
+        mock_subprocess.assert_not_called()
+
+    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    def test_move_window_valid_id_proceeds(self, mock_subprocess):
+        """Test _move_window proceeds for valid window ID"""
+        from eve_overview_pro.ui.layouts_tab import GridApplier
+
+        mock_layout_manager = MagicMock()
+        applier = GridApplier(mock_layout_manager)
+
+        applier._move_window("0x12345", 100, 200, 800, 600)
+
+        # subprocess should be called
+        assert mock_subprocess.called
