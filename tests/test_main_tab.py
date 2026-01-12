@@ -7256,3 +7256,215 @@ class TestMainTabActivateWindowByIndex:
             tab._activate_window_by_index(8)
 
             tab.capture_system.activate_window.assert_called_once_with("win8")
+
+
+# =============================================================================
+# Remove All Windows Tests
+# =============================================================================
+
+
+class TestRemoveAllWindows:
+    """Tests for _remove_all_windows method"""
+
+    def test_remove_all_windows_empty(self):
+        """Test _remove_all_windows with no windows does nothing"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {}
+
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+                tab._remove_all_windows()
+                mock_msgbox.question.assert_not_called()
+
+    def test_remove_all_windows_user_confirms(self):
+        """Test _remove_all_windows when user clicks Yes"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {
+                "win1": MagicMock(),
+                "win2": MagicMock(),
+                "win3": MagicMock(),
+            }
+            tab._update_status = MagicMock()
+
+            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+                mock_msgbox.StandardButton.No = 0
+                mock_msgbox.StandardButton.Yes = 1
+                mock_msgbox.question.return_value = mock_msgbox.StandardButton.Yes
+
+                tab._remove_all_windows()
+
+                assert tab.window_manager.remove_window.call_count == 3
+                tab._update_status.assert_called_once()
+
+
+# =============================================================================
+# Minimize Inactive Windows Tests
+# =============================================================================
+
+
+class TestMinimizeInactiveWindows:
+    """Tests for minimize_inactive_windows method"""
+
+    def test_minimize_inactive_windows_enable(self):
+        """Test enabling auto-minimize mode"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = False
+            tab.capture_system = MagicMock()
+            tab.capture_system.minimize_window.return_value = True
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"win1": MagicMock(), "win2": MagicMock()}
+            tab.status_label = MagicMock()
+            tab._windows_minimized = False
+            tab._update_minimize_button_style = MagicMock()
+
+            with patch("eve_overview_pro.ui.main_tab.subprocess.run") as mock_run:
+                mock_run.return_value = MagicMock(returncode=0, stdout="win1\n")
+                tab.minimize_inactive_windows()
+                tab.settings_manager.set.assert_called_with("performance.auto_minimize_inactive", True)
+                assert tab._windows_minimized is True
+
+    def test_minimize_inactive_windows_disable(self):
+        """Test disabling auto-minimize mode"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = True
+            tab.capture_system = MagicMock()
+            tab.capture_system.restore_window.return_value = True
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"win1": MagicMock(), "win2": MagicMock()}
+            tab.status_label = MagicMock()
+            tab._windows_minimized = True
+            tab._update_minimize_button_style = MagicMock()
+
+            tab.minimize_inactive_windows()
+            tab.settings_manager.set.assert_called_with("performance.auto_minimize_inactive", False)
+            assert tab._windows_minimized is False
+            assert tab.capture_system.restore_window.call_count == 2
+
+    def test_minimize_inactive_windows_exception(self):
+        """Test auto-minimize handles exceptions gracefully"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.side_effect = Exception("Settings error")
+            tab._windows_minimized = False
+
+            tab.minimize_inactive_windows()
+            tab.logger.error.assert_called()
+
+
+# =============================================================================
+# Update Minimize Button Style Tests
+# =============================================================================
+
+
+class TestUpdateMinimizeButtonStyle:
+    """Tests for _update_minimize_button_style method"""
+
+    def test_update_button_style_enabled(self):
+        """Test button style when auto-minimize is enabled"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._windows_minimized = True
+            tab.minimize_inactive_btn = MagicMock()
+
+            tab._update_minimize_button_style()
+            tab.minimize_inactive_btn.setChecked.assert_called_with(True)
+            tab.minimize_inactive_btn.setText.assert_called()
+
+    def test_update_button_style_disabled(self):
+        """Test button style when auto-minimize is disabled"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._windows_minimized = False
+            tab.minimize_inactive_btn = MagicMock()
+
+            tab._update_minimize_button_style()
+            tab.minimize_inactive_btn.setChecked.assert_called_with(False)
+
+    def test_update_button_style_no_button(self):
+        """Test button style when button doesn't exist"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab._windows_minimized = True
+            # No minimize_inactive_btn attribute - should not raise
+            tab._update_minimize_button_style()
+
+
+# =============================================================================
+# Layout Source Changed Tests
+# =============================================================================
+
+
+class TestOnLayoutSourceChanged:
+    """Tests for _on_layout_source_changed method"""
+
+    def test_layout_source_all_active_windows(self):
+        """Test selecting 'All Active Windows' adds all preview frames"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.layout_source_combo = MagicMock()
+            tab.layout_source_combo.currentText.return_value = "All Active Windows"
+            tab.arrangement_grid = MagicMock()
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Grid"
+            tab._auto_arrange_tiles = MagicMock()
+            tab.window_manager = MagicMock()
+            frame1 = MagicMock()
+            frame1.character_name = "Char1"
+            frame2 = MagicMock()
+            frame2.character_name = "Char2"
+            tab.window_manager.preview_frames = {"win1": frame1, "win2": frame2}
+
+            tab._on_layout_source_changed()
+            tab.arrangement_grid.clear_tiles.assert_called_once()
+            assert tab.arrangement_grid.add_character.call_count == 2
+
+    def test_layout_source_cycling_group(self):
+        """Test selecting a cycling group adds group members"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.layout_source_combo = MagicMock()
+            tab.layout_source_combo.currentText.return_value = "Fleet"
+            tab.arrangement_grid = MagicMock()
+            tab.arrangement_grid.grid_cols = 2
+            tab.pattern_combo = MagicMock()
+            tab.pattern_combo.currentText.return_value = "Grid"
+            tab._auto_arrange_tiles = MagicMock()
+            tab.cycling_groups = {"Fleet": ["Char1", "Char2", "Char3"]}
+
+            tab._on_layout_source_changed()
+            tab.arrangement_grid.clear_tiles.assert_called_once()
+            assert tab.arrangement_grid.add_character.call_count == 3
