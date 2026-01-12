@@ -16,11 +16,14 @@ from pathlib import Path
 
 import pytest
 
+from unittest.mock import patch, MagicMock
+
 from eve_overview_pro.core.layout_manager import (
     GridPattern,
     LayoutManager,
     LayoutPreset,
     WindowLayout,
+    sanitize_filename,
 )
 
 
@@ -526,3 +529,98 @@ class TestDataPersistence:
             assert loaded.description == "Should persist"
             assert len(loaded.windows) == 1
             assert loaded.windows[0].x == 100
+
+
+class TestSanitizeFilenameEdgeCases:
+    """Tests for sanitize_filename edge cases"""
+
+    def test_empty_string_after_sanitization(self):
+        """Test that sanitize_filename raises ValueError for names that become empty"""
+        # Name made entirely of invalid characters
+        with pytest.raises(ValueError, match="Invalid name"):
+            sanitize_filename("...")
+
+    def test_only_spaces(self):
+        """Test that sanitize_filename raises ValueError for whitespace-only names"""
+        with pytest.raises(ValueError, match="Invalid name"):
+            sanitize_filename("   ")
+
+    def test_only_slashes(self):
+        """Test that sanitize_filename raises ValueError for names with only slashes"""
+        with pytest.raises(ValueError, match="Invalid name"):
+            sanitize_filename("///")
+
+
+class TestSavePresetEdgeCases:
+    """Tests for save_preset edge cases"""
+
+    def test_save_preset_with_invalid_name(self):
+        """Test save_preset returns False for invalid preset names"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manager = LayoutManager(config_dir=Path(tmpdir))
+
+            # Create preset with name that will fail sanitization
+            window = WindowLayout("0x123", 100, 200, 400, 300)
+            preset = LayoutPreset(name="...", description="Bad name", windows=[window])
+
+            result = manager.save_preset(preset)
+
+            assert result is False
+
+    def test_save_preset_path_traversal_blocked(self):
+        """Test save_preset blocks path traversal attempts"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manager = LayoutManager(config_dir=Path(tmpdir))
+
+            window = WindowLayout("0x123", 100, 200, 400, 300)
+            preset = LayoutPreset(name="normal", description="Test", windows=[window])
+
+            # Mock sanitize_filename to return path traversal attempt
+            with patch(
+                "eve_overview_pro.core.layout_manager.sanitize_filename",
+                return_value="../../../etc/passwd",
+            ):
+                result = manager.save_preset(preset)
+
+            assert result is False
+
+
+class TestDeletePresetEdgeCases:
+    """Tests for delete_preset edge cases"""
+
+    def test_delete_preset_path_traversal_blocked(self):
+        """Test delete_preset blocks path traversal attempts"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manager = LayoutManager(config_dir=Path(tmpdir))
+
+            # Add preset to manager's internal dict first
+            window = WindowLayout("0x123", 100, 200, 400, 300)
+            preset = LayoutPreset(name="test", description="Test", windows=[window])
+            manager.presets["test"] = preset
+
+            # Mock sanitize_filename to return path traversal attempt
+            with patch(
+                "eve_overview_pro.core.layout_manager.sanitize_filename",
+                return_value="../../../etc/passwd",
+            ):
+                result = manager.delete_preset("test")
+
+            assert result is False
+            # Preset should still exist (not deleted)
+            assert "test" in manager.presets
+
+
+class TestCalculateGridLayoutFallback:
+    """Test fallback return for unknown grid patterns"""
+
+    def test_custom_pattern_returns_empty(self):
+        """Test that CUSTOM pattern returns empty dict (no auto-calculation)"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manager = LayoutManager(config_dir=Path(tmpdir))
+
+            windows = ["w1", "w2", "w3"]
+            screen = {"x": 0, "y": 0, "width": 1920, "height": 1080}
+
+            result = manager.calculate_grid_layout(GridPattern.CUSTOM, windows, screen)
+
+            assert result == {}
