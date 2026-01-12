@@ -7987,3 +7987,127 @@ class TestMainTabApplyLayoutFailure:
                 args = mock_msgbox.warning.call_args[0]
                 assert "Error" in args[1]
                 assert "Failed to apply layout" in args[2]
+
+
+class TestOneClickImportNoWindows:
+    """Tests for one_click_import when no windows found"""
+
+    def test_one_click_import_no_new_windows(self):
+        """Test one_click_import shows message when no new EVE windows found"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {}  # No existing windows
+            tab._add_window_to_preview = MagicMock(return_value=False)  # All fail
+            tab.status_label = MagicMock()
+            tab._update_status = MagicMock()
+
+            # Mock scan_eve_windows to return windows that are all already imported
+            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows") as mock_scan:
+                mock_scan.return_value = []  # No EVE windows found at all
+
+                with patch("eve_overview_pro.ui.main_tab.QMessageBox"):
+                    tab.one_click_import()
+
+                    # When no EVE windows, should show QMessageBox, not status_label
+
+
+class TestOneClickImportAllDuplicates:
+    """Tests for one_click_import when all windows are duplicates"""
+
+    def test_one_click_import_all_already_imported(self):
+        """Test one_click_import shows message when all windows already imported"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"0x123": MagicMock()}  # Already have one
+            tab._add_window_to_preview = MagicMock(return_value=False)  # All fail (duplicates)
+            tab.status_label = MagicMock()
+            tab._update_status = MagicMock()
+
+            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows") as mock_scan:
+                # Return window_id, title, char_name
+                mock_scan.return_value = [("0x123", "EVE - TestChar", "TestChar")]
+
+                tab.one_click_import()
+
+                # Should set status to show all duplicates
+                tab.status_label.setText.assert_called()
+
+
+class TestOnWindowActivatedFailure:
+    """Tests for _on_window_activated when activation fails"""
+
+    def test_on_window_activated_logs_warning_on_failure(self):
+        """Test _on_window_activated logs warning when activate_window returns False"""
+        from eve_overview_pro.ui.main_tab import MainTab
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab.settings_manager = MagicMock()
+            tab.capture_system = MagicMock()
+            tab.capture_system.activate_window.return_value = False  # Activation fails
+
+            tab._on_window_activated("0x123")
+
+            tab.logger.warning.assert_called_once()
+            assert "Failed to activate" in str(tab.logger.warning.call_args)
+
+
+class TestMinimizeInactiveXdotoolFails:
+    """Tests for minimize_inactive_windows when xdotool fails"""
+
+    def test_minimize_inactive_xdotool_fails(self):
+        """Test minimize_inactive_windows shows simple message when xdotool fails"""
+        from eve_overview_pro.ui.main_tab import MainTab
+        import subprocess
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+            tab._windows_minimized = False
+            tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = False  # Currently disabled
+            tab.capture_system = MagicMock()
+            tab.window_manager = MagicMock()
+            tab.window_manager.preview_frames = {"0x123": MagicMock()}
+            tab.status_label = MagicMock()
+            tab._update_minimize_button_style = MagicMock()
+
+            # Mock subprocess.run to fail
+            mock_result = MagicMock()
+            mock_result.returncode = 1  # Non-zero = failure
+            with patch("subprocess.run", return_value=mock_result):
+                tab.minimize_inactive_windows()
+
+                # Should set status to "Auto-minimize ON" without count
+                tab.status_label.setText.assert_called_with("Auto-minimize ON")
+
+
+class TestKeyPressEventNonNumber:
+    """Tests for keyPressEvent with non-number keys"""
+
+    def test_key_press_event_passes_to_parent(self):
+        """Test keyPressEvent passes non-number keys to parent"""
+        from eve_overview_pro.ui.main_tab import MainTab
+        from PySide6.QtCore import Qt
+
+        with patch.object(MainTab, "__init__", return_value=None):
+            tab = MainTab.__new__(MainTab)
+            tab.logger = MagicMock()
+
+            mock_event = MagicMock()
+            mock_event.key.return_value = Qt.Key.Key_A  # Non-number key
+
+            # Need to patch super().keyPressEvent
+            with patch("eve_overview_pro.ui.main_tab.QWidget.keyPressEvent") as mock_super:
+                tab.keyPressEvent(mock_event)
+
+                mock_super.assert_called_once_with(mock_event)
