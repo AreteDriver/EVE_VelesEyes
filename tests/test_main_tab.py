@@ -6875,6 +6875,46 @@ class TestWindowPreviewWidgetMouseEventsReal:
         # Drag start should still be set (not cleared)
         assert widget._drag_start_pos == QPoint(50, 50)
 
+    def test_mouse_move_event_large_movement_initiates_drag(self, qapp):
+        """Test mouseMoveEvent initiates drag on large movement"""
+        from PySide6.QtCore import QMimeData, QPoint, QPointF, Qt
+        from PySide6.QtGui import QDrag, QMouseEvent
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+
+        mock_capture = MagicMock()
+        widget = WindowPreviewWidget(
+            window_id="12345",
+            character_name="TestChar",
+            capture_system=mock_capture,
+        )
+        widget._drag_start_pos = QPoint(50, 50)
+
+        # Large movement (more than 10 manhattan distance)
+        event = QMouseEvent(
+            QMouseEvent.Type.MouseMove,
+            QPointF(70, 70),  # localPos - 40 pixels manhattan distance
+            QPointF(70, 70),  # globalPos
+            Qt.MouseButton.NoButton,
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+        )
+
+        # Mock QDrag to avoid actual drag operation
+        with patch("PySide6.QtGui.QDrag") as mock_drag_cls:
+            mock_drag = MagicMock()
+            mock_drag.exec.return_value = Qt.DropAction.IgnoreAction
+            mock_drag_cls.return_value = mock_drag
+
+            widget.mouseMoveEvent(event)
+
+            # Should have created a QDrag
+            mock_drag_cls.assert_called_once()
+            # Should have set mime data with character name
+            mock_drag.setMimeData.assert_called_once()
+            # Should have called exec
+            mock_drag.exec.assert_called_once()
+
 
 class TestMainTabCreateToolbarReal:
     """Tests for MainTab._create_toolbar (lines 1277-1343)"""
