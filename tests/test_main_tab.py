@@ -8248,3 +8248,112 @@ class TestFlowLayoutRowWrap:
 
             # Should have called _center_row at least once for row wrap
             assert layout._center_row.call_count >= 1
+
+
+class TestWindowPreviewWidgetActivityState:
+    """Tests for WindowPreviewWidget activity state indicator"""
+
+    def test_get_activity_state_recent(self):
+        """Test get_activity_state returns 'recent' when activity within 5 seconds"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from datetime import datetime, timedelta
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.is_focused = False
+            widget.last_activity = datetime.now() - timedelta(seconds=2)  # 2 seconds ago
+
+            result = widget.get_activity_state()
+
+            assert result == "recent"
+
+    def test_get_activity_state_idle(self):
+        """Test get_activity_state returns 'idle' when activity older than 5 seconds"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from datetime import datetime, timedelta
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.is_focused = False
+            widget.last_activity = datetime.now() - timedelta(seconds=10)  # 10 seconds ago
+
+            result = widget.get_activity_state()
+
+            assert result == "idle"
+
+    def test_get_activity_state_focused(self):
+        """Test get_activity_state returns 'focused' when is_focused is True"""
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from datetime import datetime
+
+        with patch.object(WindowPreviewWidget, "__init__", return_value=None):
+            widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
+            widget.is_focused = True
+            widget.last_activity = datetime.now()
+
+            result = widget.get_activity_state()
+
+            assert result == "focused"
+
+
+class TestWindowManagerAddWindowAlertCallback:
+    """Tests for WindowManager add_window alert callback"""
+
+    def test_add_window_registers_alert_callback(self):
+        """Test add_window registers callback with alert_detector"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        from eve_overview_pro.core.alert_detector import AlertLevel
+
+        with patch.object(WindowManager, "__init__", return_value=None):
+            wm = WindowManager.__new__(WindowManager)
+            wm.logger = MagicMock()
+            wm.preview_frames = {}
+            wm.capture_system = MagicMock()
+            wm.alert_detector = MagicMock()
+            wm.settings_manager = MagicMock()
+
+            # Mock WindowPreviewWidget creation
+            mock_frame = MagicMock()
+            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget", return_value=mock_frame):
+                wm.add_window("0x123", "TestChar")
+
+                # Verify alert_detector.register_callback was called
+                wm.alert_detector.register_callback.assert_called_once()
+                call_args = wm.alert_detector.register_callback.call_args
+                assert call_args[0][0] == "0x123"  # window_id
+
+                # Get the callback and test it
+                callback = call_args[0][1]
+
+                # Call the callback and verify it sets alert on frame
+                callback(AlertLevel.HIGH)
+                mock_frame.set_alert.assert_called_with(AlertLevel.HIGH)
+
+    def test_alert_callback_ignores_removed_window(self):
+        """Test alert callback does nothing if window was removed"""
+        from eve_overview_pro.ui.main_tab import WindowManager
+        from eve_overview_pro.core.alert_detector import AlertLevel
+
+        with patch.object(WindowManager, "__init__", return_value=None):
+            wm = WindowManager.__new__(WindowManager)
+            wm.logger = MagicMock()
+            wm.preview_frames = {}
+            wm.capture_system = MagicMock()
+            wm.alert_detector = MagicMock()
+            wm.settings_manager = MagicMock()
+
+            mock_frame = MagicMock()
+            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget", return_value=mock_frame):
+                wm.add_window("0x123", "TestChar")
+
+                # Get the callback
+                callback = wm.alert_detector.register_callback.call_args[0][1]
+
+                # Remove window from preview_frames
+                wm.preview_frames.clear()
+
+                # Call callback - should not raise and not call set_alert
+                callback(AlertLevel.HIGH)
+                # set_alert was called once during add_window test, but not after clear
+                # Actually, set_alert is only called by the callback, so:
+                mock_frame.set_alert.assert_not_called()
