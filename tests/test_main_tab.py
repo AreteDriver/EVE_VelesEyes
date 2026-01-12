@@ -6276,9 +6276,9 @@ class TestMainTabOnLayoutSourceChanged:
 # Real Widget Instantiation Tests (for __init__ coverage)
 # =============================================================================
 
-import pytest
-from PySide6.QtGui import QColor
-from PySide6.QtWidgets import QApplication
+import pytest  # noqa: E402
+from PySide6.QtGui import QColor  # noqa: E402
+from PySide6.QtWidgets import QApplication  # noqa: E402
 
 
 @pytest.fixture(scope="module")

@@ -250,7 +250,7 @@ def main():
     # Need QApplication for Qt-based benchmarks
     from PySide6.QtWidgets import QApplication
 
-    app = QApplication.instance() or QApplication([])
+    _app = QApplication.instance() or QApplication([])
 
     try:
         benchmark_window_id_validation()

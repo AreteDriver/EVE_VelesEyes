@@ -1657,3 +1657,203 @@ class TestBroadcastHotkeysGetAll:
             assert len(result) == 1
             assert result[0]["trigger"] == "<ctrl>+<f1>"
             assert result[0]["key_to_send"] == "<f1>"
+
+
+class TestAddBroadcastEntry:
+    """Tests for _add_broadcast_entry method"""
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.HotkeyEdit")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QPushButton")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QLabel")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QHBoxLayout")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget")
+    def test_add_broadcast_entry_creates_widget(
+        self, mock_qwidget, mock_layout, mock_label, mock_btn, mock_edit, mock_init
+    ):
+        """Test _add_broadcast_entry creates entry widget"""
+        mock_init.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        mock_entry_widget = MagicMock()
+        mock_qwidget.return_value = mock_entry_widget
+        mock_trigger_edit = MagicMock()
+        mock_key_edit = MagicMock()
+        mock_edit.side_effect = [mock_trigger_edit, mock_key_edit]
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+            tab.broadcast_entries = []
+            tab.broadcast_container_layout = MagicMock()
+
+            tab._add_broadcast_entry("<ctrl>+<f1>", "F1")
+
+            assert len(tab.broadcast_entries) == 1
+            mock_trigger_edit.setText.assert_called_with("<ctrl>+<f1>")
+            mock_key_edit.setText.assert_called_with("F1")
+            tab.broadcast_container_layout.addWidget.assert_called()
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.HotkeyEdit")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QPushButton")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QLabel")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QHBoxLayout")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget")
+    def test_add_broadcast_entry_empty_values(
+        self, mock_qwidget, mock_layout, mock_label, mock_btn, mock_edit, mock_init
+    ):
+        """Test _add_broadcast_entry with empty trigger and key"""
+        mock_init.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        mock_entry_widget = MagicMock()
+        mock_qwidget.return_value = mock_entry_widget
+        mock_trigger_edit = MagicMock()
+        mock_key_edit = MagicMock()
+        mock_edit.side_effect = [mock_trigger_edit, mock_key_edit]
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+            tab.broadcast_entries = []
+            tab.broadcast_container_layout = MagicMock()
+
+            tab._add_broadcast_entry("", "")
+
+            assert len(tab.broadcast_entries) == 1
+            # setText should not be called for empty strings
+            mock_trigger_edit.setText.assert_not_called()
+            mock_key_edit.setText.assert_not_called()
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    @patch("eve_overview_pro.ui.hotkeys_tab.HotkeyEdit")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QPushButton")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QLabel")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QHBoxLayout")
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget")
+    def test_add_broadcast_entry_connects_recording_signals(
+        self, mock_qwidget, mock_layout, mock_label, mock_btn, mock_edit, mock_init
+    ):
+        """Test _add_broadcast_entry connects recording signals when available"""
+        mock_init.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        mock_entry_widget = MagicMock()
+        mock_qwidget.return_value = mock_entry_widget
+        mock_trigger_edit = MagicMock()
+        mock_key_edit = MagicMock()
+        mock_edit.side_effect = [mock_trigger_edit, mock_key_edit]
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+            tab.broadcast_entries = []
+            tab.broadcast_container_layout = MagicMock()
+            tab.broadcast_recording_started = MagicMock()
+            tab.broadcast_recording_stopped = MagicMock()
+
+            tab._add_broadcast_entry("<ctrl>+<f2>", "F2")
+
+            # Should connect recording signals
+            mock_trigger_edit.recordingStarted.connect.assert_called()
+            mock_trigger_edit.recordingStopped.connect.assert_called()
+            mock_key_edit.recordingStarted.connect.assert_called()
+            mock_key_edit.recordingStopped.connect.assert_called()
+
+
+class TestRemoveBroadcastEntry:
+    """Tests for _remove_broadcast_entry method"""
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_remove_broadcast_entry(self, mock_init):
+        """Test _remove_broadcast_entry removes entry from list"""
+        mock_init.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+
+            mock_widget = MagicMock()
+            entry_data = {
+                "widget": mock_widget,
+                "trigger_edit": MagicMock(),
+                "key_to_send_edit": MagicMock(),
+            }
+            tab.broadcast_entries = [entry_data]
+
+            tab._remove_broadcast_entry(entry_data)
+
+            assert len(tab.broadcast_entries) == 0
+            mock_widget.deleteLater.assert_called_once()
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_remove_broadcast_entry_not_in_list(self, mock_init):
+        """Test _remove_broadcast_entry handles entry not in list"""
+        mock_init.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+            tab.broadcast_entries = []
+
+            # Should not raise
+            entry_data = {"widget": MagicMock()}
+            tab._remove_broadcast_entry(entry_data)
+
+            assert len(tab.broadcast_entries) == 0
+
+    @patch("eve_overview_pro.ui.hotkeys_tab.QWidget.__init__")
+    def test_remove_broadcast_entry_multiple_entries(self, mock_init):
+        """Test _remove_broadcast_entry removes correct entry"""
+        mock_init.return_value = None
+
+        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+
+        mock_char_manager = MagicMock()
+        mock_char_manager.get_all_characters.return_value = []
+        mock_settings_manager = MagicMock()
+        mock_settings_manager.get.return_value = {}
+
+        with patch.object(HotkeysTab, "_setup_ui"):
+            tab = HotkeysTab(mock_char_manager, mock_settings_manager)
+
+            entry1 = {"widget": MagicMock(), "trigger_edit": MagicMock(), "key_to_send_edit": MagicMock()}
+            entry2 = {"widget": MagicMock(), "trigger_edit": MagicMock(), "key_to_send_edit": MagicMock()}
+            entry3 = {"widget": MagicMock(), "trigger_edit": MagicMock(), "key_to_send_edit": MagicMock()}
+            tab.broadcast_entries = [entry1, entry2, entry3]
+
+            tab._remove_broadcast_entry(entry2)
+
+            assert len(tab.broadcast_entries) == 2
+            assert entry1 in tab.broadcast_entries
+            assert entry2 not in tab.broadcast_entries
+            assert entry3 in tab.broadcast_entries
+            entry2["widget"].deleteLater.assert_called_once()
