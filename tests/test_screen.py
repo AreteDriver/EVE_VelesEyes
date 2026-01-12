@@ -253,10 +253,7 @@ class TestGetAllMonitors:
         """Test monitors stacked vertically"""
         mock_run.return_value = MagicMock(
             returncode=0,
-            stdout=(
-                "eDP-1 connected primary 1920x1080+0+0\n"
-                "HDMI-1 connected 1920x1080+0+1080\n"
-            ),
+            stdout=("eDP-1 connected primary 1920x1080+0+0\nHDMI-1 connected 1920x1080+0+1080\n"),
         )
 
         monitors = get_all_monitors()

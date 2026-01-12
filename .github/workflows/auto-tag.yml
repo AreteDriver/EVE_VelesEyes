@@ -1,0 +1,48 @@
+name: Auto Tag on Version Bump
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pyproject.toml'
+
+jobs:
+  check-version:
+    name: Check Version & Create Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get version from pyproject.toml
+        id: get_version
+        run: |
+          VERSION=$(grep -Po '(?<=^version = ")[^"]*' pyproject.toml)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ steps.get_version.outputs.VERSION }}" >/dev/null 2>&1; then
+            echo "TAG_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "TAG_EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create tag
+        if: steps.check_tag.outputs.TAG_EXISTS == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.get_version.outputs.VERSION }}" -m "Release v${{ steps.get_version.outputs.VERSION }}"
+          git push origin "v${{ steps.get_version.outputs.VERSION }}"
+          echo "Created and pushed tag v${{ steps.get_version.outputs.VERSION }}"
+
+      - name: Skip - tag already exists
+        if: steps.check_tag.outputs.TAG_EXISTS == 'true'
+        run: echo "Tag v${{ steps.get_version.outputs.VERSION }} already exists, skipping"

@@ -84,9 +84,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest --cov=. --cov-report=xml --cov-report=term-missing -v || \
-          python -m pytest --cov=. --cov-report=xml -v 2>/dev/null || \
-          echo "No tests found or test runner not configured"
+          QT_QPA_PLATFORM=offscreen pytest --cov=src --cov-report=xml --cov-report=term-missing --cov-fail-under=90 -v
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
