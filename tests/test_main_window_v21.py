@@ -2001,3 +2001,27 @@ class TestBroadcastKey:
         assert len(call_args[0][0]) == 2
         assert call_args[0][1] == "F1"
         window.logger.info.assert_called()
+
+
+# Test _apply_to_all_windows with invalid action
+class TestApplyToAllWindowsInvalidAction:
+    """Tests for _apply_to_all_windows with invalid action"""
+
+    def test_apply_to_all_windows_invalid_action(self):
+        """Test that invalid action name returns early without error"""
+        window = create_mock_window()
+
+        window.main_tab = MagicMock()
+        window.main_tab.window_manager = MagicMock()
+        window.main_tab.window_manager.preview_frames = {"0x111": MagicMock()}
+
+        # Mock capture_system without the invalid method
+        window.capture_system = MagicMock(spec=["minimize_window", "restore_window"])
+        # getattr(capture_system, "invalid_window", None) will return None
+
+        # Should not raise - just returns early
+        window._apply_to_all_windows("invalid")
+
+        # Should not try to call any methods since action was invalid
+        window.capture_system.minimize_window.assert_not_called()
+        window.capture_system.restore_window.assert_not_called()
