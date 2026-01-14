@@ -33,7 +33,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "ruff",
-    "black",
     "isort",
     "pytest",
     "pytest-cov",
@@ -64,10 +63,6 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["F811", "B017"]  # Duplicate class definitions, bare exceptions in test assertions
-
-[tool.black]
-line-length = 100
-target-version = ["py38", "py39", "py310", "py311", "py312"]
 
 [tool.isort]
 profile = "black"
