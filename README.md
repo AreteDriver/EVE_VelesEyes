@@ -246,6 +246,52 @@ This release focused on **usability, automation, and polish** with 14 new featur
 
 ### Installation
 
+#### Option 1: Install from PyPI (Recommended)
+
+```bash
+# Using pipx (recommended - manages virtual environment automatically)
+pipx install argus-overview
+
+# Run
+argus-overview
+```
+
+If you don't have pipx installed:
+```bash
+# Ubuntu/Debian
+sudo apt install pipx
+pipx ensurepath
+
+# Fedora
+sudo dnf install pipx
+pipx ensurepath
+
+# Arch
+sudo pacman -S python-pipx
+pipx ensurepath
+```
+
+<details>
+<summary>Alternative: Install in a virtual environment</summary>
+
+```bash
+# Create and activate virtual environment
+python3 -m venv ~/.venv/argus
+source ~/.venv/argus/bin/activate
+
+# Install
+pip install argus-overview
+
+# Run (with venv activated)
+argus-overview
+```
+
+**Note:** Modern Linux distributions (Debian 12+, Ubuntu 23.04+, Fedora 38+) use PEP 668 to protect the system Python. Running `pip install argus-overview` directly will show an "externally-managed-environment" error. Use `pipx` or a virtual environment instead.
+
+</details>
+
+#### Option 2: Install from Source
+
 ```bash
 # One-liner install
 curl -sSL https://raw.githubusercontent.com/AreteDriver/Argus_Overview/main/install.sh | bash
