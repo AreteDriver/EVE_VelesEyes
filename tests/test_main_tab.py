@@ -8157,6 +8157,7 @@ class TestOnWindowActivatedFailure:
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab.settings_manager = MagicMock()
+            tab.settings_manager.get.return_value = False  # Disable auto-minimize
             tab.capture_system = MagicMock()
             tab.capture_system.activate_window.return_value = False  # Activation fails
 
