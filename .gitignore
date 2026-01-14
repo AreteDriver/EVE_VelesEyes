@@ -44,3 +44,5 @@ htmlcov/
 .env
 .env.*
 .env.local
+.flatpak-builder/
+build-dir/
