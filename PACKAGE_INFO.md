@@ -1,8 +1,8 @@
-# Argus Overview v2.4 - Package Information
+# Argus Overview v2.8 - Package Information
 
 ## What's Included in This Package
 
-This is the **complete core architecture** for Argus Overview v2.4 with all features!
+This is the **complete core architecture** for Argus Overview v2.8 with all features!
 
 ### Core Modules (100% Complete):
 
@@ -53,7 +53,7 @@ This is the **complete core architecture** for Argus Overview v2.4 with all feat
 
 ```bash
 # Extract
-tar -xzf Argus-Overview-v2.4.2-Linux.tar.gz
+tar -xzf Argus-Overview-v2.8.2-Linux.tar.gz
 cd argus-overview-linux
 
 # Install

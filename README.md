@@ -389,10 +389,12 @@ sudo pacman -S wmctrl xdotool imagemagick xorg-xwd python-pip
 
 ## 📖 **Documentation**
 
-- `WHATS_NEW.md` - Complete feature changelog
-- `QUICKSTART.md` - Get started in 5 minutes
-- `USER_GUIDE.md` - Comprehensive user manual
-- `INTEGRATION_GUIDE.md` - Developer integration guide
+- [QUICKSTART.md](QUICKSTART.md) - Get started in 5 minutes
+- [docs/USER_GUIDE.md](docs/USER_GUIDE.md) - Comprehensive user manual
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical architecture
+- [WHATS_NEW.md](WHATS_NEW.md) - Complete feature changelog
+- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
+- [CHANGELOG.md](CHANGELOG.md) - Version history
 
 ---
 
