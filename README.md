@@ -1,4 +1,4 @@
-# Argus Overview v2.7
+# Argus Overview v2.8
 
 **The Complete Professional Multi-Boxing Solution for EVE Online**
 
@@ -412,5 +412,5 @@ MIT License - See LICENSE file
 
 **Fly safe, capsuleers! o7**
 
-*Argus Overview v2.6*
+*Argus Overview v2.8*
 *The Complete Professional Solution for Linux Multi-Boxing*
