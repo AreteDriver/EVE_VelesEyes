@@ -6877,8 +6877,8 @@ class TestWindowPreviewWidgetMouseEventsReal:
 
     def test_mouse_move_event_large_movement_initiates_drag(self, qapp):
         """Test mouseMoveEvent initiates drag on large movement"""
-        from PySide6.QtCore import QMimeData, QPoint, QPointF, Qt
-        from PySide6.QtGui import QDrag, QMouseEvent
+        from PySide6.QtCore import QPoint, QPointF, Qt
+        from PySide6.QtGui import QMouseEvent
 
         from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
@@ -7957,7 +7957,9 @@ class TestArrangementGridDropEventRuntimeError:
             # Mock event with character data
             mock_event = MagicMock()
             mock_event.mimeData().hasFormat.return_value = True
-            mock_event.mimeData().data.return_value.data.return_value.decode.return_value = "TestChar"
+            mock_event.mimeData().data.return_value.data.return_value.decode.return_value = (
+                "TestChar"
+            )
             mock_event.position().toPoint().x.return_value = 50
             mock_event.position().toPoint().y.return_value = 50
 
@@ -8169,8 +8171,8 @@ class TestMinimizeInactiveXdotoolFails:
 
     def test_minimize_inactive_xdotool_fails(self):
         """Test minimize_inactive_windows shows simple message when xdotool fails"""
+
         from eve_overview_pro.ui.main_tab import MainTab
-        import subprocess
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8199,8 +8201,9 @@ class TestKeyPressEventNonNumber:
 
     def test_key_press_event_passes_to_parent(self):
         """Test keyPressEvent passes non-number keys to parent"""
-        from eve_overview_pro.ui.main_tab import MainTab
         from PySide6.QtCore import Qt
+
+        from eve_overview_pro.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8249,9 +8252,10 @@ class TestProcessCaptureResultsAlert:
 
     def test_process_capture_results_sets_alert(self):
         """Test _process_capture_results sets alert level on frame"""
-        from eve_overview_pro.ui.main_tab import WindowManager
-        from eve_overview_pro.core.alert_detector import AlertLevel
         import threading
+
+        from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -8263,10 +8267,7 @@ class TestProcessCaptureResultsAlert:
             # Mock capture result as tuple (request_id, window_id, image)
             mock_image = MagicMock()
             # Return result once, then None to exit loop
-            wm.capture_system.get_result.side_effect = [
-                ("req1", "0x123", mock_image),
-                None
-            ]
+            wm.capture_system.get_result.side_effect = [("req1", "0x123", mock_image), None]
 
             # Mock preview frame
             mock_frame = MagicMock()
@@ -8283,8 +8284,9 @@ class TestProcessCaptureResultsAlert:
 
     def test_process_capture_results_handles_exception(self):
         """Test _process_capture_results handles exception during processing"""
-        from eve_overview_pro.ui.main_tab import WindowManager
         import threading
+
+        from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -8295,10 +8297,7 @@ class TestProcessCaptureResultsAlert:
 
             # Mock capture result as tuple
             mock_image = MagicMock()
-            wm.capture_system.get_result.side_effect = [
-                ("req1", "0x123", mock_image),
-                None
-            ]
+            wm.capture_system.get_result.side_effect = [("req1", "0x123", mock_image), None]
 
             # Mock preview frame that raises exception
             mock_frame = MagicMock()
@@ -8319,8 +8318,9 @@ class TestFlowLayoutRowWrap:
 
     def test_flow_layout_wraps_to_next_row(self):
         """Test FlowLayout wraps items to next row when width exceeded"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
         from PySide6.QtCore import QRect, QSize
+
+        from eve_overview_pro.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -8358,8 +8358,9 @@ class TestWindowPreviewWidgetActivityState:
 
     def test_get_activity_state_recent(self):
         """Test get_activity_state returns 'recent' when activity within 5 seconds"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -8372,8 +8373,9 @@ class TestWindowPreviewWidgetActivityState:
 
     def test_get_activity_state_idle(self):
         """Test get_activity_state returns 'idle' when activity older than 5 seconds"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime, timedelta
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -8386,8 +8388,9 @@ class TestWindowPreviewWidgetActivityState:
 
     def test_get_activity_state_focused(self):
         """Test get_activity_state returns 'focused' when is_focused is True"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
         from datetime import datetime
+
+        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -8404,8 +8407,8 @@ class TestWindowManagerAddWindowAlertCallback:
 
     def test_add_window_registers_alert_callback(self):
         """Test add_window registers callback with alert_detector"""
-        from eve_overview_pro.ui.main_tab import WindowManager
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -8434,8 +8437,8 @@ class TestWindowManagerAddWindowAlertCallback:
 
     def test_alert_callback_ignores_removed_window(self):
         """Test alert callback does nothing if window was removed"""
-        from eve_overview_pro.ui.main_tab import WindowManager
         from eve_overview_pro.core.alert_detector import AlertLevel
+        from eve_overview_pro.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)

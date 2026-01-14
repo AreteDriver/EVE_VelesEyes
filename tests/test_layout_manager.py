@@ -13,10 +13,9 @@ Tests cover:
 import json
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
-
-from unittest.mock import patch, MagicMock
 
 from eve_overview_pro.core.layout_manager import (
     GridPattern,
