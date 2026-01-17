@@ -111,6 +111,7 @@ class MainWindowV21(QMainWindow):
         # v2.2: Start auto-discovery if enabled
         if self.settings_manager.get("general.auto_discovery", True):
             self.auto_discovery.new_character_found.connect(self._on_new_character_discovered)
+            self.auto_discovery.character_gone.connect(self._on_character_gone)
             self.auto_discovery.start()
 
         self.logger.info("Main window v2.2 initialized successfully")
@@ -769,6 +770,26 @@ class MainWindowV21(QMainWindow):
             self.characters_tab, "update_character_status"
         ):
             self.characters_tab.update_character_status(char_name, window_id)
+
+    @Slot(str, str)
+    def _on_character_gone(self, char_name: str, window_id: str):
+        """
+        Handle character window closing from auto-discovery
+
+        Args:
+            char_name: Character name
+            window_id: Window ID that closed
+        """
+        self.logger.info(f"Character gone: {char_name} (window: {window_id})")
+
+        # Clear window assignment in character manager
+        self.character_manager.unassign_window(char_name)
+
+        # Update characters tab if it exists and has the method
+        if hasattr(self, "characters_tab") and hasattr(
+            self.characters_tab, "update_character_status"
+        ):
+            self.characters_tab.update_character_status(char_name, None)
 
     @Slot(object)
     def _on_team_selected(self, team):
