@@ -69,7 +69,7 @@ def benchmark_alert_detection():
     """Benchmark alert detection frame analysis."""
     from PIL import Image
 
-    from eve_overview_pro.core.alert_detector import AlertDetector
+    from argus_overview.core.alert_detector import AlertDetector
 
     detector = AlertDetector()
 
@@ -96,7 +96,7 @@ def benchmark_pil_to_qimage():
     """Benchmark PIL to QImage conversion."""
     from PIL import Image
 
-    from eve_overview_pro.ui.main_tab import pil_to_qimage
+    from argus_overview.ui.main_tab import pil_to_qimage
 
     # Create test images at typical preview sizes
     small_image = Image.new("RGB", (320, 240), color=(100, 100, 100))
@@ -124,7 +124,7 @@ def benchmark_pil_to_qimage():
 
 def benchmark_wmctrl_cache():
     """Benchmark wmctrl result caching."""
-    from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+    from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
     # Mock subprocess to avoid actual system calls
     mock_result = MagicMock()
@@ -193,7 +193,7 @@ def benchmark_capture_queue():
 
 def benchmark_window_id_validation():
     """Benchmark window ID validation."""
-    from eve_overview_pro.core.window_capture_threaded import _is_valid_window_id
+    from argus_overview.core.window_capture_threaded import _is_valid_window_id
 
     valid_hex = "0x12345678"
     valid_dec = "12345678"
@@ -220,7 +220,7 @@ def benchmark_window_id_validation():
 
 def benchmark_screen_geometry():
     """Benchmark screen geometry parsing."""
-    from eve_overview_pro.utils.screen import get_screen_geometry
+    from argus_overview.utils.screen import get_screen_geometry
 
     mock_result = MagicMock()
     mock_result.returncode = 0

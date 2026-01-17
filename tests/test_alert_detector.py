@@ -17,7 +17,7 @@ from unittest.mock import MagicMock
 import pytest
 from PIL import Image
 
-from eve_overview_pro.core.alert_detector import (
+from argus_overview.core.alert_detector import (
     AlertConfig,
     AlertDetector,
     AlertLevel,
@@ -414,7 +414,7 @@ class TestExceptionHandling:
 
         # Mock numpy.array to raise
         with patch(
-            "eve_overview_pro.core.alert_detector.np.array", side_effect=Exception("numpy failed")
+            "argus_overview.core.alert_detector.np.array", side_effect=Exception("numpy failed")
         ):
             result = detector._detect_red_flash(img)
 
@@ -453,7 +453,7 @@ class TestExceptionHandling:
                 raise Exception("numpy failed")
             return original_array(*args, **kwargs)
 
-        with patch("eve_overview_pro.core.alert_detector.np.array", side_effect=mock_array):
+        with patch("argus_overview.core.alert_detector.np.array", side_effect=mock_array):
             result = detector._detect_screen_change(img1, img2)
 
         # Should return False on error

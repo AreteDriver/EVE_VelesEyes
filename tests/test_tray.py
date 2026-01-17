@@ -9,11 +9,11 @@ from unittest.mock import MagicMock, patch
 class TestSystemTrayInit:
     """Tests for SystemTray initialization"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_init_creates_tray_icon(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -22,7 +22,7 @@ class TestSystemTrayInit:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -31,11 +31,11 @@ class TestSystemTrayInit:
                 mock_tray_icon.assert_called()
                 assert tray.tray_icon is not None
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_init_sets_tooltip(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -47,7 +47,7 @@ class TestSystemTrayInit:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -57,11 +57,11 @@ class TestSystemTrayInit:
                 tooltip_arg = mock_tray_icon.setToolTip.call_args[0][0]
                 assert "Argus Overview" in tooltip_arg
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_init_state(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -70,7 +70,7 @@ class TestSystemTrayInit:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -84,11 +84,11 @@ class TestSystemTrayInit:
 class TestCreateIcon:
     """Tests for _create_icon method"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_create_icon_returns_qicon(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -97,7 +97,7 @@ class TestCreateIcon:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -106,11 +106,11 @@ class TestCreateIcon:
                 # setIcon should have been called with the mocked icon
                 mock_tray_icon.return_value.setIcon.assert_called()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_create_icon_method_exists(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -119,7 +119,7 @@ class TestCreateIcon:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -129,16 +129,16 @@ class TestCreateIcon:
                 assert hasattr(SystemTray, "_create_icon")
                 assert callable(SystemTray._create_icon)
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
-    @patch("eve_overview_pro.ui.tray.QIcon")
-    @patch("eve_overview_pro.ui.tray.QPixmap")
-    @patch("eve_overview_pro.ui.tray.QPainter")
-    @patch("eve_overview_pro.ui.tray.QFont")
-    @patch("eve_overview_pro.ui.tray.QColor")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.QIcon")
+    @patch("argus_overview.ui.tray.QPixmap")
+    @patch("argus_overview.ui.tray.QPainter")
+    @patch("argus_overview.ui.tray.QFont")
+    @patch("argus_overview.ui.tray.QColor")
     def test_create_icon_fallback_when_no_files(
         self,
         mock_qcolor,
@@ -169,7 +169,7 @@ class TestCreateIcon:
         mock_icon_instance = MagicMock()
         mock_qicon.return_value = mock_icon_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         # Mock Path.exists to return False for all icon paths
         with patch.object(Path, "exists", return_value=False):
@@ -182,12 +182,12 @@ class TestCreateIcon:
         mock_qpainter.assert_called()
         mock_painter_instance.end.assert_called()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
-    @patch("eve_overview_pro.ui.tray.QIcon")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.QIcon")
     def test_create_icon_loads_from_file_when_exists(
         self,
         mock_qicon,
@@ -208,7 +208,7 @@ class TestCreateIcon:
         mock_icon_instance = MagicMock()
         mock_qicon.return_value = mock_icon_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         # Create a temporary icon file
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -235,11 +235,11 @@ class TestCreateIcon:
 class TestShowHide:
     """Tests for show/hide methods"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_show(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -251,7 +251,7 @@ class TestShowHide:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -260,11 +260,11 @@ class TestShowHide:
 
                 mock_tray_icon.show.assert_called_once()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_hide(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -276,7 +276,7 @@ class TestShowHide:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -285,11 +285,11 @@ class TestShowHide:
 
                 mock_tray_icon.hide.assert_called_once()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_is_visible(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -302,7 +302,7 @@ class TestShowHide:
         mock_tray_icon.isVisible.return_value = True
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -316,11 +316,11 @@ class TestShowHide:
 class TestProfiles:
     """Tests for profile management"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_set_profiles(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -329,7 +329,7 @@ class TestProfiles:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu") as mock_setup:
@@ -343,11 +343,11 @@ class TestProfiles:
                 assert tray._current_profile == "Profile2"
                 mock_setup.assert_called_once()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_set_current_profile(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -356,7 +356,7 @@ class TestProfiles:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu") as mock_setup:
@@ -372,11 +372,11 @@ class TestProfiles:
 class TestNotifications:
     """Tests for notification functionality"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_show_notification_when_supported(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -389,7 +389,7 @@ class TestNotifications:
         mock_tray_icon.supportsMessages.return_value = True
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -398,11 +398,11 @@ class TestNotifications:
 
                 mock_tray_icon.showMessage.assert_called_once()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_show_notification_when_not_supported(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -415,7 +415,7 @@ class TestNotifications:
         mock_tray_icon.supportsMessages.return_value = False
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -428,11 +428,11 @@ class TestNotifications:
 class TestTooltip:
     """Tests for tooltip functionality"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_update_tooltip(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -444,7 +444,7 @@ class TestTooltip:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -459,11 +459,11 @@ class TestTooltip:
 class TestTrayActivation:
     """Tests for tray icon activation handling"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_double_click_emits_show_hide(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -475,7 +475,7 @@ class TestTrayActivation:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import QSystemTrayIcon, SystemTray
+        from argus_overview.ui.tray import QSystemTrayIcon, SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -489,11 +489,11 @@ class TestTrayActivation:
 
                 tray.show_hide_requested.emit.assert_called_once()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_single_click_no_emit(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon_class, mock_menu_builder, mock_registry
     ):
@@ -505,7 +505,7 @@ class TestTrayActivation:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import QSystemTrayIcon, SystemTray
+        from argus_overview.ui.tray import QSystemTrayIcon, SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -522,11 +522,11 @@ class TestTrayActivation:
 class TestSignals:
     """Tests for SystemTray signals"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_signals_exist(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -535,7 +535,7 @@ class TestSignals:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -555,11 +555,11 @@ class TestSignals:
 class TestProfileSelection:
     """Tests for profile selection handling"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_on_profile_selected(
         self, mock_qobject_init, mock_qmenu, mock_tray_icon, mock_menu_builder, mock_registry
     ):
@@ -568,7 +568,7 @@ class TestProfileSelection:
         mock_registry_instance = MagicMock()
         mock_registry.get_instance.return_value = mock_registry_instance
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             with patch.object(SystemTray, "_setup_menu"):
@@ -584,11 +584,11 @@ class TestProfileSelection:
 class TestMenuSetup:
     """Tests for menu setup"""
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_setup_menu_uses_menu_builder(
         self,
         mock_qobject_init,
@@ -609,7 +609,7 @@ class TestMenuSetup:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             SystemTray()
@@ -617,11 +617,11 @@ class TestMenuSetup:
             mock_menu_builder.build_tray_menu.assert_called()
             mock_tray_icon.setContextMenu.assert_called()
 
-    @patch("eve_overview_pro.ui.tray.ActionRegistry")
-    @patch("eve_overview_pro.ui.tray.MenuBuilder")
-    @patch("eve_overview_pro.ui.tray.QSystemTrayIcon")
-    @patch("eve_overview_pro.ui.tray.QMenu")
-    @patch("eve_overview_pro.ui.tray.QObject.__init__")
+    @patch("argus_overview.ui.tray.ActionRegistry")
+    @patch("argus_overview.ui.tray.MenuBuilder")
+    @patch("argus_overview.ui.tray.QSystemTrayIcon")
+    @patch("argus_overview.ui.tray.QMenu")
+    @patch("argus_overview.ui.tray.QObject.__init__")
     def test_setup_menu_passes_handlers(
         self,
         mock_qobject_init,
@@ -642,7 +642,7 @@ class TestMenuSetup:
         mock_tray_icon = MagicMock()
         mock_tray_icon_class.return_value = mock_tray_icon
 
-        from eve_overview_pro.ui.tray import SystemTray
+        from argus_overview.ui.tray import SystemTray
 
         with patch.object(SystemTray, "_create_icon", return_value=MagicMock()):
             SystemTray()

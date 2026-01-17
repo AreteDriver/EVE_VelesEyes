@@ -29,7 +29,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from eve_overview_pro.ui.menu_builder import ToolbarBuilder
+from argus_overview.ui.menu_builder import ToolbarBuilder
 
 
 class ScanWorker(QThread):

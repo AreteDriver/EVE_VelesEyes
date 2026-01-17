@@ -11,12 +11,12 @@ from unittest.mock import MagicMock, patch
 class TestHotkeyEditDialog:
     """Tests for HotkeyEditDialog"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
     def test_init(self, mock_dialog):
         """Test HotkeyEditDialog initialization"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         mock_hotkey_manager = MagicMock()
 
@@ -29,12 +29,12 @@ class TestHotkeyEditDialog:
                     assert dialog.action == "Test Action"
                     assert dialog.current_combo == "<ctrl>+<alt>+1"
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
     def test_get_hotkey(self, mock_dialog):
         """Test get_hotkey method"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         mock_hotkey_manager = MagicMock()
 
@@ -54,12 +54,12 @@ class TestHotkeyEditDialog:
 class TestGeneralPanel:
     """Tests for GeneralPanel"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test GeneralPanel initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import GeneralPanel
+        from argus_overview.ui.settings_tab import GeneralPanel
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = False
@@ -71,7 +71,7 @@ class TestGeneralPanel:
 
     def test_signal_exists(self):
         """Test GeneralPanel has setting_changed signal"""
-        from eve_overview_pro.ui.settings_tab import GeneralPanel
+        from argus_overview.ui.settings_tab import GeneralPanel
 
         assert hasattr(GeneralPanel, "setting_changed")
 
@@ -80,12 +80,12 @@ class TestGeneralPanel:
 class TestPerformancePanel:
     """Tests for PerformancePanel"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test PerformancePanel initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import PerformancePanel
+        from argus_overview.ui.settings_tab import PerformancePanel
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = 30
@@ -97,16 +97,16 @@ class TestPerformancePanel:
 
     def test_signal_exists(self):
         """Test PerformancePanel has setting_changed signal"""
-        from eve_overview_pro.ui.settings_tab import PerformancePanel
+        from argus_overview.ui.settings_tab import PerformancePanel
 
         assert hasattr(PerformancePanel, "setting_changed")
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_on_low_power_changed_emits_signal(self, mock_widget):
         """Test _on_low_power_changed emits setting_changed with checkbox state"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import PerformancePanel
+        from argus_overview.ui.settings_tab import PerformancePanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = 30
@@ -126,12 +126,12 @@ class TestPerformancePanel:
 class TestAlertsPanel:
     """Tests for AlertsPanel"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test AlertsPanel initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AlertsPanel
+        from argus_overview.ui.settings_tab import AlertsPanel
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = True
@@ -143,7 +143,7 @@ class TestAlertsPanel:
 
     def test_signal_exists(self):
         """Test AlertsPanel has setting_changed signal"""
-        from eve_overview_pro.ui.settings_tab import AlertsPanel
+        from argus_overview.ui.settings_tab import AlertsPanel
 
         assert hasattr(AlertsPanel, "setting_changed")
 
@@ -152,12 +152,12 @@ class TestAlertsPanel:
 class TestHotkeysPanel:
     """Tests for HotkeysPanel"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test HotkeysPanel initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
@@ -171,12 +171,12 @@ class TestHotkeysPanel:
                 assert panel.settings_manager is mock_settings_manager
                 assert panel.hotkey_manager is mock_hotkey_manager
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_load_hotkeys_calls_settings_manager(self, mock_widget):
         """Test _load_hotkeys calls settings manager"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings_manager = MagicMock()
         mock_hotkey_manager = MagicMock()
@@ -190,7 +190,7 @@ class TestHotkeysPanel:
 
     def test_signal_exists(self):
         """Test HotkeysPanel has setting_changed signal"""
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         assert hasattr(HotkeysPanel, "setting_changed")
 
@@ -199,12 +199,12 @@ class TestHotkeysPanel:
 class TestAppearancePanel:
     """Tests for AppearancePanel"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test AppearancePanel initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AppearancePanel
+        from argus_overview.ui.settings_tab import AppearancePanel
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = "dark"
@@ -216,7 +216,7 @@ class TestAppearancePanel:
 
     def test_signal_exists(self):
         """Test AppearancePanel has setting_changed signal"""
-        from eve_overview_pro.ui.settings_tab import AppearancePanel
+        from argus_overview.ui.settings_tab import AppearancePanel
 
         assert hasattr(AppearancePanel, "setting_changed")
 
@@ -225,12 +225,12 @@ class TestAppearancePanel:
 class TestAdvancedPanel:
     """Tests for AdvancedPanel"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test AdvancedPanel initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = "INFO"
@@ -240,13 +240,13 @@ class TestAdvancedPanel:
 
             assert panel.settings_manager is mock_settings_manager
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_clear_cache_shows_message(self, mock_msgbox, mock_widget):
         """Test _clear_cache shows information message"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = "INFO"
@@ -260,7 +260,7 @@ class TestAdvancedPanel:
 
     def test_signal_exists(self):
         """Test AdvancedPanel has setting_changed signal"""
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         assert hasattr(AdvancedPanel, "setting_changed")
 
@@ -269,12 +269,12 @@ class TestAdvancedPanel:
 class TestSettingsTab:
     """Tests for SettingsTab widget"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test SettingsTab initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
@@ -290,12 +290,12 @@ class TestSettingsTab:
                 assert tab.hotkey_manager is mock_hotkey_manager
                 assert tab.alert_detector is mock_alert_detector
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_on_setting_changed(self, mock_widget):
         """Test _on_setting_changed saves to manager"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
@@ -314,12 +314,12 @@ class TestSettingsTab:
 
                     mock_settings_manager.set.assert_called_with("test.key", "test_value")
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_on_category_changed(self, mock_widget):
         """Test _on_category_changed switches panel"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
@@ -340,15 +340,15 @@ class TestSettingsTab:
 
                 tab.panel_stack.setCurrentIndex.assert_called_with(1)
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_reset_all_calls_reset(self, mock_msgbox, mock_widget):
         """Test _reset_all resets settings when confirmed"""
         mock_widget.return_value = None
 
         from PySide6.QtWidgets import QMessageBox
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings_manager = MagicMock()
         mock_settings_manager.get.return_value = {}
@@ -370,7 +370,7 @@ class TestSettingsTab:
 
     def test_signal_exists(self):
         """Test SettingsTab has settings_changed signal"""
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         assert hasattr(SettingsTab, "settings_changed")
 
@@ -383,13 +383,13 @@ class TestSettingsTab:
 class TestHotkeyEditDialogSetupUI:
     """Tests for HotkeyEditDialog _setup_ui and interaction methods"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_test_hotkey_empty_shows_warning(self, mock_msgbox, mock_dialog):
         """Test _test_hotkey with empty input shows warning"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         with patch.object(HotkeyEditDialog, "setWindowTitle"):
             with patch.object(HotkeyEditDialog, "setMinimumWidth"):
@@ -402,13 +402,13 @@ class TestHotkeyEditDialogSetupUI:
 
                     mock_msgbox.warning.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_test_hotkey_valid_shows_info(self, mock_msgbox, mock_dialog):
         """Test _test_hotkey with valid input shows info"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         with patch.object(HotkeyEditDialog, "setWindowTitle"):
             with patch.object(HotkeyEditDialog, "setMinimumWidth"):
@@ -421,13 +421,13 @@ class TestHotkeyEditDialogSetupUI:
 
                     mock_msgbox.information.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_save_hotkey_empty_shows_warning(self, mock_msgbox, mock_dialog):
         """Test _save_hotkey with empty input shows warning"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         with patch.object(HotkeyEditDialog, "setWindowTitle"):
             with patch.object(HotkeyEditDialog, "setMinimumWidth"):
@@ -440,13 +440,13 @@ class TestHotkeyEditDialogSetupUI:
 
                     mock_msgbox.warning.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_save_hotkey_invalid_format_shows_warning(self, mock_msgbox, mock_dialog):
         """Test _save_hotkey with invalid format shows warning"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         with patch.object(HotkeyEditDialog, "setWindowTitle"):
             with patch.object(HotkeyEditDialog, "setMinimumWidth"):
@@ -459,12 +459,12 @@ class TestHotkeyEditDialogSetupUI:
 
                     mock_msgbox.warning.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
     def test_save_hotkey_valid_accepts(self, mock_dialog):
         """Test _save_hotkey with valid input calls accept"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         with patch.object(HotkeyEditDialog, "setWindowTitle"):
             with patch.object(HotkeyEditDialog, "setMinimumWidth"):
@@ -478,19 +478,19 @@ class TestHotkeyEditDialogSetupUI:
 
                         mock_accept.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QDialog.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QLabel")
-    @patch("eve_overview_pro.ui.settings_tab.QLineEdit")
-    @patch("eve_overview_pro.ui.settings_tab.QPushButton")
-    @patch("eve_overview_pro.ui.settings_tab.QDialogButtonBox")
+    @patch("argus_overview.ui.settings_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QLabel")
+    @patch("argus_overview.ui.settings_tab.QLineEdit")
+    @patch("argus_overview.ui.settings_tab.QPushButton")
+    @patch("argus_overview.ui.settings_tab.QDialogButtonBox")
     def test_setup_ui_creates_widgets(
         self, mock_bbox, mock_btn, mock_edit, mock_label, mock_layout, mock_dialog
     ):
         """Test _setup_ui creates all expected widgets"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeyEditDialog
+        from argus_overview.ui.settings_tab import HotkeyEditDialog
 
         with patch.object(HotkeyEditDialog, "setWindowTitle"):
             with patch.object(HotkeyEditDialog, "setMinimumWidth"):
@@ -507,19 +507,19 @@ class TestHotkeyEditDialogSetupUI:
 class TestGeneralPanelSetupUI:
     """Tests for GeneralPanel _setup_ui"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QGroupBox")
-    @patch("eve_overview_pro.ui.settings_tab.QFormLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QCheckBox")
-    @patch("eve_overview_pro.ui.settings_tab.QSpinBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QGroupBox")
+    @patch("argus_overview.ui.settings_tab.QFormLayout")
+    @patch("argus_overview.ui.settings_tab.QCheckBox")
+    @patch("argus_overview.ui.settings_tab.QSpinBox")
     def test_setup_ui_creates_widgets(
         self, mock_spin, mock_check, mock_form, mock_group, mock_layout, mock_widget
     ):
         """Test _setup_ui creates all expected widgets"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import GeneralPanel
+        from argus_overview.ui.settings_tab import GeneralPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = False
@@ -537,20 +537,20 @@ class TestGeneralPanelSetupUI:
 class TestPerformancePanelSetupUI:
     """Tests for PerformancePanel _setup_ui"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QGroupBox")
-    @patch("eve_overview_pro.ui.settings_tab.QFormLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QCheckBox")
-    @patch("eve_overview_pro.ui.settings_tab.QSpinBox")
-    @patch("eve_overview_pro.ui.settings_tab.QComboBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QGroupBox")
+    @patch("argus_overview.ui.settings_tab.QFormLayout")
+    @patch("argus_overview.ui.settings_tab.QCheckBox")
+    @patch("argus_overview.ui.settings_tab.QSpinBox")
+    @patch("argus_overview.ui.settings_tab.QComboBox")
     def test_setup_ui_creates_widgets(
         self, mock_combo, mock_spin, mock_check, mock_form, mock_group, mock_layout, mock_widget
     ):
         """Test _setup_ui creates all expected widgets"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import PerformancePanel
+        from argus_overview.ui.settings_tab import PerformancePanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = 30
@@ -567,20 +567,20 @@ class TestPerformancePanelSetupUI:
 class TestAlertsPanelSetupUI:
     """Tests for AlertsPanel _setup_ui"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QGroupBox")
-    @patch("eve_overview_pro.ui.settings_tab.QFormLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QCheckBox")
-    @patch("eve_overview_pro.ui.settings_tab.QSlider")
-    @patch("eve_overview_pro.ui.settings_tab.QSpinBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QGroupBox")
+    @patch("argus_overview.ui.settings_tab.QFormLayout")
+    @patch("argus_overview.ui.settings_tab.QCheckBox")
+    @patch("argus_overview.ui.settings_tab.QSlider")
+    @patch("argus_overview.ui.settings_tab.QSpinBox")
     def test_setup_ui_creates_widgets(
         self, mock_spin, mock_slider, mock_check, mock_form, mock_group, mock_layout, mock_widget
     ):
         """Test _setup_ui creates all expected widgets"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AlertsPanel
+        from argus_overview.ui.settings_tab import AlertsPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = True
@@ -597,13 +597,13 @@ class TestAlertsPanelSetupUI:
 class TestHotkeysPanelInteraction:
     """Tests for HotkeysPanel interaction methods"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_edit_hotkey_no_selection_shows_message(self, mock_msgbox, mock_widget):
         """Test _edit_hotkey with no selection shows info message"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -619,13 +619,13 @@ class TestHotkeysPanelInteraction:
 
                 mock_msgbox.information.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_reset_hotkey_no_selection_shows_message(self, mock_msgbox, mock_widget):
         """Test _reset_hotkey with no selection shows info message"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -641,13 +641,13 @@ class TestHotkeysPanelInteraction:
 
                 mock_msgbox.information.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_reset_hotkey_with_selection_shows_feature_message(self, mock_msgbox, mock_widget):
         """Test _reset_hotkey with selection shows feature message"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -663,13 +663,13 @@ class TestHotkeysPanelInteraction:
 
                 mock_msgbox.information.assert_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.HotkeyEditDialog")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.HotkeyEditDialog")
     def test_edit_hotkey_with_selection_opens_dialog(self, mock_dialog_class, mock_widget):
         """Test _edit_hotkey with selection opens dialog"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -696,13 +696,13 @@ class TestHotkeysPanelInteraction:
 
                 mock_dialog_class.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.HotkeyEditDialog")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.HotkeyEditDialog")
     def test_edit_hotkey_dialog_accepted_updates_table(self, mock_dialog_class, mock_widget):
         """Test _edit_hotkey when dialog accepted updates table"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -736,19 +736,19 @@ class TestHotkeysPanelInteraction:
                 mock_hotkey_item.setText.assert_called_with("<ctrl>+<shift>+b")
                 panel.setting_changed.emit.assert_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QLabel")
-    @patch("eve_overview_pro.ui.settings_tab.QTableWidget")
-    @patch("eve_overview_pro.ui.settings_tab.QHBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QPushButton")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QLabel")
+    @patch("argus_overview.ui.settings_tab.QTableWidget")
+    @patch("argus_overview.ui.settings_tab.QHBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QPushButton")
     def test_setup_ui_creates_table(
         self, mock_btn, mock_hlayout, mock_table, mock_label, mock_layout, mock_widget
     ):
         """Test _setup_ui creates hotkeys table"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -760,11 +760,11 @@ class TestHotkeysPanelInteraction:
 
                 assert mock_table.called
 
-    @patch("eve_overview_pro.ui.settings_tab.QTableWidgetItem")
-    @patch("eve_overview_pro.ui.settings_tab.QColor")
+    @patch("argus_overview.ui.settings_tab.QTableWidgetItem")
+    @patch("argus_overview.ui.settings_tab.QColor")
     def test_load_hotkeys_populates_table(self, mock_color, mock_item):
         """Test _load_hotkeys populates table with hotkeys"""
-        from eve_overview_pro.ui.settings_tab import HotkeysPanel
+        from argus_overview.ui.settings_tab import HotkeysPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {
@@ -788,13 +788,13 @@ class TestHotkeysPanelInteraction:
 class TestAppearancePanelInteraction:
     """Tests for AppearancePanel interaction methods"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QColorDialog")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QColorDialog")
     def test_pick_accent_color_valid(self, mock_color_dialog, mock_widget):
         """Test _pick_accent_color with valid color"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AppearancePanel
+        from argus_overview.ui.settings_tab import AppearancePanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "#4287f5"
@@ -815,13 +815,13 @@ class TestAppearancePanelInteraction:
             assert panel.accent_color == "#ff0000"
             panel.setting_changed.emit.assert_called_with("appearance.accent_color", "#ff0000")
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QColorDialog")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QColorDialog")
     def test_pick_accent_color_cancelled(self, mock_color_dialog, mock_widget):
         """Test _pick_accent_color when cancelled"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AppearancePanel
+        from argus_overview.ui.settings_tab import AppearancePanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "#4287f5"
@@ -842,15 +842,15 @@ class TestAppearancePanelInteraction:
             assert panel.accent_color == "#4287f5"
             panel.setting_changed.emit.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QGroupBox")
-    @patch("eve_overview_pro.ui.settings_tab.QFormLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QComboBox")
-    @patch("eve_overview_pro.ui.settings_tab.QSpinBox")
-    @patch("eve_overview_pro.ui.settings_tab.QCheckBox")
-    @patch("eve_overview_pro.ui.settings_tab.QHBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QPushButton")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QGroupBox")
+    @patch("argus_overview.ui.settings_tab.QFormLayout")
+    @patch("argus_overview.ui.settings_tab.QComboBox")
+    @patch("argus_overview.ui.settings_tab.QSpinBox")
+    @patch("argus_overview.ui.settings_tab.QCheckBox")
+    @patch("argus_overview.ui.settings_tab.QHBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QPushButton")
     def test_setup_ui_creates_widgets(
         self,
         mock_btn,
@@ -866,7 +866,7 @@ class TestAppearancePanelInteraction:
         """Test _setup_ui creates all widgets"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AppearancePanel
+        from argus_overview.ui.settings_tab import AppearancePanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "dark"
@@ -882,14 +882,14 @@ class TestAppearancePanelInteraction:
 class TestAdvancedPanelInteraction:
     """Tests for AdvancedPanel interaction methods"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     @patch("PySide6.QtWidgets.QFileDialog")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_export_settings_success(self, mock_msgbox, mock_filedialog, mock_widget):
         """Test _export_settings successful export"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "INFO"
@@ -904,14 +904,14 @@ class TestAdvancedPanelInteraction:
             mock_settings.export_config.assert_called_once()
             mock_msgbox.information.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     @patch("PySide6.QtWidgets.QFileDialog")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_export_settings_cancelled(self, mock_msgbox, mock_filedialog, mock_widget):
         """Test _export_settings when cancelled"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "INFO"
@@ -925,14 +925,14 @@ class TestAdvancedPanelInteraction:
 
             mock_settings.export_config.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     @patch("PySide6.QtWidgets.QFileDialog")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_export_settings_error(self, mock_msgbox, mock_filedialog, mock_widget):
         """Test _export_settings with error shows critical message"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "INFO"
@@ -947,14 +947,14 @@ class TestAdvancedPanelInteraction:
 
             mock_msgbox.critical.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     @patch("PySide6.QtWidgets.QFileDialog")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_import_settings_success(self, mock_msgbox, mock_filedialog, mock_widget):
         """Test _import_settings successful import"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "INFO"
@@ -969,14 +969,14 @@ class TestAdvancedPanelInteraction:
             mock_settings.import_config.assert_called_once()
             mock_msgbox.information.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     @patch("PySide6.QtWidgets.QFileDialog")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_import_settings_cancelled(self, mock_msgbox, mock_filedialog, mock_widget):
         """Test _import_settings when cancelled"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "INFO"
@@ -990,14 +990,14 @@ class TestAdvancedPanelInteraction:
 
             mock_settings.import_config.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     @patch("PySide6.QtWidgets.QFileDialog")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_import_settings_error(self, mock_msgbox, mock_filedialog, mock_widget):
         """Test _import_settings with error shows critical message"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "INFO"
@@ -1012,14 +1012,14 @@ class TestAdvancedPanelInteraction:
 
             mock_msgbox.critical.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QGroupBox")
-    @patch("eve_overview_pro.ui.settings_tab.QFormLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QComboBox")
-    @patch("eve_overview_pro.ui.settings_tab.QLabel")
-    @patch("eve_overview_pro.ui.settings_tab.QCheckBox")
-    @patch("eve_overview_pro.ui.settings_tab.QPushButton")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QGroupBox")
+    @patch("argus_overview.ui.settings_tab.QFormLayout")
+    @patch("argus_overview.ui.settings_tab.QComboBox")
+    @patch("argus_overview.ui.settings_tab.QLabel")
+    @patch("argus_overview.ui.settings_tab.QCheckBox")
+    @patch("argus_overview.ui.settings_tab.QPushButton")
     def test_setup_ui_creates_widgets(
         self,
         mock_btn,
@@ -1034,7 +1034,7 @@ class TestAdvancedPanelInteraction:
         """Test _setup_ui creates all widgets"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import AdvancedPanel
+        from argus_overview.ui.settings_tab import AdvancedPanel
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = "INFO"
@@ -1050,16 +1050,16 @@ class TestAdvancedPanelInteraction:
 class TestSettingsTabSetupUI:
     """Tests for SettingsTab _setup_ui and _create_category_tree"""
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QHBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QSplitter")
-    @patch("eve_overview_pro.ui.settings_tab.QStackedWidget")
-    @patch("eve_overview_pro.ui.settings_tab.GeneralPanel")
-    @patch("eve_overview_pro.ui.settings_tab.PerformancePanel")
-    @patch("eve_overview_pro.ui.settings_tab.AlertsPanel")
-    @patch("eve_overview_pro.ui.settings_tab.HotkeysPanel")
-    @patch("eve_overview_pro.ui.settings_tab.AppearancePanel")
-    @patch("eve_overview_pro.ui.settings_tab.AdvancedPanel")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QHBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QSplitter")
+    @patch("argus_overview.ui.settings_tab.QStackedWidget")
+    @patch("argus_overview.ui.settings_tab.GeneralPanel")
+    @patch("argus_overview.ui.settings_tab.PerformancePanel")
+    @patch("argus_overview.ui.settings_tab.AlertsPanel")
+    @patch("argus_overview.ui.settings_tab.HotkeysPanel")
+    @patch("argus_overview.ui.settings_tab.AppearancePanel")
+    @patch("argus_overview.ui.settings_tab.AdvancedPanel")
     def test_setup_ui_creates_all_panels(
         self,
         mock_adv,
@@ -1076,7 +1076,7 @@ class TestSettingsTabSetupUI:
         """Test _setup_ui creates all settings panels"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -1095,18 +1095,18 @@ class TestSettingsTabSetupUI:
                     assert mock_app.called
                     assert mock_adv.called
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget")
-    @patch("eve_overview_pro.ui.settings_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.settings_tab.QLabel")
-    @patch("eve_overview_pro.ui.settings_tab.QFont")
-    @patch("eve_overview_pro.ui.settings_tab.QTreeWidget")
-    @patch("eve_overview_pro.ui.settings_tab.QTreeWidgetItem")
-    @patch("eve_overview_pro.ui.settings_tab.QPushButton")
+    @patch("argus_overview.ui.settings_tab.QWidget")
+    @patch("argus_overview.ui.settings_tab.QVBoxLayout")
+    @patch("argus_overview.ui.settings_tab.QLabel")
+    @patch("argus_overview.ui.settings_tab.QFont")
+    @patch("argus_overview.ui.settings_tab.QTreeWidget")
+    @patch("argus_overview.ui.settings_tab.QTreeWidgetItem")
+    @patch("argus_overview.ui.settings_tab.QPushButton")
     def test_create_category_tree(
         self, mock_btn, mock_item, mock_tree, mock_font, mock_label, mock_layout, mock_qwidget
     ):
         """Test _create_category_tree creates tree with all categories"""
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -1124,12 +1124,12 @@ class TestSettingsTabSetupUI:
             # Should create 6 tree items (General, Performance, Alerts, Hotkeys, Appearance, Advanced)
             assert mock_item.call_count >= 6
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_on_category_changed_none(self, mock_widget):
         """Test _on_category_changed with None current"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -1146,12 +1146,12 @@ class TestSettingsTabSetupUI:
                 # panel_stack.setCurrentIndex should not be called
                 tab.panel_stack.setCurrentIndex.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_on_category_changed_unknown_category(self, mock_widget):
         """Test _on_category_changed with unknown category"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -1171,15 +1171,15 @@ class TestSettingsTabSetupUI:
                 # panel_stack.setCurrentIndex should not be called
                 tab.panel_stack.setCurrentIndex.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QMessageBox")
     def test_reset_all_cancelled(self, mock_msgbox, mock_widget):
         """Test _reset_all when user cancels"""
         mock_widget.return_value = None
 
         from PySide6.QtWidgets import QMessageBox
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}
@@ -1197,12 +1197,12 @@ class TestSettingsTabSetupUI:
 
                 mock_settings.reset_to_defaults.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_tab.QWidget.__init__")
     def test_load_settings_pass(self, mock_widget):
         """Test _load_settings is a pass-through (settings loaded by panels)"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         mock_settings = MagicMock()
         mock_settings.get.return_value = {}

@@ -16,7 +16,7 @@ from unittest.mock import patch
 import pytest
 from PySide6.QtCore import QRect
 
-from eve_overview_pro.core.position import (
+from argus_overview.core.position import (
     PositionManager,
     ThumbnailPosition,
 )
@@ -471,7 +471,7 @@ class TestGetPrimaryScreen:
         mock_app = MagicMock()
         mock_app.primaryScreen.return_value = mock_screen
 
-        with patch("eve_overview_pro.core.position.QApplication.instance", return_value=mock_app):
+        with patch("argus_overview.core.position.QApplication.instance", return_value=mock_app):
             result = manager._get_primary_screen()
 
             assert result == QRect(0, 0, 2560, 1440)
@@ -485,7 +485,7 @@ class TestGetPrimaryScreen:
         mock_app = MagicMock()
         mock_app.primaryScreen.return_value = None
 
-        with patch("eve_overview_pro.core.position.QApplication.instance", return_value=mock_app):
+        with patch("argus_overview.core.position.QApplication.instance", return_value=mock_app):
             result = manager._get_primary_screen()
 
             # Should return fallback 1920x1080
@@ -495,7 +495,7 @@ class TestGetPrimaryScreen:
         """Falls back when no QApplication instance"""
         manager = PositionManager()
 
-        with patch("eve_overview_pro.core.position.QApplication.instance", return_value=None):
+        with patch("argus_overview.core.position.QApplication.instance", return_value=None):
             result = manager._get_primary_screen()
 
             # Should return fallback 1920x1080

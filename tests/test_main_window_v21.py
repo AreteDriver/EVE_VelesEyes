@@ -12,7 +12,7 @@ class TestMainWindowV21Init:
 
     def test_class_exists(self):
         """Test that MainWindowV21 class exists and can be imported"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         assert MainWindowV21 is not None
 
@@ -20,7 +20,7 @@ class TestMainWindowV21Init:
         """Test that MainWindowV21 inherits from QMainWindow"""
         from PySide6.QtWidgets import QMainWindow
 
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         assert issubclass(MainWindowV21, QMainWindow)
 
@@ -28,7 +28,7 @@ class TestMainWindowV21Init:
 # Helper to create a mock window without Qt initialization
 def create_mock_window():
     """Create a mock MainWindowV21 without Qt initialization"""
-    from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+    from argus_overview.ui.main_window_v21 import MainWindowV21
 
     # Create a MagicMock that uses the real methods from MainWindowV21
     window = MagicMock(spec=MainWindowV21)
@@ -445,7 +445,7 @@ class TestReloadConfig:
 class TestQuitApplication:
     """Tests for _quit_application method"""
 
-    @patch("eve_overview_pro.ui.main_window_v21.QApplication")
+    @patch("argus_overview.ui.main_window_v21.QApplication")
     def test_quit_application_calls_quit(self, mock_app):
         """Test that quit_application calls QApplication.quit"""
         window = create_mock_window()
@@ -573,7 +573,7 @@ class TestCloseEvent:
 class TestAboutDialog:
     """Tests for _show_about_dialog method"""
 
-    @patch("eve_overview_pro.ui.about_dialog.AboutDialog")
+    @patch("argus_overview.ui.about_dialog.AboutDialog")
     def test_show_about_dialog_creates_dialog(self, mock_dialog_class):
         """Test that show_about_dialog creates and shows dialog"""
         window = create_mock_window()
@@ -642,7 +642,7 @@ class TestToggleLock:
 
     def test_toggle_lock_clicks_lock_button(self):
         """Test that toggle_lock clicks the lock button"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.main_tab = MagicMock()
@@ -654,7 +654,7 @@ class TestToggleLock:
 
     def test_toggle_lock_no_main_tab(self):
         """Test toggle_lock handles missing main_tab gracefully"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         # No main_tab attribute
@@ -740,7 +740,7 @@ class TestHandleHotkey:
 
     def test_handle_hotkey_logs_message(self):
         """Test that _handle_hotkey logs the hotkey name"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -955,10 +955,10 @@ class TestCyclingRecursion:
 class TestSetWindowIcon:
     """Tests for _set_window_icon method"""
 
-    @patch("eve_overview_pro.ui.main_window_v21.Path")
+    @patch("argus_overview.ui.main_window_v21.Path")
     def test_set_window_icon_found(self, mock_path_class):
         """Test setting window icon when icon file found"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -979,10 +979,10 @@ class TestSetWindowIcon:
         # Should have called setWindowIcon (at least once somewhere)
         # The implementation checks multiple paths
 
-    @patch("eve_overview_pro.ui.main_window_v21.Path")
+    @patch("argus_overview.ui.main_window_v21.Path")
     def test_set_window_icon_not_found(self, mock_path_class):
         """Test warning when no icon found"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1011,7 +1011,7 @@ class TestApplyInitialSettings:
 
     def test_apply_initial_settings(self):
         """Test that _apply_initial_settings applies all settings"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1022,7 +1022,7 @@ class TestApplyInitialSettings:
         window.alert_detector = MagicMock()
 
         # Patch AlertConfig where it's imported (in alert_detector module)
-        with patch("eve_overview_pro.core.alert_detector.AlertConfig"):
+        with patch("argus_overview.core.alert_detector.AlertConfig"):
             MainWindowV21._apply_initial_settings(window)
 
         # Should update capture_system.max_workers
@@ -1038,7 +1038,7 @@ class TestConnectSignals:
 
     def test_connect_signals(self):
         """Test that _connect_signals logs debug message"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1180,7 +1180,7 @@ class TestRegisterHotkeys:
 
     def test_register_hotkeys_basic(self):
         """Test registering basic hotkeys"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1205,7 +1205,7 @@ class TestRegisterHotkeys:
 
     def test_register_hotkeys_with_character_hotkeys(self):
         """Test registering per-character hotkeys"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1229,7 +1229,7 @@ class TestRegisterHotkeys:
 
     def test_register_hotkeys_no_cycle_combos(self):
         """Test registering hotkeys when cycle combos are empty"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1259,7 +1259,7 @@ class TestActivateWindow:
     @patch("subprocess.run")
     def test_activate_window_success(self, mock_run):
         """Test activating window with xdotool"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1279,7 +1279,7 @@ class TestActivateWindow:
     @patch("subprocess.run")
     def test_activate_window_failure(self, mock_run):
         """Test activate window handles subprocess failure"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1295,7 +1295,7 @@ class TestActivateWindow:
     @patch("subprocess.run")
     def test_activate_window_with_auto_minimize(self, mock_run):
         """Test activating window minimizes previous when auto-minimize enabled"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1319,7 +1319,7 @@ class TestActivateWindow:
     @patch("subprocess.run")
     def test_activate_window_invalid_id_none(self, mock_run):
         """Test activate window rejects None window ID"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1332,7 +1332,7 @@ class TestActivateWindow:
     @patch("subprocess.run")
     def test_activate_window_invalid_id_format(self, mock_run):
         """Test activate window rejects invalid window ID format"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1350,7 +1350,7 @@ class TestActivateWindow:
     @patch("subprocess.run")
     def test_activate_window_valid_id_formats(self, mock_run):
         """Test activate window accepts valid window ID formats"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1373,11 +1373,11 @@ class TestActivateWindow:
 class TestCreateMenuBar:
     """Tests for _create_menu_bar method"""
 
-    @patch("eve_overview_pro.ui.main_window_v21.MenuBuilder")
-    @patch("eve_overview_pro.ui.main_window_v21.ActionRegistry")
+    @patch("argus_overview.ui.main_window_v21.MenuBuilder")
+    @patch("argus_overview.ui.main_window_v21.ActionRegistry")
     def test_create_menu_bar(self, mock_registry_class, mock_builder_class):
         """Test creating menu bar"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1465,10 +1465,10 @@ class TestCyclingCharNotFound:
 class TestCreateSystemTray:
     """Tests for _create_system_tray method"""
 
-    @patch("eve_overview_pro.ui.main_window_v21.SystemTray")
+    @patch("argus_overview.ui.main_window_v21.SystemTray")
     def test_create_system_tray(self, mock_tray_class):
         """Test creating system tray"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1504,10 +1504,10 @@ class TestCreateSystemTray:
 class TestCreateMainTab:
     """Tests for _create_main_tab method"""
 
-    @patch("eve_overview_pro.ui.main_tab.MainTab")
+    @patch("argus_overview.ui.main_tab.MainTab")
     def test_create_main_tab(self, mock_tab_class):
         """Test creating main tab"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1535,10 +1535,10 @@ class TestCreateMainTab:
 class TestCreateCharactersTab:
     """Tests for _create_characters_tab method"""
 
-    @patch("eve_overview_pro.ui.characters_teams_tab.CharactersTeamsTab")
+    @patch("argus_overview.ui.characters_teams_tab.CharactersTeamsTab")
     def test_create_characters_tab(self, mock_tab_class):
         """Test creating characters tab"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1564,10 +1564,10 @@ class TestCreateCharactersTab:
 class TestCreateHotkeysTab:
     """Tests for _create_hotkeys_tab method"""
 
-    @patch("eve_overview_pro.ui.hotkeys_tab.HotkeysTab")
+    @patch("argus_overview.ui.hotkeys_tab.HotkeysTab")
     def test_create_hotkeys_tab(self, mock_tab_class):
         """Test creating hotkeys tab"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1598,10 +1598,10 @@ class TestCreateHotkeysTab:
 class TestCreateSettingsSyncTab:
     """Tests for _create_settings_sync_tab method"""
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.SettingsSyncTab")
+    @patch("argus_overview.ui.settings_sync_tab.SettingsSyncTab")
     def test_create_settings_sync_tab(self, mock_tab_class):
         """Test creating settings sync tab"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1623,10 +1623,10 @@ class TestCreateSettingsSyncTab:
 class TestCreateSettingsTab:
     """Tests for _create_settings_tab method"""
 
-    @patch("eve_overview_pro.ui.settings_tab.SettingsTab")
+    @patch("argus_overview.ui.settings_tab.SettingsTab")
     def test_create_settings_tab(self, mock_tab_class):
         """Test creating settings tab"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1752,7 +1752,7 @@ class TestApplySettingLowPowerMode:
 
     def test_apply_setting_low_power_mode_enabled(self):
         """Test applying low_power_mode setting (enabled)"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1764,7 +1764,7 @@ class TestApplySettingLowPowerMode:
 
     def test_apply_setting_low_power_mode_disabled(self):
         """Test applying low_power_mode setting (disabled)"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1781,7 +1781,7 @@ class TestConvertToXdotoolKey:
 
     def test_function_key_lowercase(self):
         """Test function key conversion from lowercase"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         result = MainWindowV21._convert_to_xdotool_key(window, "<f1>")
@@ -1789,7 +1789,7 @@ class TestConvertToXdotoolKey:
 
     def test_function_key_uppercase(self):
         """Test function key conversion from uppercase"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         result = MainWindowV21._convert_to_xdotool_key(window, "<F12>")
@@ -1797,7 +1797,7 @@ class TestConvertToXdotoolKey:
 
     def test_modifier_with_function_key(self):
         """Test modifier + function key combo"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         result = MainWindowV21._convert_to_xdotool_key(window, "<ctrl>+<f1>")
@@ -1805,7 +1805,7 @@ class TestConvertToXdotoolKey:
 
     def test_modifier_with_letter(self):
         """Test modifier + letter key combo"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         result = MainWindowV21._convert_to_xdotool_key(window, "<ctrl>+<c>")
@@ -1813,7 +1813,7 @@ class TestConvertToXdotoolKey:
 
     def test_multiple_modifiers(self):
         """Test multiple modifier keys"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         result = MainWindowV21._convert_to_xdotool_key(window, "<ctrl>+<shift>+<f5>")
@@ -1821,7 +1821,7 @@ class TestConvertToXdotoolKey:
 
     def test_simple_key_no_brackets(self):
         """Test simple key without angle brackets"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         result = MainWindowV21._convert_to_xdotool_key(window, "a")
@@ -1829,7 +1829,7 @@ class TestConvertToXdotoolKey:
 
     def test_f10_and_higher(self):
         """Test double-digit function keys"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         assert MainWindowV21._convert_to_xdotool_key(window, "<f10>") == "F10"
@@ -1843,7 +1843,7 @@ class TestRegisterBroadcastHotkeys:
 
     def test_registers_broadcast_hotkeys(self):
         """Test broadcast hotkeys are registered from settings"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1863,7 +1863,7 @@ class TestRegisterBroadcastHotkeys:
 
     def test_handles_empty_broadcast_list(self):
         """Test empty broadcast list is handled"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1878,7 +1878,7 @@ class TestRegisterBroadcastHotkeys:
 
     def test_handles_non_list_broadcast(self):
         """Test non-list broadcast_hotkeys is handled"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1893,7 +1893,7 @@ class TestRegisterBroadcastHotkeys:
 
     def test_skips_invalid_entries(self):
         """Test invalid broadcast entries are skipped"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1914,7 +1914,7 @@ class TestRegisterBroadcastHotkeys:
 
     def test_unregisters_existing_broadcast_hotkeys(self):
         """Test existing broadcast hotkeys are unregistered first"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1938,7 +1938,7 @@ class TestBroadcastKey:
 
     def test_broadcast_key_no_main_tab(self):
         """Test broadcast fails gracefully without main_tab"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1950,7 +1950,7 @@ class TestBroadcastKey:
 
     def test_broadcast_key_no_window_manager(self):
         """Test broadcast fails gracefully without window_manager"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1962,7 +1962,7 @@ class TestBroadcastKey:
 
     def test_broadcast_key_empty_windows(self):
         """Test broadcast with no EVE windows"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()
@@ -1979,7 +1979,7 @@ class TestBroadcastKey:
 
     def test_broadcast_key_success(self):
         """Test successful key broadcast"""
-        from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+        from argus_overview.ui.main_window_v21 import MainWindowV21
 
         window = MagicMock(spec=MainWindowV21)
         window.logger = MagicMock()

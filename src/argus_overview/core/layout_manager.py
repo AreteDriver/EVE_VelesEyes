@@ -94,7 +94,7 @@ class LayoutManager:
         self.logger = logging.getLogger(__name__)
 
         if config_dir is None:
-            config_dir = Path.home() / ".config" / "eve-overview-pro"
+            config_dir = Path.home() / ".config" / "argus-overview"
 
         self.config_dir = Path(config_dir)
         self.config_dir.mkdir(parents=True, exist_ok=True)

@@ -14,7 +14,7 @@ class TestSettingsManagerInit:
 
     def test_init_creates_config_dir(self):
         """Test that init creates config directory if it doesn't exist"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "new_config_dir"
@@ -27,7 +27,7 @@ class TestSettingsManagerInit:
 
     def test_init_uses_default_config_dir(self):
         """Test that init uses default config dir when none specified"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with patch.object(Path, "home") as mock_home:
             mock_home.return_value = Path("/mock/home")
@@ -40,7 +40,7 @@ class TestSettingsManagerInit:
 
     def test_init_loads_settings(self):
         """Test that init calls load_settings"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -53,7 +53,7 @@ class TestSettingsManagerInit:
 
     def test_settings_file_path(self):
         """Test that settings_file path is set correctly"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -68,13 +68,13 @@ class TestDefaultSettings:
 
     def test_default_settings_has_version(self):
         """Test that DEFAULT_SETTINGS has version"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         assert "version" in SettingsManager.DEFAULT_SETTINGS
 
     def test_default_settings_has_general(self):
         """Test that DEFAULT_SETTINGS has general section"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         assert "general" in SettingsManager.DEFAULT_SETTINGS
         general = SettingsManager.DEFAULT_SETTINGS["general"]
@@ -84,7 +84,7 @@ class TestDefaultSettings:
 
     def test_default_settings_has_performance(self):
         """Test that DEFAULT_SETTINGS has performance section"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         assert "performance" in SettingsManager.DEFAULT_SETTINGS
         perf = SettingsManager.DEFAULT_SETTINGS["performance"]
@@ -93,7 +93,7 @@ class TestDefaultSettings:
 
     def test_default_settings_has_thumbnails(self):
         """Test that DEFAULT_SETTINGS has thumbnails section"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         assert "thumbnails" in SettingsManager.DEFAULT_SETTINGS
         thumbs = SettingsManager.DEFAULT_SETTINGS["thumbnails"]
@@ -102,7 +102,7 @@ class TestDefaultSettings:
 
     def test_default_settings_has_alerts(self):
         """Test that DEFAULT_SETTINGS has alerts section"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         assert "alerts" in SettingsManager.DEFAULT_SETTINGS
         alerts = SettingsManager.DEFAULT_SETTINGS["alerts"]
@@ -112,7 +112,7 @@ class TestDefaultSettings:
 
     def test_default_settings_has_hotkeys(self):
         """Test that DEFAULT_SETTINGS has hotkeys section"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         assert "hotkeys" in SettingsManager.DEFAULT_SETTINGS
         hotkeys = SettingsManager.DEFAULT_SETTINGS["hotkeys"]
@@ -121,7 +121,7 @@ class TestDefaultSettings:
 
     def test_default_settings_has_appearance(self):
         """Test that DEFAULT_SETTINGS has appearance section"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         assert "appearance" in SettingsManager.DEFAULT_SETTINGS
         appearance = SettingsManager.DEFAULT_SETTINGS["appearance"]
@@ -134,7 +134,7 @@ class TestLoadSettings:
 
     def test_load_settings_creates_defaults_when_no_file(self):
         """Test that load_settings creates defaults when no file exists"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -146,7 +146,7 @@ class TestLoadSettings:
 
     def test_load_settings_saves_defaults(self):
         """Test that load_settings saves default settings file"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -158,7 +158,7 @@ class TestLoadSettings:
 
     def test_load_settings_reads_existing_file(self):
         """Test that load_settings reads existing settings file"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -178,7 +178,7 @@ class TestLoadSettings:
 
     def test_load_settings_merges_with_defaults(self):
         """Test that load_settings merges loaded settings with defaults"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -199,7 +199,7 @@ class TestLoadSettings:
 
     def test_load_settings_handles_invalid_json(self):
         """Test that load_settings handles invalid JSON gracefully"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -221,7 +221,7 @@ class TestSaveSettings:
 
     def test_save_settings_writes_file(self):
         """Test that save_settings writes to file"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -239,7 +239,7 @@ class TestSaveSettings:
 
     def test_save_settings_with_provided_settings(self):
         """Test save_settings with provided settings dict"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -254,7 +254,7 @@ class TestSaveSettings:
 
     def test_save_settings_atomic_write(self):
         """Test that save uses atomic write (temp file then rename)"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -270,7 +270,7 @@ class TestSaveSettings:
 
     def test_save_settings_returns_false_on_error(self):
         """Test that save_settings returns False on error"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir)
@@ -289,7 +289,7 @@ class TestGetSetting:
 
     def test_get_simple_key(self):
         """Test getting a simple key"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -301,7 +301,7 @@ class TestGetSetting:
 
     def test_get_nested_key(self):
         """Test getting a nested key"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -312,7 +312,7 @@ class TestGetSetting:
 
     def test_get_deeply_nested_key(self):
         """Test getting a deeply nested key"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -323,7 +323,7 @@ class TestGetSetting:
 
     def test_get_nonexistent_key_returns_default(self):
         """Test that get returns default for nonexistent key"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -334,7 +334,7 @@ class TestGetSetting:
 
     def test_get_nonexistent_key_returns_none(self):
         """Test that get returns None for nonexistent key without default"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -345,7 +345,7 @@ class TestGetSetting:
 
     def test_get_partial_path(self):
         """Test getting a partial path returns dict"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -361,7 +361,7 @@ class TestSetSetting:
 
     def test_set_simple_key(self):
         """Test setting a simple key"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -373,7 +373,7 @@ class TestSetSetting:
 
     def test_set_nested_key(self):
         """Test setting a nested key"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -385,7 +385,7 @@ class TestSetSetting:
 
     def test_set_deeply_nested_key(self):
         """Test setting a deeply nested key"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -397,7 +397,7 @@ class TestSetSetting:
 
     def test_set_creates_intermediate_keys(self):
         """Test that set creates intermediate keys if needed"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -409,7 +409,7 @@ class TestSetSetting:
 
     def test_set_auto_saves_by_default(self):
         """Test that set auto-saves by default"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -423,7 +423,7 @@ class TestSetSetting:
 
     def test_set_without_auto_save(self):
         """Test set with auto_save=False"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -450,7 +450,7 @@ class TestResetToDefaults:
         """Test resetting all settings to defaults"""
         import copy
 
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -471,7 +471,7 @@ class TestResetToDefaults:
 
     def test_reset_saves_defaults(self):
         """Test that reset saves the default settings"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -492,7 +492,7 @@ class TestExportImport:
 
     def test_export_config(self):
         """Test exporting settings to external file"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -516,7 +516,7 @@ class TestExportImport:
 
     def test_export_config_path_as_string(self):
         """Test export with path as string"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -531,7 +531,7 @@ class TestExportImport:
 
     def test_import_config(self):
         """Test importing settings from external file"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -561,7 +561,7 @@ class TestExportImport:
 
     def test_import_config_old_format(self):
         """Test importing old format (settings at root level)"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -581,7 +581,7 @@ class TestExportImport:
 
     def test_import_config_invalid_file(self):
         """Test import with invalid file"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -598,7 +598,7 @@ class TestExportImport:
 
     def test_import_config_nonexistent_file(self):
         """Test import with nonexistent file"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -615,7 +615,7 @@ class TestMergeSettings:
 
     def test_merge_preserves_base_structure(self):
         """Test that merge preserves base structure"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -631,7 +631,7 @@ class TestMergeSettings:
 
     def test_merge_adds_new_keys(self):
         """Test that merge adds new keys from overlay"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -646,7 +646,7 @@ class TestMergeSettings:
 
     def test_merge_deep_nesting(self):
         """Test merge with deep nesting"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -664,7 +664,7 @@ class TestGetAll:
 
     def test_get_all_returns_copy(self):
         """Test that get_all returns a copy of settings"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -678,7 +678,7 @@ class TestGetAll:
 
     def test_get_all_contains_all_keys(self):
         """Test that get_all returns all settings"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -696,7 +696,7 @@ class TestValidate:
 
     def test_validate_valid_settings(self):
         """Test validate with valid settings"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -707,7 +707,7 @@ class TestValidate:
 
     def test_validate_fixes_invalid_refresh_rate_low(self):
         """Test validate fixes refresh rate below minimum"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -720,7 +720,7 @@ class TestValidate:
 
     def test_validate_fixes_invalid_refresh_rate_high(self):
         """Test validate fixes refresh rate above maximum"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -733,7 +733,7 @@ class TestValidate:
 
     def test_validate_fixes_invalid_worker_count(self):
         """Test validate fixes invalid worker count"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -746,7 +746,7 @@ class TestValidate:
 
     def test_validate_fixes_invalid_threshold(self):
         """Test validate fixes invalid alert threshold"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -763,7 +763,7 @@ class TestExceptionHandling:
 
     def test_export_config_handles_write_error(self):
         """Test export_config returns False when write fails"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -778,7 +778,7 @@ class TestExceptionHandling:
 
     def test_import_config_returns_false_when_save_fails(self):
         """Test import_config returns False when save_settings fails"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_dir = Path(tmpdir) / "config"
@@ -801,7 +801,7 @@ class TestExceptionHandling:
 
     def test_validate_fixes_invalid_screen_change_threshold(self):
         """Test validate fixes screen_change threshold outside 0-1 range"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -814,7 +814,7 @@ class TestExceptionHandling:
 
     def test_validate_handles_exception(self):
         """Test validate returns False on exception"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -831,7 +831,7 @@ class TestEdgeCases:
 
     def test_empty_key_string(self):
         """Test handling of empty key string"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -844,7 +844,7 @@ class TestEdgeCases:
 
     def test_key_with_dots_only(self):
         """Test handling of key with only dots"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -855,7 +855,7 @@ class TestEdgeCases:
 
     def test_set_none_value(self):
         """Test setting None as value"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -867,7 +867,7 @@ class TestEdgeCases:
 
     def test_set_complex_value(self):
         """Test setting complex nested value"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -881,7 +881,7 @@ class TestEdgeCases:
 
     def test_unicode_in_settings(self):
         """Test Unicode characters in settings"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -904,7 +904,7 @@ class TestLastActivatedWindow:
 
     def test_get_last_activated_window_initial_none(self):
         """Test get_last_activated_window returns None initially"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -915,7 +915,7 @@ class TestLastActivatedWindow:
 
     def test_set_and_get_last_activated_window(self):
         """Test set_last_activated_window stores window ID"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))
@@ -927,7 +927,7 @@ class TestLastActivatedWindow:
 
     def test_set_last_activated_window_to_none(self):
         """Test set_last_activated_window can clear the value"""
-        from eve_overview_pro.ui.settings_manager import SettingsManager
+        from argus_overview.ui.settings_manager import SettingsManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SettingsManager(config_dir=Path(tmpdir))

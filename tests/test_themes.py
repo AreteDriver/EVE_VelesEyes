@@ -12,7 +12,7 @@ class TestThemeColors:
 
     def test_default_values(self):
         """Test that default values are set correctly"""
-        from eve_overview_pro.ui.themes import ThemeColors
+        from argus_overview.ui.themes import ThemeColors
 
         colors = ThemeColors()
 
@@ -51,7 +51,7 @@ class TestThemeColors:
 
     def test_custom_values(self):
         """Test creating ThemeColors with custom values"""
-        from eve_overview_pro.ui.themes import ThemeColors
+        from argus_overview.ui.themes import ThemeColors
 
         colors = ThemeColors(window="#000000", text="#00ff00", accent="#ff00ff")
 
@@ -65,7 +65,7 @@ class TestThemeColors:
         """Test that all expected fields are present"""
         from dataclasses import fields
 
-        from eve_overview_pro.ui.themes import ThemeColors
+        from argus_overview.ui.themes import ThemeColors
 
         colors = ThemeColors()
         field_names = {f.name for f in fields(colors)}
@@ -99,7 +99,7 @@ class TestTheme:
 
     def test_create_theme(self):
         """Test creating a Theme"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors
+        from argus_overview.ui.themes import Theme, ThemeColors
 
         colors = ThemeColors(window="#123456")
         theme = Theme("test_theme", colors)
@@ -110,7 +110,7 @@ class TestTheme:
 
     def test_to_dict(self):
         """Test serializing theme to dict"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors
+        from argus_overview.ui.themes import Theme, ThemeColors
 
         colors = ThemeColors(window="#111111", window_text="#222222", accent="#333333")
         theme = Theme("my_theme", colors)
@@ -125,7 +125,7 @@ class TestTheme:
 
     def test_to_dict_all_colors(self):
         """Test that to_dict includes all color fields"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors
+        from argus_overview.ui.themes import Theme, ThemeColors
 
         theme = Theme("full_theme", ThemeColors())
         result = theme.to_dict()
@@ -154,7 +154,7 @@ class TestTheme:
 
     def test_from_dict(self):
         """Test creating theme from dict"""
-        from eve_overview_pro.ui.themes import Theme
+        from argus_overview.ui.themes import Theme
 
         data = {"name": "loaded_theme", "colors": {"window": "#abcdef", "text": "#fedcba"}}
 
@@ -168,7 +168,7 @@ class TestTheme:
 
     def test_from_dict_empty_colors(self):
         """Test from_dict with empty colors dict"""
-        from eve_overview_pro.ui.themes import Theme
+        from argus_overview.ui.themes import Theme
 
         data = {"name": "empty_colors", "colors": {}}
 
@@ -180,7 +180,7 @@ class TestTheme:
 
     def test_from_dict_missing_colors(self):
         """Test from_dict with missing colors key"""
-        from eve_overview_pro.ui.themes import Theme
+        from argus_overview.ui.themes import Theme
 
         data = {"name": "no_colors"}
 
@@ -192,7 +192,7 @@ class TestTheme:
 
     def test_from_dict_missing_name(self):
         """Test from_dict with missing name"""
-        from eve_overview_pro.ui.themes import Theme
+        from argus_overview.ui.themes import Theme
 
         data = {"colors": {"window": "#000000"}}
 
@@ -203,7 +203,7 @@ class TestTheme:
 
     def test_roundtrip(self):
         """Test that to_dict -> from_dict preserves data"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors
+        from argus_overview.ui.themes import Theme, ThemeColors
 
         original = Theme(
             "roundtrip_test", ThemeColors(window="#aabbcc", text="#112233", accent="#445566")
@@ -224,28 +224,28 @@ class TestBuiltinThemes:
 
     def test_dark_theme_exists(self):
         """Test DARK_THEME is defined"""
-        from eve_overview_pro.ui.themes import DARK_THEME
+        from argus_overview.ui.themes import DARK_THEME
 
         assert DARK_THEME is not None
         assert DARK_THEME.name == "dark"
 
     def test_light_theme_exists(self):
         """Test LIGHT_THEME is defined"""
-        from eve_overview_pro.ui.themes import LIGHT_THEME
+        from argus_overview.ui.themes import LIGHT_THEME
 
         assert LIGHT_THEME is not None
         assert LIGHT_THEME.name == "light"
 
     def test_eve_theme_exists(self):
         """Test EVE_THEME is defined"""
-        from eve_overview_pro.ui.themes import EVE_THEME
+        from argus_overview.ui.themes import EVE_THEME
 
         assert EVE_THEME is not None
         assert EVE_THEME.name == "eve"
 
     def test_builtin_themes_dict(self):
         """Test BUILTIN_THEMES contains all themes"""
-        from eve_overview_pro.ui.themes import BUILTIN_THEMES, DARK_THEME, EVE_THEME, LIGHT_THEME
+        from argus_overview.ui.themes import BUILTIN_THEMES, DARK_THEME, EVE_THEME, LIGHT_THEME
 
         assert "dark" in BUILTIN_THEMES
         assert "light" in BUILTIN_THEMES
@@ -257,7 +257,7 @@ class TestBuiltinThemes:
 
     def test_dark_theme_colors(self):
         """Test dark theme has expected color scheme"""
-        from eve_overview_pro.ui.themes import DARK_THEME
+        from argus_overview.ui.themes import DARK_THEME
 
         # Dark theme should have dark window colors
         assert DARK_THEME.colors.window == "#353535"
@@ -268,7 +268,7 @@ class TestBuiltinThemes:
 
     def test_light_theme_colors(self):
         """Test light theme has expected color scheme"""
-        from eve_overview_pro.ui.themes import LIGHT_THEME
+        from argus_overview.ui.themes import LIGHT_THEME
 
         # Light theme should have light window colors
         assert LIGHT_THEME.colors.window == "#f0f0f0"
@@ -279,7 +279,7 @@ class TestBuiltinThemes:
 
     def test_eve_theme_colors(self):
         """Test EVE theme has expected color scheme"""
-        from eve_overview_pro.ui.themes import EVE_THEME
+        from argus_overview.ui.themes import EVE_THEME
 
         # EVE theme should have very dark, space-like colors
         assert EVE_THEME.colors.window == "#0a0a0f"
@@ -295,7 +295,7 @@ class TestThemeManager:
 
     def test_init(self):
         """Test ThemeManager initialization"""
-        from eve_overview_pro.ui.themes import ThemeManager
+        from argus_overview.ui.themes import ThemeManager
 
         manager = ThemeManager()
 
@@ -304,7 +304,7 @@ class TestThemeManager:
 
     def test_get_available_themes(self):
         """Test getting available themes"""
-        from eve_overview_pro.ui.themes import ThemeManager
+        from argus_overview.ui.themes import ThemeManager
 
         manager = ThemeManager()
         themes = manager.get_available_themes()
@@ -319,7 +319,7 @@ class TestThemeManager:
 
     def test_get_available_themes_with_custom(self):
         """Test getting available themes including custom ones"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
 
@@ -333,7 +333,7 @@ class TestThemeManager:
 
     def test_register_custom_theme(self):
         """Test registering a custom theme"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
 
@@ -345,7 +345,7 @@ class TestThemeManager:
 
     def test_get_current_theme_none(self):
         """Test get_current_theme returns None when no theme applied"""
-        from eve_overview_pro.ui.themes import ThemeManager
+        from argus_overview.ui.themes import ThemeManager
 
         manager = ThemeManager()
 
@@ -353,7 +353,7 @@ class TestThemeManager:
 
     def test_get_accent_color_no_theme(self):
         """Test get_accent_color with no current theme"""
-        from eve_overview_pro.ui.themes import DARK_THEME, ThemeManager
+        from argus_overview.ui.themes import DARK_THEME, ThemeManager
 
         manager = ThemeManager()
 
@@ -362,7 +362,7 @@ class TestThemeManager:
 
     def test_get_accent_color_with_theme(self):
         """Test get_accent_color with current theme"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
 
@@ -373,7 +373,7 @@ class TestThemeManager:
 
     def test_get_alert_colors_no_theme(self):
         """Test get_alert_colors with no current theme"""
-        from eve_overview_pro.ui.themes import DARK_THEME, ThemeManager
+        from argus_overview.ui.themes import DARK_THEME, ThemeManager
 
         manager = ThemeManager()
 
@@ -385,7 +385,7 @@ class TestThemeManager:
 
     def test_get_alert_colors_with_theme(self):
         """Test get_alert_colors with current theme"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
 
@@ -401,7 +401,7 @@ class TestThemeManager:
 
     def test_apply_theme_unknown_theme(self):
         """Test apply_theme with unknown theme name"""
-        from eve_overview_pro.ui.themes import ThemeManager
+        from argus_overview.ui.themes import ThemeManager
 
         manager = ThemeManager()
 
@@ -412,11 +412,11 @@ class TestThemeManager:
 
     def test_apply_theme_no_app(self):
         """Test apply_theme when no QApplication exists"""
-        from eve_overview_pro.ui.themes import ThemeManager
+        from argus_overview.ui.themes import ThemeManager
 
         manager = ThemeManager()
 
-        with patch("eve_overview_pro.ui.themes.QApplication") as mock_qapp:
+        with patch("argus_overview.ui.themes.QApplication") as mock_qapp:
             mock_qapp.instance.return_value = None
 
             result = manager.apply_theme("dark", app=None)
@@ -425,7 +425,7 @@ class TestThemeManager:
 
     def test_apply_theme_success(self):
         """Test successful theme application"""
-        from eve_overview_pro.ui.themes import ThemeManager
+        from argus_overview.ui.themes import ThemeManager
 
         manager = ThemeManager()
 
@@ -441,7 +441,7 @@ class TestThemeManager:
 
     def test_apply_theme_light(self):
         """Test applying light theme"""
-        from eve_overview_pro.ui.themes import LIGHT_THEME, ThemeManager
+        from argus_overview.ui.themes import LIGHT_THEME, ThemeManager
 
         manager = ThemeManager()
         mock_app = MagicMock()
@@ -453,7 +453,7 @@ class TestThemeManager:
 
     def test_apply_theme_eve(self):
         """Test applying EVE theme"""
-        from eve_overview_pro.ui.themes import EVE_THEME, ThemeManager
+        from argus_overview.ui.themes import EVE_THEME, ThemeManager
 
         manager = ThemeManager()
         mock_app = MagicMock()
@@ -465,7 +465,7 @@ class TestThemeManager:
 
     def test_apply_custom_theme(self):
         """Test applying a custom theme"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
 
@@ -480,7 +480,7 @@ class TestThemeManager:
 
     def test_apply_theme_exception_handling(self):
         """Test that apply_theme handles exceptions"""
-        from eve_overview_pro.ui.themes import ThemeManager
+        from argus_overview.ui.themes import ThemeManager
 
         manager = ThemeManager()
 
@@ -498,7 +498,7 @@ class TestGlobalThemeManager:
 
     def test_get_theme_manager(self):
         """Test getting the global theme manager"""
-        from eve_overview_pro.ui.themes import ThemeManager, get_theme_manager
+        from argus_overview.ui.themes import ThemeManager, get_theme_manager
 
         manager = get_theme_manager()
 
@@ -506,7 +506,7 @@ class TestGlobalThemeManager:
 
     def test_get_theme_manager_singleton(self):
         """Test that get_theme_manager returns same instance"""
-        from eve_overview_pro.ui.themes import get_theme_manager
+        from argus_overview.ui.themes import get_theme_manager
 
         manager1 = get_theme_manager()
         manager2 = get_theme_manager()
@@ -515,7 +515,7 @@ class TestGlobalThemeManager:
 
     def test_get_theme_manager_creates_new_if_none(self):
         """Test that get_theme_manager creates manager if none exists"""
-        import eve_overview_pro.ui.themes as themes_module
+        import argus_overview.ui.themes as themes_module
 
         # Reset the global
         original = themes_module._theme_manager
@@ -536,7 +536,7 @@ class TestThemePalette:
 
     def test_apply_palette_sets_colors(self):
         """Test that _apply_palette sets palette colors correctly"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
         mock_app = MagicMock()
@@ -560,7 +560,7 @@ class TestEdgeCases:
 
     def test_theme_with_invalid_color_format(self):
         """Test theme with unusual color format still works"""
-        from eve_overview_pro.ui.themes import ThemeColors
+        from argus_overview.ui.themes import ThemeColors
 
         # Should not raise - just stores the string
         colors = ThemeColors(window="not-a-color")
@@ -568,7 +568,7 @@ class TestEdgeCases:
 
     def test_from_dict_extra_keys(self):
         """Test from_dict ignores unknown keys"""
-        from eve_overview_pro.ui.themes import Theme
+        from argus_overview.ui.themes import Theme
 
         data = {
             "name": "test",
@@ -584,7 +584,7 @@ class TestEdgeCases:
 
     def test_from_dict_extra_color_keys(self):
         """Test from_dict handles extra color keys"""
-        from eve_overview_pro.ui.themes import Theme
+        from argus_overview.ui.themes import Theme
 
         data = {"name": "test", "colors": {"window": "#000000", "unknown_color": "#ffffff"}}
 
@@ -600,7 +600,7 @@ class TestEdgeCases:
 
     def test_empty_theme_name(self):
         """Test theme with empty name"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors
+        from argus_overview.ui.themes import Theme, ThemeColors
 
         theme = Theme("", ThemeColors())
 
@@ -610,7 +610,7 @@ class TestEdgeCases:
 
     def test_multiple_custom_themes(self):
         """Test registering multiple custom themes"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
 
@@ -630,7 +630,7 @@ class TestEdgeCases:
 
     def test_override_custom_theme(self):
         """Test overriding a custom theme with same name"""
-        from eve_overview_pro.ui.themes import Theme, ThemeColors, ThemeManager
+        from argus_overview.ui.themes import Theme, ThemeColors, ThemeManager
 
         manager = ThemeManager()
 

@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from eve_overview_pro.core.hotkey_manager import HotkeyManager
+from argus_overview.core.hotkey_manager import HotkeyManager
 
 
 class TestHotkeyManagerInit:
@@ -467,7 +467,7 @@ class TestStartComboListener:
         callback = MagicMock()
         manager.combo_hotkeys = {"<ctrl>+a": {"name": "test", "callback": callback}}
 
-        with patch("eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys") as mock_ghk:
+        with patch("argus_overview.core.hotkey_manager.keyboard.GlobalHotKeys") as mock_ghk:
             manager._start_combo_listener()
 
         mock_ghk.assert_called_once()
@@ -480,7 +480,7 @@ class TestStartComboListener:
         manager = HotkeyManager()
         manager.combo_hotkeys = {"<ctrl>+a": {"name": "test", "callback": MagicMock()}}
 
-        with patch("eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys") as mock_ghk:
+        with patch("argus_overview.core.hotkey_manager.keyboard.GlobalHotKeys") as mock_ghk:
             mock_ghk.side_effect = RuntimeError("Failed")
             # Should not raise
             manager._start_combo_listener()
@@ -505,7 +505,7 @@ class TestStartComboListener:
         manager.hotkey_triggered.connect(lambda name: signal_received.append(name))
 
         with patch(
-            "eve_overview_pro.core.hotkey_manager.keyboard.GlobalHotKeys",
+            "argus_overview.core.hotkey_manager.keyboard.GlobalHotKeys",
             side_effect=capture_hotkey_map,
         ):
             manager._start_combo_listener()
@@ -527,7 +527,7 @@ class TestStartKeyListener:
         """Creates keyboard Listener"""
         manager = HotkeyManager()
 
-        with patch("eve_overview_pro.core.hotkey_manager.keyboard.Listener") as mock_listener:
+        with patch("argus_overview.core.hotkey_manager.keyboard.Listener") as mock_listener:
             manager._start_key_listener()
 
         mock_listener.assert_called_once()
@@ -536,7 +536,7 @@ class TestStartKeyListener:
         """Handles exception when creating listener"""
         manager = HotkeyManager()
 
-        with patch("eve_overview_pro.core.hotkey_manager.keyboard.Listener") as mock_listener:
+        with patch("argus_overview.core.hotkey_manager.keyboard.Listener") as mock_listener:
             mock_listener.side_effect = RuntimeError("Failed")
             # Should not raise
             manager._start_key_listener()

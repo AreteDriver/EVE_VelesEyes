@@ -45,11 +45,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from eve_overview_pro.core.alert_detector import AlertLevel
-from eve_overview_pro.core.discovery import scan_eve_windows
-from eve_overview_pro.ui.action_registry import PrimaryHome
-from eve_overview_pro.ui.menu_builder import ContextMenuBuilder, ToolbarBuilder
-from eve_overview_pro.utils.screen import ScreenGeometry, get_screen_geometry
+from argus_overview.core.alert_detector import AlertLevel
+from argus_overview.core.discovery import scan_eve_windows
+from argus_overview.ui.action_registry import PrimaryHome
+from argus_overview.ui.menu_builder import ContextMenuBuilder, ToolbarBuilder
+from argus_overview.utils.screen import ScreenGeometry, get_screen_geometry
 
 
 class FlowLayout(QLayout):

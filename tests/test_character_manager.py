@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-from eve_overview_pro.core.character_manager import (
+from argus_overview.core.character_manager import (
     Character,
     CharacterManager,
     Team,
@@ -578,7 +578,7 @@ class TestExceptionHandling:
         from unittest.mock import patch
 
         mock_home = Path("/fake/home")
-        mock_path = mock_home / ".config" / "eve-overview-pro"
+        mock_path = mock_home / ".config" / "argus-overview"
 
         with patch.object(Path, "home", return_value=mock_home):
             with patch.object(Path, "mkdir"):

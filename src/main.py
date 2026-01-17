@@ -153,7 +153,7 @@ def main():
 
     # Import main window AFTER lock acquired to avoid race conditions
     # (importing can start background threads/X11 hooks)
-    from eve_overview_pro.ui.main_window_v21 import MainWindowV21
+    from argus_overview.ui.main_window_v21 import MainWindowV21
 
     # Create application
     app = QApplication(sys.argv)

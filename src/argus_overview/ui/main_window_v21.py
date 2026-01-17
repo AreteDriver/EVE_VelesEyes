@@ -12,20 +12,20 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
-from eve_overview_pro.core.alert_detector import AlertDetector
+from argus_overview.core.alert_detector import AlertDetector
 
 # Import core modules
-from eve_overview_pro.core.character_manager import CharacterManager
-from eve_overview_pro.core.discovery import AutoDiscovery
-from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
-from eve_overview_pro.core.hotkey_manager import HotkeyManager
-from eve_overview_pro.core.layout_manager import LayoutManager
-from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
-from eve_overview_pro.ui.action_registry import ActionRegistry
-from eve_overview_pro.ui.menu_builder import MenuBuilder
-from eve_overview_pro.ui.settings_manager import SettingsManager
-from eve_overview_pro.ui.themes import get_theme_manager
-from eve_overview_pro.ui.tray import SystemTray
+from argus_overview.core.character_manager import CharacterManager
+from argus_overview.core.discovery import AutoDiscovery
+from argus_overview.core.eve_settings_sync import EVESettingsSync
+from argus_overview.core.hotkey_manager import HotkeyManager
+from argus_overview.core.layout_manager import LayoutManager
+from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
+from argus_overview.ui.action_registry import ActionRegistry
+from argus_overview.ui.menu_builder import MenuBuilder
+from argus_overview.ui.settings_manager import SettingsManager
+from argus_overview.ui.themes import get_theme_manager
+from argus_overview.ui.tray import SystemTray
 
 
 class MainWindowV21(QMainWindow):
@@ -515,7 +515,7 @@ class MainWindowV21(QMainWindow):
 
     def _show_about_dialog(self):
         """Show About dialog"""
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         dialog = AboutDialog(self)
         dialog.exec()
@@ -563,7 +563,7 @@ class MainWindowV21(QMainWindow):
         self.capture_system.max_workers = workers
 
         # Apply alert settings
-        from eve_overview_pro.core.alert_detector import AlertConfig
+        from argus_overview.core.alert_detector import AlertConfig
 
         alert_config = AlertConfig(
             enabled=self.settings_manager.get("alerts.enabled", True),
@@ -579,7 +579,7 @@ class MainWindowV21(QMainWindow):
 
     def _create_main_tab(self):
         """Create Overview tab (window preview management) - formerly 'Main'"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         self.main_tab = MainTab(
             self.capture_system,
@@ -595,7 +595,7 @@ class MainWindowV21(QMainWindow):
 
     def _create_characters_tab(self):
         """Create Roster tab (character & team management) - formerly 'Characters & Teams'"""
-        from eve_overview_pro.ui.characters_teams_tab import CharactersTeamsTab
+        from argus_overview.ui.characters_teams_tab import CharactersTeamsTab
 
         self.characters_tab = CharactersTeamsTab(
             self.character_manager,
@@ -609,7 +609,7 @@ class MainWindowV21(QMainWindow):
 
     def _create_hotkeys_tab(self):
         """Create Automation tab (hotkeys & cycling) - formerly 'Hotkeys & Cycling'"""
-        from eve_overview_pro.ui.hotkeys_tab import HotkeysTab
+        from argus_overview.ui.hotkeys_tab import HotkeysTab
 
         self.hotkeys_tab = HotkeysTab(
             self.character_manager, self.settings_manager, main_tab=self.main_tab
@@ -634,14 +634,14 @@ class MainWindowV21(QMainWindow):
 
     def _create_settings_sync_tab(self):
         """Create Sync tab (EVE settings sync) - formerly 'Settings Sync'"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         self.settings_sync_tab = SettingsSyncTab(self.settings_sync, self.character_manager)
         self.tabs.addTab(self.settings_sync_tab, "Sync")
 
     def _create_settings_tab(self):
         """Create Settings tab (application settings)"""
-        from eve_overview_pro.ui.settings_tab import SettingsTab
+        from argus_overview.ui.settings_tab import SettingsTab
 
         self.settings_tab = SettingsTab(
             self.settings_manager, self.hotkey_manager, self.alert_detector

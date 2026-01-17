@@ -12,7 +12,7 @@ class TestScreenGeometry:
 
     def test_create_screen_geometry(self):
         """Test creating ScreenGeometry"""
-        from eve_overview_pro.ui.layouts_tab import ScreenGeometry
+        from argus_overview.ui.layouts_tab import ScreenGeometry
 
         screen = ScreenGeometry(0, 0, 1920, 1080)
 
@@ -24,7 +24,7 @@ class TestScreenGeometry:
 
     def test_create_primary_screen(self):
         """Test creating primary screen"""
-        from eve_overview_pro.ui.layouts_tab import ScreenGeometry
+        from argus_overview.ui.layouts_tab import ScreenGeometry
 
         screen = ScreenGeometry(0, 0, 2560, 1440, is_primary=True)
 
@@ -32,7 +32,7 @@ class TestScreenGeometry:
 
     def test_multi_monitor_offset(self):
         """Test screen with offset for multi-monitor"""
-        from eve_overview_pro.ui.layouts_tab import ScreenGeometry
+        from argus_overview.ui.layouts_tab import ScreenGeometry
 
         screen = ScreenGeometry(1920, 0, 1920, 1080)
 
@@ -46,7 +46,7 @@ class TestHelperFunctions:
 
     def test_get_all_patterns(self):
         """Test get_all_patterns returns expected patterns"""
-        from eve_overview_pro.ui.layouts_tab import get_all_patterns
+        from argus_overview.ui.layouts_tab import get_all_patterns
 
         patterns = get_all_patterns()
 
@@ -61,7 +61,7 @@ class TestHelperFunctions:
 
     def test_pattern_display_to_enum(self):
         """Test pattern_display_to_enum conversion"""
-        from eve_overview_pro.ui.layouts_tab import GridPattern, pattern_display_to_enum
+        from argus_overview.ui.layouts_tab import GridPattern, pattern_display_to_enum
 
         assert pattern_display_to_enum("2x2 Grid") == GridPattern.GRID_2X2
         assert pattern_display_to_enum("3x1 Row") == GridPattern.GRID_3X1
@@ -69,7 +69,7 @@ class TestHelperFunctions:
 
     def test_pattern_display_to_enum_unknown(self):
         """Test pattern_display_to_enum with unknown pattern"""
-        from eve_overview_pro.ui.layouts_tab import GridPattern, pattern_display_to_enum
+        from argus_overview.ui.layouts_tab import GridPattern, pattern_display_to_enum
 
         result = pattern_display_to_enum("Unknown Pattern")
 
@@ -80,10 +80,10 @@ class TestHelperFunctions:
 class TestDraggableTile:
     """Tests for DraggableTile widget"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QLabel")
-    @patch("eve_overview_pro.ui.layouts_tab.QColor")
+    @patch("argus_overview.ui.layouts_tab.QFrame.__init__")
+    @patch("argus_overview.ui.layouts_tab.QVBoxLayout")
+    @patch("argus_overview.ui.layouts_tab.QLabel")
+    @patch("argus_overview.ui.layouts_tab.QColor")
     def test_init(self, mock_color, mock_label, mock_layout, mock_frame):
         """Test DraggableTile initialization"""
         mock_frame.return_value = None
@@ -91,7 +91,7 @@ class TestDraggableTile:
         mock_color_instance.name.return_value = "#ff0000"
         mock_color_instance.darker.return_value = mock_color_instance
 
-        from eve_overview_pro.ui.layouts_tab import DraggableTile
+        from argus_overview.ui.layouts_tab import DraggableTile
 
         with patch.object(DraggableTile, "setFixedSize"):
             with patch.object(DraggableTile, "setFrameStyle"):
@@ -105,10 +105,10 @@ class TestDraggableTile:
                             assert tile.grid_col == 0
                             assert tile.is_stacked is False
 
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QLabel")
-    @patch("eve_overview_pro.ui.layouts_tab.QColor")
+    @patch("argus_overview.ui.layouts_tab.QFrame.__init__")
+    @patch("argus_overview.ui.layouts_tab.QVBoxLayout")
+    @patch("argus_overview.ui.layouts_tab.QLabel")
+    @patch("argus_overview.ui.layouts_tab.QColor")
     def test_set_position(self, mock_color, mock_label, mock_layout, mock_frame):
         """Test set_position method"""
         mock_frame.return_value = None
@@ -116,7 +116,7 @@ class TestDraggableTile:
         mock_color_instance.name.return_value = "#ff0000"
         mock_color_instance.darker.return_value = mock_color_instance
 
-        from eve_overview_pro.ui.layouts_tab import DraggableTile
+        from argus_overview.ui.layouts_tab import DraggableTile
 
         with patch.object(DraggableTile, "setFixedSize"):
             with patch.object(DraggableTile, "setFrameStyle"):
@@ -130,10 +130,10 @@ class TestDraggableTile:
                             assert tile.grid_row == 2
                             assert tile.grid_col == 3
 
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QVBoxLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QLabel")
-    @patch("eve_overview_pro.ui.layouts_tab.QColor")
+    @patch("argus_overview.ui.layouts_tab.QFrame.__init__")
+    @patch("argus_overview.ui.layouts_tab.QVBoxLayout")
+    @patch("argus_overview.ui.layouts_tab.QLabel")
+    @patch("argus_overview.ui.layouts_tab.QColor")
     def test_set_stacked(self, mock_color, mock_label, mock_layout, mock_frame):
         """Test set_stacked method"""
         mock_frame.return_value = None
@@ -141,7 +141,7 @@ class TestDraggableTile:
         mock_color_instance.name.return_value = "#ff0000"
         mock_color_instance.darker.return_value = mock_color_instance
 
-        from eve_overview_pro.ui.layouts_tab import DraggableTile
+        from argus_overview.ui.layouts_tab import DraggableTile
 
         with patch.object(DraggableTile, "setFixedSize"):
             with patch.object(DraggableTile, "setFrameStyle"):
@@ -156,7 +156,7 @@ class TestDraggableTile:
 
     def test_signal_exists(self):
         """Test that tile_moved signal exists"""
-        from eve_overview_pro.ui.layouts_tab import DraggableTile
+        from argus_overview.ui.layouts_tab import DraggableTile
 
         assert hasattr(DraggableTile, "tile_moved")
 
@@ -165,14 +165,14 @@ class TestDraggableTile:
 class TestArrangementGrid:
     """Tests for ArrangementGrid widget"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_init(self, mock_frame, mock_grid, mock_widget):
         """Test ArrangementGrid initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             grid = ArrangementGrid()
@@ -181,14 +181,14 @@ class TestArrangementGrid:
             assert grid.grid_rows == 3
             assert grid.grid_cols == 4
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_clear_tiles(self, mock_frame, mock_grid, mock_widget):
         """Test clear_tiles method"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             grid = ArrangementGrid()
@@ -198,14 +198,14 @@ class TestArrangementGrid:
 
             assert grid.tiles == {}
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_get_arrangement_empty(self, mock_frame, mock_grid, mock_widget):
         """Test get_arrangement with no tiles"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             grid = ArrangementGrid()
@@ -216,7 +216,7 @@ class TestArrangementGrid:
 
     def test_signal_exists(self):
         """Test that arrangement_changed signal exists"""
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         assert hasattr(ArrangementGrid, "arrangement_changed")
 
@@ -227,7 +227,7 @@ class TestGridApplier:
 
     def test_init(self):
         """Test GridApplier initialization"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_layout_manager = MagicMock()
 
@@ -235,10 +235,10 @@ class TestGridApplier:
 
         assert applier.layout_manager is mock_layout_manager
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_success(self, mock_subprocess):
         """Test get_screen_geometry with successful xrandr"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -255,10 +255,10 @@ class TestGridApplier:
         assert result.height == 1080
         assert result.is_primary is True
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_failure(self, mock_subprocess):
         """Test get_screen_geometry with xrandr failure"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -273,10 +273,10 @@ class TestGridApplier:
         assert result is not None
         assert result.width == 1920
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_exception(self, mock_subprocess):
         """Test get_screen_geometry with exception"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_subprocess.side_effect = Exception("xrandr not found")
 
@@ -289,10 +289,10 @@ class TestGridApplier:
         assert result is not None
         assert result.width == 1920
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     def test_apply_arrangement_stacked(self, mock_subprocess):
         """Test apply_arrangement with stacked mode"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.layouts_tab import GridApplier, ScreenGeometry
 
         mock_subprocess.return_value = MagicMock()
 
@@ -316,10 +316,10 @@ class TestGridApplier:
         # Should have called xdotool for each window
         assert mock_subprocess.call_count >= 2
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     def test_apply_arrangement_grid(self, mock_subprocess):
         """Test apply_arrangement with grid mode"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.layouts_tab import GridApplier, ScreenGeometry
 
         mock_subprocess.return_value = MagicMock()
 
@@ -341,10 +341,10 @@ class TestGridApplier:
 
         assert result is True
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     def test_apply_arrangement_exception(self, mock_subprocess):
         """Test apply_arrangement handles exceptions"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.layouts_tab import GridApplier, ScreenGeometry
 
         mock_subprocess.side_effect = Exception("xdotool error")
 
@@ -366,12 +366,12 @@ class TestGridApplier:
 class TestLayoutsTab:
     """Tests for LayoutsTab widget"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test LayoutsTab initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -387,12 +387,12 @@ class TestLayoutsTab:
                 assert tab.layout_manager is mock_layout_manager
                 assert tab.main_tab is mock_main_tab
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_load_groups(self, mock_widget):
         """Test _load_groups creates Default if missing"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -409,7 +409,7 @@ class TestLayoutsTab:
 
     def test_signal_exists(self):
         """Test that layout_applied signal exists"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "layout_applied")
 
@@ -418,14 +418,14 @@ class TestLayoutsTab:
 class TestPatternCalculations:
     """Tests for pattern-based grid calculations"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_2x2(self, mock_frame, mock_grid_layout, mock_widget):
         """Test auto_arrange_grid with 2x2 pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -450,14 +450,14 @@ class TestPatternCalculations:
                 mock_tile1.set_position.assert_called()
                 mock_tile2.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_stacked(self, mock_frame, mock_grid_layout, mock_widget):
         """Test auto_arrange_grid with stacked pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -479,9 +479,9 @@ class TestPatternCalculations:
 class TestArrangementGridSetGridSize:
     """Tests for ArrangementGrid.set_grid_size method"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_set_grid_size(self, mock_frame, mock_grid, mock_widget):
         """Test set_grid_size resizes grid"""
         mock_widget.return_value = None
@@ -489,7 +489,7 @@ class TestArrangementGridSetGridSize:
         mock_layout.count.return_value = 0
         mock_grid.return_value = mock_layout
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             grid = ArrangementGrid()
@@ -500,9 +500,9 @@ class TestArrangementGridSetGridSize:
             assert grid.grid_rows == 4
             assert grid.grid_cols == 5
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_set_grid_size_clears_existing(self, mock_frame, mock_grid, mock_widget):
         """Test set_grid_size clears existing cells"""
         mock_widget.return_value = None
@@ -513,7 +513,7 @@ class TestArrangementGridSetGridSize:
         mock_layout.takeAt.return_value = mock_item
         mock_grid.return_value = mock_layout
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             grid = ArrangementGrid()
@@ -529,17 +529,17 @@ class TestArrangementGridSetGridSize:
 class TestArrangementGridAddCharacter:
     """Tests for ArrangementGrid.add_character method"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
-    @patch("eve_overview_pro.ui.layouts_tab.DraggableTile")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.DraggableTile")
     def test_add_character_new(self, mock_tile_class, mock_frame, mock_grid, mock_widget):
         """Test add_character adds new character"""
         mock_widget.return_value = None
         mock_tile = MagicMock()
         mock_tile_class.return_value = mock_tile
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             grid = ArrangementGrid()
@@ -550,20 +550,20 @@ class TestArrangementGridAddCharacter:
             assert "TestPilot" in grid.tiles
             mock_tile.set_position.assert_called_with(1, 2)
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_add_character_duplicate_ignored(self, mock_frame, mock_grid, mock_widget):
         """Test add_character ignores duplicate"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             grid = ArrangementGrid()
             grid.tiles = {"TestPilot": MagicMock()}  # Already exists
 
-            with patch("eve_overview_pro.ui.layouts_tab.DraggableTile") as mock_tile:
+            with patch("argus_overview.ui.layouts_tab.DraggableTile") as mock_tile:
                 grid.add_character("TestPilot", 0, 0)
 
                 # Should NOT create new tile
@@ -574,14 +574,14 @@ class TestArrangementGridAddCharacter:
 class TestAutoArrangeMorePatterns:
     """Tests for auto_arrange_grid with various patterns"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_3x1_row(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with 3x1 row pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -595,14 +595,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_1x3_column(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with 1x3 column pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -616,14 +616,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_4x1_row(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with 4x1 row pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -637,14 +637,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_2x3_grid(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with 2x3 grid pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -658,14 +658,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_3x2_grid(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with 3x2 grid pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -679,14 +679,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_main_plus_sides(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with Main + Sides pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -700,14 +700,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_cascade(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with Cascade pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -721,14 +721,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_custom(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with Custom pattern (falls through to default sequential fill)"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -743,14 +743,14 @@ class TestAutoArrangeMorePatterns:
                 for tile in tiles:
                     tile.set_position.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_auto_arrange_empty_tiles(self, mock_frame, mock_grid, mock_widget):
         """Test auto_arrange with no tiles"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -765,12 +765,12 @@ class TestAutoArrangeMorePatterns:
 class TestLayoutsTabMethods:
     """Tests for LayoutsTab methods"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_refresh_groups(self, mock_widget):
         """Test _refresh_groups reloads groups"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -793,12 +793,12 @@ class TestLayoutsTabMethods:
             # Should have reloaded groups via _load_groups
             mock_settings_manager.get.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_on_group_selected_all_active(self, mock_widget):
         """Test _on_group_selected with All Active Windows"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -828,12 +828,12 @@ class TestLayoutsTabMethods:
                 tab.arrangement_grid.clear_tiles.assert_called()
                 tab.arrangement_grid.add_character.assert_called_with("TestPilot")
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_on_group_selected_specific_group(self, mock_widget):
         """Test _on_group_selected with specific group"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -859,12 +859,12 @@ class TestLayoutsTabMethods:
 
                 assert tab.arrangement_grid.add_character.call_count == 2
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_on_pattern_changed_stacked(self, mock_widget):
         """Test _on_pattern_changed with stacked pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -886,12 +886,12 @@ class TestLayoutsTabMethods:
 
                 tab.stack_checkbox.setChecked.assert_called_with(True)
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_on_pattern_changed_non_stacked(self, mock_widget):
         """Test _on_pattern_changed with non-stacked pattern"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -913,12 +913,12 @@ class TestLayoutsTabMethods:
 
                 tab.stack_checkbox.setChecked.assert_called_with(False)
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_update_grid_size(self, mock_widget):
         """Test _update_grid_size method"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -941,12 +941,12 @@ class TestLayoutsTabMethods:
 
                 tab.arrangement_grid.set_grid_size.assert_called_with(3, 4)
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
     def test_auto_arrange(self, mock_widget):
         """Test _auto_arrange method"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -972,10 +972,10 @@ class TestLayoutsTabMethods:
 class TestGridApplierMore:
     """More tests for GridApplier"""
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_with_monitor(self, mock_subprocess):
         """Test get_screen_geometry with specific monitor"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -991,10 +991,10 @@ class TestGridApplierMore:
 
         assert result is not None
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     def test_apply_arrangement_empty(self, mock_subprocess):
         """Test apply_arrangement with empty arrangement"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.layouts_tab import GridApplier, ScreenGeometry
 
         mock_layout_manager = MagicMock()
         applier = GridApplier(mock_layout_manager)
@@ -1011,13 +1011,13 @@ class TestGridApplierMore:
 class TestLayoutsTabApplyToActiveWindows:
     """Tests for LayoutsTab._apply_to_active_windows"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QMessageBox")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QMessageBox")
     def test_apply_no_main_tab(self, mock_msgbox, mock_widget):
         """Test _apply_to_active_windows with no main_tab"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -1035,13 +1035,13 @@ class TestLayoutsTabApplyToActiveWindows:
 
                 mock_msgbox.warning.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QMessageBox")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QMessageBox")
     def test_apply_no_arrangement(self, mock_msgbox, mock_widget):
         """Test _apply_to_active_windows with no arrangement"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -1062,13 +1062,13 @@ class TestLayoutsTabApplyToActiveWindows:
 
                 mock_msgbox.warning.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QMessageBox")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QMessageBox")
     def test_apply_no_matching_windows(self, mock_msgbox, mock_widget):
         """Test _apply_to_active_windows with no matching windows"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -1090,13 +1090,13 @@ class TestLayoutsTabApplyToActiveWindows:
 
                 mock_msgbox.warning.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QMessageBox")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QMessageBox")
     def test_apply_no_screen_geometry(self, mock_msgbox, mock_widget):
         """Test _apply_to_active_windows with no screen geometry"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -1124,13 +1124,13 @@ class TestLayoutsTabApplyToActiveWindows:
 
                 mock_msgbox.warning.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QMessageBox")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QMessageBox")
     def test_apply_success(self, mock_msgbox, mock_widget):
         """Test _apply_to_active_windows success"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab, ScreenGeometry
+        from argus_overview.ui.layouts_tab import LayoutsTab, ScreenGeometry
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -1173,13 +1173,13 @@ class TestLayoutsTabApplyToActiveWindows:
                 mock_msgbox.information.assert_called()
                 tab.layout_applied.emit.assert_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QMessageBox")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QMessageBox")
     def test_apply_failure(self, mock_msgbox, mock_widget):
         """Test _apply_to_active_windows failure"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab, ScreenGeometry
+        from argus_overview.ui.layouts_tab import LayoutsTab, ScreenGeometry
 
         mock_layout_manager = MagicMock()
         mock_main_tab = MagicMock()
@@ -1222,9 +1222,9 @@ class TestLayoutsTabApplyToActiveWindows:
 class TestArrangementGridSetGridSizeWithTiles:
     """Tests for set_grid_size with existing tiles"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.layouts_tab.QGridLayout")
-    @patch("eve_overview_pro.ui.layouts_tab.QFrame")
+    @patch("argus_overview.ui.layouts_tab.QWidget.__init__")
+    @patch("argus_overview.ui.layouts_tab.QGridLayout")
+    @patch("argus_overview.ui.layouts_tab.QFrame")
     def test_set_grid_size_repositions_existing_tiles(self, mock_frame, mock_grid, mock_widget):
         """Test set_grid_size repositions tiles that are out of bounds"""
         mock_widget.return_value = None
@@ -1232,7 +1232,7 @@ class TestArrangementGridSetGridSizeWithTiles:
         mock_grid_instance.count.return_value = 0  # No existing widgets to clear
         mock_grid.return_value = mock_grid_instance
 
-        from eve_overview_pro.ui.layouts_tab import ArrangementGrid
+        from argus_overview.ui.layouts_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "setLayout"):
             with patch.object(ArrangementGrid, "arrangement_changed", MagicMock()):
@@ -1260,10 +1260,10 @@ class TestArrangementGridSetGridSizeWithTiles:
 class TestGridApplierScreenGeometryEdgeCases:
     """Tests for GridApplier.get_screen_geometry edge cases"""
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_monitor_out_of_range(self, mock_subprocess):
         """Test get_screen_geometry falls back to first monitor when index out of range"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -1280,11 +1280,11 @@ class TestGridApplierScreenGeometryEdgeCases:
         assert result.width == 1920
         assert result.height == 1080
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
-    @patch("eve_overview_pro.utils.screen.logger")
+    @patch("argus_overview.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.logger")
     def test_get_screen_geometry_no_monitors_parsed(self, mock_logger, mock_subprocess):
         """Test get_screen_geometry returns default when no monitors parsed"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -1307,10 +1307,10 @@ class TestGridApplierScreenGeometryEdgeCases:
 class TestGridApplierApplyArrangementEdgeCases:
     """Tests for GridApplier.apply_arrangement edge cases"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     def test_apply_arrangement_char_not_in_window_map(self, mock_subprocess):
         """Test apply_arrangement skips chars not in window_map"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.layouts_tab import GridApplier, ScreenGeometry
 
         mock_layout_manager = MagicMock()
         applier = GridApplier(mock_layout_manager)
@@ -1333,13 +1333,13 @@ class TestGridApplierApplyArrangementEdgeCases:
 class TestGridApplierMoveWindowTimeout:
     """Tests for GridApplier._move_window TimeoutExpired handling"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     @patch("time.sleep")  # Patch time.sleep at module level since it's imported locally
     def test_move_window_timeout_retry(self, mock_sleep, mock_subprocess):
         """Test _move_window retries without --sync on timeout"""
         import subprocess
 
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_layout_manager = MagicMock()
         applier = GridApplier(mock_layout_manager)
@@ -1357,13 +1357,13 @@ class TestGridApplierMoveWindowTimeout:
         assert mock_subprocess.call_count == 3
         mock_sleep.assert_called_once_with(0.1)
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     @patch("time.sleep")  # Patch time.sleep at module level since it's imported locally
     def test_move_window_windowsize_timeout_retry(self, mock_sleep, mock_subprocess):
         """Test _move_window retries windowsize without --sync on timeout"""
         import subprocess
 
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_layout_manager = MagicMock()
         applier = GridApplier(mock_layout_manager)
@@ -1391,43 +1391,43 @@ class TestLayoutsTabUISetup:
 
     def test_layouts_tab_has_setup_ui(self):
         """Test LayoutsTab has _setup_ui method"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "_setup_ui")
 
     def test_layouts_tab_has_create_top_section(self):
         """Test LayoutsTab has _create_top_section method"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "_create_top_section")
 
     def test_layouts_tab_has_create_grid_section(self):
         """Test LayoutsTab has _create_grid_section method"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "_create_grid_section")
 
     def test_layouts_tab_has_create_bottom_section(self):
         """Test LayoutsTab has _create_bottom_section method"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "_create_bottom_section")
 
     def test_layouts_tab_has_refresh_groups(self):
         """Test LayoutsTab has _refresh_groups method"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "_refresh_groups")
 
     def test_layouts_tab_has_on_group_selected(self):
         """Test LayoutsTab has _on_group_selected method"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "_on_group_selected")
 
     def test_layouts_tab_has_on_pattern_changed(self):
         """Test LayoutsTab has _on_pattern_changed method"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         assert hasattr(LayoutsTab, "_on_pattern_changed")
 
@@ -1437,7 +1437,7 @@ class TestLayoutsTabRefreshGroups:
 
     def test_refresh_groups_populates_combo(self):
         """Test _refresh_groups populates group combo"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1456,7 +1456,7 @@ class TestLayoutsTabRefreshGroups:
 
     def test_refresh_groups_restores_selection(self):
         """Test _refresh_groups restores previous selection"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1479,7 +1479,7 @@ class TestLayoutsTabOnGroupSelected:
 
     def test_on_group_selected_clears_tiles(self):
         """Test _on_group_selected clears arrangement grid"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1498,7 +1498,7 @@ class TestLayoutsTabOnGroupSelected:
 
     def test_on_group_selected_adds_characters(self):
         """Test _on_group_selected adds group members"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1519,7 +1519,7 @@ class TestLayoutsTabOnGroupSelected:
 
     def test_on_group_selected_all_active_windows(self):
         """Test _on_group_selected with 'All Active Windows'"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1544,7 +1544,7 @@ class TestLayoutsTabOnGroupSelected:
 
     def test_on_group_selected_auto_arranges(self):
         """Test _on_group_selected auto-arranges when pattern selected"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1568,7 +1568,7 @@ class TestLayoutsTabOnPatternChanged:
 
     def test_on_pattern_changed_stacked(self):
         """Test _on_pattern_changed with Stacked pattern"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1584,7 +1584,7 @@ class TestLayoutsTabOnPatternChanged:
 
     def test_on_pattern_changed_grid(self):
         """Test _on_pattern_changed with Grid pattern"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1604,7 +1604,7 @@ class TestLayoutsTabRefreshFromSettings:
 
     def test_refresh_groups_from_settings_calls_methods(self):
         """Test refresh_groups_from_settings calls internal methods"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1622,7 +1622,7 @@ class TestLayoutsTabSetupUI:
 
     def test_setup_ui_creates_layout(self):
         """Test _setup_ui creates vertical layout with sections"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1636,7 +1636,7 @@ class TestLayoutsTabSetupUI:
             tab._on_group_selected = MagicMock()
             tab.setLayout = MagicMock()
 
-            with patch("eve_overview_pro.ui.layouts_tab.QVBoxLayout") as mock_layout_cls:
+            with patch("argus_overview.ui.layouts_tab.QVBoxLayout") as mock_layout_cls:
                 mock_layout = MagicMock()
                 mock_layout_cls.return_value = mock_layout
 
@@ -1656,7 +1656,7 @@ class TestLayoutsTabCreateTopSection:
 
     def test_create_top_section_creates_group_selector(self):
         """Test _create_top_section creates group selector widgets"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1666,18 +1666,18 @@ class TestLayoutsTabCreateTopSection:
             tab._auto_arrange = MagicMock()
             tab._update_grid_size = MagicMock()
 
-            with patch("eve_overview_pro.ui.layouts_tab.QGroupBox") as mock_groupbox_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QHBoxLayout"
-            ) as mock_hlayout_cls, patch("eve_overview_pro.ui.layouts_tab.QVBoxLayout"), patch(
-                "eve_overview_pro.ui.layouts_tab.QLabel"
-            ), patch("eve_overview_pro.ui.layouts_tab.QComboBox") as mock_combo_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QPushButton"
+            with patch("argus_overview.ui.layouts_tab.QGroupBox") as mock_groupbox_cls, patch(
+                "argus_overview.ui.layouts_tab.QHBoxLayout"
+            ) as mock_hlayout_cls, patch("argus_overview.ui.layouts_tab.QVBoxLayout"), patch(
+                "argus_overview.ui.layouts_tab.QLabel"
+            ), patch("argus_overview.ui.layouts_tab.QComboBox") as mock_combo_cls, patch(
+                "argus_overview.ui.layouts_tab.QPushButton"
             ) as mock_btn_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QSpinBox"
+                "argus_overview.ui.layouts_tab.QSpinBox"
             ) as mock_spin_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QCheckBox"
+                "argus_overview.ui.layouts_tab.QCheckBox"
             ) as mock_checkbox_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.get_all_patterns", return_value=["2x2", "3x1"]
+                "argus_overview.ui.layouts_tab.get_all_patterns", return_value=["2x2", "3x1"]
             ):
                 mock_section = MagicMock()
                 mock_groupbox_cls.return_value = mock_section
@@ -1709,7 +1709,7 @@ class TestLayoutsTabCreateTopSection:
 
     def test_create_top_section_creates_grid_size_controls(self):
         """Test _create_top_section creates grid size spinboxes"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
@@ -1719,15 +1719,15 @@ class TestLayoutsTabCreateTopSection:
             tab._auto_arrange = MagicMock()
             tab._update_grid_size = MagicMock()
 
-            with patch("eve_overview_pro.ui.layouts_tab.QGroupBox"), patch(
-                "eve_overview_pro.ui.layouts_tab.QHBoxLayout"
-            ), patch("eve_overview_pro.ui.layouts_tab.QVBoxLayout"), patch(
-                "eve_overview_pro.ui.layouts_tab.QLabel"
-            ), patch("eve_overview_pro.ui.layouts_tab.QComboBox"), patch(
-                "eve_overview_pro.ui.layouts_tab.QPushButton"
-            ), patch("eve_overview_pro.ui.layouts_tab.QSpinBox") as mock_spin_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QCheckBox"
-            ), patch("eve_overview_pro.ui.layouts_tab.get_all_patterns", return_value=[]):
+            with patch("argus_overview.ui.layouts_tab.QGroupBox"), patch(
+                "argus_overview.ui.layouts_tab.QHBoxLayout"
+            ), patch("argus_overview.ui.layouts_tab.QVBoxLayout"), patch(
+                "argus_overview.ui.layouts_tab.QLabel"
+            ), patch("argus_overview.ui.layouts_tab.QComboBox"), patch(
+                "argus_overview.ui.layouts_tab.QPushButton"
+            ), patch("argus_overview.ui.layouts_tab.QSpinBox") as mock_spin_cls, patch(
+                "argus_overview.ui.layouts_tab.QCheckBox"
+            ), patch("argus_overview.ui.layouts_tab.get_all_patterns", return_value=[]):
                 mock_spin = MagicMock()
                 mock_spin_cls.return_value = mock_spin
 
@@ -1744,17 +1744,17 @@ class TestLayoutsTabCreateGridSection:
 
     def test_create_grid_section_creates_scroll_area(self):
         """Test _create_grid_section creates scroll area with grid"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
 
-            with patch("eve_overview_pro.ui.layouts_tab.QGroupBox") as mock_groupbox_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QVBoxLayout"
-            ) as mock_vlayout_cls, patch("eve_overview_pro.ui.layouts_tab.QLabel"), patch(
-                "eve_overview_pro.ui.layouts_tab.QScrollArea"
+            with patch("argus_overview.ui.layouts_tab.QGroupBox") as mock_groupbox_cls, patch(
+                "argus_overview.ui.layouts_tab.QVBoxLayout"
+            ) as mock_vlayout_cls, patch("argus_overview.ui.layouts_tab.QLabel"), patch(
+                "argus_overview.ui.layouts_tab.QScrollArea"
             ) as mock_scroll_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.ArrangementGrid"
+                "argus_overview.ui.layouts_tab.ArrangementGrid"
             ) as mock_grid_cls:
                 mock_section = MagicMock()
                 mock_groupbox_cls.return_value = mock_section
@@ -1784,16 +1784,16 @@ class TestLayoutsTabCreateGridSection:
 
     def test_create_grid_section_creates_instructions_label(self):
         """Test _create_grid_section creates instructions label"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
 
-            with patch("eve_overview_pro.ui.layouts_tab.QGroupBox"), patch(
-                "eve_overview_pro.ui.layouts_tab.QVBoxLayout"
-            ), patch("eve_overview_pro.ui.layouts_tab.QLabel") as mock_label_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QScrollArea"
-            ), patch("eve_overview_pro.ui.layouts_tab.ArrangementGrid"):
+            with patch("argus_overview.ui.layouts_tab.QGroupBox"), patch(
+                "argus_overview.ui.layouts_tab.QVBoxLayout"
+            ), patch("argus_overview.ui.layouts_tab.QLabel") as mock_label_cls, patch(
+                "argus_overview.ui.layouts_tab.QScrollArea"
+            ), patch("argus_overview.ui.layouts_tab.ArrangementGrid"):
                 mock_label = MagicMock()
                 mock_label_cls.return_value = mock_label
 
@@ -1809,18 +1809,18 @@ class TestLayoutsTabCreateBottomSection:
 
     def test_create_bottom_section_creates_apply_button(self):
         """Test _create_bottom_section creates apply button"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
             tab._apply_to_active_windows = MagicMock()
 
-            with patch("eve_overview_pro.ui.layouts_tab.QWidget") as mock_widget_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QHBoxLayout"
+            with patch("argus_overview.ui.layouts_tab.QWidget") as mock_widget_cls, patch(
+                "argus_overview.ui.layouts_tab.QHBoxLayout"
             ) as mock_hlayout_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QLabel"
+                "argus_overview.ui.layouts_tab.QLabel"
             ) as mock_label_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QPushButton"
+                "argus_overview.ui.layouts_tab.QPushButton"
             ) as mock_btn_cls:
                 mock_widget = MagicMock()
                 mock_widget_cls.return_value = mock_widget
@@ -1849,17 +1849,17 @@ class TestLayoutsTabCreateBottomSection:
 
     def test_create_bottom_section_creates_info_label(self):
         """Test _create_bottom_section creates info label"""
-        from eve_overview_pro.ui.layouts_tab import LayoutsTab
+        from argus_overview.ui.layouts_tab import LayoutsTab
 
         with patch.object(LayoutsTab, "__init__", return_value=None):
             tab = LayoutsTab.__new__(LayoutsTab)
             tab._apply_to_active_windows = MagicMock()
 
-            with patch("eve_overview_pro.ui.layouts_tab.QWidget"), patch(
-                "eve_overview_pro.ui.layouts_tab.QHBoxLayout"
+            with patch("argus_overview.ui.layouts_tab.QWidget"), patch(
+                "argus_overview.ui.layouts_tab.QHBoxLayout"
             ) as mock_hlayout_cls, patch(
-                "eve_overview_pro.ui.layouts_tab.QLabel"
-            ) as mock_label_cls, patch("eve_overview_pro.ui.layouts_tab.QPushButton"):
+                "argus_overview.ui.layouts_tab.QLabel"
+            ) as mock_label_cls, patch("argus_overview.ui.layouts_tab.QPushButton"):
                 mock_layout = MagicMock()
                 mock_hlayout_cls.return_value = mock_layout
 
@@ -1876,10 +1876,10 @@ class TestLayoutsTabCreateBottomSection:
 class TestMoveWindowInvalidId:
     """Tests for _move_window with invalid window IDs"""
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     def test_move_window_invalid_id_returns_early(self, mock_subprocess):
         """Test _move_window returns early for invalid window ID"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_layout_manager = MagicMock()
         applier = GridApplier(mock_layout_manager)
@@ -1892,10 +1892,10 @@ class TestMoveWindowInvalidId:
         # subprocess should never be called
         mock_subprocess.assert_not_called()
 
-    @patch("eve_overview_pro.ui.layouts_tab.subprocess.run")
+    @patch("argus_overview.ui.layouts_tab.subprocess.run")
     def test_move_window_valid_id_proceeds(self, mock_subprocess):
         """Test _move_window proceeds for valid window ID"""
-        from eve_overview_pro.ui.layouts_tab import GridApplier
+        from argus_overview.ui.layouts_tab import GridApplier
 
         mock_layout_manager = MagicMock()
         applier = GridApplier(mock_layout_manager)

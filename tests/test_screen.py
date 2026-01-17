@@ -5,7 +5,7 @@ Tests get_screen_geometry and get_all_monitors functions
 
 from unittest.mock import MagicMock, patch
 
-from eve_overview_pro.utils.screen import ScreenGeometry, get_all_monitors, get_screen_geometry
+from argus_overview.utils.screen import ScreenGeometry, get_all_monitors, get_screen_geometry
 
 
 class TestScreenGeometry:
@@ -33,7 +33,7 @@ class TestScreenGeometry:
 class TestGetScreenGeometry:
     """Tests for get_screen_geometry function"""
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_single_monitor(self, mock_run):
         """Test with single monitor output"""
         mock_run.return_value = MagicMock(
@@ -49,7 +49,7 @@ class TestGetScreenGeometry:
         assert geom.y == 0
         assert geom.is_primary is True
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_multi_monitor(self, mock_run):
         """Test with multiple monitors"""
         mock_run.return_value = MagicMock(
@@ -80,7 +80,7 @@ class TestGetScreenGeometry:
         assert geom2.height == 1200
         assert geom2.x == 4480
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_out_of_range_index(self, mock_run):
         """Test with monitor index out of range returns first monitor"""
         mock_run.return_value = MagicMock(
@@ -93,7 +93,7 @@ class TestGetScreenGeometry:
         assert geom.width == 1920
         assert geom.height == 1080
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_xrandr_failure(self, mock_run):
         """Test xrandr command failure returns default"""
         mock_run.return_value = MagicMock(returncode=1, stdout="")
@@ -104,7 +104,7 @@ class TestGetScreenGeometry:
         assert geom.height == 1080
         assert geom.is_primary is True
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_no_geometry_in_output(self, mock_run):
         """Test xrandr output with no parseable geometry"""
         mock_run.return_value = MagicMock(
@@ -117,7 +117,7 @@ class TestGetScreenGeometry:
         assert geom.width == 1920
         assert geom.height == 1080
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_exception(self, mock_run):
         """Test exception handling returns default"""
         mock_run.side_effect = Exception("xrandr not found")
@@ -128,7 +128,7 @@ class TestGetScreenGeometry:
         assert geom.height == 1080
         assert geom.is_primary is True
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_screen_geometry_timeout(self, mock_run):
         """Test timeout exception returns default"""
         import subprocess
@@ -144,7 +144,7 @@ class TestGetScreenGeometry:
 class TestGetAllMonitors:
     """Tests for get_all_monitors function"""
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_single(self, mock_run):
         """Test with single monitor"""
         mock_run.return_value = MagicMock(
@@ -159,7 +159,7 @@ class TestGetAllMonitors:
         assert monitors[0].height == 1080
         assert monitors[0].is_primary is True
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_multiple(self, mock_run):
         """Test with multiple monitors"""
         mock_run.return_value = MagicMock(
@@ -181,7 +181,7 @@ class TestGetAllMonitors:
         assert monitors[2].width == 3840
         assert monitors[2].x == 4480
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_xrandr_failure(self, mock_run):
         """Test xrandr failure returns default single monitor"""
         mock_run.return_value = MagicMock(returncode=1, stdout="")
@@ -193,7 +193,7 @@ class TestGetAllMonitors:
         assert monitors[0].height == 1080
         assert monitors[0].is_primary is True
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_no_geometry(self, mock_run):
         """Test no parseable geometry returns default"""
         mock_run.return_value = MagicMock(
@@ -207,7 +207,7 @@ class TestGetAllMonitors:
         assert monitors[0].width == 1920
         assert monitors[0].height == 1080
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_exception(self, mock_run):
         """Test exception returns default single monitor"""
         mock_run.side_effect = Exception("xrandr crashed")
@@ -219,7 +219,7 @@ class TestGetAllMonitors:
         assert monitors[0].height == 1080
         assert monitors[0].is_primary is True
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_timeout(self, mock_run):
         """Test timeout returns default"""
         import subprocess
@@ -231,7 +231,7 @@ class TestGetAllMonitors:
         assert len(monitors) == 1
         assert monitors[0].width == 1920
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_disconnected_ignored(self, mock_run):
         """Test disconnected monitors are ignored"""
         mock_run.return_value = MagicMock(
@@ -248,7 +248,7 @@ class TestGetAllMonitors:
         assert len(monitors) == 1
         assert monitors[0].width == 1920
 
-    @patch("eve_overview_pro.utils.screen.subprocess.run")
+    @patch("argus_overview.utils.screen.subprocess.run")
     def test_get_all_monitors_vertical_stacking(self, mock_run):
         """Test monitors stacked vertically"""
         mock_run.return_value = MagicMock(

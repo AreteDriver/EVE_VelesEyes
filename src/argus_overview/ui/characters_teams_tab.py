@@ -32,8 +32,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from eve_overview_pro.core.character_manager import Character, Team
-from eve_overview_pro.ui.menu_builder import ToolbarBuilder
+from argus_overview.core.character_manager import Character, Team
+from argus_overview.ui.menu_builder import ToolbarBuilder
 
 
 class CharacterTable(QTableWidget):

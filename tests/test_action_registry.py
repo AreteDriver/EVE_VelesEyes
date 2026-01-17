@@ -11,7 +11,7 @@ Tests cover:
 
 import pytest
 
-from eve_overview_pro.ui.action_registry import (
+from argus_overview.ui.action_registry import (
     HOME_TIERS,
     ActionRegistry,
     ActionScope,
@@ -399,7 +399,7 @@ class TestAuditActionsEdgeCases:
 
     def test_audit_actions_with_none_registry(self):
         """audit_actions uses get_instance when registry is None"""
-        from eve_overview_pro.ui.action_registry import audit_actions
+        from argus_overview.ui.action_registry import audit_actions
 
         # This should work and use the singleton
         results = audit_actions(None)
@@ -458,7 +458,7 @@ class TestPrintAuditReport:
 
     def test_print_audit_report_runs(self, capsys):
         """print_audit_report executes without error"""
-        from eve_overview_pro.ui.action_registry import print_audit_report
+        from argus_overview.ui.action_registry import print_audit_report
 
         result = print_audit_report()
 
@@ -475,7 +475,7 @@ class TestPrintAuditReport:
 
     def test_print_audit_report_with_none_uses_audit_actions(self, capsys):
         """print_audit_report with None runs audit_actions internally"""
-        from eve_overview_pro.ui.action_registry import print_audit_report
+        from argus_overview.ui.action_registry import print_audit_report
 
         result = print_audit_report(None)
 
@@ -485,7 +485,7 @@ class TestPrintAuditReport:
 
     def test_print_audit_report_shows_duplicates(self, capsys):
         """print_audit_report shows duplicates when present"""
-        from eve_overview_pro.ui.action_registry import print_audit_report
+        from argus_overview.ui.action_registry import print_audit_report
 
         # Create results with duplicates
         results = {
@@ -507,7 +507,7 @@ class TestPrintAuditReport:
 
     def test_print_audit_report_shows_issues(self, capsys):
         """print_audit_report shows warnings for issues"""
-        from eve_overview_pro.ui.action_registry import print_audit_report
+        from argus_overview.ui.action_registry import print_audit_report
 
         # Create results with issues
         results = {
@@ -528,7 +528,7 @@ class TestPrintAuditReport:
 
     def test_print_audit_report_no_duplicates_shows_ok(self, capsys):
         """print_audit_report shows OK when no duplicates"""
-        from eve_overview_pro.ui.action_registry import print_audit_report
+        from argus_overview.ui.action_registry import print_audit_report
 
         results = {
             "total_actions": 5,

@@ -14,7 +14,7 @@ class TestEVECharacterSettings:
 
     def test_create_with_required_fields(self):
         """Test creating with required fields only"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings
 
         settings = EVECharacterSettings(
             character_name="TestPilot",
@@ -30,7 +30,7 @@ class TestEVECharacterSettings:
 
     def test_optional_fields_default_values(self):
         """Test that optional fields have correct defaults"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings
 
         settings = EVECharacterSettings(
             character_name="TestPilot",
@@ -46,7 +46,7 @@ class TestEVECharacterSettings:
 
     def test_all_fields(self):
         """Test creating with all fields"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings
 
         now = datetime.now()
         settings = EVECharacterSettings(
@@ -73,7 +73,7 @@ class TestEVECharacterInfo:
 
     def test_create_with_required_fields(self):
         """Test creating with required fields only"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterInfo
+        from argus_overview.core.eve_settings_sync import EVECharacterInfo
 
         info = EVECharacterInfo(character_id="12345678", character_name="TestPilot")
 
@@ -82,7 +82,7 @@ class TestEVECharacterInfo:
 
     def test_optional_fields_default_values(self):
         """Test that optional fields have correct defaults"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterInfo
+        from argus_overview.core.eve_settings_sync import EVECharacterInfo
 
         info = EVECharacterInfo(character_id="12345678", character_name="TestPilot")
 
@@ -93,7 +93,7 @@ class TestEVECharacterInfo:
 
     def test_all_fields(self):
         """Test creating with all fields"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterInfo
+        from argus_overview.core.eve_settings_sync import EVECharacterInfo
 
         now = datetime.now()
         info = EVECharacterInfo(
@@ -119,7 +119,7 @@ class TestEVESettingsSync:
 
     def test_init(self):
         """Test EVESettingsSync initialization"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -131,7 +131,7 @@ class TestEVESettingsSync:
 
     def test_eve_paths_include_steam(self):
         """Test that EVE paths include Steam paths"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -141,7 +141,7 @@ class TestEVESettingsSync:
 
     def test_eve_logs_paths_exist(self):
         """Test that eve_logs_paths is defined"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -150,7 +150,7 @@ class TestEVESettingsSync:
 
     def test_add_custom_path_valid(self):
         """Test adding a valid custom path"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -162,7 +162,7 @@ class TestEVESettingsSync:
 
     def test_add_custom_path_invalid(self):
         """Test adding an invalid custom path"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -173,7 +173,7 @@ class TestEVESettingsSync:
 
     def test_add_custom_path_file_not_dir(self):
         """Test adding a file path instead of directory"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -186,7 +186,7 @@ class TestEVESettingsSync:
 
     def test_get_character_name_found(self):
         """Test getting character name when ID is known"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
         sync.character_id_to_name["12345678"] = "KnownPilot"
@@ -197,7 +197,7 @@ class TestEVESettingsSync:
 
     def test_get_character_name_not_found(self):
         """Test getting character name when ID is unknown"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -207,7 +207,7 @@ class TestEVESettingsSync:
 
     def test_list_available_characters_empty(self):
         """Test listing characters when none available"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -217,7 +217,7 @@ class TestEVESettingsSync:
 
     def test_list_available_characters_with_settings(self):
         """Test listing characters with settings"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -252,7 +252,7 @@ class TestEVESettingsSync:
 
     def test_get_settings_summary_not_found(self):
         """Test getting summary for unknown character"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -262,7 +262,7 @@ class TestEVESettingsSync:
 
     def test_get_settings_summary_found(self):
         """Test getting summary for known character"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -291,7 +291,7 @@ class TestEVESettingsSync:
 
     def test_sync_settings_source_not_found(self):
         """Test sync when source character not found"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -301,7 +301,7 @@ class TestEVESettingsSync:
 
     def test_sync_settings_target_not_found(self):
         """Test sync when target character not found"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -323,7 +323,7 @@ class TestEVESettingsSync:
 
     def test_sync_settings_source_no_settings(self):
         """Test sync when source has no settings"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -346,7 +346,7 @@ class TestFileParsing:
 
     def test_parse_char_file_valid(self):
         """Test parsing a valid core_char file"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
         sync.character_id_to_name["12345678"] = "KnownPilot"
@@ -365,7 +365,7 @@ class TestFileParsing:
 
     def test_parse_char_file_invalid_name(self):
         """Test parsing file with invalid name format"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -380,7 +380,7 @@ class TestFileParsing:
 
     def test_parse_char_file_with_user_file(self):
         """Test parsing when user file exists"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -403,7 +403,7 @@ class TestDirectoryScanning:
 
     def test_scan_for_characters_no_paths_exist(self):
         """Test scan when no EVE paths exist"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
         # Override with non-existent paths
@@ -416,7 +416,7 @@ class TestDirectoryScanning:
 
     def test_scan_for_characters_valid_structure(self):
         """Test scan with valid EVE directory structure"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -444,7 +444,7 @@ class TestDirectoryScanning:
 
     def test_get_all_known_characters_empty(self):
         """Test getting all known characters when none exist"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
         sync.eve_paths = [Path("/nonexistent")]
@@ -456,7 +456,7 @@ class TestDirectoryScanning:
 
     def test_get_all_known_characters_with_names(self):
         """Test getting characters with known names from logs"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
         sync.character_id_to_name["11111111"] = "PilotOne"
@@ -488,7 +488,7 @@ class TestLogParsing:
 
     def test_load_character_names_from_logs_no_logs(self):
         """Test loading names when no logs exist"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
         sync.eve_logs_paths = [Path("/nonexistent/logs")]
@@ -500,7 +500,7 @@ class TestLogParsing:
 
     def test_load_character_names_from_logs_valid(self):
         """Test loading names from valid log files"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             logs_dir = Path(tmpdir)
@@ -526,7 +526,7 @@ class TestLogParsing:
 
     def test_load_character_names_handles_encoding_errors(self):
         """Test that log parsing handles encoding errors gracefully"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             logs_dir = Path(tmpdir)
@@ -548,7 +548,7 @@ class TestSettingsBackupCopy:
 
     def test_backup_settings(self):
         """Test creating settings backup"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -578,7 +578,7 @@ class TestSettingsBackupCopy:
 
     def test_copy_settings(self):
         """Test copying settings between characters"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -619,7 +619,7 @@ class TestSettingsBackupCopy:
 
     def test_copy_settings_empty_source(self):
         """Test copying from empty source directory"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -660,7 +660,7 @@ class TestSyncIntegration:
 
     def test_full_sync_workflow(self):
         """Test complete sync from source to target"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -707,7 +707,7 @@ class TestSyncIntegration:
 
     def test_sync_multiple_targets(self):
         """Test syncing to multiple targets"""
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -751,7 +751,7 @@ class TestExceptionHandling:
 
     def test_load_logs_breaks_after_10_lines_no_listener(self):
         """Test that log parsing breaks after 10 lines if no Listener found"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             logs_dir = Path(tmpdir)
@@ -773,7 +773,7 @@ class TestExceptionHandling:
         """Test that log parsing handles file read exceptions"""
         from unittest.mock import patch
 
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             logs_dir = Path(tmpdir)
@@ -793,7 +793,7 @@ class TestExceptionHandling:
 
     def test_get_all_known_characters_skips_files_in_base(self):
         """Test that get_all_known_characters skips files (not dirs) in server dir"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -818,7 +818,7 @@ class TestExceptionHandling:
 
     def test_get_all_known_characters_skips_non_settings_dirs(self):
         """Test that get_all_known_characters skips dirs not starting with 'settings'"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -849,7 +849,7 @@ class TestExceptionHandling:
 
     def test_get_all_known_characters_skips_invalid_char_files(self):
         """Test that get_all_known_characters skips files with invalid names"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -878,7 +878,7 @@ class TestExceptionHandling:
         """Test that get_all_known_characters handles OSError on stat"""
         from unittest.mock import patch
 
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -910,7 +910,7 @@ class TestExceptionHandling:
         """Test that scan_for_characters handles errors during iteration"""
         from unittest.mock import patch
 
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -931,7 +931,7 @@ class TestExceptionHandling:
 
     def test_scan_for_characters_skips_non_dirs(self):
         """Test that scan_for_characters skips files and non-settings dirs"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -968,7 +968,7 @@ class TestExceptionHandling:
         """Test that sync_settings logs when copy fails but doesn't raise"""
         from unittest.mock import patch
 
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -1006,7 +1006,7 @@ class TestExceptionHandling:
         """Test that _parse_char_file handles exceptions gracefully"""
         from unittest.mock import patch
 
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             settings_dir = Path(tmpdir)
@@ -1025,7 +1025,7 @@ class TestExceptionHandling:
         """Test that sync_settings handles exceptions during sync"""
         from unittest.mock import patch
 
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -1063,7 +1063,7 @@ class TestExceptionHandling:
         """Test that _backup_settings raises exception on failure"""
         import pytest
 
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             settings_dir = Path(tmpdir)
@@ -1092,7 +1092,7 @@ class TestExceptionHandling:
         """Test that _copy_settings handles exceptions gracefully"""
         from unittest.mock import patch
 
-        from eve_overview_pro.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVECharacterSettings, EVESettingsSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
@@ -1136,7 +1136,7 @@ class TestEdgeCases:
         """Test character ID extraction from various filenames"""
         import re
 
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         EVESettingsSync()
 
@@ -1173,7 +1173,7 @@ class TestEdgeCases:
 
     def test_settings_dir_with_special_characters(self):
         """Test handling of paths with special characters"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 
@@ -1196,7 +1196,7 @@ class TestEdgeCases:
 
     def test_concurrent_character_discovery(self):
         """Test discovering characters from multiple server directories"""
-        from eve_overview_pro.core.eve_settings_sync import EVESettingsSync
+        from argus_overview.core.eve_settings_sync import EVESettingsSync
 
         sync = EVESettingsSync()
 

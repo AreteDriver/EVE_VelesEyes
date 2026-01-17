@@ -26,8 +26,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from eve_overview_pro.ui.hotkey_edit import HotkeyEdit
-from eve_overview_pro.ui.menu_builder import ToolbarBuilder
+from argus_overview.ui.hotkey_edit import HotkeyEdit
+from argus_overview.ui.menu_builder import ToolbarBuilder
 
 
 class DraggableCharacterList(QListWidget):

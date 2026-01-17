@@ -17,7 +17,7 @@ from unittest.mock import patch
 
 import pytest
 
-from eve_overview_pro.core.layout_manager import (
+from argus_overview.core.layout_manager import (
     GridPattern,
     LayoutManager,
     LayoutPreset,
@@ -492,7 +492,7 @@ class TestDefaultConfigDir:
     """Tests for default config directory behavior"""
 
     def test_uses_home_config_when_none_provided(self):
-        """Manager uses ~/.config/eve-overview-pro when no config_dir provided"""
+        """Manager uses ~/.config/argus-overview when no config_dir provided"""
         from unittest.mock import patch
 
         # Mock Path.home() to use temp directory
@@ -502,7 +502,7 @@ class TestDefaultConfigDir:
             with patch.object(Path, "home", return_value=mock_home):
                 manager = LayoutManager(config_dir=None)
 
-                expected_dir = mock_home / ".config" / "eve-overview-pro"
+                expected_dir = mock_home / ".config" / "argus-overview"
                 assert manager.config_dir == expected_dir
                 assert expected_dir.exists()
 
@@ -576,7 +576,7 @@ class TestSavePresetEdgeCases:
 
             # Mock sanitize_filename to return path traversal attempt
             with patch(
-                "eve_overview_pro.core.layout_manager.sanitize_filename",
+                "argus_overview.core.layout_manager.sanitize_filename",
                 return_value="../../../etc/passwd",
             ):
                 result = manager.save_preset(preset)
@@ -599,7 +599,7 @@ class TestDeletePresetEdgeCases:
 
             # Mock sanitize_filename to return path traversal attempt
             with patch(
-                "eve_overview_pro.core.layout_manager.sanitize_filename",
+                "argus_overview.core.layout_manager.sanitize_filename",
                 return_value="../../../etc/passwd",
             ):
                 result = manager.delete_preset("test")

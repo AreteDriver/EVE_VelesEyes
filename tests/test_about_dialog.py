@@ -11,19 +11,19 @@ from unittest.mock import MagicMock, patch
 class TestAboutDialog:
     """Tests for the AboutDialog class"""
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_init(self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init):
         """Test AboutDialog initialization"""
         mock_dialog_init.return_value = None
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle") as mock_title:
             with patch.object(AboutDialog, "setMinimumWidth") as mock_width:
@@ -35,12 +35,12 @@ class TestAboutDialog:
                         mock_width.assert_called_once_with(500)
                         mock_height.assert_called_once_with(400)
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_setup_ui_creates_labels(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -49,7 +49,7 @@ class TestAboutDialog:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -60,12 +60,12 @@ class TestAboutDialog:
                         # Labels should be created (title, version, platform, etc.)
                         assert mock_label.call_count >= 5
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_setup_ui_creates_buttons(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -74,7 +74,7 @@ class TestAboutDialog:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -85,14 +85,14 @@ class TestAboutDialog:
                         # Should create at least 2 buttons (Coffee, Close)
                         assert mock_button.call_count >= 2
 
-    @patch("eve_overview_pro.ui.about_dialog.QDesktopServices")
-    @patch("eve_overview_pro.ui.about_dialog.QUrl")
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDesktopServices")
+    @patch("argus_overview.ui.about_dialog.QUrl")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_open_donation_link(
         self,
         mock_font,
@@ -109,7 +109,7 @@ class TestAboutDialog:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -127,12 +127,12 @@ class TestAboutDialog:
 class TestPlatformDetection:
     """Tests for platform detection in AboutDialog"""
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_platform_linux(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -142,7 +142,7 @@ class TestPlatformDetection:
         mock_vbox.return_value = mock_vbox_instance
 
         with patch.object(sys, "platform", "linux"):
-            from eve_overview_pro.ui.about_dialog import AboutDialog
+            from argus_overview.ui.about_dialog import AboutDialog
 
             with patch.object(AboutDialog, "setWindowTitle"):
                 with patch.object(AboutDialog, "setMinimumWidth"):
@@ -156,12 +156,12 @@ class TestPlatformDetection:
                             # May or may not detect Linux depending on import timing
                             assert mock_label.called
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_platform_windows(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -172,7 +172,7 @@ class TestPlatformDetection:
 
         # Note: Can't easily change sys.platform after import
         # This test just verifies the dialog can be created
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -186,12 +186,12 @@ class TestPlatformDetection:
 class TestDialogBehavior:
     """Tests for dialog behavior"""
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_close_button_connects_to_accept(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -206,7 +206,7 @@ class TestDialogBehavior:
         # Return different mock buttons for different calls
         mock_button.side_effect = [mock_coffee_btn, mock_close_btn]
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -218,12 +218,12 @@ class TestDialogBehavior:
                             # Close button should have clicked.connect called
                             mock_close_btn.clicked.connect.assert_called()
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_coffee_button_connects_to_donation(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -237,7 +237,7 @@ class TestDialogBehavior:
 
         mock_button.side_effect = [mock_coffee_btn, mock_close_btn]
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -253,12 +253,12 @@ class TestDialogBehavior:
 class TestDialogContent:
     """Tests for dialog content"""
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_title_label_content(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -267,7 +267,7 @@ class TestDialogContent:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -280,12 +280,12 @@ class TestDialogContent:
                         title_call = calls[0]
                         assert "Argus Overview" in str(title_call)
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_version_label_content(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -294,7 +294,7 @@ class TestDialogContent:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -308,12 +308,12 @@ class TestDialogContent:
                         has_version = any("Version" in text for text in label_texts)
                         assert has_version
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_github_link_content(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -322,7 +322,7 @@ class TestDialogContent:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):
@@ -340,12 +340,12 @@ class TestDialogContent:
 class TestEdgeCases:
     """Tests for edge cases"""
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_init_with_parent(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -354,7 +354,7 @@ class TestEdgeCases:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         mock_parent = MagicMock()
 
@@ -367,12 +367,12 @@ class TestEdgeCases:
                         # Should pass parent to QDialog.__init__
                         mock_dialog_init.assert_called_once_with(mock_parent)
 
-    @patch("eve_overview_pro.ui.about_dialog.QDialog.__init__")
-    @patch("eve_overview_pro.ui.about_dialog.QVBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QLabel")
-    @patch("eve_overview_pro.ui.about_dialog.QPushButton")
-    @patch("eve_overview_pro.ui.about_dialog.QHBoxLayout")
-    @patch("eve_overview_pro.ui.about_dialog.QFont")
+    @patch("argus_overview.ui.about_dialog.QDialog.__init__")
+    @patch("argus_overview.ui.about_dialog.QVBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QLabel")
+    @patch("argus_overview.ui.about_dialog.QPushButton")
+    @patch("argus_overview.ui.about_dialog.QHBoxLayout")
+    @patch("argus_overview.ui.about_dialog.QFont")
     def test_init_without_parent(
         self, mock_font, mock_hbox, mock_button, mock_label, mock_vbox, mock_dialog_init
     ):
@@ -381,7 +381,7 @@ class TestEdgeCases:
         mock_vbox_instance = MagicMock()
         mock_vbox.return_value = mock_vbox_instance
 
-        from eve_overview_pro.ui.about_dialog import AboutDialog
+        from argus_overview.ui.about_dialog import AboutDialog
 
         with patch.object(AboutDialog, "setWindowTitle"):
             with patch.object(AboutDialog, "setMinimumWidth"):

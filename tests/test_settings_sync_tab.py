@@ -14,12 +14,12 @@ from unittest.mock import MagicMock, patch
 class TestScanWorker:
     """Tests for ScanWorker class"""
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_init(self, mock_thread):
         """Test ScanWorker initialization"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import ScanWorker
+        from argus_overview.ui.settings_sync_tab import ScanWorker
 
         mock_settings_sync = MagicMock()
 
@@ -27,12 +27,12 @@ class TestScanWorker:
 
         assert worker.settings_sync is mock_settings_sync
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_run_success(self, mock_thread):
         """Test successful scan run"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import ScanWorker
+        from argus_overview.ui.settings_sync_tab import ScanWorker
 
         mock_settings_sync = MagicMock()
         mock_char1 = MagicMock()
@@ -51,12 +51,12 @@ class TestScanWorker:
         worker.scan_progress.emit.assert_called()
         worker.scan_complete.emit.assert_called_once_with([mock_char1, mock_char2])
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_run_error(self, mock_thread):
         """Test scan run with error"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import ScanWorker
+        from argus_overview.ui.settings_sync_tab import ScanWorker
 
         mock_settings_sync = MagicMock()
         mock_settings_sync.scan_for_characters.side_effect = Exception("Scan failed")
@@ -70,12 +70,12 @@ class TestScanWorker:
 
         worker.scan_error.emit.assert_called_once_with("Scan failed")
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_run_empty_results(self, mock_thread):
         """Test scan with no characters found"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import ScanWorker
+        from argus_overview.ui.settings_sync_tab import ScanWorker
 
         mock_settings_sync = MagicMock()
         mock_settings_sync.scan_for_characters.return_value = []
@@ -98,12 +98,12 @@ class TestScanWorker:
 class TestSyncWorker:
     """Tests for SyncWorker class"""
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_init(self, mock_thread):
         """Test SyncWorker initialization"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SyncWorker
+        from argus_overview.ui.settings_sync_tab import SyncWorker
 
         mock_settings_sync = MagicMock()
         mock_source = MagicMock()
@@ -116,12 +116,12 @@ class TestSyncWorker:
         assert worker.target_chars is mock_targets
         assert worker.backup is True
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_run_success(self, mock_thread):
         """Test successful sync run"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SyncWorker
+        from argus_overview.ui.settings_sync_tab import SyncWorker
 
         mock_settings_sync = MagicMock()
         mock_settings_sync.sync_settings.return_value = {"Target1": True}
@@ -142,12 +142,12 @@ class TestSyncWorker:
         worker.sync_progress.emit.assert_called()
         worker.sync_complete.emit.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_run_partial_failure(self, mock_thread):
         """Test sync with partial failures"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SyncWorker
+        from argus_overview.ui.settings_sync_tab import SyncWorker
 
         mock_settings_sync = MagicMock()
 
@@ -179,12 +179,12 @@ class TestSyncWorker:
         assert results["Target1"] is True
         assert results["Target2"] is False
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QThread.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QThread.__init__")
     def test_run_empty_targets(self, mock_thread):
         """Test sync with empty targets"""
         mock_thread.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SyncWorker
+        from argus_overview.ui.settings_sync_tab import SyncWorker
 
         mock_settings_sync = MagicMock()
         mock_source = MagicMock()
@@ -208,12 +208,12 @@ class TestSyncWorker:
 class TestSyncPreviewDialog:
     """Tests for SyncPreviewDialog class"""
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QDialog.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QDialog.__init__")
     def test_init(self, mock_dialog):
         """Test SyncPreviewDialog initialization"""
         mock_dialog.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SyncPreviewDialog
+        from argus_overview.ui.settings_sync_tab import SyncPreviewDialog
 
         mock_source = MagicMock()
         mock_source.character_name = "Source"
@@ -233,7 +233,7 @@ class TestSyncPreviewDialog:
 
     def test_setup_ui(self):
         """Test _setup_ui creates layout"""
-        from eve_overview_pro.ui.settings_sync_tab import SyncPreviewDialog
+        from argus_overview.ui.settings_sync_tab import SyncPreviewDialog
 
         with patch.object(SyncPreviewDialog, "__init__", return_value=None):
             dialog = SyncPreviewDialog.__new__(SyncPreviewDialog)
@@ -245,13 +245,13 @@ class TestSyncPreviewDialog:
             mock_layout = MagicMock()
 
             with patch(
-                "eve_overview_pro.ui.settings_sync_tab.QVBoxLayout", return_value=mock_layout
+                "argus_overview.ui.settings_sync_tab.QVBoxLayout", return_value=mock_layout
             ):
-                with patch("eve_overview_pro.ui.settings_sync_tab.QLabel"):
-                    with patch("eve_overview_pro.ui.settings_sync_tab.QTableWidget") as mock_table:
+                with patch("argus_overview.ui.settings_sync_tab.QLabel"):
+                    with patch("argus_overview.ui.settings_sync_tab.QTableWidget") as mock_table:
                         mock_table_instance = MagicMock()
                         mock_table.return_value = mock_table_instance
-                        with patch("eve_overview_pro.ui.settings_sync_tab.QDialogButtonBox"):
+                        with patch("argus_overview.ui.settings_sync_tab.QDialogButtonBox"):
                             with patch.object(dialog, "setLayout"):
                                 dialog._setup_ui()
 
@@ -259,7 +259,7 @@ class TestSyncPreviewDialog:
 
     def test_populate_preview_no_source_dir(self):
         """Test _populate_preview with missing source directory"""
-        from eve_overview_pro.ui.settings_sync_tab import SyncPreviewDialog
+        from argus_overview.ui.settings_sync_tab import SyncPreviewDialog
 
         with patch.object(SyncPreviewDialog, "__init__", return_value=None):
             dialog = SyncPreviewDialog.__new__(SyncPreviewDialog)
@@ -269,14 +269,14 @@ class TestSyncPreviewDialog:
             dialog.preview_table = MagicMock()
             dialog.logger = MagicMock()
 
-            with patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.settings_sync_tab.QMessageBox") as mock_msgbox:
                 dialog._populate_preview()
 
                 mock_msgbox.warning.assert_called_once()
 
     def test_populate_preview_with_files(self, tmp_path):
         """Test _populate_preview with files"""
-        from eve_overview_pro.ui.settings_sync_tab import SyncPreviewDialog
+        from argus_overview.ui.settings_sync_tab import SyncPreviewDialog
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -300,15 +300,15 @@ class TestSyncPreviewDialog:
             dialog.preview_table.rowCount.return_value = 0
             dialog.logger = MagicMock()
 
-            with patch("eve_overview_pro.ui.settings_sync_tab.QTableWidgetItem"):
-                with patch("eve_overview_pro.ui.settings_sync_tab.QColor"):
+            with patch("argus_overview.ui.settings_sync_tab.QTableWidgetItem"):
+                with patch("argus_overview.ui.settings_sync_tab.QColor"):
                     dialog._populate_preview()
 
                     assert dialog.preview_table.insertRow.call_count >= 2
 
     def test_get_file_date_exists(self, tmp_path):
         """Test _get_file_date with existing file"""
-        from eve_overview_pro.ui.settings_sync_tab import SyncPreviewDialog
+        from argus_overview.ui.settings_sync_tab import SyncPreviewDialog
 
         test_file = tmp_path / "test.dat"
         test_file.write_text("data")
@@ -323,7 +323,7 @@ class TestSyncPreviewDialog:
 
     def test_get_file_date_not_exists(self, tmp_path):
         """Test _get_file_date with non-existing file"""
-        from eve_overview_pro.ui.settings_sync_tab import SyncPreviewDialog
+        from argus_overview.ui.settings_sync_tab import SyncPreviewDialog
 
         test_file = tmp_path / "nonexistent.dat"
 
@@ -343,12 +343,12 @@ class TestSyncPreviewDialog:
 class TestSettingsSyncTab:
     """Tests for SettingsSyncTab class"""
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_init(self, mock_widget):
         """Test SettingsSyncTab initialization"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_settings_sync = MagicMock()
         mock_char_manager = MagicMock()
@@ -362,7 +362,7 @@ class TestSettingsSyncTab:
 
     def test_setup_ui(self):
         """Test _setup_ui creates layout"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "__init__", return_value=None):
             tab = SettingsSyncTab.__new__(SettingsSyncTab)
@@ -374,10 +374,10 @@ class TestSettingsSyncTab:
             mock_splitter = MagicMock()
 
             with patch(
-                "eve_overview_pro.ui.settings_sync_tab.QVBoxLayout", return_value=mock_layout
+                "argus_overview.ui.settings_sync_tab.QVBoxLayout", return_value=mock_layout
             ):
                 with patch(
-                    "eve_overview_pro.ui.settings_sync_tab.QSplitter", return_value=mock_splitter
+                    "argus_overview.ui.settings_sync_tab.QSplitter", return_value=mock_splitter
                 ):
                     with patch.object(tab, "_create_toolbar", return_value=MagicMock()):
                         with patch.object(tab, "_create_character_panel", return_value=MagicMock()):
@@ -389,7 +389,7 @@ class TestSettingsSyncTab:
 
     def test_create_toolbar(self):
         """Test _create_toolbar creates toolbar"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "__init__", return_value=None):
             tab = SettingsSyncTab.__new__(SettingsSyncTab)
@@ -398,20 +398,20 @@ class TestSettingsSyncTab:
             mock_toolbar = MagicMock()
             mock_layout = MagicMock()
 
-            with patch("eve_overview_pro.ui.settings_sync_tab.QWidget", return_value=mock_toolbar):
+            with patch("argus_overview.ui.settings_sync_tab.QWidget", return_value=mock_toolbar):
                 with patch(
-                    "eve_overview_pro.ui.settings_sync_tab.QHBoxLayout", return_value=mock_layout
+                    "argus_overview.ui.settings_sync_tab.QHBoxLayout", return_value=mock_layout
                 ):
-                    with patch("eve_overview_pro.ui.settings_sync_tab.ToolbarBuilder"):
-                        with patch("eve_overview_pro.ui.settings_sync_tab.QPushButton"):
-                            with patch("eve_overview_pro.ui.settings_sync_tab.QProgressBar"):
+                    with patch("argus_overview.ui.settings_sync_tab.ToolbarBuilder"):
+                        with patch("argus_overview.ui.settings_sync_tab.QPushButton"):
+                            with patch("argus_overview.ui.settings_sync_tab.QProgressBar"):
                                 result = tab._create_toolbar()
 
                                 assert result == mock_toolbar
 
     def test_create_character_panel(self):
         """Test _create_character_panel creates panel"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "__init__", return_value=None):
             tab = SettingsSyncTab.__new__(SettingsSyncTab)
@@ -421,23 +421,23 @@ class TestSettingsSyncTab:
             mock_panel = MagicMock()
             mock_layout = MagicMock()
 
-            with patch("eve_overview_pro.ui.settings_sync_tab.QWidget", return_value=mock_panel):
+            with patch("argus_overview.ui.settings_sync_tab.QWidget", return_value=mock_panel):
                 with patch(
-                    "eve_overview_pro.ui.settings_sync_tab.QHBoxLayout", return_value=mock_layout
+                    "argus_overview.ui.settings_sync_tab.QHBoxLayout", return_value=mock_layout
                 ):
-                    with patch("eve_overview_pro.ui.settings_sync_tab.QGroupBox"):
-                        with patch("eve_overview_pro.ui.settings_sync_tab.QVBoxLayout"):
-                            with patch("eve_overview_pro.ui.settings_sync_tab.QComboBox"):
-                                with patch("eve_overview_pro.ui.settings_sync_tab.QLabel"):
-                                    with patch("eve_overview_pro.ui.settings_sync_tab.QListWidget"):
+                    with patch("argus_overview.ui.settings_sync_tab.QGroupBox"):
+                        with patch("argus_overview.ui.settings_sync_tab.QVBoxLayout"):
+                            with patch("argus_overview.ui.settings_sync_tab.QComboBox"):
+                                with patch("argus_overview.ui.settings_sync_tab.QLabel"):
+                                    with patch("argus_overview.ui.settings_sync_tab.QListWidget"):
                                         with patch(
-                                            "eve_overview_pro.ui.settings_sync_tab.QPushButton"
+                                            "argus_overview.ui.settings_sync_tab.QPushButton"
                                         ):
                                             with patch(
-                                                "eve_overview_pro.ui.settings_sync_tab.QCheckBox"
+                                                "argus_overview.ui.settings_sync_tab.QCheckBox"
                                             ):
                                                 with patch(
-                                                    "eve_overview_pro.ui.settings_sync_tab.ToolbarBuilder"
+                                                    "argus_overview.ui.settings_sync_tab.ToolbarBuilder"
                                                 ):
                                                     result = tab._create_character_panel()
 
@@ -445,7 +445,7 @@ class TestSettingsSyncTab:
 
     def test_create_log_panel(self):
         """Test _create_log_panel creates panel"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "__init__", return_value=None):
             tab = SettingsSyncTab.__new__(SettingsSyncTab)
@@ -453,24 +453,24 @@ class TestSettingsSyncTab:
             mock_panel = MagicMock()
             mock_layout = MagicMock()
 
-            with patch("eve_overview_pro.ui.settings_sync_tab.QWidget", return_value=mock_panel):
+            with patch("argus_overview.ui.settings_sync_tab.QWidget", return_value=mock_panel):
                 with patch(
-                    "eve_overview_pro.ui.settings_sync_tab.QVBoxLayout", return_value=mock_layout
+                    "argus_overview.ui.settings_sync_tab.QVBoxLayout", return_value=mock_layout
                 ):
-                    with patch("eve_overview_pro.ui.settings_sync_tab.QLabel"):
-                        with patch("eve_overview_pro.ui.settings_sync_tab.QFont"):
-                            with patch("eve_overview_pro.ui.settings_sync_tab.QTextEdit"):
-                                with patch("eve_overview_pro.ui.settings_sync_tab.QPushButton"):
+                    with patch("argus_overview.ui.settings_sync_tab.QLabel"):
+                        with patch("argus_overview.ui.settings_sync_tab.QFont"):
+                            with patch("argus_overview.ui.settings_sync_tab.QTextEdit"):
+                                with patch("argus_overview.ui.settings_sync_tab.QPushButton"):
                                     result = tab._create_log_panel()
 
                                     assert result == mock_panel
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_scan_settings(self, mock_widget):
         """Test _scan_settings starts worker"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -478,7 +478,7 @@ class TestSettingsSyncTab:
             tab.progress_bar = MagicMock()
             tab.log_text = MagicMock()
 
-            with patch("eve_overview_pro.ui.settings_sync_tab.ScanWorker") as mock_worker_class:
+            with patch("argus_overview.ui.settings_sync_tab.ScanWorker") as mock_worker_class:
                 mock_worker = MagicMock()
                 mock_worker_class.return_value = mock_worker
 
@@ -488,12 +488,12 @@ class TestSettingsSyncTab:
                 tab.progress_bar.setVisible.assert_called_with(True)
                 mock_worker.start.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_on_scan_progress(self, mock_widget):
         """Test _on_scan_progress updates UI"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -504,12 +504,12 @@ class TestSettingsSyncTab:
 
             tab.progress_bar.setValue.assert_called_with(50)
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_on_scan_complete(self, mock_widget):
         """Test _on_scan_complete populates lists"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_char = MagicMock()
         mock_char.character_name = "TestChar"
@@ -530,13 +530,13 @@ class TestSettingsSyncTab:
             tab.target_list.clear.assert_called_once()
             tab.target_list.addItem.assert_called_with("TestChar")
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_on_scan_error(self, mock_msgbox, mock_widget):
         """Test _on_scan_error shows error"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -549,12 +549,12 @@ class TestSettingsSyncTab:
             tab.scan_btn.setEnabled.assert_called_with(True)
             mock_msgbox.critical.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_on_source_selected(self, mock_widget):
         """Test _on_source_selected updates info"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_char = MagicMock()
         mock_char.settings_dir = "/tmp/test"
@@ -570,7 +570,7 @@ class TestSettingsSyncTab:
             tab.target_list.selectedItems.return_value = []
 
             with patch.object(tab, "_get_last_modified", return_value="2024-01-01"):
-                with patch("eve_overview_pro.ui.settings_sync_tab.Path") as mock_path:
+                with patch("argus_overview.ui.settings_sync_tab.Path") as mock_path:
                     mock_path_obj = MagicMock()
                     mock_path_obj.glob.return_value = []
                     mock_path.return_value = mock_path_obj
@@ -579,12 +579,12 @@ class TestSettingsSyncTab:
 
                     tab.source_info_label.setText.assert_called()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_get_last_modified_no_path(self, mock_widget):
         """Test _get_last_modified with non-existent path"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -595,7 +595,7 @@ class TestSettingsSyncTab:
 
     def test_get_last_modified_with_files(self, tmp_path):
         """Test _get_last_modified with files"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         (tmp_path / "test.dat").write_text("data")
 
@@ -609,7 +609,7 @@ class TestSettingsSyncTab:
 
     def test_get_last_modified_no_files(self, tmp_path):
         """Test _get_last_modified with empty directory"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "__init__", return_value=None):
             tab = SettingsSyncTab.__new__(SettingsSyncTab)
@@ -621,7 +621,7 @@ class TestSettingsSyncTab:
 
     def test_get_last_modified_exception(self, tmp_path):
         """Test _get_last_modified with exception"""
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "__init__", return_value=None):
             tab = SettingsSyncTab.__new__(SettingsSyncTab)
@@ -633,13 +633,13 @@ class TestSettingsSyncTab:
 
                     assert result == "N/A"
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_select_team_no_teams(self, mock_msgbox, mock_widget):
         """Test _select_team with no teams"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_char_manager = MagicMock()
         mock_char_manager.get_all_teams.return_value = []
@@ -651,14 +651,14 @@ class TestSettingsSyncTab:
 
             mock_msgbox.information.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     @patch("PySide6.QtWidgets.QInputDialog")
     def test_select_team_success(self, mock_dialog, mock_widget):
         """Test _select_team with successful selection"""
         mock_widget.return_value = None
         mock_dialog.getItem.return_value = ("TestTeam", True)
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_team = MagicMock()
         mock_team.name = "TestTeam"
@@ -688,12 +688,12 @@ class TestSettingsSyncTab:
             mock_item2.setSelected.assert_called_with(True)
             mock_item3.setSelected.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_select_all_targets(self, mock_widget):
         """Test _select_all_targets selects all"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -712,12 +712,12 @@ class TestSettingsSyncTab:
 
             assert mock_item.setSelected.call_count == 2
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_clear_targets(self, mock_widget):
         """Test _clear_targets clears selection"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -732,12 +732,12 @@ class TestSettingsSyncTab:
 
             tab.target_list.clearSelection.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_update_button_states(self, mock_widget):
         """Test _update_button_states enables/disables buttons"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -753,13 +753,13 @@ class TestSettingsSyncTab:
             tab.preview_btn.setEnabled.assert_called_with(True)
             tab.sync_btn.setEnabled.assert_called_with(True)
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_preview_sync_no_source(self, mock_msgbox, mock_widget):
         """Test _preview_sync with no source"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -770,13 +770,13 @@ class TestSettingsSyncTab:
 
             mock_msgbox.warning.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_preview_sync_no_targets(self, mock_msgbox, mock_widget):
         """Test _preview_sync with no targets"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -790,13 +790,13 @@ class TestSettingsSyncTab:
 
             mock_msgbox.warning.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.SyncPreviewDialog")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.SyncPreviewDialog")
     def test_preview_sync_success(self, mock_dialog_class, mock_widget):
         """Test _preview_sync shows dialog"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_char = MagicMock()
         mock_char.character_name = "TestChar"
@@ -816,13 +816,13 @@ class TestSettingsSyncTab:
 
             mock_dialog_class.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_sync_settings_no_source(self, mock_msgbox, mock_widget):
         """Test _sync_settings with no source"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -833,9 +833,9 @@ class TestSettingsSyncTab:
 
             mock_msgbox.warning.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
-    @patch("eve_overview_pro.ui.settings_sync_tab.SyncWorker")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.SyncWorker")
     def test_sync_settings_success(self, mock_worker_class, mock_msgbox, mock_widget):
         """Test _sync_settings starts worker"""
         mock_widget.return_value = None
@@ -845,7 +845,7 @@ class TestSettingsSyncTab:
         mock_msgbox.StandardButton = QMessageBox.StandardButton
         mock_msgbox.question.return_value = QMessageBox.StandardButton.Yes
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_char = MagicMock()
         mock_char.character_name = "TestChar"
@@ -874,12 +874,12 @@ class TestSettingsSyncTab:
 
             mock_worker.start.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_on_sync_progress(self, mock_widget):
         """Test _on_sync_progress updates UI"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -890,13 +890,13 @@ class TestSettingsSyncTab:
 
             tab.progress_bar.setValue.assert_called_with(50)
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_on_sync_complete(self, mock_msgbox, mock_widget):
         """Test _on_sync_complete shows results"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -910,13 +910,13 @@ class TestSettingsSyncTab:
             mock_msgbox.information.assert_called_once()
             tab.progress_bar.setVisible.assert_called_with(False)
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_on_sync_error(self, mock_msgbox, mock_widget):
         """Test _on_sync_error shows error"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())
@@ -929,9 +929,9 @@ class TestSettingsSyncTab:
 
             mock_msgbox.critical.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QFileDialog")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QMessageBox")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QFileDialog")
+    @patch("argus_overview.ui.settings_sync_tab.QMessageBox")
     def test_add_custom_path(self, mock_msgbox, mock_dialog, mock_widget):
         """Test _add_custom_path adds path"""
         mock_widget.return_value = None
@@ -940,7 +940,7 @@ class TestSettingsSyncTab:
         mock_msgbox.StandardButton.No = 2
         mock_msgbox.question.return_value = 2
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_settings_sync = MagicMock()
 
@@ -952,14 +952,14 @@ class TestSettingsSyncTab:
 
             mock_settings_sync.add_custom_path.assert_called_once()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
-    @patch("eve_overview_pro.ui.settings_sync_tab.QFileDialog")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QFileDialog")
     def test_add_custom_path_cancelled(self, mock_dialog, mock_widget):
         """Test _add_custom_path when cancelled"""
         mock_widget.return_value = None
         mock_dialog.getExistingDirectory.return_value = ""
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         mock_settings_sync = MagicMock()
 
@@ -970,12 +970,12 @@ class TestSettingsSyncTab:
 
             mock_settings_sync.add_custom_path.assert_not_called()
 
-    @patch("eve_overview_pro.ui.settings_sync_tab.QWidget.__init__")
+    @patch("argus_overview.ui.settings_sync_tab.QWidget.__init__")
     def test_log(self, mock_widget):
         """Test _log adds message to log"""
         mock_widget.return_value = None
 
-        from eve_overview_pro.ui.settings_sync_tab import SettingsSyncTab
+        from argus_overview.ui.settings_sync_tab import SettingsSyncTab
 
         with patch.object(SettingsSyncTab, "_setup_ui"):
             tab = SettingsSyncTab(MagicMock(), MagicMock())

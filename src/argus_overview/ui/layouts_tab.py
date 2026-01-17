@@ -26,9 +26,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from eve_overview_pro.core.layout_manager import GridPattern
-from eve_overview_pro.ui.main_tab import get_pattern_positions
-from eve_overview_pro.utils.screen import ScreenGeometry, get_screen_geometry
+from argus_overview.core.layout_manager import GridPattern
+from argus_overview.ui.main_tab import get_pattern_positions
+from argus_overview.utils.screen import ScreenGeometry, get_screen_geometry
 
 
 def get_all_patterns():

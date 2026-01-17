@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from PySide6.QtWidgets import QApplication
 
-from eve_overview_pro.ui.hotkey_edit import HotkeyEdit
+from argus_overview.ui.hotkey_edit import HotkeyEdit
 
 
 @pytest.fixture(scope="module")
@@ -343,7 +343,7 @@ class TestHotkeyEditPynputUnavailable:
         """Test start recording when pynput unavailable."""
         widget = HotkeyEdit()
 
-        with patch("eve_overview_pro.ui.hotkey_edit.PYNPUT_AVAILABLE", False):
+        with patch("argus_overview.ui.hotkey_edit.PYNPUT_AVAILABLE", False):
             widget._start_recording()
 
             assert "not available" in widget.display.text()

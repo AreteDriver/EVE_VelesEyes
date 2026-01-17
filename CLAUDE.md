@@ -13,7 +13,7 @@ Professional multi-boxing tool for EVE Online on Linux. Window preview managemen
 
 ### Source Structure
 ```
-src/eve_overview_pro/
+src/argus_overview/
 ├── ui/                  # PySide6 widgets and windows
 │   ├── action_registry.py  # Single source of truth for all UI actions
 │   ├── main_window.py
@@ -57,7 +57,7 @@ ruff check src/
 ruff format src/
 
 # Audit action registry
-python -m eve_overview_pro.ui.action_registry
+python -m argus_overview.ui.action_registry
 ```
 
 ---
@@ -101,7 +101,7 @@ python -m eve_overview_pro.ui.action_registry
 2. Choose primary home based on tier rules
 3. Register in `ui/action_registry.py`
 4. Bind handler in appropriate widget
-5. Run audit: `python -m eve_overview_pro.ui.action_registry`
+5. Run audit: `python -m argus_overview.ui.action_registry`
 
 ---
 

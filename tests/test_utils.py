@@ -11,7 +11,7 @@ class TestConstants:
 
     def test_timeout_values_are_positive(self):
         """Test timeout values are positive numbers."""
-        from eve_overview_pro.utils.constants import (
+        from argus_overview.utils.constants import (
             TIMEOUT_LONG,
             TIMEOUT_MEDIUM,
             TIMEOUT_SHORT,
@@ -24,7 +24,7 @@ class TestConstants:
 
     def test_config_dir_default(self):
         """Test default config directory."""
-        from eve_overview_pro.utils.constants import CONFIG_DIR
+        from argus_overview.utils.constants import CONFIG_DIR
 
         assert CONFIG_DIR is not None
         assert isinstance(CONFIG_DIR, Path)
@@ -36,7 +36,7 @@ class TestConstants:
                 # Need to reimport to pick up env change
                 import importlib
 
-                from eve_overview_pro.utils import constants
+                from argus_overview.utils import constants
 
                 importlib.reload(constants)
 
@@ -44,7 +44,7 @@ class TestConstants:
 
     def test_config_files_are_paths(self):
         """Test config file constants are Path objects."""
-        from eve_overview_pro.utils.constants import (
+        from argus_overview.utils.constants import (
             CHARACTERS_FILE,
             LOG_FILE,
             SETTINGS_FILE,
@@ -62,7 +62,7 @@ class TestWindowUtils:
 
     def test_valid_window_id_hex_format(self):
         """Test valid window IDs in hex format."""
-        from eve_overview_pro.utils.window_utils import is_valid_window_id
+        from argus_overview.utils.window_utils import is_valid_window_id
 
         assert is_valid_window_id("0x03800003") is True
         assert is_valid_window_id("0x1") is True
@@ -72,7 +72,7 @@ class TestWindowUtils:
 
     def test_invalid_window_id_formats(self):
         """Test invalid window ID formats."""
-        from eve_overview_pro.utils.window_utils import is_valid_window_id
+        from argus_overview.utils.window_utils import is_valid_window_id
 
         assert is_valid_window_id("") is False
         assert is_valid_window_id(None) is False
@@ -84,26 +84,26 @@ class TestWindowUtils:
 
     def test_invalid_window_id_types(self):
         """Test non-string types."""
-        from eve_overview_pro.utils.window_utils import is_valid_window_id
+        from argus_overview.utils.window_utils import is_valid_window_id
 
         assert is_valid_window_id(12345) is False
         assert is_valid_window_id([]) is False
         assert is_valid_window_id({}) is False
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_move_window_validates_id(self, mock_run):
         """Test move_window validates window ID before calling subprocess."""
-        from eve_overview_pro.utils.window_utils import move_window
+        from argus_overview.utils.window_utils import move_window
 
         # Invalid ID should return False without calling subprocess
         result = move_window("invalid", 0, 0, 100, 100)
         assert result is False
         mock_run.assert_not_called()
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_move_window_calls_xdotool(self, mock_run):
         """Test move_window calls xdotool with correct args."""
-        from eve_overview_pro.utils.window_utils import move_window
+        from argus_overview.utils.window_utils import move_window
 
         mock_run.return_value = MagicMock(returncode=0)
 
@@ -112,19 +112,19 @@ class TestWindowUtils:
         assert result is True
         assert mock_run.call_count >= 2  # windowmove and windowsize
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_activate_window_validates_id(self, mock_run):
         """Test activate_window validates window ID."""
-        from eve_overview_pro.utils.window_utils import activate_window
+        from argus_overview.utils.window_utils import activate_window
 
         result = activate_window("invalid")
         assert result is False
         mock_run.assert_not_called()
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_activate_window_calls_xdotool(self, mock_run):
         """Test activate_window calls xdotool."""
-        from eve_overview_pro.utils.window_utils import activate_window
+        from argus_overview.utils.window_utils import activate_window
 
         mock_run.return_value = MagicMock(returncode=0)
 
@@ -133,10 +133,10 @@ class TestWindowUtils:
         assert result is True
         mock_run.assert_called()
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_get_focused_window_success(self, mock_run):
         """Test get_focused_window returns window ID."""
-        from eve_overview_pro.utils.window_utils import get_focused_window
+        from argus_overview.utils.window_utils import get_focused_window
 
         mock_run.return_value = MagicMock(returncode=0, stdout="58720259\n")
 
@@ -145,10 +145,10 @@ class TestWindowUtils:
         # 58720259 in hex is 0x3800003
         assert result == "0x3800003"
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_get_focused_window_failure(self, mock_run):
         """Test get_focused_window handles errors."""
-        from eve_overview_pro.utils.window_utils import get_focused_window
+        from argus_overview.utils.window_utils import get_focused_window
 
         mock_run.side_effect = Exception("xdotool not found")
 
@@ -156,10 +156,10 @@ class TestWindowUtils:
 
         assert result is None
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_get_focused_window_invalid_output(self, mock_run):
         """Test get_focused_window handles non-integer output."""
-        from eve_overview_pro.utils.window_utils import get_focused_window
+        from argus_overview.utils.window_utils import get_focused_window
 
         # xdotool returns something that can't be converted to int
         mock_run.return_value = MagicMock(returncode=0, stdout="not_a_number\n")
@@ -169,12 +169,12 @@ class TestWindowUtils:
         # Should return None since "not_a_number" isn't a valid window ID
         assert result is None
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_move_window_timeout_fallback(self, mock_run):
         """Test move_window falls back when --sync times out."""
         import subprocess
 
-        from eve_overview_pro.utils.window_utils import move_window
+        from argus_overview.utils.window_utils import move_window
 
         # First call (with --sync) times out, second (without) succeeds
         mock_run.side_effect = [
@@ -189,10 +189,10 @@ class TestWindowUtils:
         assert result is True
         assert mock_run.call_count == 4
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_move_window_exception(self, mock_run):
         """Test move_window handles unexpected exceptions."""
-        from eve_overview_pro.utils.window_utils import move_window
+        from argus_overview.utils.window_utils import move_window
 
         mock_run.side_effect = OSError("xdotool crashed")
 
@@ -200,12 +200,12 @@ class TestWindowUtils:
 
         assert result is False
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_activate_window_timeout_fallback(self, mock_run):
         """Test activate_window falls back when --sync times out."""
         import subprocess
 
-        from eve_overview_pro.utils.window_utils import activate_window
+        from argus_overview.utils.window_utils import activate_window
 
         mock_run.side_effect = [
             subprocess.TimeoutExpired("xdotool", 2),  # First call with --sync
@@ -217,10 +217,10 @@ class TestWindowUtils:
         assert result is True
         assert mock_run.call_count == 2
 
-    @patch("eve_overview_pro.utils.window_utils.subprocess.run")
+    @patch("argus_overview.utils.window_utils.subprocess.run")
     def test_activate_window_exception(self, mock_run):
         """Test activate_window handles unexpected exceptions."""
-        from eve_overview_pro.utils.window_utils import activate_window
+        from argus_overview.utils.window_utils import activate_window
 
         mock_run.side_effect = OSError("xdotool crashed")
 
@@ -234,7 +234,7 @@ class TestUtilsExports:
 
     def test_all_exports_available(self):
         """Test all expected exports are available from utils."""
-        from eve_overview_pro import utils
+        from argus_overview import utils
 
         # Constants
         assert hasattr(utils, "CONFIG_DIR")

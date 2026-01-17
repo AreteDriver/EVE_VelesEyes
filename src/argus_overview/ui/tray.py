@@ -11,8 +11,8 @@ from PySide6.QtCore import QObject, Signal
 from PySide6.QtGui import QColor, QFont, QIcon, QPainter, QPixmap
 from PySide6.QtWidgets import QMenu, QSystemTrayIcon
 
-from eve_overview_pro.ui.action_registry import ActionRegistry
-from eve_overview_pro.ui.menu_builder import MenuBuilder
+from argus_overview.ui.action_registry import ActionRegistry
+from argus_overview.ui.menu_builder import MenuBuilder
 
 
 class SystemTray(QObject):

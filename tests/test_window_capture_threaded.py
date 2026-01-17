@@ -14,7 +14,7 @@ class TestWindowCaptureThreadedInit:
 
     def test_init_default_workers(self):
         """Test initialization with default worker count"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -26,7 +26,7 @@ class TestWindowCaptureThreadedInit:
 
     def test_init_custom_workers(self):
         """Test initialization with custom worker count"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=8)
 
@@ -34,7 +34,7 @@ class TestWindowCaptureThreadedInit:
 
     def test_init_single_worker(self):
         """Test initialization with single worker"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=1)
 
@@ -42,7 +42,7 @@ class TestWindowCaptureThreadedInit:
 
     def test_init_queues_empty(self):
         """Test that queues are initially empty"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -53,10 +53,10 @@ class TestWindowCaptureThreadedInit:
 class TestStartStop:
     """Tests for start/stop functionality"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
+    @patch("argus_overview.core.window_capture_threaded.threading.Thread")
     def test_start_creates_workers(self, mock_thread_class):
         """Test that start creates worker threads"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_thread = MagicMock()
         mock_thread_class.return_value = mock_thread
@@ -69,10 +69,10 @@ class TestStartStop:
         assert mock_thread.start.call_count == 3
         assert len(capture.workers) == 3
 
-    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
+    @patch("argus_overview.core.window_capture_threaded.threading.Thread")
     def test_start_sets_daemon_threads(self, mock_thread_class):
         """Test that worker threads are daemon threads"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_thread = MagicMock()
         mock_thread_class.return_value = mock_thread
@@ -84,10 +84,10 @@ class TestStartStop:
         for call in mock_thread_class.call_args_list:
             assert call[1]["daemon"] is True
 
-    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
+    @patch("argus_overview.core.window_capture_threaded.threading.Thread")
     def test_stop_sets_running_false(self, mock_thread_class):
         """Test that stop sets running to False"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_thread = MagicMock()
         mock_thread_class.return_value = mock_thread
@@ -98,10 +98,10 @@ class TestStartStop:
 
         assert capture.running is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
+    @patch("argus_overview.core.window_capture_threaded.threading.Thread")
     def test_stop_sends_none_to_queue(self, mock_thread_class):
         """Test that stop sends None to queue for each worker"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_thread = MagicMock()
         mock_thread_class.return_value = mock_thread
@@ -119,10 +119,10 @@ class TestStartStop:
 
         assert none_count == 3
 
-    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
+    @patch("argus_overview.core.window_capture_threaded.threading.Thread")
     def test_stop_joins_workers(self, mock_thread_class):
         """Test that stop joins worker threads"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_thread = MagicMock()
         mock_thread_class.return_value = mock_thread
@@ -133,10 +133,10 @@ class TestStartStop:
 
         assert mock_thread.join.call_count == 2
 
-    @patch("eve_overview_pro.core.window_capture_threaded.threading.Thread")
+    @patch("argus_overview.core.window_capture_threaded.threading.Thread")
     def test_stop_clears_workers(self, mock_thread_class):
         """Test that stop clears the workers list"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_thread = MagicMock()
         mock_thread_class.return_value = mock_thread
@@ -154,7 +154,7 @@ class TestCaptureWindowAsync:
 
     def test_capture_window_async_returns_request_id(self):
         """Test that capture_window_async returns a request ID"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -167,7 +167,7 @@ class TestCaptureWindowAsync:
 
     def test_capture_window_async_queues_task(self):
         """Test that capture_window_async puts task in queue"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -182,7 +182,7 @@ class TestCaptureWindowAsync:
 
     def test_capture_window_async_multiple_requests(self):
         """Test multiple async capture requests"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -198,7 +198,7 @@ class TestCaptureWindowAsync:
 
     def test_capture_window_async_default_scale(self):
         """Test capture with default scale of 1.0"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -213,7 +213,7 @@ class TestGetResult:
 
     def test_get_result_returns_none_when_empty(self):
         """Test get_result returns None when queue is empty"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -223,7 +223,7 @@ class TestGetResult:
 
     def test_get_result_returns_tuple(self):
         """Test get_result returns tuple from queue"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -240,7 +240,7 @@ class TestGetResult:
 
     def test_get_result_timeout_parameter(self):
         """Test get_result respects timeout parameter"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -257,11 +257,11 @@ class TestGetResult:
 class TestCaptureWindowSync:
     """Tests for _capture_window_sync method"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
-    @patch("eve_overview_pro.core.window_capture_threaded.Image")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.Image")
     def test_capture_window_sync_success(self, mock_image_module, mock_subprocess):
         """Test successful synchronous window capture"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         # Mock subprocess result
         mock_result = MagicMock()
@@ -282,10 +282,10 @@ class TestCaptureWindowSync:
         mock_subprocess.assert_called_once()
         mock_image_module.open.assert_called_once()
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_failure(self, mock_subprocess):
         """Test capture failure returns None"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -297,11 +297,11 @@ class TestCaptureWindowSync:
 
         assert result is None
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
-    @patch("eve_overview_pro.core.window_capture_threaded.Image")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.Image")
     def test_capture_window_sync_with_scaling(self, mock_image_module, mock_subprocess):
         """Test capture with scaling"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -323,12 +323,12 @@ class TestCaptureWindowSync:
         mock_img.resize.assert_called_once_with((400, 300), "LANCZOS")
         assert result is mock_scaled_img
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_timeout(self, mock_subprocess):
         """Test capture handles timeout"""
         import subprocess as subprocess_module
 
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_subprocess.side_effect = subprocess_module.TimeoutExpired("import", 1)
 
@@ -337,10 +337,10 @@ class TestCaptureWindowSync:
 
         assert result is None
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_exception(self, mock_subprocess):
         """Test capture handles exceptions"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_subprocess.side_effect = Exception("Unknown error")
 
@@ -349,10 +349,10 @@ class TestCaptureWindowSync:
 
         assert result is None
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_capture_window_sync_uses_import_command(self, mock_subprocess):
         """Test that capture uses ImageMagick import command"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -375,10 +375,10 @@ class TestCaptureWindowSync:
 class TestGetWindowList:
     """Tests for get_window_list method"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_success(self, mock_subprocess):
         """Test successful window list retrieval"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -395,10 +395,10 @@ class TestGetWindowList:
         assert windows[1] == ("0x67890", "Window Title 2")
         assert windows[2] == ("0xABCDE", "EVE Online - Character Name")
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_empty(self, mock_subprocess):
         """Test empty window list"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -410,10 +410,10 @@ class TestGetWindowList:
 
         assert windows == []
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_failure(self, mock_subprocess):
         """Test window list retrieval failure"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -425,10 +425,10 @@ class TestGetWindowList:
 
         assert windows == []
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_exception(self, mock_subprocess):
         """Test window list handles exceptions"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_subprocess.side_effect = Exception("wmctrl not found")
 
@@ -437,10 +437,10 @@ class TestGetWindowList:
 
         assert windows == []
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_uses_wmctrl(self, mock_subprocess):
         """Test that window list uses wmctrl command"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -454,10 +454,10 @@ class TestGetWindowList:
         cmd = call_args[0][0]
         assert cmd == ["wmctrl", "-l"]
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_get_window_list_handles_short_lines(self, mock_subprocess):
         """Test handling of malformed/short lines"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -476,10 +476,10 @@ class TestGetWindowList:
 class TestActivateWindow:
     """Tests for activate_window method"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_activate_window_success(self, mock_subprocess):
         """Test successful window activation"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -490,10 +490,10 @@ class TestActivateWindow:
 
         assert result is True
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_activate_window_failure(self, mock_subprocess):
         """Test window activation failure"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -504,10 +504,10 @@ class TestActivateWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_activate_window_exception(self, mock_subprocess):
         """Test window activation handles exceptions"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_subprocess.side_effect = Exception("wmctrl error")
 
@@ -516,10 +516,10 @@ class TestActivateWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_activate_window_uses_wmctrl(self, mock_subprocess):
         """Test that activate uses wmctrl command"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -536,10 +536,10 @@ class TestActivateWindow:
 class TestMinimizeWindow:
     """Tests for minimize_window method"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_success(self, mock_subprocess):
         """Test successful window minimization"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -550,10 +550,10 @@ class TestMinimizeWindow:
 
         assert result is True
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_failure(self, mock_subprocess):
         """Test window minimization failure"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -564,10 +564,10 @@ class TestMinimizeWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_exception(self, mock_subprocess):
         """Test window minimization handles exceptions"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_subprocess.side_effect = Exception("xdotool error")
 
@@ -576,10 +576,10 @@ class TestMinimizeWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_minimize_window_uses_xdotool(self, mock_subprocess):
         """Test that minimize uses xdotool command"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -596,10 +596,10 @@ class TestMinimizeWindow:
 class TestRestoreWindow:
     """Tests for restore_window method"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_restore_window_success(self, mock_subprocess):
         """Test successful window restoration"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -610,10 +610,10 @@ class TestRestoreWindow:
 
         assert result is True
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_restore_window_failure(self, mock_subprocess):
         """Test window restoration failure"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -624,10 +624,10 @@ class TestRestoreWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_restore_window_exception(self, mock_subprocess):
         """Test window restoration handles exceptions"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_subprocess.side_effect = Exception("xdotool error")
 
@@ -636,10 +636,10 @@ class TestRestoreWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_restore_window_uses_xdotool(self, mock_subprocess):
         """Test that restore uses xdotool command"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -658,7 +658,7 @@ class TestWorkerThread:
 
     def test_worker_exits_on_none(self):
         """Test worker exits when it receives None"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=1)
         capture._stop_event.clear()  # Set running state
@@ -671,11 +671,11 @@ class TestWorkerThread:
 
         assert not worker_thread.is_alive()
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
-    @patch("eve_overview_pro.core.window_capture_threaded.Image")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.Image")
     def test_worker_processes_task(self, mock_image, mock_subprocess):
         """Test worker processes capture tasks"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -706,7 +706,7 @@ class TestWorkerThread:
 
     def test_worker_continues_on_empty_queue(self):
         """Test worker continues when queue is empty"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=1)
         capture._stop_event.clear()  # Set running state
@@ -727,7 +727,7 @@ class TestWorkerThread:
 
     def test_worker_handles_capture_exception(self):
         """Test worker handles exception from _capture_window_sync"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=1)
         capture._stop_event.clear()  # Set running state
@@ -750,11 +750,11 @@ class TestWorkerThread:
 class TestIntegration:
     """Integration tests for the capture system"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
-    @patch("eve_overview_pro.core.window_capture_threaded.Image")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.Image")
     def test_full_capture_workflow(self, mock_image, mock_subprocess):
         """Test complete capture workflow: start -> capture -> get result -> stop"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -794,7 +794,7 @@ class TestIntegration:
 
     def test_multiple_workers_process_concurrently(self):
         """Test that multiple workers can process tasks"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded(max_workers=4)
 
@@ -809,10 +809,10 @@ class TestIntegration:
 class TestSendKeyToWindow:
     """Tests for send_key_to_window method"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_send_key_success(self, mock_subprocess):
         """Test successful key send"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -823,10 +823,10 @@ class TestSendKeyToWindow:
 
         assert result is True
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_send_key_failure(self, mock_subprocess):
         """Test key send failure"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -837,10 +837,10 @@ class TestSendKeyToWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_send_key_exception(self, mock_subprocess):
         """Test key send handles exceptions"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_subprocess.side_effect = Exception("xdotool error")
 
@@ -849,10 +849,10 @@ class TestSendKeyToWindow:
 
         assert result is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_send_key_uses_xdotool(self, mock_subprocess):
         """Test that send_key uses xdotool command"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -867,7 +867,7 @@ class TestSendKeyToWindow:
 
     def test_send_key_invalid_window_id(self):
         """Test send_key rejects invalid window IDs"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -879,7 +879,7 @@ class TestSendKeyToWindow:
 
     def test_send_key_invalid_key(self):
         """Test send_key rejects invalid keys"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -888,10 +888,10 @@ class TestSendKeyToWindow:
         # None key
         assert capture.send_key_to_window("0x12345", None) is False
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_send_key_modifier_keys(self, mock_subprocess):
         """Test sending modifier key combinations"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -908,10 +908,10 @@ class TestSendKeyToWindow:
 class TestBroadcastKey:
     """Tests for broadcast_key method"""
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_broadcast_key_all_success(self, mock_subprocess):
         """Test broadcast to all windows succeeds"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -925,10 +925,10 @@ class TestBroadcastKey:
         assert count == 3
         assert mock_subprocess.call_count == 3
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_broadcast_key_partial_success(self, mock_subprocess):
         """Test broadcast with some failures"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         # First two succeed, third fails
         mock_results = [
@@ -947,7 +947,7 @@ class TestBroadcastKey:
 
     def test_broadcast_key_empty_list(self):
         """Test broadcast to empty list"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -957,7 +957,7 @@ class TestBroadcastKey:
 
     def test_broadcast_key_invalid_key(self):
         """Test broadcast rejects invalid key"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
         window_ids = ["0x11111", "0x22222"]
@@ -967,10 +967,10 @@ class TestBroadcastKey:
         # None key
         assert capture.broadcast_key(window_ids, None) == 0
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_broadcast_key_skips_invalid_window_ids(self, mock_subprocess):
         """Test broadcast skips invalid window IDs"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -992,7 +992,7 @@ class TestEdgeCases:
 
     def test_stop_without_start(self):
         """Test calling stop without start doesn't crash"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -1002,9 +1002,9 @@ class TestEdgeCases:
 
     def test_start_multiple_times(self):
         """Test calling start multiple times"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
-        with patch("eve_overview_pro.core.window_capture_threaded.threading.Thread") as mock_thread:
+        with patch("argus_overview.core.window_capture_threaded.threading.Thread") as mock_thread:
             mock_thread.return_value = MagicMock()
 
             capture = WindowCaptureThreaded(max_workers=2)
@@ -1017,10 +1017,10 @@ class TestEdgeCases:
 
             capture.stop()
 
-    @patch("eve_overview_pro.core.window_capture_threaded.subprocess.run")
+    @patch("argus_overview.core.window_capture_threaded.subprocess.run")
     def test_capture_with_empty_stdout(self, mock_subprocess):
         """Test capture handles empty stdout"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -1034,7 +1034,7 @@ class TestEdgeCases:
 
     def test_capture_async_with_zero_scale(self):
         """Test capture request with zero scale"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -1044,7 +1044,7 @@ class TestEdgeCases:
 
     def test_capture_async_with_negative_scale(self):
         """Test capture request with negative scale"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -1054,9 +1054,9 @@ class TestEdgeCases:
 
     def test_window_id_with_special_chars(self):
         """Test window operations with special window IDs"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
-        with patch("eve_overview_pro.core.window_capture_threaded.subprocess.run") as mock_run:
+        with patch("argus_overview.core.window_capture_threaded.subprocess.run") as mock_run:
             mock_result = MagicMock()
             mock_result.returncode = 0
             mock_run.return_value = mock_result
@@ -1075,7 +1075,7 @@ class TestWindowCaptureInvalidWindowId:
 
     def test_capture_window_async_invalid_id(self):
         """Test capture_window_async returns empty string for invalid window ID"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -1086,7 +1086,7 @@ class TestWindowCaptureInvalidWindowId:
 
     def test_activate_window_invalid_id(self):
         """Test activate_window returns False for invalid window ID"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -1097,7 +1097,7 @@ class TestWindowCaptureInvalidWindowId:
 
     def test_minimize_window_invalid_id(self):
         """Test minimize_window returns False for invalid window ID"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 
@@ -1108,7 +1108,7 @@ class TestWindowCaptureInvalidWindowId:
 
     def test_restore_window_invalid_id(self):
         """Test restore_window returns False for invalid window ID"""
-        from eve_overview_pro.core.window_capture_threaded import WindowCaptureThreaded
+        from argus_overview.core.window_capture_threaded import WindowCaptureThreaded
 
         capture = WindowCaptureThreaded()
 

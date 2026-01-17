@@ -12,7 +12,7 @@ from typing import Callable, Dict, List, Optional
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMenu, QPushButton
 
-from eve_overview_pro.ui.action_registry import (
+from argus_overview.ui.action_registry import (
     ActionRegistry,
     ActionSpec,
     PrimaryHome,

@@ -16,7 +16,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from eve_overview_pro.core.config_watcher import (
+from argus_overview.core.config_watcher import (
     WATCHDOG_AVAILABLE,
     ConfigFileHandler,
     ConfigWatcher,
@@ -260,7 +260,7 @@ class TestWatchdogFallback:
             # Mock Observer to avoid actual file watching
             mock_observer_instance = MagicMock()
             with patch(
-                "eve_overview_pro.core.config_watcher.Observer", return_value=mock_observer_instance
+                "argus_overview.core.config_watcher.Observer", return_value=mock_observer_instance
             ):
                 watcher._start_watchdog()
 
@@ -283,7 +283,7 @@ class TestWatchdogFallback:
             watcher = ConfigWatcher(config_path)
 
             # Make Observer raise an exception
-            with patch("eve_overview_pro.core.config_watcher.Observer") as mock_observer:
+            with patch("argus_overview.core.config_watcher.Observer") as mock_observer:
                 mock_observer.side_effect = Exception("Observer failed")
 
                 with patch.object(watcher, "_start_polling") as mock_polling:
@@ -298,7 +298,7 @@ class TestWatchdogFallback:
             config_path.write_text("{}")
             watcher = ConfigWatcher(config_path)
 
-            with patch("eve_overview_pro.core.config_watcher.WATCHDOG_AVAILABLE", False):
+            with patch("argus_overview.core.config_watcher.WATCHDOG_AVAILABLE", False):
                 with patch.object(watcher, "_start_polling") as mock_polling:
                     watcher.start()
                     mock_polling.assert_called_once()

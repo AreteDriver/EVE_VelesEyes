@@ -17,7 +17,7 @@ class TestPilToQimage:
 
     def test_pil_to_qimage_none_returns_none(self):
         """Test pil_to_qimage returns None for None input"""
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         result = pil_to_qimage(None)
         assert result is None
@@ -26,7 +26,7 @@ class TestPilToQimage:
         """Test pil_to_qimage with RGB image"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         # Create a small RGB image
         img = Image.new("RGB", (10, 10), color="red")
@@ -40,7 +40,7 @@ class TestPilToQimage:
         """Test pil_to_qimage with RGBA image"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         # Create a small RGBA image
         img = Image.new("RGBA", (10, 10), color=(255, 0, 0, 128))
@@ -54,7 +54,7 @@ class TestPilToQimage:
         """Test pil_to_qimage with grayscale image"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         # Create a small grayscale image
         img = Image.new("L", (10, 10), color=128)
@@ -68,7 +68,7 @@ class TestPilToQimage:
         """Test pil_to_qimage with other mode (converts to RGB)"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         # Create a P (palette) mode image
         img = Image.new("P", (10, 10))
@@ -89,7 +89,7 @@ class TestFlowLayout:
 
     def test_init(self):
         """Test FlowLayout initialization"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -103,7 +103,7 @@ class TestFlowLayout:
 
     def test_add_item(self):
         """Test addItem method"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -116,7 +116,7 @@ class TestFlowLayout:
 
     def test_count(self):
         """Test count method"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -126,7 +126,7 @@ class TestFlowLayout:
 
     def test_item_at_valid(self):
         """Test itemAt with valid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -137,7 +137,7 @@ class TestFlowLayout:
 
     def test_item_at_invalid(self):
         """Test itemAt with invalid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -148,7 +148,7 @@ class TestFlowLayout:
 
     def test_take_at_valid(self):
         """Test takeAt with valid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -162,7 +162,7 @@ class TestFlowLayout:
 
     def test_take_at_invalid(self):
         """Test takeAt with invalid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -172,7 +172,7 @@ class TestFlowLayout:
 
     def test_expanding_directions(self):
         """Test expandingDirections returns 0"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -181,7 +181,7 @@ class TestFlowLayout:
 
     def test_has_height_for_width(self):
         """Test hasHeightForWidth returns True"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -190,7 +190,7 @@ class TestFlowLayout:
 
     def test_height_for_width(self):
         """Test heightForWidth calls _do_layout"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -204,7 +204,7 @@ class TestFlowLayout:
 
     def test_set_geometry(self):
         """Test setGeometry calls _do_layout"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -220,7 +220,7 @@ class TestFlowLayout:
 
     def test_size_hint(self):
         """Test sizeHint returns minimum size"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -237,7 +237,7 @@ class TestFlowLayout:
         """Test minimumSize with no items"""
         from PySide6.QtCore import QSize
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -252,7 +252,7 @@ class TestFlowLayout:
         """Test minimumSize with items"""
         from PySide6.QtCore import QSize
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -268,7 +268,7 @@ class TestFlowLayout:
 
     def test_do_layout_empty(self):
         """Test _do_layout with empty item list"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -284,7 +284,7 @@ class TestFlowLayout:
         """Test _do_layout with items"""
         from PySide6.QtCore import QSize
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -314,7 +314,7 @@ class TestDraggableTile:
 
     def test_init_attributes(self):
         """Test DraggableTile initialization"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -328,7 +328,7 @@ class TestDraggableTile:
 
     def test_set_position(self):
         """Test set_position method"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -344,7 +344,7 @@ class TestDraggableTile:
 
     def test_set_stacked(self):
         """Test set_stacked method"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -368,7 +368,7 @@ class TestArrangementGrid:
 
     def test_init_attributes(self):
         """Test ArrangementGrid initialization"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -382,7 +382,7 @@ class TestArrangementGrid:
 
     def test_get_arrangement_with_tiles(self):
         """Test get_arrangement returns arrangement"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -408,7 +408,7 @@ class TestArrangementGrid:
 
     def test_get_arrangement_empty(self):
         """Test get_arrangement with no tiles"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -420,7 +420,7 @@ class TestArrangementGrid:
 
     def test_clear_tiles(self):
         """Test clear_tiles removes all tiles"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -445,7 +445,7 @@ class TestGridApplier:
 
     def test_init(self):
         """Test GridApplier initialization"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         applier = GridApplier()
 
@@ -453,7 +453,7 @@ class TestGridApplier:
 
     def test_get_screen_geometry_with_xrandr(self):
         """Test get_screen_geometry parses xrandr output"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         applier = GridApplier()
 
@@ -470,7 +470,7 @@ class TestGridApplier:
 
     def test_get_screen_geometry_no_display(self):
         """Test get_screen_geometry with no connected display"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         applier = GridApplier()
 
@@ -483,7 +483,7 @@ class TestGridApplier:
 
     def test_apply_arrangement_empty(self):
         """Test apply_arrangement with empty arrangement"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         applier = GridApplier()
 
@@ -496,7 +496,7 @@ class TestGridApplier:
 
     def test_apply_arrangement_no_screen(self):
         """Test apply_arrangement when screen is None"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         applier = GridApplier()
 
@@ -516,7 +516,7 @@ class TestWindowPreviewWidget:
 
     def test_init_attributes(self):
         """Test WindowPreviewWidget initialization"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -528,7 +528,7 @@ class TestWindowPreviewWidget:
 
     def test_get_display_name_no_custom(self):
         """Test _get_display_name method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -541,7 +541,7 @@ class TestWindowPreviewWidget:
 
     def test_get_display_name_with_custom(self):
         """Test _get_display_name with custom label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -557,7 +557,7 @@ class TestWindowPreviewWidget:
         """Test set_focused method"""
         from datetime import datetime
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -572,7 +572,7 @@ class TestWindowPreviewWidget:
 
     def test_set_focused_false(self):
         """Test set_focused to False"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -587,7 +587,7 @@ class TestWindowPreviewWidget:
         """Test mark_activity method"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -604,7 +604,7 @@ class TestWindowPreviewWidget:
         """Test get_activity_state when focused"""
         from datetime import datetime
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -619,7 +619,7 @@ class TestWindowPreviewWidget:
         """Test get_activity_state when recent activity"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -634,7 +634,7 @@ class TestWindowPreviewWidget:
         """Test get_activity_state when idle"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -647,8 +647,8 @@ class TestWindowPreviewWidget:
 
     def test_set_alert(self):
         """Test set_alert method"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -667,8 +667,8 @@ class TestWindowPreviewWidget:
 
     def test_set_alert_timer_already_active(self):
         """Test set_alert when timer already running"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -687,7 +687,7 @@ class TestWindowPreviewWidget:
 
     def test_flash_tick_decrement(self):
         """Test _flash_tick decrements counter"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -703,7 +703,7 @@ class TestWindowPreviewWidget:
 
     def test_flash_tick_stops_at_zero(self):
         """Test _flash_tick stops timer at zero"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -720,7 +720,7 @@ class TestWindowPreviewWidget:
 
     def test_update_session_timer_disabled(self):
         """Test _update_session_timer when disabled"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -735,7 +735,7 @@ class TestWindowPreviewWidget:
         """Test _update_session_timer with minutes only"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -751,7 +751,7 @@ class TestWindowPreviewWidget:
         """Test _update_session_timer with hours"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -765,7 +765,7 @@ class TestWindowPreviewWidget:
 
     def test_set_custom_label(self):
         """Test set_custom_label method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -786,7 +786,7 @@ class TestWindowPreviewWidget:
 
     def test_set_custom_label_with_settings(self):
         """Test set_custom_label saves to settings"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -805,7 +805,7 @@ class TestWindowPreviewWidget:
 
     def test_set_custom_label_clear(self):
         """Test set_custom_label clears label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -825,7 +825,7 @@ class TestWindowPreviewWidget:
 
     def test_load_settings_with_manager(self):
         """Test _load_settings with settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -851,7 +851,7 @@ class TestWindowPreviewWidget:
 
     def test_load_settings_without_manager(self):
         """Test _load_settings without settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -862,7 +862,7 @@ class TestWindowPreviewWidget:
 
     def test_update_tooltip_no_custom(self):
         """Test _update_tooltip without custom label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -879,7 +879,7 @@ class TestWindowPreviewWidget:
 
     def test_update_tooltip_with_custom(self):
         """Test _update_tooltip with custom label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -896,7 +896,7 @@ class TestWindowPreviewWidget:
 
     def test_enter_event(self):
         """Test enterEvent hover effect"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -912,7 +912,7 @@ class TestWindowPreviewWidget:
 
     def test_leave_event(self):
         """Test leaveEvent restores opacity"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -927,7 +927,7 @@ class TestWindowPreviewWidget:
 
     def test_mouse_click_activates_window(self):
         """Test left click (press + release) emits window_activated signal"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -958,7 +958,7 @@ class TestWindowManager:
 
     def test_init_attributes(self):
         """Test WindowManager initialization"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -969,7 +969,7 @@ class TestWindowManager:
 
     def test_get_active_window_count_empty(self):
         """Test get_active_window_count with no windows"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -981,7 +981,7 @@ class TestWindowManager:
 
     def test_get_active_window_count_with_windows(self):
         """Test get_active_window_count method"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -993,7 +993,7 @@ class TestWindowManager:
 
     def test_set_refresh_rate(self):
         """Test set_refresh_rate method"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1012,7 +1012,7 @@ class TestWindowManager:
 
     def test_set_refresh_rate_clamped(self):
         """Test set_refresh_rate clamps values to 1-60"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1029,7 +1029,7 @@ class TestWindowManager:
 
     def test_set_refresh_rate_inactive_timer(self):
         """Test set_refresh_rate when timer is not active"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1047,7 +1047,7 @@ class TestWindowManager:
 
     def test_add_window_new(self):
         """Test add_window with new window"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1057,7 +1057,7 @@ class TestWindowManager:
             manager.alert_detector = MagicMock()
             manager.settings_manager = None
 
-            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget") as mock_widget:
+            with patch("argus_overview.ui.main_tab.WindowPreviewWidget") as mock_widget:
                 mock_frame = MagicMock()
                 mock_widget.return_value = mock_frame
 
@@ -1068,7 +1068,7 @@ class TestWindowManager:
 
     def test_add_window_duplicate(self):
         """Test add_window with existing window"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1082,7 +1082,7 @@ class TestWindowManager:
 
     def test_remove_window_exists(self):
         """Test remove_window with existing window"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1099,7 +1099,7 @@ class TestWindowManager:
 
     def test_remove_window_not_exists(self):
         """Test remove_window with non-existent window"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1111,7 +1111,7 @@ class TestWindowManager:
 
     def test_start_capture_loop(self):
         """Test start_capture_loop method"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1125,7 +1125,7 @@ class TestWindowManager:
 
     def test_stop_capture_loop(self):
         """Test stop_capture_loop method"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1147,7 +1147,7 @@ class TestMainTab:
 
     def test_init_attributes(self):
         """Test MainTab initialization attributes"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1158,7 +1158,7 @@ class TestMainTab:
 
     def test_toggle_lock(self):
         """Test _toggle_lock method"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1178,7 +1178,7 @@ class TestMainTab:
 
     def test_toggle_lock_with_frames(self):
         """Test _toggle_lock updates frames"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1198,7 +1198,7 @@ class TestMainTab:
 
     def test_toggle_thumbnails_visibility(self):
         """Test toggle_thumbnails_visibility method"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1215,7 +1215,7 @@ class TestMainTab:
 
     def test_toggle_thumbnails_with_frames(self):
         """Test toggle_thumbnails_visibility updates frame visibility"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1232,7 +1232,7 @@ class TestMainTab:
 
     def test_update_status_empty(self):
         """Test _update_status with no windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1250,7 +1250,7 @@ class TestMainTab:
 
     def test_update_status_with_windows(self):
         """Test _update_status with windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1280,7 +1280,7 @@ class TestScreenGeometry:
 
     def test_create(self):
         """Test creating ScreenGeometry"""
-        from eve_overview_pro.ui.main_tab import ScreenGeometry
+        from argus_overview.ui.main_tab import ScreenGeometry
 
         geom = ScreenGeometry(0, 0, 1920, 1080, True)
 
@@ -1292,7 +1292,7 @@ class TestScreenGeometry:
 
     def test_default_is_primary(self):
         """Test default is_primary value"""
-        from eve_overview_pro.ui.main_tab import ScreenGeometry
+        from argus_overview.ui.main_tab import ScreenGeometry
 
         geom = ScreenGeometry(0, 0, 1920, 1080)
 
@@ -1300,7 +1300,7 @@ class TestScreenGeometry:
 
     def test_equality(self):
         """Test ScreenGeometry equality"""
-        from eve_overview_pro.ui.main_tab import ScreenGeometry
+        from argus_overview.ui.main_tab import ScreenGeometry
 
         geom1 = ScreenGeometry(0, 0, 1920, 1080, True)
         geom2 = ScreenGeometry(0, 0, 1920, 1080, True)
@@ -1320,7 +1320,7 @@ class TestGetAllLayoutPatterns:
 
     def test_returns_list(self):
         """Test get_all_layout_patterns returns list"""
-        from eve_overview_pro.ui.main_tab import get_all_layout_patterns
+        from argus_overview.ui.main_tab import get_all_layout_patterns
 
         result = get_all_layout_patterns()
 
@@ -1328,7 +1328,7 @@ class TestGetAllLayoutPatterns:
 
     def test_contains_grid_patterns(self):
         """Test get_all_layout_patterns contains grid patterns"""
-        from eve_overview_pro.ui.main_tab import get_all_layout_patterns
+        from argus_overview.ui.main_tab import get_all_layout_patterns
 
         result = get_all_layout_patterns()
 
@@ -1337,7 +1337,7 @@ class TestGetAllLayoutPatterns:
 
     def test_not_empty(self):
         """Test get_all_layout_patterns returns non-empty list"""
-        from eve_overview_pro.ui.main_tab import get_all_layout_patterns
+        from argus_overview.ui.main_tab import get_all_layout_patterns
 
         result = get_all_layout_patterns()
 
@@ -1356,7 +1356,7 @@ class TestPilToQImage:
         """Test pil_to_qimage with RGBA image"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         img = Image.new("RGBA", (100, 100), (255, 0, 0, 255))
 
@@ -1370,7 +1370,7 @@ class TestPilToQImage:
         """Test pil_to_qimage with RGB image"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         img = Image.new("RGB", (100, 100), (255, 0, 0))
 
@@ -1383,7 +1383,7 @@ class TestPilToQImage:
         """Test pil_to_qimage with grayscale image"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         img = Image.new("L", (100, 100), 128)
 
@@ -1396,7 +1396,7 @@ class TestPilToQImage:
         """Test pil_to_qimage with palette image"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import pil_to_qimage
+        from argus_overview.ui.main_tab import pil_to_qimage
 
         img = Image.new("P", (100, 100))
 
@@ -1417,7 +1417,7 @@ class TestWindowPreviewWidgetAdditional:
         """Test update_frame when conversion fails"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -1427,7 +1427,7 @@ class TestWindowPreviewWidgetAdditional:
 
             img = Image.new("RGB", (100, 100), (255, 0, 0))
 
-            with patch("eve_overview_pro.ui.main_tab.pil_to_qimage") as mock_convert:
+            with patch("argus_overview.ui.main_tab.pil_to_qimage") as mock_convert:
                 mock_convert.return_value = None
 
                 widget.update_frame(img)
@@ -1439,7 +1439,7 @@ class TestWindowPreviewWidgetAdditional:
         """Test update_frame handles exceptions"""
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -1448,7 +1448,7 @@ class TestWindowPreviewWidgetAdditional:
 
             img = Image.new("RGB", (100, 100), (255, 0, 0))
 
-            with patch("eve_overview_pro.ui.main_tab.pil_to_qimage") as mock_convert:
+            with patch("argus_overview.ui.main_tab.pil_to_qimage") as mock_convert:
                 mock_convert.side_effect = Exception("Conversion error")
 
                 widget.update_frame(img)
@@ -1466,7 +1466,7 @@ class TestMainTabAutoMinimize:
 
     def test_on_window_activated_without_auto_minimize(self):
         """Test _on_window_activated when auto_minimize is disabled"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1484,7 +1484,7 @@ class TestMainTabAutoMinimize:
 
     def test_on_window_activated_with_auto_minimize(self):
         """Test _on_window_activated when auto_minimize is enabled"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1507,7 +1507,7 @@ class TestMainTabAutoMinimize:
 
     def test_on_window_activated_same_window(self):
         """Test _on_window_activated with same window (no minimize)"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1526,7 +1526,7 @@ class TestMainTabAutoMinimize:
 
     def test_on_window_activated_tracks_last_window(self):
         """Test _on_window_activated updates last activated window"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1542,7 +1542,7 @@ class TestMainTabAutoMinimize:
 
     def test_on_window_activated_no_previous(self):
         """Test _on_window_activated with no previous window"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1569,7 +1569,7 @@ class TestArrangementGridDragDrop:
 
     def test_drag_enter_accepts_text_plain(self):
         """Test dragEnterEvent accepts text/plain"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -1585,7 +1585,7 @@ class TestArrangementGridDragDrop:
 
     def test_drag_enter_checks_format(self):
         """Test dragEnterEvent checks mime format"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -1602,7 +1602,7 @@ class TestArrangementGridDragDrop:
 
     def test_drag_move_accepts(self):
         """Test dragMoveEvent accepts"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -1615,7 +1615,7 @@ class TestArrangementGridDragDrop:
 
     def test_drop_event_adds_character(self):
         """Test dropEvent adds character to grid"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -1657,7 +1657,7 @@ class TestWindowPreviewWidgetPaint:
 
     def test_alert_level_enum_exists(self):
         """Test AlertLevel enum is importable"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
+        from argus_overview.core.alert_detector import AlertLevel
 
         assert hasattr(AlertLevel, "LOW")
         assert hasattr(AlertLevel, "MEDIUM")
@@ -1665,8 +1665,8 @@ class TestWindowPreviewWidgetPaint:
 
     def test_widget_has_alert_attributes(self):
         """Test WindowPreviewWidget has alert-related attributes"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -1678,19 +1678,19 @@ class TestWindowPreviewWidgetPaint:
 
     def test_widget_has_context_menu_method(self):
         """Test WindowPreviewWidget has contextMenuEvent method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         assert hasattr(WindowPreviewWidget, "contextMenuEvent")
 
     def test_widget_has_paint_event_method(self):
         """Test WindowPreviewWidget has paintEvent method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         assert hasattr(WindowPreviewWidget, "paintEvent")
 
     def test_widget_has_set_alert_method(self):
         """Test WindowPreviewWidget has set_alert method"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         assert hasattr(WindowPreviewWidget, "set_alert")
 
@@ -1705,14 +1705,14 @@ class TestGridApplierExtended:
 
     def test_grid_applier_init(self):
         """Test GridApplier can be initialized"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         applier = GridApplier()
         assert applier is not None
 
     def test_grid_applier_has_methods(self):
         """Test GridApplier has expected methods"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         assert hasattr(GridApplier, "get_screen_geometry")
         assert hasattr(GridApplier, "apply_arrangement")
@@ -1720,7 +1720,7 @@ class TestGridApplierExtended:
 
     def test_screen_geometry_dataclass(self):
         """Test ScreenGeometry dataclass"""
-        from eve_overview_pro.ui.main_tab import ScreenGeometry
+        from argus_overview.ui.main_tab import ScreenGeometry
 
         geom = ScreenGeometry(0, 0, 1920, 1080, True)
 
@@ -1732,7 +1732,7 @@ class TestGridApplierExtended:
 
     def test_move_window_success(self):
         """Test _move_window with xdotool"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         applier = GridApplier()
 
@@ -1747,7 +1747,7 @@ class TestGridApplierExtended:
 
     def test_move_window_position_only(self):
         """Test _move_window_position_only"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         applier = GridApplier()
 
@@ -1772,26 +1772,26 @@ class TestMainTabMinimizeRestore:
 
     def test_main_tab_has_minimize_method(self):
         """Test MainTab has minimize_inactive_windows method"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         assert hasattr(MainTab, "minimize_inactive_windows")
 
     def test_main_tab_has_add_window_method(self):
         """Test MainTab has method to add windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         # MainTab delegates window management to WindowManager
         assert hasattr(MainTab, "window_manager") or hasattr(MainTab, "_on_window_activated")
 
     def test_main_tab_has_on_window_activated(self):
         """Test MainTab has _on_window_activated method"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         assert hasattr(MainTab, "_on_window_activated")
 
     def test_windows_minimized_flag(self):
         """Test _windows_minimized flag behavior"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1815,7 +1815,7 @@ class TestWindowManagerCaptureCycle:
         """Test _capture_cycle requests captures for visible frames"""
         import threading
 
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1838,7 +1838,7 @@ class TestWindowManagerCaptureCycle:
 
     def test_capture_cycle_skips_invisible_frames(self):
         """Test _capture_cycle skips invisible frames"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1857,7 +1857,7 @@ class TestWindowManagerCaptureCycle:
 
     def test_capture_cycle_handles_exception(self):
         """Test _capture_cycle handles capture exceptions"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1885,7 +1885,7 @@ class TestWindowManagerProcessResults:
 
         from PIL import Image
 
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1908,7 +1908,7 @@ class TestWindowManagerProcessResults:
 
     def test_process_capture_results_no_results(self):
         """Test _process_capture_results with no results"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1924,8 +1924,8 @@ class TestWindowManagerProcessResults:
         """Test _process_capture_results sets alert on frame"""
         from PIL import Image
 
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -1956,7 +1956,7 @@ class TestMainTabPreviewsEnabled:
 
     def test_set_previews_enabled_starts_capture(self):
         """Test set_previews_enabled(True) starts capture when not active"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1971,7 +1971,7 @@ class TestMainTabPreviewsEnabled:
 
     def test_set_previews_enabled_stops_capture(self):
         """Test set_previews_enabled(False) stops capture when active"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -1990,19 +1990,19 @@ class TestMainTabOneClickImport:
 
     def test_one_click_import_has_method(self):
         """Test MainTab has one_click_import method"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         assert hasattr(MainTab, "one_click_import")
 
     def test_one_click_import_no_windows(self):
         """Test one_click_import shows message when no windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=[]):
+            with patch("argus_overview.ui.main_tab.scan_eve_windows", return_value=[]):
                 with patch("PySide6.QtWidgets.QMessageBox.information") as mock_msg:
                     tab.one_click_import()
                     mock_msg.assert_called_once()
@@ -2013,7 +2013,7 @@ class TestWindowPreviewWidgetUpdateFrame:
 
     def test_update_frame_handles_none_image(self):
         """Test update_frame handles None image"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2031,7 +2031,7 @@ class TestWindowManagerStartStop:
 
     def test_start_capture_loop(self):
         """Test start_capture_loop starts timer"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -2045,7 +2045,7 @@ class TestWindowManagerStartStop:
 
     def test_stop_capture_loop(self):
         """Test stop_capture_loop stops timer"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -2058,7 +2058,7 @@ class TestWindowManagerStartStop:
 
     def test_set_refresh_rate_clamps_value(self):
         """Test set_refresh_rate clamps FPS to 1-60 range"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -2082,7 +2082,7 @@ class TestMainTabCyclingGroups:
 
     def test_load_cycling_groups_with_settings(self):
         """Test _load_cycling_groups loads groups from settings"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2101,7 +2101,7 @@ class TestMainTabCyclingGroups:
 
     def test_load_cycling_groups_without_settings(self):
         """Test _load_cycling_groups when settings_manager is None"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2115,7 +2115,7 @@ class TestMainTabCyclingGroups:
 
     def test_load_cycling_groups_creates_default(self):
         """Test _load_cycling_groups creates Default if missing"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2130,7 +2130,7 @@ class TestMainTabCyclingGroups:
 
     def test_load_cycling_groups_invalid_type(self):
         """Test _load_cycling_groups handles non-dict gracefully"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2154,7 +2154,7 @@ class TestMainTabUpdateStatus:
 
     def test_update_status_zero_windows(self):
         """Test _update_status with no windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2170,7 +2170,7 @@ class TestMainTabUpdateStatus:
 
     def test_update_status_with_windows(self):
         """Test _update_status with active windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2198,7 +2198,7 @@ class TestMainTabRefreshRate:
 
     def test_on_refresh_rate_changed(self):
         """Test _on_refresh_rate_changed updates window manager"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2220,7 +2220,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_stacked_with_grid_size(self):
         """Test apply_arrangement in stacked mode with grid sizing"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         applier = GridApplier()
         applier.logger = MagicMock()
@@ -2246,7 +2246,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_stacked_position_only(self):
         """Test apply_arrangement in stacked mode keeping window size"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         applier = GridApplier()
         applier.logger = MagicMock()
@@ -2273,7 +2273,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_grid_mode(self):
         """Test apply_arrangement in grid mode"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         applier = GridApplier()
         applier.logger = MagicMock()
@@ -2292,7 +2292,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_skips_missing_windows(self):
         """Test apply_arrangement skips characters not in window_map"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         applier = GridApplier()
         applier.logger = MagicMock()
@@ -2311,7 +2311,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_exception(self):
         """Test apply_arrangement handles exceptions"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         applier = GridApplier()
         applier.logger = MagicMock()
@@ -2339,8 +2339,8 @@ class TestWindowPreviewWidgetPaintEvent:
 
     def test_paint_attributes_high_alert(self):
         """Test widget attributes for HIGH alert paint"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2356,8 +2356,8 @@ class TestWindowPreviewWidgetPaintEvent:
 
     def test_paint_attributes_medium_alert(self):
         """Test widget attributes for MEDIUM alert paint"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2369,7 +2369,7 @@ class TestWindowPreviewWidgetPaintEvent:
 
     def test_paint_attributes_activity_indicator(self):
         """Test widget attributes for activity indicator"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2381,7 +2381,7 @@ class TestWindowPreviewWidgetPaintEvent:
 
     def test_paint_attributes_positions_locked(self):
         """Test widget attributes for positions locked"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2391,7 +2391,7 @@ class TestWindowPreviewWidgetPaintEvent:
 
     def test_activity_state_recent(self):
         """Test get_activity_state returns 'recent' correctly"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2401,7 +2401,7 @@ class TestWindowPreviewWidgetPaintEvent:
 
     def test_activity_state_inactive(self):
         """Test get_activity_state returns inactive correctly"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2420,7 +2420,7 @@ class TestWindowPreviewWidgetMouseEvents:
 
     def test_mouse_move_no_drag_start(self):
         """Test mouseMoveEvent returns early when no drag_start_pos"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2432,7 +2432,7 @@ class TestWindowPreviewWidgetMouseEvents:
 
     def test_mouse_move_no_drag_start_missing_attr(self):
         """Test mouseMoveEvent returns early when _drag_start_pos not set"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2446,7 +2446,7 @@ class TestWindowPreviewWidgetMouseEvents:
         """Test mouseReleaseEvent activates window on click"""
         from PySide6.QtCore import Qt
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2467,7 +2467,7 @@ class TestWindowPreviewWidgetMouseEvents:
         """Test mouseReleaseEvent clears _drag_start_pos"""
         from PySide6.QtCore import Qt
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2494,7 +2494,7 @@ class TestWindowPreviewWidgetContextMenu:
 
     def test_context_menu_shows(self):
         """Test contextMenuEvent shows context menu"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2510,7 +2510,7 @@ class TestWindowPreviewWidgetContextMenu:
             mock_event = MagicMock()
             mock_event.globalPos.return_value = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.ContextMenuBuilder") as mock_builder:
+            with patch("argus_overview.ui.main_tab.ContextMenuBuilder") as mock_builder:
                 mock_menu = MagicMock()
                 mock_builder.return_value.build_window_context_menu.return_value = mock_menu
 
@@ -2530,7 +2530,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_show_label_dialog_ok(self):
         """Test _show_label_dialog when user clicks OK"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2538,7 +2538,7 @@ class TestWindowPreviewWidgetActions:
             widget.character_name = "TestChar"
             widget.set_custom_label = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QInputDialog") as mock_dialog:
+            with patch("argus_overview.ui.main_tab.QInputDialog") as mock_dialog:
                 mock_dialog.getText.return_value = ("NewLabel", True)
 
                 widget._show_label_dialog()
@@ -2547,7 +2547,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_show_label_dialog_cancel(self):
         """Test _show_label_dialog when user clicks Cancel"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2555,7 +2555,7 @@ class TestWindowPreviewWidgetActions:
             widget.character_name = "TestChar"
             widget.set_custom_label = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QInputDialog") as mock_dialog:
+            with patch("argus_overview.ui.main_tab.QInputDialog") as mock_dialog:
                 mock_dialog.getText.return_value = ("", False)
 
                 widget._show_label_dialog()
@@ -2564,7 +2564,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_show_label_dialog_empty_clears(self):
         """Test _show_label_dialog clears label when empty text"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2572,7 +2572,7 @@ class TestWindowPreviewWidgetActions:
             widget.character_name = "TestChar"
             widget.set_custom_label = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QInputDialog") as mock_dialog:
+            with patch("argus_overview.ui.main_tab.QInputDialog") as mock_dialog:
                 mock_dialog.getText.return_value = ("   ", True)
 
                 widget._show_label_dialog()
@@ -2581,7 +2581,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_close_window_confirmed(self):
         """Test _close_window when user confirms"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2590,7 +2590,7 @@ class TestWindowPreviewWidgetActions:
             widget.window_removed = MagicMock()
             widget.logger = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 mock_msgbox.StandardButton.Yes = 1
                 mock_msgbox.StandardButton.No = 0
                 mock_msgbox.question.return_value = 1  # Yes
@@ -2605,14 +2605,14 @@ class TestWindowPreviewWidgetActions:
 
     def test_close_window_cancelled(self):
         """Test _close_window when user cancels"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
             widget.character_name = "TestChar"
             widget.window_id = "12345"
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 mock_msgbox.StandardButton.Yes = 1
                 mock_msgbox.StandardButton.No = 0
                 mock_msgbox.question.return_value = 0  # No
@@ -2624,7 +2624,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_close_window_exception(self):
         """Test _close_window handles exception"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2632,7 +2632,7 @@ class TestWindowPreviewWidgetActions:
             widget.window_id = "12345"
             widget.logger = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 mock_msgbox.StandardButton.Yes = 1
                 mock_msgbox.StandardButton.No = 0
                 mock_msgbox.question.return_value = 1
@@ -2644,7 +2644,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_minimize_window_success(self):
         """Test _minimize_window success"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2660,7 +2660,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_minimize_window_failure(self):
         """Test _minimize_window failure"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2675,7 +2675,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_minimize_window_exception(self):
         """Test _minimize_window handles exception"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2690,7 +2690,7 @@ class TestWindowPreviewWidgetActions:
 
     def test_set_zoom(self):
         """Test _set_zoom sets zoom factor"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -2713,7 +2713,7 @@ class TestWindowManagerInit:
 
     def test_init_with_settings_manager(self):
         """Test WindowManager init with settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         mock_char_mgr = MagicMock()
         mock_capture = MagicMock()
@@ -2721,7 +2721,7 @@ class TestWindowManagerInit:
         mock_settings = MagicMock()
         mock_settings.get.return_value = 15  # Custom FPS
 
-        with patch("eve_overview_pro.ui.main_tab.QTimer"):
+        with patch("argus_overview.ui.main_tab.QTimer"):
             manager = WindowManager(mock_char_mgr, mock_capture, mock_alert, mock_settings)
 
             assert manager.refresh_rate == 15
@@ -2729,13 +2729,13 @@ class TestWindowManagerInit:
 
     def test_init_without_settings_manager(self):
         """Test WindowManager init without settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         mock_char_mgr = MagicMock()
         mock_capture = MagicMock()
         mock_alert = MagicMock()
 
-        with patch("eve_overview_pro.ui.main_tab.QTimer"):
+        with patch("argus_overview.ui.main_tab.QTimer"):
             manager = WindowManager(mock_char_mgr, mock_capture, mock_alert, None)
 
             assert manager.refresh_rate == 5  # Default
@@ -2751,7 +2751,7 @@ class TestMainTabToolbar:
 
     def test_toolbar_handlers_set(self):
         """Test toolbar handler methods exist"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2784,7 +2784,7 @@ class TestMainTabLayoutControls:
 
     def test_layout_control_methods_exist(self):
         """Test layout control methods can be mocked"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2815,7 +2815,7 @@ class TestMainTabLayoutSource:
 
     def test_layout_source_attributes_setup(self):
         """Test layout source attributes can be set"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2827,7 +2827,7 @@ class TestMainTabLayoutSource:
 
     def test_on_layout_source_changed_attributes(self):
         """Test _on_layout_source_changed attributes"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2855,7 +2855,7 @@ class TestMainTabPatternStack:
 
     def test_on_stack_changed(self):
         """Test _on_stack_changed method"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2869,7 +2869,7 @@ class TestMainTabPatternStack:
 
     def test_on_stack_changed_unchecked(self):
         """Test _on_stack_changed when unchecked"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2892,7 +2892,7 @@ class TestMainTabApplyLayout:
 
     def test_update_arrangement_grid_size(self):
         """Test _update_arrangement_grid_size updates grid"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2908,7 +2908,7 @@ class TestMainTabApplyLayout:
 
     def test_auto_arrange_tiles(self):
         """Test _auto_arrange_tiles arranges tiles"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -2931,7 +2931,7 @@ class TestFlowLayoutDoLayout:
 
     def test_do_layout_widget_is_none(self):
         """Test _do_layout handles None widget (line 123)"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -2952,7 +2952,7 @@ class TestFlowLayoutDoLayout:
         """Test _do_layout wraps to new row when width exceeded"""
         from PySide6.QtCore import QSize
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -2976,7 +2976,7 @@ class TestFlowLayoutDoLayout:
         """Test _do_layout centers rows (not test_only)"""
         from PySide6.QtCore import QSize
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -3000,7 +3000,7 @@ class TestFlowLayoutDoLayout:
 
     def test_center_row_empty(self):
         """Test _center_row with empty row_items (line 154)"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -3021,7 +3021,7 @@ class TestDraggableTileInit:
 
     def test_init_creates_ui(self):
         """Test DraggableTile.__init__ creates all UI elements"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -3041,7 +3041,7 @@ class TestDraggableTileInit:
 
     def test_update_style(self):
         """Test DraggableTile._update_style sets stylesheet"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -3069,7 +3069,7 @@ class TestArrangementGridSetup:
 
     def test_setup_ui_creates_grid(self):
         """Test _setup_ui creates grid layout with cells"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3083,7 +3083,7 @@ class TestArrangementGridSetup:
 
     def test_set_grid_size_updates_dimensions(self):
         """Test set_grid_size updates grid dimensions"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3103,7 +3103,7 @@ class TestArrangementGridSetup:
 
     def test_add_character_creates_tile(self):
         """Test add_character creates and adds tile"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3115,7 +3115,7 @@ class TestArrangementGridSetup:
 
     def test_add_character_skips_existing(self):
         """Test add_character skips if character already exists"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3136,7 +3136,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_2x2_grid(self):
         """Test auto_arrange_grid with 2x2 Grid pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3152,7 +3152,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_3x1_row(self):
         """Test auto_arrange_grid with 3x1 Row pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3167,7 +3167,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_1x3_column(self):
         """Test auto_arrange_grid with 1x3 Column pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3182,7 +3182,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_4x1_row(self):
         """Test auto_arrange_grid with 4x1 Row pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3197,7 +3197,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_2x3_grid(self):
         """Test auto_arrange_grid with 2x3 Grid pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3212,7 +3212,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_3x2_grid(self):
         """Test auto_arrange_grid with 3x2 Grid pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3227,7 +3227,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_main_sides(self):
         """Test auto_arrange_grid with Main + Sides pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3243,7 +3243,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_cascade(self):
         """Test auto_arrange_grid with Cascade pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3259,7 +3259,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_stacked(self):
         """Test auto_arrange_grid with Stacked pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3277,7 +3277,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_default(self):
         """Test auto_arrange_grid with unknown pattern (default)"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3293,7 +3293,7 @@ class TestArrangementGridAutoArrange:
 
     def test_auto_arrange_empty_tiles(self):
         """Test auto_arrange_grid with no tiles returns early"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3316,7 +3316,7 @@ class TestArrangementGridDragDrop:
 
     def test_drop_event_with_x_eve_character_format(self):
         """Test dropEvent with x-eve-character mime format"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3350,7 +3350,7 @@ class TestArrangementGridDragDrop:
 
     def test_drop_event_with_text_format(self):
         """Test dropEvent with text mime format"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3383,7 +3383,7 @@ class TestArrangementGridDragDrop:
 
     def test_drop_event_no_valid_format(self):
         """Test dropEvent with no valid mime format returns early"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3405,7 +3405,7 @@ class TestArrangementGridDragDrop:
 
     def test_drop_event_removes_existing_tile(self):
         """Test dropEvent removes existing tile for same character"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -3452,7 +3452,7 @@ class TestGridApplierTimeout:
         """Test _move_window uses fallback on timeout"""
         import subprocess
 
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3474,7 +3474,7 @@ class TestGridApplierTimeout:
         """Test _move_window size uses fallback on timeout"""
         import subprocess
 
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3495,7 +3495,7 @@ class TestGridApplierTimeout:
         """Test _move_window_position_only timeout fallback"""
         import subprocess
 
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3521,7 +3521,7 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_xrandr_failure(self):
         """Test get_screen_geometry returns default on xrandr failure"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3539,7 +3539,7 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_exception(self):
         """Test get_screen_geometry handles exception"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3555,7 +3555,7 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_parses_output(self):
         """Test get_screen_geometry parses xrandr output"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3575,7 +3575,7 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_second_monitor(self):
         """Test get_screen_geometry with second monitor"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3596,7 +3596,7 @@ HDMI-1 connected 1920x1080+2560+0
 
     def test_get_screen_geometry_monitor_out_of_range(self):
         """Test get_screen_geometry falls back to first monitor if index out of range"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3624,7 +3624,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_stacked(self):
         """Test apply_arrangement in stacked mode"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3651,7 +3651,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_stacked_no_resize(self):
         """Test apply_arrangement stacked without grid size"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3678,7 +3678,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_grid(self):
         """Test apply_arrangement in grid mode"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3698,7 +3698,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_skips_missing_windows(self):
         """Test apply_arrangement skips characters not in window_map"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3719,7 +3719,7 @@ class TestGridApplierApplyArrangement:
 
     def test_apply_arrangement_exception(self):
         """Test apply_arrangement handles exception"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -3748,7 +3748,7 @@ class TestWindowPreviewWidgetInit:
 
     def test_init_sets_attributes(self):
         """Test WindowPreviewWidget.__init__ sets all attributes"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3769,7 +3769,7 @@ class TestWindowPreviewWidgetInit:
 
     def test_load_settings_with_manager(self):
         """Test _load_settings loads from settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3794,7 +3794,7 @@ class TestWindowPreviewWidgetInit:
 
     def test_load_settings_without_manager(self):
         """Test _load_settings uses defaults without settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3822,7 +3822,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_set_alert_starts_flash(self):
         """Test set_alert sets alert level and starts timer"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3843,7 +3843,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_set_alert_timer_already_active(self):
         """Test set_alert doesn't restart active timer"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3862,7 +3862,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_flash_tick_decrements_counter(self):
         """Test _flash_tick decrements counter"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3878,7 +3878,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_flash_tick_stops_at_zero(self):
         """Test _flash_tick stops timer at zero"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3895,7 +3895,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_update_session_timer_not_shown(self):
         """Test _update_session_timer returns early if not shown"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3910,7 +3910,7 @@ class TestWindowPreviewWidgetMethods:
         """Test _update_session_timer shows minutes"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3928,7 +3928,7 @@ class TestWindowPreviewWidgetMethods:
         """Test _update_session_timer shows hours and minutes"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3944,7 +3944,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_set_custom_label(self):
         """Test set_custom_label updates label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3966,7 +3966,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_set_custom_label_with_settings_manager(self):
         """Test set_custom_label saves to settings"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -3989,7 +3989,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_set_custom_label_clear(self):
         """Test set_custom_label clears label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4013,7 +4013,7 @@ class TestWindowPreviewWidgetMethods:
 
     def test_set_focused(self):
         """Test set_focused updates state"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4029,7 +4029,7 @@ class TestWindowPreviewWidgetMethods:
         """Test mousePressEvent stores drag start"""
         from PySide6.QtCore import Qt
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4048,7 +4048,7 @@ class TestWindowPreviewWidgetMethods:
         """Test mouseReleaseEvent activates window if not dragged"""
         from PySide6.QtCore import Qt
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4076,7 +4076,7 @@ class TestMainTabInit:
 
     def test_init_sets_attributes(self):
         """Test MainTab.__init__ sets basic attributes"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4096,7 +4096,7 @@ class TestMainTabInit:
 
     def test_load_cycling_groups_from_settings(self):
         """Test _load_cycling_groups loads from settings"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4112,7 +4112,7 @@ class TestMainTabInit:
 
     def test_load_cycling_groups_no_settings(self):
         """Test _load_cycling_groups adds Default without settings"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4126,7 +4126,7 @@ class TestMainTabInit:
 
     def test_load_cycling_groups_invalid_type(self):
         """Test _load_cycling_groups handles invalid type"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4150,7 +4150,7 @@ class TestMainTabLayoutMethods:
 
     def test_on_pattern_changed_stacked(self):
         """Test _on_pattern_changed with stacked pattern"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4167,7 +4167,7 @@ class TestMainTabLayoutMethods:
 
     def test_on_pattern_changed_not_stacked(self):
         """Test _on_pattern_changed with grid pattern"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4183,7 +4183,7 @@ class TestMainTabLayoutMethods:
 
     def test_on_stack_changed_checked(self):
         """Test _on_stack_changed when checked"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4197,7 +4197,7 @@ class TestMainTabLayoutMethods:
 
     def test_refresh_layout_groups(self):
         """Test refresh_layout_groups refreshes sources"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4220,7 +4220,7 @@ class TestMainTabWindowMethods:
 
     def test_toggle_lock_on(self):
         """Test _toggle_lock when locking"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4240,7 +4240,7 @@ class TestMainTabWindowMethods:
 
     def test_toggle_lock_off(self):
         """Test _toggle_lock when unlocking"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4260,7 +4260,7 @@ class TestMainTabWindowMethods:
 
     def test_on_window_activated(self):
         """Test _on_window_activated sets last activated window"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4275,7 +4275,7 @@ class TestMainTabWindowMethods:
 
     def test_on_window_removed(self):
         """Test _on_window_removed removes frame"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4290,7 +4290,7 @@ class TestMainTabWindowMethods:
 
     def test_remove_all_windows(self):
         """Test _remove_all_windows clears all"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4304,7 +4304,7 @@ class TestMainTabWindowMethods:
 
     def test_refresh_all(self):
         """Test _refresh_all logs and updates status"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4327,7 +4327,7 @@ class TestMainTabMinimize:
 
     def test_minimize_inactive_windows_minimize(self):
         """Test minimize_inactive_windows toggles to enabled"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4354,7 +4354,7 @@ class TestMainTabMinimize:
 
     def test_minimize_inactive_windows_restore(self):
         """Test minimize_inactive_windows toggles to disabled"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4383,7 +4383,7 @@ class TestMainTabPreviewToggle:
 
     def test_set_previews_enabled_true(self):
         """Test set_previews_enabled starts capture when inactive"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4400,7 +4400,7 @@ class TestMainTabPreviewToggle:
 
     def test_set_previews_enabled_false(self):
         """Test set_previews_enabled stops capture when active"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4426,7 +4426,7 @@ class TestFlowLayoutInit:
 
     def test_init_sets_attributes(self):
         """Test FlowLayout.__init__ sets attributes"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4440,7 +4440,7 @@ class TestFlowLayoutInit:
 
     def test_add_item(self):
         """Test FlowLayout.addItem"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4453,7 +4453,7 @@ class TestFlowLayoutInit:
 
     def test_count(self):
         """Test FlowLayout.count"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4463,7 +4463,7 @@ class TestFlowLayoutInit:
 
     def test_itemAt_valid_index(self):
         """Test FlowLayout.itemAt with valid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4476,7 +4476,7 @@ class TestFlowLayoutInit:
 
     def test_itemAt_invalid_index(self):
         """Test FlowLayout.itemAt with invalid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4487,7 +4487,7 @@ class TestFlowLayoutInit:
 
     def test_takeAt_valid_index(self):
         """Test FlowLayout.takeAt with valid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4502,7 +4502,7 @@ class TestFlowLayoutInit:
 
     def test_takeAt_invalid_index(self):
         """Test FlowLayout.takeAt with invalid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4513,7 +4513,7 @@ class TestFlowLayoutInit:
 
     def test_expandingDirections(self):
         """Test FlowLayout.expandingDirections"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4525,7 +4525,7 @@ class TestFlowLayoutInit:
 
     def test_hasHeightForWidth(self):
         """Test FlowLayout.hasHeightForWidth"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -4543,7 +4543,7 @@ class TestDraggableTileInit:
 
     def test_init_sets_attributes(self):
         """Test DraggableTile attributes are set"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -4560,7 +4560,7 @@ class TestDraggableTileInit:
 
     def test_set_position(self):
         """Test DraggableTile.set_position"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -4574,7 +4574,7 @@ class TestDraggableTileInit:
 
     def test_set_stacked_true(self):
         """Test DraggableTile.set_stacked with True"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -4587,7 +4587,7 @@ class TestDraggableTileInit:
 
     def test_set_stacked_false(self):
         """Test DraggableTile.set_stacked with False"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -4608,7 +4608,7 @@ class TestArrangementGridMethods:
 
     def test_clear_tiles(self):
         """Test ArrangementGrid.clear_tiles"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4625,7 +4625,7 @@ class TestArrangementGridMethods:
 
     def test_get_arrangement(self):
         """Test ArrangementGrid.get_arrangement"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4643,7 +4643,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_empty(self):
         """Test ArrangementGrid.auto_arrange_grid with no tiles"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4654,7 +4654,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_2x2(self):
         """Test ArrangementGrid.auto_arrange_grid with 2x2 pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4672,7 +4672,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_3x1(self):
         """Test ArrangementGrid.auto_arrange_grid with 3x1 Row pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4687,7 +4687,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_1x3(self):
         """Test ArrangementGrid.auto_arrange_grid with 1x3 Column pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4702,7 +4702,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_4x1(self):
         """Test ArrangementGrid.auto_arrange_grid with 4x1 Row pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4717,7 +4717,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_2x3(self):
         """Test ArrangementGrid.auto_arrange_grid with 2x3 Grid pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4732,7 +4732,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_3x2(self):
         """Test ArrangementGrid.auto_arrange_grid with 3x2 Grid pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4747,7 +4747,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_main_sides(self):
         """Test ArrangementGrid.auto_arrange_grid with Main + Sides pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4764,7 +4764,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_cascade(self):
         """Test ArrangementGrid.auto_arrange_grid with Cascade pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4780,7 +4780,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_stacked(self):
         """Test ArrangementGrid.auto_arrange_grid with Stacked pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4797,7 +4797,7 @@ class TestArrangementGridMethods:
 
     def test_auto_arrange_grid_default(self):
         """Test ArrangementGrid.auto_arrange_grid with unknown pattern"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -4823,7 +4823,7 @@ class TestWindowPreviewWidgetMethods2:
 
     def test_get_display_name_with_custom_label(self):
         """Test _get_display_name with custom label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4836,7 +4836,7 @@ class TestWindowPreviewWidgetMethods2:
 
     def test_get_display_name_without_custom_label(self):
         """Test _get_display_name without custom label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4849,7 +4849,7 @@ class TestWindowPreviewWidgetMethods2:
 
     def test_load_settings_with_manager(self):
         """Test _load_settings with settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4875,7 +4875,7 @@ class TestWindowPreviewWidgetMethods2:
 
     def test_load_settings_without_manager(self):
         """Test _load_settings without settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4888,7 +4888,7 @@ class TestWindowPreviewWidgetMethods2:
 
     def test_set_alert(self):
         """Test set_alert starts flash timer"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4906,7 +4906,7 @@ class TestWindowPreviewWidgetMethods2:
 
     def test_set_alert_timer_already_active(self):
         """Test set_alert when timer already active"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -4932,21 +4932,21 @@ class TestMainTabOneClickImport:
 
     def test_one_click_import_no_windows(self):
         """Test one_click_import with no EVE windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=[]):
-                with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.scan_eve_windows", return_value=[]):
+                with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                     tab.one_click_import()
 
                     mock_msgbox.information.assert_called_once()
 
     def test_one_click_import_with_windows(self):
         """Test one_click_import with EVE windows found"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4960,7 +4960,7 @@ class TestMainTabOneClickImport:
             tab._update_status = MagicMock()
 
             windows = [("12345", "EVE - Char1", "Char1")]
-            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=windows):
+            with patch("argus_overview.ui.main_tab.scan_eve_windows", return_value=windows):
                 tab.one_click_import()
 
                 tab.window_manager.add_window.assert_called_with("12345", "Char1")
@@ -4968,7 +4968,7 @@ class TestMainTabOneClickImport:
 
     def test_one_click_import_skips_existing(self):
         """Test one_click_import skips existing windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -4979,7 +4979,7 @@ class TestMainTabOneClickImport:
             tab._update_status = MagicMock()
 
             windows = [("12345", "EVE - Char1", "Char1")]
-            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows", return_value=windows):
+            with patch("argus_overview.ui.main_tab.scan_eve_windows", return_value=windows):
                 tab.one_click_import()
 
                 tab.window_manager.add_window.assert_not_called()
@@ -4990,7 +4990,7 @@ class TestMainTabToggleThumbnails:
 
     def test_toggle_thumbnails_visibility_show(self):
         """Test toggle_thumbnails_visibility shows thumbnails"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5009,7 +5009,7 @@ class TestMainTabToggleThumbnails:
 
     def test_toggle_thumbnails_visibility_hide(self):
         """Test toggle_thumbnails_visibility hides thumbnails"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5031,7 +5031,7 @@ class TestMainTabUpdateStatus:
 
     def test_update_status_with_windows(self):
         """Test _update_status with active windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5046,7 +5046,7 @@ class TestMainTabUpdateStatus:
 
     def test_update_status_no_windows(self):
         """Test _update_status with no active windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5068,7 +5068,7 @@ class TestMainTabRefreshRate:
 
     def test_on_refresh_rate_changed(self):
         """Test _on_refresh_rate_changed updates window manager"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5086,21 +5086,21 @@ class TestMainTabApplyLayout:
 
     def test_apply_layout_no_arrangement(self):
         """Test _apply_layout_to_windows with empty arrangement"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.arrangement_grid = MagicMock()
             tab.arrangement_grid.get_arrangement.return_value = {}
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab._apply_layout_to_windows()
 
                 mock_msgbox.warning.assert_called_once()
 
     def test_apply_layout_no_matching_windows(self):
         """Test _apply_layout_to_windows with no matching windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5112,14 +5112,14 @@ class TestMainTabApplyLayout:
             frame.character_name = "other_char"
             tab.window_manager.preview_frames = {"12345": frame}
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab._apply_layout_to_windows()
 
                 mock_msgbox.warning.assert_called_once()
 
     def test_apply_layout_success(self):
         """Test _apply_layout_to_windows with successful apply"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5167,7 +5167,7 @@ class TestWindowPreviewWidgetFlashTick:
 
     def test_flash_tick_decrement(self):
         """Test _flash_tick decrements counter"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5182,7 +5182,7 @@ class TestWindowPreviewWidgetFlashTick:
 
     def test_flash_tick_stops_at_zero(self):
         """Test _flash_tick stops timer at zero"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5202,7 +5202,7 @@ class TestWindowPreviewWidgetSessionTimer:
 
     def test_update_session_timer_disabled(self):
         """Test _update_session_timer when disabled"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5217,7 +5217,7 @@ class TestWindowPreviewWidgetSessionTimer:
         """Test _update_session_timer with minutes only"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5234,7 +5234,7 @@ class TestWindowPreviewWidgetSessionTimer:
         """Test _update_session_timer with hours"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5253,7 +5253,7 @@ class TestWindowPreviewWidgetCustomLabel:
 
     def test_set_custom_label(self):
         """Test set_custom_label sets label and emits signal"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5274,7 +5274,7 @@ class TestWindowPreviewWidgetCustomLabel:
 
     def test_set_custom_label_clear(self):
         """Test set_custom_label clearing label"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5298,7 +5298,7 @@ class TestWindowPreviewWidgetFocus:
 
     def test_set_focused_true(self):
         """Test set_focused with True"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5311,7 +5311,7 @@ class TestWindowPreviewWidgetFocus:
 
     def test_set_focused_false(self):
         """Test set_focused with False"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5326,7 +5326,7 @@ class TestWindowPreviewWidgetFocus:
         """Test mark_activity updates last_activity"""
         from datetime import datetime
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5345,7 +5345,7 @@ class TestWindowPreviewWidgetActivityState:
 
     def test_get_activity_state_focused(self):
         """Test get_activity_state returns focused"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5359,7 +5359,7 @@ class TestWindowPreviewWidgetActivityState:
         """Test get_activity_state returns recent"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5374,7 +5374,7 @@ class TestWindowPreviewWidgetActivityState:
         """Test get_activity_state returns idle"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5391,7 +5391,7 @@ class TestWindowPreviewWidgetHover:
 
     def test_enterEvent(self):
         """Test enterEvent sets hover state"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5407,7 +5407,7 @@ class TestWindowPreviewWidgetHover:
 
     def test_leaveEvent(self):
         """Test leaveEvent restores normal state"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -5431,7 +5431,7 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_success(self):
         """Test get_screen_geometry with successful xrandr call"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -5441,7 +5441,7 @@ class TestGridApplierScreenGeometry:
             mock_result.returncode = 0
             mock_result.stdout = "DP-1 connected primary 1920x1080+0+0"
 
-            with patch("eve_overview_pro.utils.screen.subprocess.run", return_value=mock_result):
+            with patch("argus_overview.utils.screen.subprocess.run", return_value=mock_result):
                 applier.get_screen_geometry(0)
 
                 # Should return ScreenGeometry or None
@@ -5449,14 +5449,14 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_failure(self):
         """Test get_screen_geometry with failed xrandr call - returns fallback"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
             applier.logger = MagicMock()
 
             with patch(
-                "eve_overview_pro.utils.screen.subprocess.run", side_effect=FileNotFoundError
+                "argus_overview.utils.screen.subprocess.run", side_effect=FileNotFoundError
             ):
                 result = applier.get_screen_geometry(0)
 
@@ -5466,7 +5466,7 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_xrandr_nonzero_returncode(self):
         """Test get_screen_geometry when xrandr returns non-zero"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -5476,7 +5476,7 @@ class TestGridApplierScreenGeometry:
             mock_result.returncode = 1  # Non-zero = failure
             mock_result.stdout = ""
 
-            with patch("eve_overview_pro.utils.screen.subprocess.run", return_value=mock_result):
+            with patch("argus_overview.utils.screen.subprocess.run", return_value=mock_result):
                 result = applier.get_screen_geometry(0)
 
                 # Should return default on non-zero returncode
@@ -5484,7 +5484,7 @@ class TestGridApplierScreenGeometry:
 
     def test_get_screen_geometry_monitor_out_of_range(self):
         """Test get_screen_geometry with monitor index out of range"""
-        from eve_overview_pro.ui.main_tab import GridApplier
+        from argus_overview.ui.main_tab import GridApplier
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -5495,7 +5495,7 @@ class TestGridApplierScreenGeometry:
             # Only one monitor at index 0
             mock_result.stdout = "DP-1 connected primary 1920x1080+0+0"
 
-            with patch("eve_overview_pro.utils.screen.subprocess.run", return_value=mock_result):
+            with patch("argus_overview.utils.screen.subprocess.run", return_value=mock_result):
                 # Request monitor 5 when only monitor 0 exists
                 result = applier.get_screen_geometry(5)
 
@@ -5510,7 +5510,7 @@ class TestGridApplierApply:
 
     def test_apply_arrangement_empty(self):
         """Test apply_arrangement with empty arrangement"""
-        from eve_overview_pro.ui.main_tab import GridApplier, ScreenGeometry
+        from argus_overview.ui.main_tab import GridApplier, ScreenGeometry
 
         with patch.object(GridApplier, "__init__", return_value=None):
             applier = GridApplier.__new__(GridApplier)
@@ -5541,7 +5541,7 @@ class TestMainTabAutoArrangeTiles:
 
     def test_auto_arrange_tiles(self):
         """Test _auto_arrange_tiles calls arrangement_grid"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5559,7 +5559,7 @@ class TestMainTabUpdateArrangementGridSize:
 
     def test_update_arrangement_grid_size(self):
         """Test _update_arrangement_grid_size"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -5584,7 +5584,7 @@ class TestFlowLayoutInit:
 
     def test_init_default_values(self):
         """Test FlowLayout initializes with default values"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5599,7 +5599,7 @@ class TestFlowLayoutInit:
 
     def test_init_custom_values(self):
         """Test FlowLayout initializes with custom values"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5616,7 +5616,7 @@ class TestFlowLayoutCount:
 
     def test_count_empty(self):
         """Test count returns 0 for empty list"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5626,7 +5626,7 @@ class TestFlowLayoutCount:
 
     def test_count_with_items(self):
         """Test count returns correct number"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5640,7 +5640,7 @@ class TestFlowLayoutItemAt:
 
     def test_itemAt_valid_index(self):
         """Test itemAt returns item at valid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5653,7 +5653,7 @@ class TestFlowLayoutItemAt:
 
     def test_itemAt_invalid_index(self):
         """Test itemAt returns None for invalid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5668,7 +5668,7 @@ class TestFlowLayoutTakeAt:
 
     def test_takeAt_valid_index(self):
         """Test takeAt removes and returns item"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5684,7 +5684,7 @@ class TestFlowLayoutTakeAt:
 
     def test_takeAt_invalid_index(self):
         """Test takeAt returns None for invalid index"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5700,7 +5700,7 @@ class TestFlowLayoutAddItem:
 
     def test_addItem(self):
         """Test addItem appends to list"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5718,7 +5718,7 @@ class TestFlowLayoutCenterRow:
 
     def test_center_row_empty(self):
         """Test _center_row with empty items - returns early"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5735,7 +5735,7 @@ class TestFlowLayoutCenterRow:
         """Test _center_row positions items"""
         from PySide6.QtCore import QRect, QSize
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -5766,7 +5766,7 @@ class TestDraggableTileInit:
         """Test DraggableTile __init__ sets attributes"""
         from PySide6.QtGui import QColor
 
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -5789,7 +5789,7 @@ class TestDraggableTileUpdateStyle:
         """Test _update_style applies stylesheet"""
         from PySide6.QtGui import QColor
 
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -5809,7 +5809,7 @@ class TestDraggableTileSetPosition:
 
     def test_set_position(self):
         """Test set_position updates row/col"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -5829,7 +5829,7 @@ class TestDraggableTileSetStacked:
 
     def test_set_stacked_true(self):
         """Test set_stacked(True) updates label"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -5843,7 +5843,7 @@ class TestDraggableTileSetStacked:
 
     def test_set_stacked_false(self):
         """Test set_stacked(False) keeps position"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         with patch.object(DraggableTile, "__init__", return_value=None):
             tile = DraggableTile.__new__(DraggableTile)
@@ -5866,7 +5866,7 @@ class TestArrangementGridInit:
 
     def test_init_sets_defaults(self):
         """Test ArrangementGrid __init__ sets defaults"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -5885,7 +5885,7 @@ class TestArrangementGridClearTiles:
 
     def test_clear_tiles(self):
         """Test clear_tiles removes all tiles"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -5907,7 +5907,7 @@ class TestArrangementGridAddCharacter:
 
     def test_add_character_existing(self):
         """Test add_character skips existing"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -5925,8 +5925,8 @@ class TestWindowManagerAlertCallback:
 
     def test_alert_callback_sets_alert_on_frame(self):
         """Test alert callback sets alert on frame when window exists"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -5947,8 +5947,8 @@ class TestWindowManagerAlertCallback:
 
     def test_alert_callback_ignores_removed_window(self):
         """Test alert callback ignores removed windows"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -5972,7 +5972,7 @@ class TestWindowManagerCaptureCycleException:
         """Test _capture_cycle logs exception when capture_window_async fails"""
         import threading
 
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -6004,7 +6004,7 @@ class TestWindowPreviewWidgetInit:
 
     def test_init_sets_state(self):
         """Test __init__ sets default state"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -6027,7 +6027,7 @@ class TestWindowPreviewWidgetUpdateFrame:
         """Test update_frame with valid image"""
         from datetime import datetime
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -6042,8 +6042,8 @@ class TestWindowPreviewWidgetUpdateFrame:
             mock_image.tobytes.return_value = b"\x00" * 100 * 75 * 4
             mock_image.mode = "RGBA"
 
-            with patch("eve_overview_pro.ui.main_tab.QImage"):
-                with patch("eve_overview_pro.ui.main_tab.QPixmap.fromImage") as mock_pixmap:
+            with patch("argus_overview.ui.main_tab.QImage"):
+                with patch("argus_overview.ui.main_tab.QPixmap.fromImage") as mock_pixmap:
                     mock_pixmap.return_value = MagicMock()
                     widget.update_frame(mock_image)
 
@@ -6051,7 +6051,7 @@ class TestWindowPreviewWidgetUpdateFrame:
 
     def test_update_frame_with_pil_to_qimage_returns_none(self):
         """Test update_frame returns early if pil_to_qimage returns None"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -6060,7 +6060,7 @@ class TestWindowPreviewWidgetUpdateFrame:
 
             mock_image = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.pil_to_qimage", return_value=None):
+            with patch("argus_overview.ui.main_tab.pil_to_qimage", return_value=None):
                 widget.update_frame(mock_image)
 
                 # Should not call setPixmap since pil_to_qimage returned None
@@ -6084,7 +6084,7 @@ class TestWindowManagerAddWindow:
 
     def test_add_window_creates_frame(self):
         """Test add_window creates preview frame"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -6094,7 +6094,7 @@ class TestWindowManagerAddWindow:
             manager.settings_manager = MagicMock()
             manager.logger = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget") as mock_widget:
+            with patch("argus_overview.ui.main_tab.WindowPreviewWidget") as mock_widget:
                 mock_widget.return_value = MagicMock()
                 result = manager.add_window("0x12345", "TestChar")
 
@@ -6107,7 +6107,7 @@ class TestWindowManagerRemoveWindow:
 
     def test_remove_window(self):
         """Test remove_window removes frame"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -6123,7 +6123,7 @@ class TestWindowManagerRemoveWindow:
 
     def test_remove_window_not_found(self):
         """Test remove_window with unknown window"""
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -6142,7 +6142,7 @@ class TestWindowManagerCaptureCycle:
         """Test _capture_cycle requests captures"""
         import threading
 
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -6170,7 +6170,7 @@ class TestWindowManagerProcessResults:
         """Test _process_capture_results updates frames"""
         import threading
 
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             manager = WindowManager.__new__(WindowManager)
@@ -6202,7 +6202,7 @@ class TestMainTabInit:
 
     def test_init_creates_window_manager(self):
         """Test __init__ creates window manager"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6228,7 +6228,7 @@ class TestMainTabLoadCyclingGroups:
 
     def test_load_cycling_groups_with_settings(self):
         """Test _load_cycling_groups loads from settings"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6243,7 +6243,7 @@ class TestMainTabLoadCyclingGroups:
 
     def test_load_cycling_groups_no_settings(self):
         """Test _load_cycling_groups without settings"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6265,7 +6265,7 @@ class TestMainTabOnStackChanged:
 
     def test_on_stack_changed_enables_resize(self):
         """Test _on_stack_changed enables resize checkbox"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6284,7 +6284,7 @@ class TestMainTabRefreshLayoutSources:
 
     def test_refresh_layout_sources(self):
         """Test _refresh_layout_sources populates combo"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6306,7 +6306,7 @@ class TestMainTabOnLayoutSourceChanged:
 
     def test_on_layout_source_changed_active_windows(self):
         """Test _on_layout_source_changed with Active Windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6325,7 +6325,7 @@ class TestMainTabOnLayoutSourceChanged:
 
     def test_on_layout_source_changed_group(self):
         """Test _on_layout_source_changed with group"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6369,7 +6369,7 @@ class TestFlowLayoutRealInit:
 
     def test_real_init_default(self, qapp):
         """Test FlowLayout real initialization with defaults"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout()
 
@@ -6379,7 +6379,7 @@ class TestFlowLayoutRealInit:
 
     def test_real_init_custom(self, qapp):
         """Test FlowLayout real initialization with custom values"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout(margin=20, spacing=15)
 
@@ -6391,7 +6391,7 @@ class TestFlowLayoutRealInit:
         """Test expandingDirections returns empty orientation"""
         from PySide6.QtCore import Qt
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout()
         result = layout.expandingDirections()
@@ -6400,21 +6400,21 @@ class TestFlowLayoutRealInit:
 
     def test_has_height_for_width(self, qapp):
         """Test hasHeightForWidth returns True"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout()
         assert layout.hasHeightForWidth() is True
 
     def test_size_hint(self, qapp):
         """Test sizeHint returns minimumSize"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout()
         assert layout.sizeHint() == layout.minimumSize()
 
     def test_minimum_size_empty(self, qapp):
         """Test minimumSize with no items"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout(margin=10)
         size = layout.minimumSize()
@@ -6429,7 +6429,7 @@ class TestDraggableTileRealInit:
 
     def test_real_init(self, qapp):
         """Test DraggableTile real initialization"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         color = QColor(100, 150, 200)
         tile = DraggableTile("TestChar", color)
@@ -6444,7 +6444,7 @@ class TestDraggableTileRealInit:
 
     def test_update_style(self, qapp):
         """Test _update_style sets stylesheet"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         color = QColor(100, 150, 200)
         tile = DraggableTile("TestChar", color)
@@ -6455,7 +6455,7 @@ class TestDraggableTileRealInit:
 
     def test_set_position(self, qapp):
         """Test set_position updates row/col and label"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         tile = DraggableTile("TestChar", QColor(100, 100, 100))
         tile.set_position(2, 3)
@@ -6466,7 +6466,7 @@ class TestDraggableTileRealInit:
 
     def test_set_stacked(self, qapp):
         """Test set_stacked updates state and label"""
-        from eve_overview_pro.ui.main_tab import DraggableTile
+        from argus_overview.ui.main_tab import DraggableTile
 
         tile = DraggableTile("TestChar", QColor(100, 100, 100))
         tile.set_stacked(True)
@@ -6480,7 +6480,7 @@ class TestArrangementGridRealInit:
 
     def test_real_init(self, qapp):
         """Test ArrangementGrid real initialization"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
 
@@ -6492,7 +6492,7 @@ class TestArrangementGridRealInit:
 
     def test_setup_ui_creates_cells(self, qapp):
         """Test _setup_ui creates correct number of cells"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
 
@@ -6501,7 +6501,7 @@ class TestArrangementGridRealInit:
 
     def test_set_grid_size(self, qapp):
         """Test set_grid_size changes grid dimensions"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
         grid.set_grid_size(3, 4)
@@ -6513,7 +6513,7 @@ class TestArrangementGridRealInit:
 
     def test_set_grid_size_with_tiles(self, qapp):
         """Test set_grid_size repositions existing tiles"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid, DraggableTile
+        from argus_overview.ui.main_tab import ArrangementGrid, DraggableTile
 
         grid = ArrangementGrid()
         # Add a tile at position (1, 2)
@@ -6531,7 +6531,7 @@ class TestArrangementGridRealInit:
 
     def test_clear_tiles(self, qapp):
         """Test clear_tiles removes all tiles"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid, DraggableTile
+        from argus_overview.ui.main_tab import ArrangementGrid, DraggableTile
 
         grid = ArrangementGrid()
         tile = DraggableTile("TestChar", QColor(100, 100, 100))
@@ -6544,7 +6544,7 @@ class TestArrangementGridRealInit:
 
     def test_add_character(self, qapp):
         """Test add_character creates and positions tile"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
         grid.add_character("TestChar", row=1, col=1)
@@ -6556,7 +6556,7 @@ class TestArrangementGridRealInit:
 
     def test_set_grid_size_removes_deleted_tiles(self, qapp):
         """Test set_grid_size handles deleted tiles gracefully"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
 
@@ -6581,7 +6581,7 @@ class TestWindowPreviewWidgetRealInit:
 
     def test_real_init(self, qapp):
         """Test WindowPreviewWidget real initialization"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6607,7 +6607,7 @@ class TestWindowPreviewWidgetRealInit:
 
     def test_real_init_with_settings_manager(self, qapp):
         """Test WindowPreviewWidget with settings_manager"""
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         mock_settings = MagicMock()
@@ -6640,7 +6640,7 @@ class TestWindowPreviewWidgetPaintEventReal:
         """Test paintEvent with no alert"""
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6658,7 +6658,7 @@ class TestWindowPreviewWidgetPaintEventReal:
         """Test paintEvent with alert level"""
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import AlertLevel, WindowPreviewWidget
+        from argus_overview.ui.main_tab import AlertLevel, WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6677,7 +6677,7 @@ class TestWindowPreviewWidgetPaintEventReal:
         """Test paintEvent with medium alert"""
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import AlertLevel, WindowPreviewWidget
+        from argus_overview.ui.main_tab import AlertLevel, WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6696,7 +6696,7 @@ class TestWindowPreviewWidgetPaintEventReal:
         """Test paintEvent with low alert"""
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import AlertLevel, WindowPreviewWidget
+        from argus_overview.ui.main_tab import AlertLevel, WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6715,7 +6715,7 @@ class TestWindowPreviewWidgetPaintEventReal:
         """Test paintEvent draws activity indicator when focused"""
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6735,7 +6735,7 @@ class TestWindowPreviewWidgetPaintEventReal:
 
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6756,7 +6756,7 @@ class TestWindowPreviewWidgetPaintEventReal:
 
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6775,7 +6775,7 @@ class TestWindowPreviewWidgetPaintEventReal:
         """Test paintEvent draws lock icon when positions locked"""
         from PySide6.QtGui import QPaintEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6798,7 +6798,7 @@ class TestWindowPreviewWidgetMouseEventsReal:
         from PySide6.QtCore import QPoint, Qt
         from PySide6.QtGui import QMouseEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6827,7 +6827,7 @@ class TestWindowPreviewWidgetMouseEventsReal:
         from PySide6.QtCore import QPointF, Qt
         from PySide6.QtGui import QMouseEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6851,7 +6851,7 @@ class TestWindowPreviewWidgetMouseEventsReal:
         from PySide6.QtCore import QPoint, QPointF, Qt
         from PySide6.QtGui import QMouseEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6880,7 +6880,7 @@ class TestWindowPreviewWidgetMouseEventsReal:
         from PySide6.QtCore import QPoint, QPointF, Qt
         from PySide6.QtGui import QMouseEvent
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         mock_capture = MagicMock()
         widget = WindowPreviewWidget(
@@ -6921,7 +6921,7 @@ class TestMainTabCreateToolbarReal:
 
     def test_create_toolbar(self, qapp):
         """Test _create_toolbar creates toolbar with buttons"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6951,7 +6951,7 @@ class TestMainTabCreateLayoutControlsReal:
 
     def test_create_layout_controls(self, qapp):
         """Test _create_layout_controls creates layout section"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -6992,7 +6992,7 @@ class TestArrangementGridDragDropReal:
         from PySide6.QtCore import QMimeData, QPoint
         from PySide6.QtGui import QDragEnterEvent
 
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
 
@@ -7015,7 +7015,7 @@ class TestArrangementGridDragDropReal:
         from PySide6.QtCore import QMimeData, QPoint
         from PySide6.QtGui import QDragEnterEvent
 
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         grid = ArrangementGrid()
 
@@ -7040,7 +7040,7 @@ class TestFlowLayoutDoLayoutReal:
 
     def test_do_layout_test_only(self, qapp):
         """Test _do_layout in test mode returns height"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout(margin=10, spacing=5)
 
@@ -7050,7 +7050,7 @@ class TestFlowLayoutDoLayoutReal:
 
     def test_height_for_width(self, qapp):
         """Test heightForWidth calculates correct height"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout(margin=10, spacing=5)
         height = layout.heightForWidth(200)
@@ -7059,7 +7059,7 @@ class TestFlowLayoutDoLayoutReal:
 
     def test_set_geometry(self, qapp):
         """Test setGeometry calls _do_layout"""
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         layout = FlowLayout()
         layout.setGeometry(QRect(0, 0, 200, 100))
@@ -7076,7 +7076,7 @@ class TestMainTabFilterPreviews:
 
     def test_filter_empty_string_shows_all(self):
         """Test filter with empty string shows all windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7101,7 +7101,7 @@ class TestMainTabFilterPreviews:
 
     def test_filter_matches_partial_name(self):
         """Test filter matches partial character name"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7124,7 +7124,7 @@ class TestMainTabFilterPreviews:
 
     def test_filter_case_insensitive(self):
         """Test filter is case insensitive"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7146,7 +7146,7 @@ class TestMainTabFilterPreviews:
 
     def test_filter_updates_status_when_filtered(self):
         """Test filter updates status label when filtering"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7170,7 +7170,7 @@ class TestMainTabFilterPreviews:
 
     def test_filter_no_matches_shows_zero(self):
         """Test filter with no matches shows zero visible"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7193,7 +7193,7 @@ class TestMainTabFilterPreviews:
 
     def test_filter_whitespace_only_shows_all(self):
         """Test filter with only whitespace shows all windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7225,7 +7225,7 @@ class TestMainTabKeyPressEvent:
         from PySide6.QtCore import Qt
         from PySide6.QtGui import QKeyEvent
 
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7253,7 +7253,7 @@ class TestMainTabKeyPressEvent:
         from PySide6.QtCore import Qt
         from PySide6.QtGui import QKeyEvent
 
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7280,7 +7280,7 @@ class TestMainTabKeyPressEvent:
         from PySide6.QtCore import Qt
         from PySide6.QtGui import QKeyEvent
 
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7302,7 +7302,7 @@ class TestMainTabKeyPressEvent:
 
     def test_non_number_key_does_not_activate(self):
         """Test non-number keys do not activate any windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7324,7 +7324,7 @@ class TestMainTabActivateWindowByIndex:
 
     def test_activate_valid_index(self):
         """Test activating window at valid index"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7347,7 +7347,7 @@ class TestMainTabActivateWindowByIndex:
 
     def test_activate_invalid_index(self):
         """Test activating window at invalid index does nothing"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7362,7 +7362,7 @@ class TestMainTabActivateWindowByIndex:
 
     def test_activate_failed_logs_warning(self):
         """Test failed activation logs warning"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7381,7 +7381,7 @@ class TestMainTabActivateWindowByIndex:
 
     def test_activate_multiple_windows(self):
         """Test activating different windows by index"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7411,7 +7411,7 @@ class TestMainTabActivateWindowByIndex:
 
     def test_activate_index_9_works(self):
         """Test activating window at index 8 (key 9) works"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7445,20 +7445,20 @@ class TestRemoveAllWindows:
 
     def test_remove_all_windows_empty(self):
         """Test _remove_all_windows with no windows does nothing"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.window_manager = MagicMock()
             tab.window_manager.preview_frames = {}
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab._remove_all_windows()
                 mock_msgbox.question.assert_not_called()
 
     def test_remove_all_windows_user_confirms(self):
         """Test _remove_all_windows when user clicks Yes"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7471,7 +7471,7 @@ class TestRemoveAllWindows:
             }
             tab._update_status = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 mock_msgbox.StandardButton.No = 0
                 mock_msgbox.StandardButton.Yes = 1
                 mock_msgbox.question.return_value = mock_msgbox.StandardButton.Yes
@@ -7492,7 +7492,7 @@ class TestMinimizeInactiveWindows:
 
     def test_minimize_inactive_windows_enable(self):
         """Test enabling auto-minimize mode"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7507,7 +7507,7 @@ class TestMinimizeInactiveWindows:
             tab._windows_minimized = False
             tab._update_minimize_button_style = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.subprocess.run") as mock_run:
+            with patch("argus_overview.ui.main_tab.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(returncode=0, stdout="win1\n")
                 tab.minimize_inactive_windows()
                 tab.settings_manager.set.assert_called_with(
@@ -7517,7 +7517,7 @@ class TestMinimizeInactiveWindows:
 
     def test_minimize_inactive_windows_disable(self):
         """Test disabling auto-minimize mode"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7539,7 +7539,7 @@ class TestMinimizeInactiveWindows:
 
     def test_minimize_inactive_windows_exception(self):
         """Test auto-minimize handles exceptions gracefully"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7562,7 +7562,7 @@ class TestUpdateMinimizeButtonStyle:
 
     def test_update_button_style_enabled(self):
         """Test button style when auto-minimize is enabled"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7575,7 +7575,7 @@ class TestUpdateMinimizeButtonStyle:
 
     def test_update_button_style_disabled(self):
         """Test button style when auto-minimize is disabled"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7587,7 +7587,7 @@ class TestUpdateMinimizeButtonStyle:
 
     def test_update_button_style_no_button(self):
         """Test button style when button doesn't exist"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7606,7 +7606,7 @@ class TestOnLayoutSourceChanged:
 
     def test_layout_source_all_active_windows(self):
         """Test selecting 'All Active Windows' adds all preview frames"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7630,7 +7630,7 @@ class TestOnLayoutSourceChanged:
 
     def test_layout_source_cycling_group(self):
         """Test selecting a cycling group adds group members"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7659,7 +7659,7 @@ class TestGetAvailableWindows:
 
     def test_get_available_windows_filters_existing(self):
         """Test _get_available_windows excludes already tracked windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7681,7 +7681,7 @@ class TestGetAvailableWindows:
 
     def test_get_available_windows_all_new(self):
         """Test _get_available_windows with no existing windows"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7700,7 +7700,7 @@ class TestGetAvailableWindows:
 
     def test_get_available_windows_exception(self):
         """Test _get_available_windows raises on error"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7724,7 +7724,7 @@ class TestAddWindowToPreview:
 
     def test_add_window_success(self):
         """Test _add_window_to_preview adds window successfully"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7745,7 +7745,7 @@ class TestAddWindowToPreview:
 
     def test_add_window_extracts_char_name(self):
         """Test _add_window_to_preview extracts character name"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7763,7 +7763,7 @@ class TestAddWindowToPreview:
 
     def test_add_window_eve_online_prefix(self):
         """Test _add_window_to_preview handles 'EVE Online -' prefix"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7781,7 +7781,7 @@ class TestAddWindowToPreview:
 
     def test_add_window_empty_name_uses_unknown(self):
         """Test _add_window_to_preview uses Unknown for empty names"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7799,7 +7799,7 @@ class TestAddWindowToPreview:
 
     def test_add_window_frame_none(self):
         """Test _add_window_to_preview returns False when frame is None"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7815,7 +7815,7 @@ class TestAddWindowToPreview:
 
     def test_add_window_emits_character_detected(self):
         """Test _add_window_to_preview emits character_detected signal"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7838,14 +7838,14 @@ class TestShowAddWindowDialog:
 
     def test_show_add_window_dialog_exception_shows_error(self):
         """Test show_add_window_dialog shows error when _get_available_windows raises"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab._get_available_windows = MagicMock(side_effect=Exception("Test error"))
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab.show_add_window_dialog()
                 mock_msgbox.critical.assert_called_once()
                 args = mock_msgbox.critical.call_args[0]
@@ -7854,14 +7854,14 @@ class TestShowAddWindowDialog:
 
     def test_show_add_window_dialog_no_windows_shows_info(self):
         """Test show_add_window_dialog shows info when no windows available"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
             tab.logger = MagicMock()
             tab._get_available_windows = MagicMock(return_value=[])
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab.show_add_window_dialog()
                 mock_msgbox.information.assert_called_once()
                 args = mock_msgbox.information.call_args[0]
@@ -7873,7 +7873,7 @@ class TestCreateStatusBar:
 
     def test_create_status_bar_returns_widget(self):
         """Test _create_status_bar returns a QWidget with timer started"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7885,10 +7885,10 @@ class TestCreateStatusBar:
             mock_layout = MagicMock()
             mock_label = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QTimer", return_value=mock_timer), patch(
-                "eve_overview_pro.ui.main_tab.QWidget", return_value=mock_widget
-            ), patch("eve_overview_pro.ui.main_tab.QHBoxLayout", return_value=mock_layout), patch(
-                "eve_overview_pro.ui.main_tab.QLabel", return_value=mock_label
+            with patch("argus_overview.ui.main_tab.QTimer", return_value=mock_timer), patch(
+                "argus_overview.ui.main_tab.QWidget", return_value=mock_widget
+            ), patch("argus_overview.ui.main_tab.QHBoxLayout", return_value=mock_layout), patch(
+                "argus_overview.ui.main_tab.QLabel", return_value=mock_label
             ):
                 result = tab._create_status_bar()
 
@@ -7898,7 +7898,7 @@ class TestCreateStatusBar:
 
     def test_create_status_bar_timer_connects_update_status(self):
         """Test _create_status_bar connects timer to _update_status"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -7907,10 +7907,10 @@ class TestCreateStatusBar:
 
             mock_timer = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.QTimer", return_value=mock_timer), patch(
-                "eve_overview_pro.ui.main_tab.QWidget"
-            ), patch("eve_overview_pro.ui.main_tab.QHBoxLayout"), patch(
-                "eve_overview_pro.ui.main_tab.QLabel"
+            with patch("argus_overview.ui.main_tab.QTimer", return_value=mock_timer), patch(
+                "argus_overview.ui.main_tab.QWidget"
+            ), patch("argus_overview.ui.main_tab.QHBoxLayout"), patch(
+                "argus_overview.ui.main_tab.QLabel"
             ):
                 tab._create_status_bar()
 
@@ -7922,7 +7922,7 @@ class TestArrangementGridDragMoveEvent:
 
     def test_drag_move_accepts_proposed_action(self):
         """Test dragMoveEvent accepts the proposed action"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -7938,7 +7938,7 @@ class TestArrangementGridDropEventRuntimeError:
 
     def test_drop_event_handles_deleted_tile(self):
         """Test dropEvent handles RuntimeError when removing deleted tile"""
-        from eve_overview_pro.ui.main_tab import ArrangementGrid
+        from argus_overview.ui.main_tab import ArrangementGrid
 
         with patch.object(ArrangementGrid, "__init__", return_value=None):
             grid = ArrangementGrid.__new__(ArrangementGrid)
@@ -7982,7 +7982,7 @@ class TestMainTabRefreshLayoutSourcesRestore:
 
     def test_refresh_layout_sources_restores_selection(self):
         """Test _refresh_layout_sources restores previous selection"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8000,7 +8000,7 @@ class TestMainTabRefreshLayoutSourcesRestore:
 
     def test_refresh_layout_sources_handles_missing_selection(self):
         """Test _refresh_layout_sources handles missing previous selection"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8023,7 +8023,7 @@ class TestMainTabApplyLayoutScreenFallback:
 
     def test_apply_layout_uses_fallback_screen(self):
         """Test _apply_layout uses fallback screen geometry when get_screen_geometry returns None"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8063,7 +8063,7 @@ class TestMainTabApplyLayoutFailure:
 
     def test_apply_layout_shows_warning_on_failure(self):
         """Test _apply_layout shows warning when apply_arrangement fails"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8085,7 +8085,7 @@ class TestMainTabApplyLayoutFailure:
             tab.stack_resize_checkbox = MagicMock()
             tab.stack_resize_checkbox.isChecked.return_value = False
 
-            with patch("eve_overview_pro.ui.main_tab.QMessageBox") as mock_msgbox:
+            with patch("argus_overview.ui.main_tab.QMessageBox") as mock_msgbox:
                 tab._apply_layout_to_windows()
 
                 mock_msgbox.warning.assert_called_once()
@@ -8099,7 +8099,7 @@ class TestOneClickImportNoWindows:
 
     def test_one_click_import_no_new_windows(self):
         """Test one_click_import shows message when no new EVE windows found"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8111,10 +8111,10 @@ class TestOneClickImportNoWindows:
             tab._update_status = MagicMock()
 
             # Mock scan_eve_windows to return windows that are all already imported
-            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows") as mock_scan:
+            with patch("argus_overview.ui.main_tab.scan_eve_windows") as mock_scan:
                 mock_scan.return_value = []  # No EVE windows found at all
 
-                with patch("eve_overview_pro.ui.main_tab.QMessageBox"):
+                with patch("argus_overview.ui.main_tab.QMessageBox"):
                     tab.one_click_import()
 
                     # When no EVE windows, should show QMessageBox, not status_label
@@ -8125,7 +8125,7 @@ class TestOneClickImportAllDuplicates:
 
     def test_one_click_import_all_already_imported(self):
         """Test one_click_import shows message when all windows already imported"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8136,7 +8136,7 @@ class TestOneClickImportAllDuplicates:
             tab.status_label = MagicMock()
             tab._update_status = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows") as mock_scan:
+            with patch("argus_overview.ui.main_tab.scan_eve_windows") as mock_scan:
                 # Return window_id, title, char_name
                 mock_scan.return_value = [("0x123", "EVE - TestChar", "TestChar")]
 
@@ -8151,7 +8151,7 @@ class TestOnWindowActivatedFailure:
 
     def test_on_window_activated_logs_warning_on_failure(self):
         """Test _on_window_activated logs warning when activate_window returns False"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8173,7 +8173,7 @@ class TestMinimizeInactiveXdotoolFails:
     def test_minimize_inactive_xdotool_fails(self):
         """Test minimize_inactive_windows shows simple message when xdotool fails"""
 
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8204,7 +8204,7 @@ class TestKeyPressEventNonNumber:
         """Test keyPressEvent passes non-number keys to parent"""
         from PySide6.QtCore import Qt
 
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8214,7 +8214,7 @@ class TestKeyPressEventNonNumber:
             mock_event.key.return_value = Qt.Key.Key_A  # Non-number key
 
             # Need to patch super().keyPressEvent
-            with patch("eve_overview_pro.ui.main_tab.QWidget.keyPressEvent") as mock_super:
+            with patch("argus_overview.ui.main_tab.QWidget.keyPressEvent") as mock_super:
                 tab.keyPressEvent(mock_event)
 
                 mock_super.assert_called_once_with(mock_event)
@@ -8225,7 +8225,7 @@ class TestOneClickImportAllFail:
 
     def test_one_click_import_all_fail_to_add(self):
         """Test one_click_import when windows found but all fail to create frames"""
-        from eve_overview_pro.ui.main_tab import MainTab
+        from argus_overview.ui.main_tab import MainTab
 
         with patch.object(MainTab, "__init__", return_value=None):
             tab = MainTab.__new__(MainTab)
@@ -8238,7 +8238,7 @@ class TestOneClickImportAllFail:
             tab.status_label = MagicMock()
             tab._update_status = MagicMock()
 
-            with patch("eve_overview_pro.ui.main_tab.scan_eve_windows") as mock_scan:
+            with patch("argus_overview.ui.main_tab.scan_eve_windows") as mock_scan:
                 # Return a window that's not a duplicate
                 mock_scan.return_value = [("0x456", "EVE - NewChar", "NewChar")]
 
@@ -8255,8 +8255,8 @@ class TestProcessCaptureResultsAlert:
         """Test _process_capture_results sets alert level on frame"""
         import threading
 
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -8287,7 +8287,7 @@ class TestProcessCaptureResultsAlert:
         """Test _process_capture_results handles exception during processing"""
         import threading
 
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -8321,7 +8321,7 @@ class TestFlowLayoutRowWrap:
         """Test FlowLayout wraps items to next row when width exceeded"""
         from PySide6.QtCore import QRect, QSize
 
-        from eve_overview_pro.ui.main_tab import FlowLayout
+        from argus_overview.ui.main_tab import FlowLayout
 
         with patch.object(FlowLayout, "__init__", return_value=None):
             layout = FlowLayout.__new__(FlowLayout)
@@ -8361,7 +8361,7 @@ class TestWindowPreviewWidgetActivityState:
         """Test get_activity_state returns 'recent' when activity within 5 seconds"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -8376,7 +8376,7 @@ class TestWindowPreviewWidgetActivityState:
         """Test get_activity_state returns 'idle' when activity older than 5 seconds"""
         from datetime import datetime, timedelta
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -8391,7 +8391,7 @@ class TestWindowPreviewWidgetActivityState:
         """Test get_activity_state returns 'focused' when is_focused is True"""
         from datetime import datetime
 
-        from eve_overview_pro.ui.main_tab import WindowPreviewWidget
+        from argus_overview.ui.main_tab import WindowPreviewWidget
 
         with patch.object(WindowPreviewWidget, "__init__", return_value=None):
             widget = WindowPreviewWidget.__new__(WindowPreviewWidget)
@@ -8408,8 +8408,8 @@ class TestWindowManagerAddWindowAlertCallback:
 
     def test_add_window_registers_alert_callback(self):
         """Test add_window registers callback with alert_detector"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -8421,7 +8421,7 @@ class TestWindowManagerAddWindowAlertCallback:
 
             # Mock WindowPreviewWidget creation
             mock_frame = MagicMock()
-            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget", return_value=mock_frame):
+            with patch("argus_overview.ui.main_tab.WindowPreviewWidget", return_value=mock_frame):
                 wm.add_window("0x123", "TestChar")
 
                 # Verify alert_detector.register_callback was called
@@ -8438,8 +8438,8 @@ class TestWindowManagerAddWindowAlertCallback:
 
     def test_alert_callback_ignores_removed_window(self):
         """Test alert callback does nothing if window was removed"""
-        from eve_overview_pro.core.alert_detector import AlertLevel
-        from eve_overview_pro.ui.main_tab import WindowManager
+        from argus_overview.core.alert_detector import AlertLevel
+        from argus_overview.ui.main_tab import WindowManager
 
         with patch.object(WindowManager, "__init__", return_value=None):
             wm = WindowManager.__new__(WindowManager)
@@ -8450,7 +8450,7 @@ class TestWindowManagerAddWindowAlertCallback:
             wm.settings_manager = MagicMock()
 
             mock_frame = MagicMock()
-            with patch("eve_overview_pro.ui.main_tab.WindowPreviewWidget", return_value=mock_frame):
+            with patch("argus_overview.ui.main_tab.WindowPreviewWidget", return_value=mock_frame):
                 wm.add_window("0x123", "TestChar")
 
                 # Get the callback
